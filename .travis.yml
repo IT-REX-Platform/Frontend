@@ -1,8 +1,7 @@
+language: node_js
+  node_js:
+    - 12
 before_install:
-  - sudo apt update
-  - curl -sL https://deb.nodesource.com/setup_12.x -o nodesource_setup.sh
-  - sudo bash ./nodesource_setup.sh
-  - sudo apt install nodejs
   - sudo npm install -g expo-cli
 install:
   - npm install
