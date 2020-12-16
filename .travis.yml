@@ -12,7 +12,8 @@ script:
   - echo $(ls)
 deploy:
   local_dir: 
-  provider: pages
+  provider: pages:git
+  edge: true 
   cleanup: false
   token: $PAGES_TOKEN 
   keep_history: true
