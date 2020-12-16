@@ -1,0 +1,16 @@
+before_install:
+  - sudo apt-get update
+  - sudo apt-get -y install libxml2-dev npm nodejs
+install:
+  - npm install
+script:
+  - expo build:web
+  - echo $(ls)
+deploy:
+  local_dir: 
+  provider: pages
+  skip_cleanup: true
+  github_token: $PAGES_TOKEN 
+  keep_history: true
+  on:
+    branch: main
