@@ -16,5 +16,6 @@ deploy:
   cleanup: false
   token: $PAGES_TOKEN 
   keep_history: true
+  target_branch: main
   on:
     branch: main
