@@ -4,6 +4,7 @@ node_js:
 before_install:
   - npm i -g npm@6.14.8
   - npm install expo-cli
+  - npm install servejs
 install:
   - npm install
 script:
@@ -12,8 +13,8 @@ script:
 deploy:
   local_dir: 
   provider: pages
-  skip_cleanup: true
-  github_token: $PAGES_TOKEN 
+  cleanup: false
+  token: $PAGES_TOKEN 
   keep_history: true
   on:
     branch: main
