@@ -3,7 +3,7 @@ node_js:
   - 12
 before_install:
   - npm i -g npm@6.14.8
-  - sudo npm install -g expo-cli
+  - npm install expo-cli
 install:
   - npm install
 script:
