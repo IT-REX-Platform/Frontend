@@ -4,7 +4,7 @@ node_js:
 before_install:
   - npm i -g npm@6.14.8
   - npm install expo-cli
-  - npm install servejs
+  - npm install serve
 install:
   - npm install
 script:
