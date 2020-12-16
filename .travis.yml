@@ -1,6 +1,7 @@
 before_install:
   - sudo apt-get update
   - sudo apt-get -y install libxml2-dev npm nodejs
+  - npm install -g expo-cli
 install:
   - npm install
 script:
