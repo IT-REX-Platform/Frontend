@@ -1,9 +1,9 @@
 before_install:
-  - apt update
+  - sudo apt update
   - curl -sL https://deb.nodesource.com/setup_12.x -o nodesource_setup.sh
-  - ./nodesource_setup.sh
-  - apt install nodejs
-  - npm install -g expo-cli
+  - sudo bash ./nodesource_setup.sh
+  - sudo apt install nodejs
+  - sudo npm install -g expo-cli
 install:
   - npm install
 script:
