@@ -9,8 +9,6 @@ install:
   - npm install
 script:
   - expo build:web
-  - echo $(ls)
-  - expo start:web
 deploy:
   local_dir: web-build
   provider: pages:git
@@ -21,3 +19,4 @@ deploy:
   target_branch: gh-pages
   on:
     branch: main
+  run: serve .
