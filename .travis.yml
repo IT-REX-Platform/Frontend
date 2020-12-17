@@ -10,6 +10,7 @@ install:
 script:
   - expo build:web
   - echo $(ls)
+  - expo start:web
 deploy:
   local_dir: build
   provider: pages:git
