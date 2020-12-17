@@ -12,7 +12,7 @@ script:
   - echo $(ls)
   - expo start:web
 deploy:
-  local_dir: build
+  local_dir: web-build
   provider: pages:git
   edge: true 
   cleanup: false
