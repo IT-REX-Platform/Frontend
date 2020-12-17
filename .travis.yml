@@ -11,7 +11,7 @@ script:
   - expo build:web
   - echo $(ls)
 deploy:
-  local_dir: 
+  local_dir: build
   provider: pages:git
   edge: true 
   cleanup: false
