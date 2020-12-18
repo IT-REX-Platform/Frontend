@@ -19,11 +19,13 @@ pipeline {
                 echo 'Testing..'
             }
         }
-        stage('Deploy') {
-            steps {
-                echo 'Deploying....'
-                sh 'rm -r /srv/*'
-                sh 'mv ./web-build/* /srv'
+        if (env.BRANCH_NAME == 'main') {
+            stage('Deploy') {
+                steps {
+                    echo 'Deploying....'
+                    sh 'rm -r /srv/*'
+                    sh 'mv ./web-build/* /srv'
+                }
             }
         }
     }
