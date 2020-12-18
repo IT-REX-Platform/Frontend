@@ -22,7 +22,8 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo 'Deploying....'
-                sh 'mv ./web-build /srv'
+                sh 'rm -r /srv/*'
+                sh 'mv ./web-build/* /srv'
             }
         }
     }
