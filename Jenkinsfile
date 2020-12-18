@@ -25,8 +25,8 @@ pipeline {
             }
             steps {
                 echo 'Deploying....'
-                sh 'rm -r /srv/*'
-                sh 'mv ./web-build/* /srv'
+                sh 'rm -r /srv/Frontend/*'
+                sh 'mv ./web-build/* /srv/Frontend/'
             }
         }
     }
