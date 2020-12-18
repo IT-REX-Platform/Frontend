@@ -22,7 +22,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo 'Deploying....'
-                sh 'mv /web-build /srv'
+                sh 'mv ./web-build /srv'
             }
         }
     }
