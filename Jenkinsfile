@@ -19,13 +19,14 @@ pipeline {
                 echo 'Testing..'
             }
         }
-        if (env.BRANCH_NAME == 'main') {
-            stage('Deploy') {
-                steps {
-                    echo 'Deploying....'
-                    sh 'rm -r /srv/*'
-                    sh 'mv ./web-build/* /srv'
-                }
+        stage('Deploy') {
+            when {
+                branch 'main'
+            }
+            steps {
+                echo 'Deploying....'
+                sh 'rm -r /srv/*'
+                sh 'mv ./web-build/* /srv'
             }
         }
     }
