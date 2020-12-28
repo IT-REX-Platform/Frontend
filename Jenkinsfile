@@ -36,8 +36,8 @@ pipeline {
         stage('PushToMain') {
             when { allOf { branch 'dev'; triggeredBy 'UserIdCause' } }
             steps {
-                echo 'Pushing to main'
-                sh 'git push origin main'
+                echo 'Pushing dev to main'
+                sh 'git push origin dev:main'
             }
         }
     }
