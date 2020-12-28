@@ -1,6 +1,6 @@
 pipeline {
-    agent{
-        node{
+    agent {
+        node {
             label 'testVM'
         }
     }
@@ -31,6 +31,13 @@ pipeline {
                 echo 'Deploying....'
                 sh 'rm -r /srv/Frontend/*'
                 sh 'mv ./web-build/* /srv/Frontend/'
+            }
+        }
+        stage('PushToMain') {
+            when { allOf { branch 'dev'; triggeredBy 'UserIdCause' } }
+            steps {
+                echo 'Pushing to main'
+                sh 'git push origin main'
             }
         }
     }
