@@ -23,13 +23,7 @@ const onMouseOver = (event) => {
     "#F29C29",
     "#8E44AD",
     "#4AA086",
-    "#E74C3C",
-    "#65CC71",
-    "#D3541B",
-    "#EB4367",
-    "#74F7D9",
-    "#DDA8FC",
-  ];
+
   el.style.color = colorhex[Math.floor(Math.random() * 12)];
 };
 
