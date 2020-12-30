@@ -34,6 +34,8 @@ pipeline {
             steps {
                 sshagent (credentials: ['Github']) {
                     echo 'Pushing dev to main'
+                    sh 'git config user.email android+slave@test.com'
+                    sh 'git config user.name IT-Rex-Chadkins'
                     sh 'git push git@github.com:IT-REX-Platform/Frontend.git dev:main'
                 }
             }
