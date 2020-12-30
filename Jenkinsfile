@@ -29,7 +29,7 @@ pipeline {
                 sh 'mv ./web-build/* /srv/Frontend/'
             }
         }
-        stage('PushToMain') {
+        stage('Release') {
             when { allOf { branch 'dev'; triggeredBy 'UserIdCause' } }
             steps {
                 sshagent (credentials: ['Github']) {
