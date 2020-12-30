@@ -36,7 +36,7 @@ pipeline {
         stage('PushToMain') {
             when { allOf { branch 'dev'; triggeredBy 'UserIdCause' } }
             steps {
-                sshagent(['credentiald-id-using-ssh-key'])
+                sshagent(['MasterKey'])
                 {
                     echo 'Pushing dev to main'
                     sh 'git push origin dev:main'
