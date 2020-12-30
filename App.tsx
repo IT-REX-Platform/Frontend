@@ -17,10 +17,7 @@ export default function App() {
 const onMouseOver = (event) => {
   const el = event.target;
   let colorhex = [
-    "#7AF377",
-    "#3498DB",
-    "#F1C530",
-    "#F29C29",
+    
     "#8E44AD",
     "#4AA086",
     "#E74C3C",
