@@ -32,14 +32,11 @@ pipeline {
         stage('PushToMain') {
             when { allOf { branch 'dev'; triggeredBy 'UserIdCause' } }
             steps {
-                withCredentials([usernamePassword(credentialsId: 'IT-Rex-Chadkins-Password',
-                passwordVariable: 'GIT_PASSWORD',
-                 usernameVariable: 'GIT_USERNAME')]) {
+                sshagent (credentials: ['Github']) {
                     echo 'Pushing dev to main'
-                    sh('git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/IT-REX-Platform/Frontend.git dev:main')
-                 }
+                    sh 'git push git@github.com:IT-REX-Platform/Frontend.git dev:main'
+                }
             }
         }
     }
 }
-
