@@ -36,7 +36,7 @@ pipeline {
                 passwordVariable: 'GIT_PASSWORD',
                  usernameVariable: 'GIT_USERNAME')]) {
                     echo 'Pushing dev to main'
-                    sh('git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/my-org/my-repo.git dev:main')
+                    sh('git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/IT-REX-Platform/Frontend.git dev:main')
                  }
             }
         }
