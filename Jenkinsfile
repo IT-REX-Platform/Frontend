@@ -38,6 +38,7 @@ pipeline {
             steps {
                 sshagent(credentials:['Github'])
                 {
+                    sh 'git status'
                     echo 'Pushing dev to main'
                     sh 'git push origin dev:main'
                 }
