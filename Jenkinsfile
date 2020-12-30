@@ -1,9 +1,5 @@
 pipeline {
-    agent {
-        node {
-            label 'testVM'
-        }
-    }
+    agent any
 
     stages {
         stage('Pre-build') {
