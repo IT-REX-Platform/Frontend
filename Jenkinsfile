@@ -4,6 +4,7 @@ pipeline {
     stages {
         stage('Pre-build') {
             steps {
+                echo "NODE_NAME = ${env.NODE_NAME}"
                 echo 'Pre-build..'
                 sh 'npm install'
             }
