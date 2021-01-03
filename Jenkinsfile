@@ -33,7 +33,7 @@ pipeline {
         stage('Release') {
             when { allOf { branch 'dev'; triggeredBy 'UserIdCause' } }
             steps {
-                sshagent (credentials: ['Github']) {
+                sshagent (credentials: ['jenkins']) {
                     echo 'Pushing dev to main'
                     sh 'git push git@github.com:IT-REX-Platform/Frontend.git dev:main'
                 }
