@@ -16,12 +16,14 @@ module.exports = {
     },
     plugins: ["@typescript-eslint", "prettier"],
     rules: {
-        // https://eslint.org/docs/rules/       // ESLint rules.
-        // https://github.com/typescript-eslint/typescript-eslint/tree/master/packages/eslint-plugin        // Typescript-ESLint rules.
+        // https://eslint.org/docs/rules/   // ESLint rules.
+        // https://github.com/typescript-eslint/typescript-eslint/tree/master/packages/eslint-plugin   // Typescript-ESLint rules.
         "@typescript-eslint/indent": ["warn", 4],
         "@typescript-eslint/semi": ["warn", "always"],
         "@typescript-eslint/quotes": ["warn", "double"],
         "@typescript-eslint/no-explicit-any": "error",
         complexity: ["warn", 4], // Cyclomatic complexity.
+        "max-len": ["warn", { code: 120, ignoreComments: true, ignoreTrailingComments: true, ignoreUrls: true }],
+        "max-lines": ["warn", { max: 300, skipBlankLines: true, skipComments: true }],
     },
 };
