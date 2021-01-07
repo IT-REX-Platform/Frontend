@@ -5,7 +5,7 @@ module.exports = {
     },
     extends: [
         "eslint:recommended", // Enables recommended rules from "eslint" plugin.
-        "plugin:@typescript-eslint/eslint-recommended", // Disables rules from eslint:recommended which are already handled by TypeScript
+        "plugin:@typescript-eslint/eslint-recommended", // Disables rules from eslint:recommended which are already handled by TypeScript.
         "plugin:@typescript-eslint/recommended", // Enables recommended rules from "typescript-eslint" plugin.
         "prettier/@typescript-eslint", // Uses eslint-config-prettier to disable ESLint rules from @typescript-eslint/eslint-plugin that would conflict with prettier.
     ],
