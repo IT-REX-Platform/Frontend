@@ -9,6 +9,6 @@ it("renders correctly", () => {
     renderer.create(<App />);
 });
 
-it("this test should fail", () => {
-    expect(true).toBe(false);
+it("this test should succeed", () => {
+    expect(true).toBe(true);
 });
