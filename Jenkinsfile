@@ -25,6 +25,8 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Testing..'
+                echo 'Run jest..'
+                sh 'npm test'
             }
         }
         stage('Deploy') {
