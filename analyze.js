@@ -4,7 +4,6 @@ scanner(
     {
         // this example uses local instance of SQ
         options: {
-            "sonar.projectKey": "Frontend",
             "sonar.projectName": "Frontend",
             "sonar.projectDescription": "Frontend",
             "sonar.projectVersion": "1.1.0",
