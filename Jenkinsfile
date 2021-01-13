@@ -29,6 +29,20 @@ pipeline {
                 sh 'npm run testCoverage'
             }
         }
+        stage('quality analysis'){
+            environment {
+                scannerHome = tool 'SonarQubeScanner'
+            }
+            steps {
+                withSonarQubeEnv('sonarqube') {
+                    sh "${scannerHome}/bin/sonar-scanner"
+                }
+                timeout(time: 10, unit: 'MINUTES') {
+                    // Needs to be changed to true in the real project.
+                    waitForQualityGate abortPipeline: false
+                }
+            }
+        }
         stage('Deploy') {
             when {
                 branch 'main'
