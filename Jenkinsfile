@@ -26,7 +26,7 @@ pipeline {
             steps {
                 echo 'Testing..'
                 echo 'Run jest..'
-                sh 'npm run testCoverage'
+                sh 'npm run test'
             }
         }
         stage('quality analysis'){
