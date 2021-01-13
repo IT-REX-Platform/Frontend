@@ -35,7 +35,7 @@ pipeline {
             }
             steps {
                 withSonarQubeEnv('sonarqube') {
-                    sh "${scannerHome}/bin/sonar-scanner"
+                    sh "node analyze.js"
                 }
                 timeout(time: 10, unit: 'MINUTES') {
                     // Needs to be changed to true in the real project.
