@@ -36,7 +36,7 @@
         "eslint-plugin-prettier": "^3.3.0",
         "husky": "^4.3.6",
         "jest-expo": "~40.0.0",
-        "jest-junit": "^12.0.0",
+        "jest-sonar-reporter": "^2.0.0",
         "prettier": "2.2.1",
         "pretty-quick": "^3.1.0",
         "sonarqube-scanner": "^2.8.0",
@@ -56,13 +56,11 @@
             "!**/logger/**",
             "!**/web-build/**"
         ],
-        "reporters": [
-            "default",
-            "jest-junit"
-        ]
+        "testResultsProcessor": "jest-sonar-reporter"
     },
-    "jest-junit": {
-        "outputDirectory": "./coverage"
+    "jestSonar": {
+        "reportPath": "./coverage",
+        "reportFile": "test-reporter.xml"
     },
     "husky": {
         "hooks": {
