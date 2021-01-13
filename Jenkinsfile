@@ -26,7 +26,21 @@ pipeline {
             steps {
                 echo 'Testing..'
                 echo 'Run jest..'
-                sh 'npm test'
+                sh 'npm run test'
+            }
+        }
+        stage('quality analysis'){
+            environment {
+                scannerHome = tool 'SonarQubeScanner'
+            }
+            steps {
+                withSonarQubeEnv('sonarqube') {
+                    sh "node analyze.js"
+                }
+                timeout(time: 10, unit: 'MINUTES') {
+                    // Needs to be changed to true in the real project.
+                    waitForQualityGate abortPipeline: false
+                }
             }
         }
         stage('Deploy') {
