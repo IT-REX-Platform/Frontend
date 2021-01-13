@@ -14,7 +14,7 @@ scanner(
             "sonar.sources": "src/",
             "sonar.tests": "__tests__/",
             "sonar.typescript.lcov.reportPaths": "coverage/lcov.info",
-            "sonar.testExecutionReportPaths": "coverage/junit.xml",
+            "sonar.testExecutionReportPaths": "coverage/clover.xml",
         },
     },
 
