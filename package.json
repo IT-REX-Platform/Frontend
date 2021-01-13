@@ -23,6 +23,7 @@
     },
     "devDependencies": {
         "@babel/core": "~7.9.0",
+        "@types/jest": "^26.0.20",
         "@types/react": "~16.9.35",
         "@types/react-dom": "~16.9.8",
         "@types/react-native": "~0.63.2",
@@ -40,7 +41,17 @@
         "typescript-logging": "^1.0.0"
     },
     "jest": {
-        "preset": "react-native"
+        "preset": "react-native",
+        "collectCoverage": true,
+        "collectCoverageFrom": [
+            "**/*.{js,jsx,ts,tsx}",
+            "!**/coverage/**",
+            "!**/node_modules/**",
+            "!**/babel.config.js",
+            "!**index.js",
+            "!**metro.config.js",
+            "!**/logger/**"
+        ]
     },
     "husky": {
         "hooks": {
