@@ -3,6 +3,7 @@ const scanner = require("sonarqube-scanner");
 scanner(
     {
         serverUrl: "https://localhost:9001",
+        token: "0bd29dad78b1ed1a5436a3b3ad042df1c78d4f34",
         // this example uses local instance of SQ
         options: {
             "sonar.projectName": "Frontend",
