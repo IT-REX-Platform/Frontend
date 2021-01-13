@@ -1,4 +1,4 @@
-import { TestExample } from "../code_coverage_example/TestExample";
+import { TestExample } from "../src/helperScripts/TestExample";
 
 const testExample: TestExample = new TestExample();
 

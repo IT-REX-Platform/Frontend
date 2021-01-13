@@ -13,9 +13,9 @@ scanner(
 
             "sonar.tests": "__tests__/",
 
-            "sonar.typescript.lcov.reportPaths": "testOutput/lcov.info",
+            "sonar.typescript.lcov.reportPaths": "coverage/lcov.info",
 
-            "sonar.testExecutionReportPaths": "test-report.xml",
+            "sonar.testExecutionReportPaths": "coverage/junit.xml",
         },
     },
 

@@ -6,7 +6,6 @@
         "web": "expo start --web",
         "start": "react-native start",
         "test": "jest",
-        "testCoverage": "jest --coverage --coverageDirectory './testOutput'",
         "pretty": "prettier --write '*.js'",
         "lint": "eslint --ext .ts,.tsx"
     },
@@ -37,6 +36,7 @@
         "eslint-plugin-prettier": "^3.3.0",
         "husky": "^4.3.6",
         "jest-expo": "~40.0.0",
+        "jest-junit": "^12.0.0",
         "prettier": "2.2.1",
         "pretty-quick": "^3.1.0",
         "sonarqube-scanner": "^2.8.0",
@@ -53,8 +53,16 @@
             "!**/babel.config.js",
             "!**index.js",
             "!**metro.config.js",
-            "!**/logger/**"
+            "!**/logger/**",
+            "!**/web-build/**"
+        ],
+        "reporters": [
+            "default",
+            "jest-junit"
         ]
+    },
+    "jest-junit": {
+        "outputDirectory": "./coverage"
     },
     "husky": {
         "hooks": {

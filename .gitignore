@@ -65,4 +65,4 @@ web-build/
 
 # TestOutput
 testOutput/
-testOutput/
+coverage/
