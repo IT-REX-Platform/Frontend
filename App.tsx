@@ -99,13 +99,13 @@ export default function App() {
     return (
         <View>
             <Button
-                disabled={response != null}
+                disabled={response?.type === "success"}
                 title="Login"
                 onPress={() => {
                     promptAsync();
                 }}
             />
-            <Text>Code: {response?.params.code}</Text>
+            <Text>Code: {response?.type === "success" && response?.params.code}</Text>
             <Text>Token: {tokenResponse?.accessToken}</Text>
             <Button
                 disabled={tokenResponse == null}
