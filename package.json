@@ -46,7 +46,7 @@
         "typescript-logging": "^1.0.0"
     },
     "jest": {
-        "preset": "react-native",
+        "preset": "jest-expo/universal",
         "collectCoverage": true,
         "collectCoverageFrom": [
             "**/*.{js,jsx,ts,tsx}",
