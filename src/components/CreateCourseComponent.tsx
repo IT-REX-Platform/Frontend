@@ -1,11 +1,12 @@
 import React from "react";
 import { useState } from "react";
-import { Button, Text, TextInput, View, StyleSheet, Pressable, Alert } from "react-native";
-import { sendCreateCourseRequest } from "../api/sendCreateCourseRequest";
+import { Button, Text, TextInput, View, StyleSheet, Pressable } from "react-native";
+import { Course, createPostRequest } from "../api/createPostRequest";
+import { sendRequest } from "../api/sendRequest";
 import { validateCourseName } from "../helperScripts/validateCourseName";
 
 export const CreateCourseComponent: React.FC = () => {
-    const [courseName, onChangeCourseName] = useState("");
+    const [courseName, setCourseName] = useState("");
 
     return (
         <>
@@ -13,22 +14,23 @@ export const CreateCourseComponent: React.FC = () => {
                 <View style={styles.StyledInputContainer}>
                     <Text>Enter Course name:</Text>
                     <TextInput
-                        onChangeText={(text: string) => onChangeCourseName(text)}
+                        onChangeText={(text: string) => setCourseName(text)}
                         style={styles.StyledTextInput}></TextInput>
                 </View>
                 <Pressable style={styles.StyledButton}>
-                    <Button title="Create new Course" onPress={sendRequest}></Button>
+                    <Button title="Create new Course" onPress={createCourse}></Button>
                 </Pressable>
             </View>
         </>
     );
 
-    function sendRequest() {
-        Alert.alert("Course creation", "Course created successfully.");
-
+    function createCourse() {
         if (validateCourseName(courseName)) {
             console.log("sending a request: ", courseName);
-            sendCreateCourseRequest(courseName);
+            const currentDate: Date = new Date();
+            const course: Course = { name: courseName, startDate: currentDate };
+            const postRequest: RequestInit = createPostRequest(course);
+            sendRequest(postRequest);
         } else {
             console.log("Course name invalid");
         }
