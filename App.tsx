@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import * as WebBrowser from "expo-web-browser";
 import { makeRedirectUri, useAuthRequest, exchangeCodeAsync, TokenResponse } from "expo-auth-session";
 import { Button, View, Text } from "react-native";
+import { CreateCourseComponent } from "./src/components/CreateCourseComponent";
+import TestComponent from "./src/components/TestComponent";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -108,6 +110,8 @@ export default function App(): JSX.Element {
                 onPress={() => {
                     createNewCourse();
                 }}></Button>
+            <CreateCourseComponent></CreateCourseComponent>
+            <TestComponent></TestComponent>
         </View>
     );
 }
