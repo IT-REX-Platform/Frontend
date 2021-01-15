@@ -1,6 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { Button, Text, TextInput, View, StyleSheet, Pressable, Alert } from "react-native";
+import { sendCreateCourseRequest } from "../api/sendCreateCourseRequest";
 import { validateCourseName } from "../helperScripts/validateCourseName";
 
 export const CreateCourseComponent: React.FC = () => {
@@ -27,6 +28,7 @@ export const CreateCourseComponent: React.FC = () => {
 
         if (validateCourseName(courseName)) {
             console.log("sending a request: ", courseName);
+            sendCreateCourseRequest(courseName);
         } else {
             console.log("Course name invalid");
         }
