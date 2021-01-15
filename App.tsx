@@ -1,10 +1,7 @@
-import React, { useContext, useState } from "react";
-import TestComponent from "./src/components/TestComponent";
+import React, { useState } from "react";
 import * as WebBrowser from "expo-web-browser";
 import { makeRedirectUri, useAuthRequest, exchangeCodeAsync, TokenResponse } from "expo-auth-session";
 import { Button, View, Text } from "react-native";
-import { AuthenticationService } from "./src/services/AuthenticationService";
-import { AuthenticationContext } from "./src/services/Context";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -14,16 +11,14 @@ const discovery = {
     tokenEndpoint: "http://keycloak:9080/auth/realms/jhipster/protocol/openid-connect/token",
 };
 
-export default function App() {
-    const authenticationService: AuthenticationService = useContext(AuthenticationContext);
-
+export default function App(): JSX.Element {
     // const [tokenResponse] = useState();
 
     // let tokenResponse:TokenResponse;
 
     const [tokenResponse, setTokenResponse] = useState<TokenResponse>();
 
-    const [request, response, promptAsync] = useAuthRequest(
+    const [, response, promptAsync] = useAuthRequest(
         {
             clientId: "web_app",
             scopes: ["jhipster"],
