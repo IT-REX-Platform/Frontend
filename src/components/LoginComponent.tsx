@@ -40,6 +40,7 @@ export const LoginComponent: React.FC = () => {
             setTokenResponse(authResponse.authentication);
             // authenticationService.setTokenResponse(authResponse.authentication);
             AuthenticationService.getInstance().setTokenResponse(authResponse.authentication);
+            let hallo = "hallo";
         }
     }, [authResponse]);
 
