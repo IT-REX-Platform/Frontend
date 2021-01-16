@@ -10,6 +10,7 @@ scanner(
             "sonar.projectVersion": "1.1.0",
             "sonar.sources": "src/",
             "sonar.tests": "__tests__/",
+            "sonar.typescript.lcov.reportPaths": "coverage/lcov.info",
             "sonar.inclusions": "App.tsx",
         },
     },
