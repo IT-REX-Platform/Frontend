@@ -44,7 +44,6 @@ export const LoginComponent: React.FC = () => {
     }, [authResponse]);
 
     const requestUserInfo = async () => {
-        // http://localhost:8080/services/courseservice/api/courses
         console.log("Test");
         try {
             fetch("http://localhost:8080/api/account", {
