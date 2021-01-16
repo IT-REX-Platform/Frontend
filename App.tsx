@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import * as WebBrowser from "expo-web-browser";
-import { makeRedirectUri, useAuthRequest, exchangeCodeAsync, TokenResponse } from "expo-auth-session";
-import { Button, View, Text } from "react-native";
+// import { makeRedirectUri, useAuthRequest, exchangeCodeAsync, TokenResponse } from "expo-auth-session";
+import * as AuthSession from "expo-auth-session";
+import { Button, View, Linking } from "react-native";
 import { CreateCourseComponent } from "./src/components/CreateCourseComponent";
 import TestComponent from "./src/components/TestComponent";
 
@@ -18,34 +19,36 @@ export default function App(): JSX.Element {
 
     // let tokenResponse:TokenResponse;
 
-    const [tokenResponse, setTokenResponse] = useState<TokenResponse>();
+    const [authToken, setTokenResponse] = useState<AuthSession.TokenResponse>();
 
-    const [, response, promptAsync] = useAuthRequest(
+    const [, authResponse, promptAuthentication] = AuthSession.useAuthRequest(
         {
+            responseType: AuthSession.ResponseType.Token,
             clientId: "web_app",
-            scopes: ["jhipster"],
+            scopes: [],
             // In order to follow the "Authorization Code Flow" to fetch token after authorizationEndpoint
             // this must be set to false
             usePKCE: false,
             // For usage in managed apps using the proxy
-            redirectUri: makeRedirectUri({
+            redirectUri: AuthSession.makeRedirectUri({
                 // For usage in bare and standalone
-                native: "it-rex://redirect",
+                native: "it-rex://login",
                 useProxy: false,
             }),
         },
         discovery
     );
 
-    const createNewCourse = async () => {
-        // http://localhost:8761/services/gateway/gateway:d486b567a8a18fb5fc5fcdfa31473135/api/account
+    const requestUserInfo = async () => {
+        // http://localhost:8080/services/courseservice/api/courses
+        console.log("Test");
         try {
             fetch("http://localhost:8080/api/account", {
                 method: "GET",
                 headers: {
                     Accept: "application/json",
                     "Content-Type": "application/json",
-                    Authorization: tokenResponse?.tokenType + " " + tokenResponse?.accessToken,
+                    Authorization: authToken?.tokenType + " " + authToken?.accessToken,
                 } /*
                 body:JSON.stringify({
                     "endDate": "2021-01-11",
@@ -65,50 +68,30 @@ export default function App(): JSX.Element {
     };
 
     React.useEffect(() => {
-        if (response?.type === "success") {
-            const { code } = response.params;
-            console.log(code);
-            console.log(response.params);
-
-            // we have received our session_state and code, now we can request our token
-            exchangeCodeAsync(
-                {
-                    clientId: "web_app",
-                    redirectUri: makeRedirectUri({
-                        // For usage in bare and standalone
-                        native: "it-rex://redirect",
-                    }),
-                    code: response?.params.code,
-                    extraParams: {
-                        // You must use the extraParams variation of clientSecret.
-                        // Never store your client secret on the client.
-                        client_secret: "",
-                    },
-                },
-                { tokenEndpoint: discovery.tokenEndpoint }
-            ).then((tResponse) => {
-                setTokenResponse(tResponse);
-                //tokenResponse = tResponse;
-            });
+        if (authResponse?.type === "success" && authResponse.authentication != null) {
+            setTokenResponse(authResponse.authentication);
+            console.log(authResponse);
         }
-    }, [response]);
+    }, [authResponse]);
+
+    Linking.addEventListener("login", (url) => {
+        console.log("URL" + url);
+    });
 
     return (
         <View>
             <Button
-                disabled={response?.type === "success"}
+                disabled={authResponse?.type === "success"}
                 title="Login"
                 onPress={() => {
-                    promptAsync();
+                    promptAuthentication();
                 }}
             />
-            <Text>Code: {response?.type === "success" && response?.params.code}</Text>
-            <Text>Token: {tokenResponse?.accessToken}</Text>
             <Button
-                disabled={tokenResponse == null}
-                title="Create new Course"
+                disabled={authToken == null}
+                title="Request User Info"
                 onPress={() => {
-                    createNewCourse();
+                    requestUserInfo();
                 }}></Button>
             <CreateCourseComponent></CreateCourseComponent>
             <TestComponent></TestComponent>
