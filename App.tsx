@@ -10,6 +10,7 @@ import TestComponent from "./src/components/TestComponent";
 export default function App(): JSX.Element {
     Linking.addEventListener("login", (url) => {
         console.log("URL" + url);
+        let bla = "";
     });
 
     return (

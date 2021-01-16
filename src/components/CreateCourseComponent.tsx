@@ -25,6 +25,7 @@ export const CreateCourseComponent: React.FC = () => {
     );
 
     function createCourse() {
+        let bla = "";
         if (validateCourseName(courseName)) {
             console.log("sending a request: ", courseName);
             const currentDate: Date = new Date();
