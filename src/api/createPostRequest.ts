@@ -27,7 +27,6 @@ export function createPostRequest(object: Course | Media): RequestInit {
 
 export function createRequest(): RequestInit {
     const authService = AuthenticationService.getInstance();
-    let bla = "";
     return {
         headers: {
             Authorization: authService.getToken().tokenType + " " + authService.getToken().accessToken,
