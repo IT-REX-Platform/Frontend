@@ -7,7 +7,7 @@
         "start": "react-native start",
         "test": "jest",
         "pretty": "prettier --write '*.js'",
-        "lint": "eslint --ext .ts,.tsx"
+        "lint": "eslint . --ext .ts,.tsx,.js,.jsx -f json -o coverage/eslint_report.json"
     },
     "dependencies": {
         "expo": "~40.0.0",
@@ -52,11 +52,12 @@
             "**/*.{js,jsx,ts,tsx}",
             "!**/coverage/**",
             "!**/node_modules/**",
-            "!**/babel.config.js",
-            "!**index.js",
-            "!**metro.config.js",
             "!**/logger/**",
-            "!**/web-build/**"
+            "!**/web-build/**",
+            "!**analyze.js",
+            "!**babel.config.js",
+            "!**index.js",
+            "!**metro.config.js"
         ],
         "testResultsProcessor": "jest-sonar-reporter"
     },

@@ -34,6 +34,7 @@ pipeline {
                 scannerHome = tool 'SonarQubeScanner'
             }
             steps {
+                sh "npm run lint || true"
                 withSonarQubeEnv('sonarqube') {
                     sh "node analyze.js"
                 }
