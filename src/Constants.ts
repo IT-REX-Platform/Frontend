@@ -7,7 +7,7 @@ interface ITREX_VARIABLES {
     channel: string;
 }
 
-export default function ITREXVARS(): ITREX_VARIABLES | undefined {
+export default function ITREXVARS(): ITREX_VARIABLES {
     const releaseChannel = Constants.manifest.extra.variables;
     return releaseChannel;
 }

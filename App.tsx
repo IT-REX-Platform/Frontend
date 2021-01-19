@@ -20,7 +20,7 @@ export default function App(): JSX.Element {
             <CreateCourseComponent></CreateCourseComponent>
             <UploadVideoComponent></UploadVideoComponent>
             <TestComponent></TestComponent>
-            <Text>Your are running IT-REX with {ITREXVARS()?.channel} variables</Text>
+            <Text>Your are running IT-REX with {ITREXVARS().channel} variables</Text>
         </View>
     );
 }
