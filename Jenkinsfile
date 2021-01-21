@@ -19,7 +19,7 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building..'
-                sh 'expo build:web'
+                sh 'ITREX_CHANNEL=staging bash -c "expo build:web"'
             }
         }
         stage('Test') {
