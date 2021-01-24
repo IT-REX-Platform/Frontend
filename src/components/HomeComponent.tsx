@@ -1,7 +1,7 @@
 import React from "react";
-import { Button, StyleSheet, Text, View } from "react-native";
+import { Button, StyleSheet, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { NavigationRoutes } from "./constants/NavigationRoutes";
+import { NavigationRoutes } from "../constants/NavigationRoutes";
 
 export const HomeComponent: React.FC = () => {
     const navigation = useNavigation();

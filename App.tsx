@@ -2,7 +2,7 @@ import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { loggerFactory } from "./logger/LoggerConfig";
-import { NavigationRoutes } from "./src/components/constants/NavigationRoutes";
+import { NavigationRoutes } from "./src/constants/NavigationRoutes";
 import { Linking } from "react-native";
 import { CreateCourseComponent } from "./src/components/CreateCourseComponent";
 import { LoginComponent } from "./src/components/LoginComponent";
