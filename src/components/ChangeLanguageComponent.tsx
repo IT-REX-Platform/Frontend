@@ -1,12 +1,11 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import ITREXVARS from "../Constants";
 
 const TestComponent: React.FC = () => {
     return (
         <View style={styles.container}>
             <Text onMouseEnter={(event) => onMouseOver(event)} onMouseOut={(event) => onMouseOut(event)}>
-                ! Your are running IT-REX with {ITREXVARS().channel} variables !
+                Change Language
             </Text>
         </View>
     );

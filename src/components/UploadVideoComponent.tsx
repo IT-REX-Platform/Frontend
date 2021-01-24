@@ -25,17 +25,14 @@ const styles = StyleSheet.create({
     container: {
         marginTop: 20,
         marginBottom: 20,
-        flex: 1,
         backgroundColor: "#fff",
         alignItems: "center",
         justifyContent: "center",
     },
     StyledInputContainer: {
-        flexDirection: "row",
-        justifyContent: "center",
+        flexDirection: "column",
     },
     StyledTextInput: {
-        marginLeft: 8,
         borderColor: "lightgray",
         borderWidth: 2,
     },

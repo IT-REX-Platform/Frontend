@@ -1,12 +1,13 @@
 import React from "react";
 
 // import { makeRedirectUri, useAuthRequest, exchangeCodeAsync, TokenResponse } from "expo-auth-session";
-
-import { View, Linking, Text } from "react-native";
+import Constants from "expo-constants";
+import { View, Linking, Text, SafeAreaView } from "react-native";
 import { CreateCourseComponent } from "./src/components/CreateCourseComponent";
 import { LoginComponent } from "./src/components/LoginComponent";
 import { UploadVideoComponent } from "./src/components/UploadVideoComponent";
 import TestComponent from "./src/components/TestComponent";
+import ChangeLanguageComponent from "./src/components/ChangeLanguageComponent";
 import ITREXVARS from "./src/Constants";
 
 export default function App(): JSX.Element {
@@ -15,12 +16,12 @@ export default function App(): JSX.Element {
     });
 
     return (
-        <View>
+        <SafeAreaView style={{ paddingTop: Constants.statusBarHeight }}>
             <LoginComponent></LoginComponent>
             <CreateCourseComponent></CreateCourseComponent>
             <UploadVideoComponent></UploadVideoComponent>
+            <ChangeLanguageComponent></ChangeLanguageComponent>
             <TestComponent></TestComponent>
-            <Text>Your are running IT-REX with {ITREXVARS().channel} variables</Text>
-        </View>
+        </SafeAreaView>
     );
 }
