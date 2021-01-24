@@ -8,7 +8,7 @@ import { LoginComponent } from "./src/components/LoginComponent";
 import { UploadVideoComponent } from "./src/components/UploadVideoComponent";
 import TestComponent from "./src/components/TestComponent";
 import ChangeLanguageComponent from "./src/components/ChangeLanguageComponent";
-import ITREXVARS from "./src/Constants";
+import i18n from "./src/locales/index";
 
 export default function App(): JSX.Element {
     Linking.addEventListener("login", (url) => {

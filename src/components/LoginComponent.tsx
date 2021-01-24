@@ -3,6 +3,7 @@ import { Button, View } from "react-native";
 import * as WebBrowser from "expo-web-browser";
 import * as AuthSession from "expo-auth-session";
 import AuthenticationService from "../services/AuthenticationService";
+import i18n from "../locales/index";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -74,7 +75,7 @@ export const LoginComponent: React.FC = () => {
         <View>
             <Button
                 disabled={authResponse?.type === "success"}
-                title="Login"
+                title={i18n.t("itrex.login")}
                 onPress={() => {
                     promptAuthentication();
                 }}

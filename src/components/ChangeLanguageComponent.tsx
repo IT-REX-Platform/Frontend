@@ -1,49 +1,28 @@
-import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import React, { useState } from "react";
+import { View, Switch, StyleSheet, SafeAreaView, Text } from "react-native";
+import i18n from "../locales/index";
 
-const TestComponent: React.FC = () => {
+export default function App() {
+    const [isEnabled, setIsEnabled] = useState(false);
+    const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
+
     return (
-        <View style={styles.container}>
-            <Text onMouseEnter={(event) => onMouseOver(event)} onMouseOut={(event) => onMouseOut(event)}>
-                Change Language
-            </Text>
-        </View>
+        <SafeAreaView style={styles.container}>
+            <Text>{i18n.t("itrex.languageSwitch")}</Text>
+            <Switch
+                trackColor={{ false: "#767577", true: "#767577" }}
+                thumbColor={isEnabled ? "#f4f3f4" : "#f4f3f4"}
+                ios_backgroundColor="#767577"
+                onValueChange={toggleSwitch}
+                value={isEnabled}
+            />
+        </SafeAreaView>
     );
-};
-
-const onMouseOver = (event) => {
-    const el = event.target;
-    let colorhex = [
-        "#7AF377",
-        "#3498DB",
-        "#F1C530",
-        "#F29C29",
-        "#8E44AD",
-        "#4AA086",
-        "#E74C3C",
-        "#65CC71",
-        "#D3541B",
-        "#EB4367",
-        "#74F7D9",
-        "#DDA8FC",
-    ];
-    el.style.color = colorhex[Math.floor(Math.random() * 12)];
-};
-
-const onMouseOut = (event) => {
-    const el = event.target;
-    let black = "#000000";
-    el.style.color = black;
-};
+}
 
 const styles = StyleSheet.create({
     container: {
-        marginTop: 20,
-        marginBottom: 20,
-        backgroundColor: "#fff",
         alignItems: "center",
         justifyContent: "center",
     },
 });
-
-export default TestComponent;

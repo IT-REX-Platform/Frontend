@@ -1,20 +1,21 @@
 import React, { useState } from "react";
-import { StyleSheet, Button, Pressable, TextInput, Text, View } from "react-native";
+import { StyleSheet, Button, Pressable, TextInput, Text, View, SafeAreaView } from "react-native";
+import i18n from "../locales/index";
 
 export const UploadVideoComponent = () => {
     const [setVideo] = useState("");
 
     return (
         <>
-            <View style={styles.container}>
+            <SafeAreaView style={styles.container}>
                 <View style={styles.StyledInputContainer}>
-                    <Text>Upload Video here:</Text>
-                    <TextInput defaultValue="Document here" style={styles.StyledTextInput}></TextInput>
+                    <Text>{i18n.t("itrex.uploadVideo")}</Text>
+                    <TextInput defaultValue={i18n.t("itrex.videoName")} style={styles.StyledTextInput}></TextInput>
                 </View>
                 <Pressable style={styles.StyledButton}>
-                    <Button title="Browse Files" onPress={changeStyle}></Button>
+                    <Button title={i18n.t("itrex.browseFiles")} onPress={changeStyle}></Button>
                 </Pressable>
-            </View>
+            </SafeAreaView>
         </>
     );
 
