@@ -8,13 +8,13 @@ test("adds 3 + 1 to equal 4", () => {
 
 test("checks if number is greater/less than 0", () => {
     expect(testExample.testMethod2(3)).toBe(true);
-    // expect(testExample.testMethod2(-3)).toBe(false);
+    expect(testExample.testMethod2(-3)).toBe(false);
 });
 
 test("checks uf number is between 1 and 3", () => {
     expect(testExample.testMethod3(1)).toBe(1);
-    // expect(testExample.testMethod3(2)).toBe(2);
-    // expect(testExample.testMethod3(3)).toBe(3);
+    expect(testExample.testMethod3(2)).toBe(2);
+    expect(testExample.testMethod3(3)).toBe(3);
     expect(testExample.testMethod3(4)).toBe(0);
 });
 
