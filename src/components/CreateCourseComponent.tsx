@@ -39,17 +39,15 @@ export const CreateCourseComponent: React.FC = () => {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
         backgroundColor: "#fff",
         alignItems: "center",
         justifyContent: "center",
     },
     StyledInputContainer: {
-        flexDirection: "row",
-        justifyContent: "center",
+        marginTop: 16,
+        flexDirection: "column",
     },
     StyledTextInput: {
-        marginLeft: 8,
         borderColor: "lightgray",
         borderWidth: 2,
     },
