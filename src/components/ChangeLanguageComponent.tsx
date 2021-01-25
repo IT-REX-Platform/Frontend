@@ -1,28 +1,24 @@
 import React, { useState } from "react";
-import { Switch, StyleSheet, SafeAreaView, Text } from "react-native";
+import { StyleSheet, SafeAreaView, Text, Button, Alert, Pressable } from "react-native";
 import i18n from "../locales/index";
 
 export default function App() {
-    const [isEnabled, setIsEnabled] = useState(false);
-    const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
-    var boolSwitch;
+    var colorSwtich;
 
     if (i18n.locale == "de" || i18n.locale == "de-DE") {
-        boolSwitch = true;
+        colorSwtich = true;
     } else {
-        boolSwitch = false;
+        colorSwtich = false;
     }
 
     return (
         <SafeAreaView style={styles.container}>
-            <Text>{i18n.t("itrex.languageSwitch")}</Text>
-            <Switch
-                trackColor={{ false: "#767577", true: "#767577" }}
-                thumbColor={boolSwitch ? "#f4f3f4" : "#f4f3f4"}
-                ios_backgroundColor="#767577"
-                onValueChange={toggleSwitch}
-                value={boolSwitch}
-            />
+            <Pressable style={styles.StyledButtonEN}>
+                <Button title="EN" onPress={() => Alert.alert("Button with adjusted color pressed")} />
+            </Pressable>
+            <Pressable style={styles.StyledButtonDE}>
+                <Button title="DE" onPress={() => Alert.alert("Button with adjusted color pressed")} />
+            </Pressable>
         </SafeAreaView>
     );
 }
@@ -31,5 +27,12 @@ const styles = StyleSheet.create({
     container: {
         alignItems: "center",
         justifyContent: "center",
+        flexDirection: "row",
+    },
+    StyledButtonEN: {
+        marginRight: 5,
+    },
+    StyledButtonDE: {
+        marginLeft: 5,
     },
 });
