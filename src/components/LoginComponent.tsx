@@ -3,13 +3,14 @@ import { Button, View } from "react-native";
 import * as WebBrowser from "expo-web-browser";
 import * as AuthSession from "expo-auth-session";
 import AuthenticationService from "../services/AuthenticationService";
+import ITREXVARS from "../Constants";
 
 WebBrowser.maybeCompleteAuthSession();
 
 // Endpoint
 const discovery = {
-    authorizationEndpoint: "http://keycloak:9080/auth/realms/jhipster/protocol/openid-connect/auth",
-    tokenEndpoint: "http://keycloak:9080/auth/realms/jhipster/protocol/openid-connect/token",
+    authorizationEndpoint: ITREXVARS().authEndpoint,
+    tokenEndpoint: ITREXVARS().authTokenEndpoint,
 };
 
 export const LoginComponent: React.FC = () => {
@@ -46,7 +47,7 @@ export const LoginComponent: React.FC = () => {
     const requestUserInfo = async () => {
         console.log("Test");
         try {
-            fetch("http://localhost:8080/api/account", {
+            fetch(ITREXVARS().apiUrl + "api/account", {
                 method: "GET",
                 headers: {
                     Accept: "application/json",
