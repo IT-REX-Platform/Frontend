@@ -2,8 +2,9 @@ import { LoggerFactoryOptions, LogGroupRule, LogLevel, LoggerFactory, LFService 
 
 const loggerFactoryOptions = new LoggerFactoryOptions();
 
-// Logger examples.
 loggerFactoryOptions.addLogGroupRule(new LogGroupRule(new RegExp("service.+"), LogLevel.Trace)); // Logger output will show: [service.ClassNameHere]
+
+// Logger examples.
 loggerFactoryOptions.addLogGroupRule(new LogGroupRule(new RegExp("ui.+"), LogLevel.Trace)); // Logger output will show: [ui.ClassNameHere]
 loggerFactoryOptions.addLogGroupRule(new LogGroupRule(new RegExp(".+"), LogLevel.Trace)); // Logger output will show: [ClassNameHere]
 
