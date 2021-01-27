@@ -11,7 +11,3 @@ export default function ITREXVARS(): ITREX_VARIABLES {
     const releaseChannel = Constants.manifest.extra.variables;
     return releaseChannel;
 }
-
-export class ITRexVariables {
-    RELEASE_CHANNEL = Constants.manifest.extra.variables;
-}
