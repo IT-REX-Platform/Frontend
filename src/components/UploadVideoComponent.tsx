@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { StyleSheet, Button, Pressable, TextInput, Text, View } from "react-native";
 
-export const UploadVideoComponent = () => {
+export const UploadVideoComponent: React.FC = () => {
     const [setVideo] = useState("");
 
     return (
