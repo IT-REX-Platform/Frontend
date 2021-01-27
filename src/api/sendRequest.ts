@@ -1,4 +1,4 @@
-import ITREXVARS from "../Constants";
+import ITREXVARS from "../constants/Constants";
 
 const url = ITREXVARS().apiUrl + "services/courseservice/api/courses";
 

@@ -3,7 +3,7 @@ import { Button, View } from "react-native";
 import * as WebBrowser from "expo-web-browser";
 import * as AuthSession from "expo-auth-session";
 import AuthenticationService from "../services/AuthenticationService";
-import ITREXVARS from "../Constants";
+import ITREXVARS from "../constants/Constants";
 
 WebBrowser.maybeCompleteAuthSession();
 
