@@ -8,7 +8,6 @@ import { CreateCourseComponent } from "./components/CreateCourseComponent";
 import { LoginComponent } from "./components/LoginComponent";
 import { HomeComponent } from "./components/HomeComponent";
 import { UploadVideoComponent } from "./components/UploadVideoComponent";
-import TestComponent from "./components/TestComponent";
 
 const loggerService = loggerFactory.getLogger("service.App");
 
@@ -41,11 +40,6 @@ function App(): ReactElement {
                     name={NavigationRoutes.ROUTE_UPLOAD_VIDEO}
                     component={UploadVideoComponent}
                     options={{ title: "Upload Video" }}
-                />
-                <Stack.Screen
-                    name={NavigationRoutes.ROUTE_TEST}
-                    component={TestComponent}
-                    options={{ title: "Test" }}
                 />
             </Stack.Navigator>
         </NavigationContainer>

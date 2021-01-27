@@ -1,4 +1,4 @@
-import { TokenRequestConfig, TokenResponse, TokenResponseConfig } from "expo-auth-session";
+import { TokenResponse, TokenResponseConfig } from "expo-auth-session";
 import AuthenticationService from "../src/services/AuthenticationService";
 
 describe("test Authentication service", () => {
