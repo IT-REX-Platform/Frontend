@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Button, Text, TextInput, View, StyleSheet, Pressable } from "react-native";
 import { Course, createPostRequest } from "../api/createPostRequest";
 import { sendRequest } from "../api/sendRequest";
-import { validateCourseName } from "../helperScripts/validateCourseName";
+import { validateCourseName } from "../helperScripts/ValidateCourseName";
 
 export const CreateCourseComponent: React.FC = () => {
     const [courseName, setCourseName] = useState("");
