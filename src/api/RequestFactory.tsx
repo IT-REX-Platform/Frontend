@@ -3,8 +3,12 @@ import { ICourse } from "../types/ICourse";
 import { IMedia } from "../types/IMedia";
 
 export class RequestFactory {
-    public static createGetRequest(): void {
-        // TODO
+    public static createGetAllRequest(): RequestInit {
+        return Authorization.createAuthorizedRequest();
+    }
+
+    public static createGetOneRequest(): void {
+        // TODO: create GET request for /courses/{id}
     }
 
     public static createPostRequest(object: ICourse | IMedia): RequestInit {
@@ -30,6 +34,6 @@ export class RequestFactory {
     }
 
     public static createDeleteRequest(): void {
-        // TODO
+        // TODO: create DELETE request for /courses/{id}
     }
 }
