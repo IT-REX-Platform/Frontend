@@ -32,7 +32,7 @@ import { render } from "@testing-library/react-native";
 // });
 
 describe("test login component", () => {
-    it("see if login button works", () => {
+    it("see if login button is rendered", () => {
         const mockFunctionOutput = {
             apiUrl: "http://localhost:8080/",
             authEndpoint: "http://keycloak:9080/auth/realms/jhipster/protocol/openid-connect/auth",
