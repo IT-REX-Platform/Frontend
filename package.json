@@ -61,7 +61,9 @@
             "!**analyze.js",
             "!**babel.config.js",
             "!**index.js",
-            "!**metro.config.js"
+            "!**metro.config.js",
+            "!**/__tests__/**",
+            "!**/constants/**"
         ],
         "testResultsProcessor": "jest-sonar-reporter"
     },
