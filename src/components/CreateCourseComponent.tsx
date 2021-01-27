@@ -1,9 +1,13 @@
 import React from "react";
 import { useState } from "react";
 import { Button, Text, TextInput, View, StyleSheet, Pressable } from "react-native";
-import { Course, createPostRequest } from "../api/createPostRequest";
+import { ICourse } from "../types/ICourse";
 import { sendRequest } from "../api/sendRequest";
 import { validateCourseName } from "../helperScripts/validateCourseName";
+import { RequestFactory } from "../api/RequestFactory";
+import { loggerFactory } from "../../logger/LoggerConfig";
+
+const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");
 
 export const CreateCourseComponent: React.FC = () => {
     const [courseName, setCourseName] = useState("");
@@ -26,13 +30,13 @@ export const CreateCourseComponent: React.FC = () => {
 
     function createCourse() {
         if (validateCourseName(courseName)) {
-            console.log("sending a request: ", courseName);
+            loggerService.trace(`sending a request: ${courseName}`);
             const currentDate: Date = new Date();
-            const course: Course = { name: courseName, startDate: currentDate };
-            const postRequest: RequestInit = createPostRequest(course);
+            const course: ICourse = { name: courseName, startDate: currentDate };
+            const postRequest: RequestInit = RequestFactory.createPostRequest(course);
             sendRequest(postRequest);
         } else {
-            console.log("Course name invalid");
+            loggerService.warn("Course name invalid");
         }
     }
 };
