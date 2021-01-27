@@ -3,17 +3,17 @@ import { Button, View } from "react-native";
 import * as WebBrowser from "expo-web-browser";
 import * as AuthSession from "expo-auth-session";
 import AuthenticationService from "../services/AuthenticationService";
-import ITREXVARS from "../constants/Constants";
+import { getVariables } from "../constants/Constants";
 
 WebBrowser.maybeCompleteAuthSession();
 
-// Endpoint
-const discovery = {
-    authorizationEndpoint: ITREXVARS().authEndpoint,
-    tokenEndpoint: ITREXVARS().authTokenEndpoint,
-};
-
 export const LoginComponent: React.FC = () => {
+    // Endpoint
+    const discovery = {
+        authorizationEndpoint: getVariables.itRexVars().authEndpoint,
+        tokenEndpoint: getVariables.itRexVars().authTokenEndpoint,
+    };
+
     const [, authResponse, promptAuthentication] = AuthSession.useAuthRequest(
         {
             responseType: AuthSession.ResponseType.Token,

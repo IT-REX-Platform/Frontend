@@ -31,7 +31,7 @@ export default (config: ExpoConfig): ExpoConfig => {
         ...config,
         extra: {
             channel: channel,
-            variables: { ...env_variables[channel], channel: channel },
+            ...env_variables[channel],
         },
     };
 };
