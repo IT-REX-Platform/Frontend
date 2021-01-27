@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Button, View } from "react-native";
 import * as WebBrowser from "expo-web-browser";
 import * as AuthSession from "expo-auth-session";
@@ -14,10 +14,6 @@ const discovery = {
 };
 
 export const LoginComponent: React.FC = () => {
-    // const authenticationService: AuthenticationService = useContext(AuthenticationContext);
-
-    const [authToken, setTokenResponse] = useState<AuthSession.TokenResponse>();
-
     const [, authResponse, promptAuthentication] = AuthSession.useAuthRequest(
         {
             responseType: AuthSession.ResponseType.Token,
@@ -38,38 +34,9 @@ export const LoginComponent: React.FC = () => {
 
     React.useEffect(() => {
         if (authResponse?.type === "success" && authResponse.authentication != null) {
-            setTokenResponse(authResponse.authentication);
-            // authenticationService.setTokenResponse(authResponse.authentication);
             AuthenticationService.getInstance().setTokenResponse(authResponse.authentication);
         }
     }, [authResponse]);
-
-    const requestUserInfo = async () => {
-        console.log("Test");
-        try {
-            fetch(ITREXVARS().apiUrl + "api/account", {
-                method: "GET",
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                    Authorization: authToken?.tokenType + " " + authToken?.accessToken,
-                } /*
-                body:JSON.stringify({
-                    "endDate": "2021-01-11",
-                    "maxFoodSum": 0,
-                    "name": "Theo3",
-                    "startDate": "2021-01-11",
-                    "courseDescription": "Was für ein mega geiler Kurs..."
-                })*/,
-            })
-                .then((response) => response.json())
-                .then((responseJson) => {
-                    console.log(responseJson);
-                });
-        } catch (error) {
-            console.error(error);
-        }
-    };
 
     return (
         <View>
