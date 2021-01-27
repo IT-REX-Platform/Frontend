@@ -1,8 +1,9 @@
 import { ICourse } from "../types/ICourse";
 import ITREXVARS from "../Constants";
+import { ApiUrls } from "../constants/ApiUrls";
 
 export class EndpointsCourse {
-    private static URL = ITREXVARS().apiUrl + "services/courseservice/api/courses";
+    private static url = ITREXVARS().apiUrl + ApiUrls.URL_COURSES;
 
     public static getAllCourses(getRequest: RequestInit): Promise<ICourse[]> {
         return this.sendRequest(getRequest).then((data) => data as ICourse[]);
@@ -25,6 +26,6 @@ export class EndpointsCourse {
     }
 
     private static async sendRequest(request: RequestInit) {
-        return fetch(this.URL, request).then((response) => response.json());
+        return fetch(this.url, request).then((response) => response.json());
     }
 }
