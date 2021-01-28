@@ -96,7 +96,7 @@ export const CreateCourseComponent: React.FC = () => {
     function getAllCourses(): void {
         loggerService.trace("Getting all courses.");
         const request: RequestInit = RequestFactory.createGetAllRequest();
-        endpointsCourse.getAllCourses(request, {}).then((receivedCourses) => {
+        endpointsCourse.getAllCourses(request).then((receivedCourses) => {
             setCourses(receivedCourses);
         });
     }

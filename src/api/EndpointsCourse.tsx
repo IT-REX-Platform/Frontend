@@ -14,7 +14,7 @@ export class EndpointsCourse implements IEndpointsCourse {
         this.url = ITREXVARS().apiUrl + ApiUrls.URL_COURSES;
     }
 
-    public getAllCourses(getRequest: RequestInit, params: ICourseParameters): Promise<ICourse[]> {
+    public getAllCourses(getRequest: RequestInit, params?: ICourseParameters): Promise<ICourse[]> {
         this.loggerApi.trace("Checking for additional parameters for GET request URL.");
         const appendParams: string = this.getAdditionalCourseParams(params);
 
@@ -29,11 +29,17 @@ export class EndpointsCourse implements IEndpointsCourse {
         return response.then((data) => data as ICourse[]);
     }
 
-    private getAdditionalCourseParams(params: ICourseParameters): string {
+    private getAdditionalCourseParams(params?: ICourseParameters): string {
         let appendParams = "";
+
+        if (params === undefined) {
+            return appendParams;
+        }
+
         if (params.publishState !== undefined) {
             appendParams = `${appendParams}publishState=${params.publishState}`;
         }
+
         return appendParams;
     }
 
