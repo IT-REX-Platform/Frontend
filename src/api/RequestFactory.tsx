@@ -1,10 +1,10 @@
-import { Authorization } from "./Authorization";
+import { RequestAuthorization } from "./RequestAuthorization";
 import { ICourse } from "../types/ICourse";
 import { IMedia } from "../types/IMedia";
 
 export class RequestFactory {
     public static createGetAllRequest(): RequestInit {
-        return Authorization.createAuthorizedRequest();
+        return RequestAuthorization.createAuthorizedRequest();
     }
 
     public static createGetOneRequest(): void {
@@ -20,7 +20,7 @@ export class RequestFactory {
     }
 
     private static createPostOrPutRequest(httpMethod: string, object: ICourse | IMedia): RequestInit {
-        const request: RequestInit = Authorization.createAuthorizedRequest();
+        const request: RequestInit = RequestAuthorization.createAuthorizedRequest();
 
         request.method = httpMethod;
         request.headers = {

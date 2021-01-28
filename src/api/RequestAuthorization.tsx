@@ -1,6 +1,6 @@
 import AuthenticationService from "../services/AuthenticationService";
 
-export class Authorization {
+export class RequestAuthorization {
     public static createAuthorizedRequest(): RequestInit {
         const authService = AuthenticationService.getInstance();
         return {
