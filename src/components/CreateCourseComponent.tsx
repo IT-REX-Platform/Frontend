@@ -121,7 +121,7 @@ export const CreateCourseComponent: React.FC = () => {
         const course: ICourse = {
             id: courseIdNumber,
             name: courseNameUpdated,
-            publishedState: CoursePublishState.STATE_PUBLISHED,
+            publishState: CoursePublishState.STATE_PUBLISHED,
         };
 
         loggerService.trace(

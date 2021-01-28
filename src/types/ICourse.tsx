@@ -7,5 +7,5 @@ export interface ICourse {
     startDate?: Date;
     endDate?: Date;
     maxFoodSum?: number;
-    publishedState?: CoursePublishState;
+    publishState?: CoursePublishState;
 }
