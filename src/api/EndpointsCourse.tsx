@@ -3,11 +3,11 @@ import { ICourseParameters } from "../types/ICourseParameters";
 import { sendRequest } from "./sendRequest";
 import ITREXVARS from "../Constants";
 import { ApiUrls } from "../constants/ApiUrls";
+import { IEndpointsCourse } from "./endpoints_interfaces/IEndpointsCourse";
 import { loggerFactory } from "../../logger/LoggerConfig";
 
-const loggerApi = loggerFactory.getLogger("API.EndpointsCourse");
-
-export class EndpointsCourse {
+export class EndpointsCourse implements IEndpointsCourse {
+    private loggerApi = loggerFactory.getLogger("API.EndpointsCourse");
     private url: string;
 
     public constructor() {
@@ -15,16 +15,16 @@ export class EndpointsCourse {
     }
 
     public getAllCourses(getRequest: RequestInit, params: ICourseParameters): Promise<ICourse[]> {
-        loggerApi.trace("Checking for additional parameters for GET request URL.");
+        this.loggerApi.trace("Checking for additional parameters for GET request URL.");
         const appendParams: string = this.getAdditionalCourseParams(params);
 
         let url = this.url;
         if (appendParams !== "") {
-            loggerApi.trace("Appending additional parameters to GET request URL.");
+            this.loggerApi.trace("Appending additional parameters to GET request URL.");
             url = url + "?" + appendParams;
         }
 
-        loggerApi.trace("Sending GET request to URL: " + url);
+        this.loggerApi.trace("Sending GET request to URL: " + url);
         const response = sendRequest(url, getRequest);
         return response.then((data) => data as ICourse[]);
     }
@@ -44,13 +44,13 @@ export class EndpointsCourse {
     }
 
     public createCourse(postRequest: RequestInit): void {
-        loggerApi.trace("Sending POST request to URL: " + this.url);
+        this.loggerApi.trace("Sending POST request to URL: " + this.url);
         const response = sendRequest(this.url, postRequest);
         response.then((data) => console.log(data));
     }
 
     public updateCourse(putRequest: RequestInit): void {
-        loggerApi.trace("Sending PUT request to URL: " + this.url);
+        this.loggerApi.trace("Sending PUT request to URL: " + this.url);
         const response = sendRequest(this.url, putRequest);
         response.then((data) => console.log(data));
     }
