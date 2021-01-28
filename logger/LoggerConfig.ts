@@ -3,9 +3,10 @@ import { LoggerFactoryOptions, LogGroupRule, LogLevel, LoggerFactory, LFService 
 const loggerFactoryOptions = new LoggerFactoryOptions();
 
 loggerFactoryOptions.addLogGroupRule(new LogGroupRule(new RegExp("service.+"), LogLevel.Trace)); // Logger output will show: [service.ClassNameHere]
+loggerFactoryOptions.addLogGroupRule(new LogGroupRule(new RegExp("API.+"), LogLevel.Trace)); // Logger output will show: [API.ClassNameHere]
 
 // Logger examples.
-loggerFactoryOptions.addLogGroupRule(new LogGroupRule(new RegExp("ui.+"), LogLevel.Trace)); // Logger output will show: [ui.ClassNameHere]
+loggerFactoryOptions.addLogGroupRule(new LogGroupRule(new RegExp("UI.+"), LogLevel.Trace)); // Logger output will show: [UI.ClassNameHere]
 loggerFactoryOptions.addLogGroupRule(new LogGroupRule(new RegExp(".+"), LogLevel.Trace)); // Logger output will show: [ClassNameHere]
 
 export const loggerFactory: LoggerFactory = LFService.createNamedLoggerFactory("IT-REX_logger", loggerFactoryOptions);

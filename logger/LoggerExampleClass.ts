@@ -1,7 +1,7 @@
 import { loggerFactory } from "./LoggerConfig";
 
 // Create a logger instance.
-const loggerUi = loggerFactory.getLogger("ui.LoggerExampleClass");
+const loggerUi = loggerFactory.getLogger("UI.LoggerExampleClass");
 const loggerService = loggerFactory.getLogger("service.LoggerExampleClass");
 const logger = loggerFactory.getLogger("LoggerExampleClass");
 

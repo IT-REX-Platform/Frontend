@@ -1,4 +1,4 @@
-import { CoursePublishStates } from "../constants/CoursePublishStates";
+import { CoursePublishState } from "../constants/CoursePublishState";
 
 export interface ICourse {
     id?: number;
@@ -7,5 +7,5 @@ export interface ICourse {
     startDate?: Date;
     endDate?: Date;
     maxFoodSum?: number;
-    publishedState?: CoursePublishStates;
+    publishedState?: CoursePublishState;
 }

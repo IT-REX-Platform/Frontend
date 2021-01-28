@@ -6,9 +6,10 @@ import { validateCourseName } from "../helperScripts/validateCourseName";
 import { RequestFactory } from "../api/RequestFactory";
 import { EndpointsCourse } from "../api/EndpointsCourse";
 import { loggerFactory } from "../../logger/LoggerConfig";
-import { CoursePublishStates } from "../constants/CoursePublishStates";
+import { CoursePublishState } from "../constants/CoursePublishState";
 
 const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");
+const endpointsCourse: EndpointsCourse = new EndpointsCourse();
 
 export const CreateCourseComponent: React.FC = () => {
     // Enter course name to create course
@@ -76,28 +77,35 @@ export const CreateCourseComponent: React.FC = () => {
     );
 
     function createCourse(): void {
-        if (validateCourseName(courseNameUpdated) === false) {
-            loggerService.warn("Course name invalid");
+        loggerService.trace(`Validating course name: ${courseName}.`);
+        if (validateCourseName(courseName) == false) {
+            loggerService.warn("Course name invalid.");
+            alert("Course name invalid.");
             return;
         }
 
-        loggerService.trace(`sending a request: ${courseName}`);
         const currentDate: Date = new Date();
         const course: ICourse = { name: courseName, startDate: currentDate };
+
+        loggerService.trace(`Creating course: name=${courseName}, startDate=${currentDate}.`);
         const postRequest: RequestInit = RequestFactory.createPostRequest(course);
-        EndpointsCourse.createCourse(postRequest);
+        endpointsCourse.createCourse(postRequest);
+        alert("Course created successfully.");
     }
 
     function getAllCourses(): void {
+        loggerService.trace("Getting all courses.");
         const request: RequestInit = RequestFactory.createGetAllRequest();
-        EndpointsCourse.getAllCourses(request).then((receivedCourses) => {
+        endpointsCourse.getAllCourses(request, {}).then((receivedCourses) => {
             setCourses(receivedCourses);
         });
     }
 
     function updateCourse(): void {
+        loggerService.trace(`Validating course name: ${courseNameUpdated}.`);
         if (validateCourseName(courseNameUpdated) === false) {
-            loggerService.warn("Course name invalid");
+            loggerService.warn("Course name invalid.");
+            alert("Course name invalid.");
             return;
         }
 
@@ -109,34 +117,39 @@ export const CreateCourseComponent: React.FC = () => {
             return;
         }
 
-        loggerService.trace(`sending a request: ${courseNameUpdated} ${courseIdNumber}`);
         // ATTENTION: fields without values will be overwritten with null in DB. @slawa 27.01.21
-        const course: ICourse = { id: courseIdNumber, name: courseNameUpdated };
-        // const course: ICourse = {
-        //     id: courseIdNumber,
-        //     name: courseNameUpdated,
-        //     publishedState: CoursePublishedStates.STATE_PUBLISHED,
-        // };
+        const course: ICourse = {
+            id: courseIdNumber,
+            name: courseNameUpdated,
+            publishedState: CoursePublishState.STATE_PUBLISHED,
+        };
+
+        loggerService.trace(
+            `Updating course: name=${courseName}, publishedState=${CoursePublishState.STATE_PUBLISHED}.`
+        );
         const putRequest: RequestInit = RequestFactory.createPutRequest(course);
-        EndpointsCourse.updateCourse(putRequest);
+        endpointsCourse.updateCourse(putRequest);
+        alert("Course updated successfully.");
     }
 
     // TODO: get only published courses
     function getPublishedCourses(): void {
         const request: RequestInit = RequestFactory.createGetAllRequest();
-        EndpointsCourse.getAllCourses(request).then((receivedCoursesPublished) => {
-            setCoursesPublished(receivedCoursesPublished);
+        endpointsCourse
+            .getAllCourses(request, { publishState: CoursePublishState.STATE_PUBLISHED })
+            .then((receivedCoursesPublished) => {
+                setCoursesPublished(receivedCoursesPublished);
 
-            for (const coursePublished of receivedCoursesPublished) {
-                loggerService.trace(
-                    coursePublished.id?.toString() +
-                        " " +
-                        coursePublished.name +
-                        " " +
-                        coursePublished.startDate?.toString()
-                );
-            }
-        });
+                for (const coursePublished of receivedCoursesPublished) {
+                    loggerService.trace(
+                        coursePublished.id?.toString() +
+                            " " +
+                            coursePublished.name +
+                            " " +
+                            coursePublished.startDate?.toString()
+                    );
+                }
+            });
     }
 };
 
