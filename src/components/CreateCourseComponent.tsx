@@ -7,9 +7,11 @@ import { RequestFactory } from "../api/RequestFactory";
 import { EndpointsCourse } from "../api/EndpointsCourse";
 import { loggerFactory } from "../../logger/LoggerConfig";
 import { CoursePublishState } from "../constants/CoursePublishState";
+import { EndpointsCourseExtended } from "../api/EndpointsCourseExtended";
 
 const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");
 const endpointsCourse: EndpointsCourse = new EndpointsCourse();
+const endpointsCourseExtended: EndpointsCourseExtended = new EndpointsCourseExtended();
 
 export const CreateCourseComponent: React.FC = () => {
     // Enter course name to create course
@@ -72,6 +74,9 @@ export const CreateCourseComponent: React.FC = () => {
                     data={coursesPublished}
                     renderItem={({ item }) => <Text style={{}}>{item.id?.toString() + "\t" + item.name}</Text>}
                 />
+                <Pressable style={styles.styledButton}>
+                    <Button title="Delete Course" onPress={deleteCourse}></Button>
+                </Pressable>
             </View>
         </ScrollView>
     );
@@ -109,13 +114,8 @@ export const CreateCourseComponent: React.FC = () => {
             return;
         }
 
-        let courseIdNumber = 0;
-        try {
-            courseIdNumber = +courseIdString;
-        } catch (error) {
-            loggerService.error("An error occured while parsing course ID.", error);
-            return;
-        }
+        loggerService.trace("Parsing ID string to ID number");
+        const courseIdNumber: number = parseCourseId();
 
         // ATTENTION: fields without values will be overwritten with null in DB. @slawa 27.01.21
         const course: ICourse = {
@@ -132,24 +132,48 @@ export const CreateCourseComponent: React.FC = () => {
         alert("Course updated successfully.");
     }
 
+    function parseCourseId(): number {
+        let courseIdNumber = 0;
+        try {
+            courseIdNumber = +courseIdString;
+        } catch (error) {
+            loggerService.error("An error occured while parsing course ID.", error);
+        }
+        return courseIdNumber;
+    }
+
     // TODO: get only published courses
     function getPublishedCourses(): void {
+        // TODO: try-catch
         const request: RequestInit = RequestFactory.createGetAllRequest();
-        endpointsCourse
-            .getAllCourses(request, { publishState: CoursePublishState.STATE_PUBLISHED })
+        endpointsCourseExtended
+            .getFilteredCourses(request, { publishState: CoursePublishState.STATE_PUBLISHED })
             .then((receivedCoursesPublished) => {
                 setCoursesPublished(receivedCoursesPublished);
 
-                for (const coursePublished of receivedCoursesPublished) {
-                    loggerService.trace(
-                        coursePublished.id?.toString() +
-                            " " +
-                            coursePublished.name +
-                            " " +
-                            coursePublished.startDate?.toString()
-                    );
+                try {
+                    for (const coursePublished of receivedCoursesPublished) {
+                        loggerService.trace(
+                            coursePublished.id?.toString() +
+                                " " +
+                                coursePublished.name +
+                                " " +
+                                coursePublished.startDate?.toString()
+                        );
+                    }
+                } catch (error) {
+                    loggerService.error("An error occured when printing courses.", error);
                 }
             });
+    }
+
+    function deleteCourse(): void {
+        const request: RequestInit = RequestFactory.createDeleteRequest();
+
+        loggerService.trace("Parsing ID string to ID number");
+        const courseIdNumber: number = parseCourseId();
+
+        endpointsCourse.deleteCourse(request, courseIdNumber);
     }
 };
 

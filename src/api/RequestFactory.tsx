@@ -33,7 +33,9 @@ export class RequestFactory {
         return request;
     }
 
-    public static createDeleteRequest(): void {
-        // TODO: create DELETE request for /courses/{id}
+    public static createDeleteRequest(): RequestInit {
+        const request: RequestInit = RequestAuthorization.createAuthorizedRequest();
+        request.method = "DELETE";
+        return request;
     }
 }

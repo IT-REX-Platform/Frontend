@@ -1,5 +1,4 @@
 import { ICourse } from "../types/ICourse";
-import { ICourseParameters } from "../types/ICourseParameters";
 import { sendRequest } from "./sendRequest";
 import ITREXVARS from "../Constants";
 import { ApiUrls } from "../constants/ApiUrls";
@@ -14,33 +13,16 @@ export class EndpointsCourse implements IEndpointsCourse {
         this.url = ITREXVARS().apiUrl + ApiUrls.URL_COURSES;
     }
 
-    public getAllCourses(getRequest: RequestInit, params?: ICourseParameters): Promise<ICourse[]> {
-        this.loggerApi.trace("Checking for additional parameters for GET request URL.");
-        const appendParams: string = this.getAdditionalCourseParams(params);
+    public getAllCourses(getRequest: RequestInit): Promise<ICourse[]> {
+        this.loggerApi.trace("Sending GET request to URL: " + this.url);
 
-        let url = this.url;
-        if (appendParams !== "") {
-            this.loggerApi.trace("Appending additional parameters to GET request URL.");
-            url = url + "?" + appendParams;
-        }
+        const response: Promise<Response> = sendRequest(this.url, getRequest);
 
-        this.loggerApi.trace("Sending GET request to URL: " + url);
-        const response = sendRequest(url, getRequest);
-        return response.then((data) => data as ICourse[]);
-    }
+        return response.then((response) => response.json()).then((data) => data as ICourse[]);
 
-    private getAdditionalCourseParams(params?: ICourseParameters): string {
-        let appendParams = "";
-
-        if (params === undefined) {
-            return appendParams;
-        }
-
-        if (params.publishState !== undefined) {
-            appendParams = `${appendParams}publishState=${params.publishState}`;
-        }
-
-        return appendParams;
+        // return sendRequest(this.url, getRequest)
+        //     .then((response) => response.json())
+        //     .then((data) => data as ICourse[]);
     }
 
     public getCourse(): void {
@@ -51,19 +33,20 @@ export class EndpointsCourse implements IEndpointsCourse {
 
     public createCourse(postRequest: RequestInit): void {
         this.loggerApi.trace("Sending POST request to URL: " + this.url);
-        const response = sendRequest(this.url, postRequest);
-        response.then((data) => console.log(data));
+        const response: Promise<Response> = sendRequest(this.url, postRequest);
+        response.then((response) => response.json()).then((data) => console.log(data));
     }
 
     public updateCourse(putRequest: RequestInit): void {
         this.loggerApi.trace("Sending PUT request to URL: " + this.url);
-        const response = sendRequest(this.url, putRequest);
-        response.then((data) => console.log(data));
+        const response: Promise<Response> = sendRequest(this.url, putRequest);
+        response.then((response) => response.json()).then((data) => console.log(data));
     }
 
-    public deleteCourse(): void {
-        // TODO 1: adjust url
-        // TODO 2: send DELETE request to /courses/{id}
-        // TODO 3: process DELETE response
+    public deleteCourse(deleteRequest: RequestInit, id: number): void {
+        const url = this.url + "/" + id;
+        this.loggerApi.trace("Sending DELETE request to URL: " + url);
+        const response: Promise<Response> = sendRequest(this.url, deleteRequest);
+        response.then((data) => console.log(data));
     }
 }
