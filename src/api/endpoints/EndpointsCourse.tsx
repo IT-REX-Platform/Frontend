@@ -1,10 +1,14 @@
-import { ICourse } from "../types/ICourse";
-import { sendRequest } from "./sendRequest";
-import ITREXVARS from "../Constants";
-import { ApiUrls } from "../constants/ApiUrls";
-import { IEndpointsCourse } from "./endpoints_interfaces/IEndpointsCourse";
-import { loggerFactory } from "../../logger/LoggerConfig";
+import { ICourse } from "../../types/ICourse";
+import { sendRequest } from "../requests/sendRequest";
+import ITREXVARS from "../../Constants";
+import { ApiUrls } from "../../constants/ApiUrls";
+import { IEndpointsCourse } from "../endpoints_interfaces/IEndpointsCourse";
+import { loggerFactory } from "../../../logger/LoggerConfig";
 
+/**
+ * Endpoints for /api/courses.
+ * Look in backend course-service CourseResource.java.
+ */
 export class EndpointsCourse implements IEndpointsCourse {
     private loggerApi = loggerFactory.getLogger("API.EndpointsCourse");
     private url: string;

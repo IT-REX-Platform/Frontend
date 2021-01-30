@@ -1,7 +1,10 @@
 import { RequestAuthorization } from "./RequestAuthorization";
-import { ICourse } from "../types/ICourse";
-import { IMedia } from "../types/IMedia";
+import { ICourse } from "../../types/ICourse";
+import { IMedia } from "../../types/IMedia";
 
+/**
+ * Class for backend request creation.
+ */
 export class RequestFactory {
     public static createGetAllRequest(): RequestInit {
         return RequestAuthorization.createAuthorizedRequest();

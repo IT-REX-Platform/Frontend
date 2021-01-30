@@ -3,11 +3,11 @@ import { useState } from "react";
 import { Button, FlatList, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { ICourse } from "../types/ICourse";
 import { validateCourseName } from "../helperScripts/validateCourseName";
-import { RequestFactory } from "../api/RequestFactory";
-import { EndpointsCourse } from "../api/EndpointsCourse";
+import { RequestFactory } from "../api/requests/RequestFactory";
+import { EndpointsCourse } from "../api/endpoints/EndpointsCourse";
 import { loggerFactory } from "../../logger/LoggerConfig";
 import { CoursePublishState } from "../constants/CoursePublishState";
-import { EndpointsCourseExtended } from "../api/EndpointsCourseExtended";
+import { EndpointsCourseExtended } from "../api/endpoints/EndpointsCourseExtended";
 
 const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");
 const endpointsCourse: EndpointsCourse = new EndpointsCourse();
@@ -95,7 +95,6 @@ export const CreateCourseComponent: React.FC = () => {
         loggerService.trace(`Creating course: name=${courseName}, startDate=${currentDate}.`);
         const postRequest: RequestInit = RequestFactory.createPostRequest(course);
         endpointsCourse.createCourse(postRequest);
-        // alert("Course created successfully.");
     }
 
     function getAllCourses(): void {
@@ -121,15 +120,12 @@ export const CreateCourseComponent: React.FC = () => {
         const course: ICourse = {
             id: courseIdNumber,
             name: courseNameUpdated,
-            publishState: CoursePublishState.STATE_PUBLISHED,
+            publishState: CoursePublishState.PUBLISHED,
         };
 
-        loggerService.trace(
-            `Updating course: name=${courseName}, publishedState=${CoursePublishState.STATE_PUBLISHED}.`
-        );
+        loggerService.trace(`Updating course: name=${courseName}, publishedState=${CoursePublishState.PUBLISHED}.`);
         const putRequest: RequestInit = RequestFactory.createPutRequest(course);
         endpointsCourse.updateCourse(putRequest);
-        alert("Course updated successfully.");
     }
 
     function parseCourseId(): number {
@@ -147,7 +143,7 @@ export const CreateCourseComponent: React.FC = () => {
         // TODO: try-catch
         const request: RequestInit = RequestFactory.createGetAllRequest();
         endpointsCourseExtended
-            .getFilteredCourses(request, { publishState: CoursePublishState.STATE_PUBLISHED })
+            .getFilteredCourses(request, { publishState: CoursePublishState.PUBLISHED })
             .then((receivedCoursesPublished) => {
                 setCoursesPublished(receivedCoursesPublished);
 

@@ -1,6 +1,9 @@
-import AuthenticationService from "../services/AuthenticationService";
-import { loggerFactory } from "../../logger/LoggerConfig";
+import AuthenticationService from "../../services/AuthenticationService";
+import { loggerFactory } from "../../../logger/LoggerConfig";
 
+/**
+ * Class gets tokens to authorize requests to backend.
+ */
 export class RequestAuthorization {
     private static loggerApi = loggerFactory.getLogger("API.RequestAuthorization");
 

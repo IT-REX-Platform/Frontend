@@ -1,4 +1,4 @@
 export enum CoursePublishState {
-    STATE_UNPUBLISHED,
-    STATE_PUBLISHED,
+    UNPUBLISHED = "UNPUBLISHED",
+    PUBLISHED = "PUBLISHED",
 }
