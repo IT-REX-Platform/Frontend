@@ -48,6 +48,7 @@ export const CreateCourseComponent: React.FC = () => {
                     renderItem={({ item }) => (
                         <Text style={{}}>{item.id + "\t" + item.publishState + "\t" + item.name}</Text>
                     )}
+                    keyExtractor={(item, index) => String(index)}
                 />
 
                 <View style={styles.separator}></View>
@@ -70,6 +71,7 @@ export const CreateCourseComponent: React.FC = () => {
                     renderItem={({ item }) => (
                         <Text style={{}}>{item.id + "\t" + item.publishState + "\t" + item.name}</Text>
                     )}
+                    keyExtractor={(item, index) => String(index)}
                 />
                 <Pressable style={styles.styledButton}>
                     <Button title="Delete Course" onPress={deleteCourse}></Button>
