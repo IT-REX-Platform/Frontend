@@ -110,7 +110,7 @@ export const CreateCourseComponent: React.FC = () => {
         loggerService.trace("Parsing ID string to ID number");
         const courseIdNumber: number = parseCourseId();
 
-        // ATTENTION: fields without values will be overwritten with null in DB. @slawa 27.01.21
+        // ATTENTION: fields without values will be overwritten with null in DB. @s.pastuchov 27.01.21
         const course: ICourse = {
             id: courseIdNumber,
             publishState: CoursePublishState.PUBLISHED,

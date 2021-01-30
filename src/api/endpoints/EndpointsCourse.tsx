@@ -23,10 +23,11 @@ export class EndpointsCourse implements IEndpointsCourse {
         return response.then((response) => response.json()).then((data) => data as ICourse[]);
     }
 
-    public getCourse(): void {
-        // TODO 1: adjust url
-        // TODO 2: send GET request to /courses/{id}
-        // TODO 3: process GET response
+    public getCourse(getRequest: RequestInit, id: number): Promise<ICourse> {
+        const urlUpdated = this.url + "/" + id;
+        this.loggerApi.trace("Sending GET request to URL: " + urlUpdated);
+        const response: Promise<Response> = sendRequest(urlUpdated, getRequest);
+        return response.then((response) => response.json()).then((data) => data as ICourse);
     }
 
     public createCourse(postRequest: RequestInit): void {

@@ -5,7 +5,7 @@ import { ICourse } from "../../types/ICourse";
  */
 export interface IEndpointsCourse {
     getAllCourses(getRequest: RequestInit): Promise<ICourse[]>;
-    getCourse(): void; // TODO
+    getCourse(getRequest: RequestInit, id: number): void;
     createCourse(postRequest: RequestInit): void;
     updateCourse(putRequest: RequestInit): void;
     deleteCourse(deleteRequest: RequestInit, id: number): void;

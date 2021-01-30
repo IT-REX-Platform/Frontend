@@ -43,7 +43,7 @@ export class EndpointsCourseExtended implements IEndpointsCourseExtended {
             );
         }
 
-        // TODO: insert checks for more ICourseParams here once implemented. @slawa 29.01.21.
+        // TODO: insert checks for more ICourse params here once implemented. @s.pastuchov 29.01.21.
 
         return urlUpdated;
     }

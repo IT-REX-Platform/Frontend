@@ -7,11 +7,15 @@ import { IMedia } from "../../types/IMedia";
  */
 export class RequestFactory {
     public static createGetAllRequest(): RequestInit {
-        return RequestAuthorization.createAuthorizedRequest();
+        const request = RequestAuthorization.createAuthorizedRequest();
+        request.method = "GET";
+        return request;
     }
 
-    public static createGetOneRequest(): void {
-        // TODO: create GET request for /courses/{id}
+    public static createGetOneRequest(): RequestInit {
+        const request = RequestAuthorization.createAuthorizedRequest();
+        request.method = "GET";
+        return request;
     }
 
     public static createPostRequest(object: ICourse | IMedia): RequestInit {
