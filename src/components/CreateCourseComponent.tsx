@@ -21,8 +21,7 @@ export const CreateCourseComponent: React.FC = () => {
     const initialCourseState: ICourse[] = [];
     const [courses, setCourses] = useState(initialCourseState);
 
-    // Enter course name and course ID to publish course
-    const [courseNameUpdated, setCourseNameUpdated] = useState("");
+    // Enter course ID to publish course
     const [courseIdString, setCourseId] = useState("");
 
     // Display all published courses
@@ -46,7 +45,9 @@ export const CreateCourseComponent: React.FC = () => {
                 </Pressable>
                 <FlatList
                     data={courses}
-                    renderItem={({ item }) => <Text style={{}}>{item.id?.toString() + "\t" + item.name}</Text>}
+                    renderItem={({ item }) => (
+                        <Text style={{}}>{item.id + "\t" + item.publishState + "\t" + item.name}</Text>
+                    )}
                 />
 
                 <View style={styles.separator}></View>
@@ -58,12 +59,6 @@ export const CreateCourseComponent: React.FC = () => {
                         keyboardType="numeric"
                         onChangeText={(id: string) => setCourseId(id)}></TextInput>
                 </View>
-                <View style={styles.styledInputContainer}>
-                    <Text>Enter Course name:</Text>
-                    <TextInput
-                        style={styles.styledTextInput}
-                        onChangeText={(text: string) => setCourseNameUpdated(text)}></TextInput>
-                </View>
                 <Pressable style={styles.styledButton}>
                     <Button title="Publish Course" onPress={updateCourse}></Button>
                 </Pressable>
@@ -72,7 +67,9 @@ export const CreateCourseComponent: React.FC = () => {
                 </Pressable>
                 <FlatList
                     data={coursesPublished}
-                    renderItem={({ item }) => <Text style={{}}>{item.id?.toString() + "\t" + item.name}</Text>}
+                    renderItem={({ item }) => (
+                        <Text style={{}}>{item.id + "\t" + item.publishState + "\t" + item.name}</Text>
+                    )}
                 />
                 <Pressable style={styles.styledButton}>
                     <Button title="Delete Course" onPress={deleteCourse}></Button>
@@ -90,7 +87,11 @@ export const CreateCourseComponent: React.FC = () => {
         }
 
         const currentDate: Date = new Date();
-        const course: ICourse = { name: courseName, startDate: currentDate };
+        const course: ICourse = {
+            name: courseName,
+            startDate: currentDate,
+            publishState: CoursePublishState.UNPUBLISHED,
+        };
 
         loggerService.trace(`Creating course: name=${courseName}, startDate=${currentDate}.`);
         const postRequest: RequestInit = RequestFactory.createPostRequest(course);
@@ -106,20 +107,12 @@ export const CreateCourseComponent: React.FC = () => {
     }
 
     function updateCourse(): void {
-        loggerService.trace(`Validating course name: ${courseNameUpdated}.`);
-        if (validateCourseName(courseNameUpdated) === false) {
-            loggerService.warn("Course name invalid.");
-            alert("Course name invalid.");
-            return;
-        }
-
         loggerService.trace("Parsing ID string to ID number");
         const courseIdNumber: number = parseCourseId();
 
         // ATTENTION: fields without values will be overwritten with null in DB. @slawa 27.01.21
         const course: ICourse = {
             id: courseIdNumber,
-            name: courseNameUpdated,
             publishState: CoursePublishState.PUBLISHED,
         };
 
@@ -140,7 +133,6 @@ export const CreateCourseComponent: React.FC = () => {
 
     // TODO: get only published courses
     function getPublishedCourses(): void {
-        // TODO: try-catch
         const request: RequestInit = RequestFactory.createGetAllRequest();
         endpointsCourseExtended
             .getFilteredCourses(request, { publishState: CoursePublishState.PUBLISHED })

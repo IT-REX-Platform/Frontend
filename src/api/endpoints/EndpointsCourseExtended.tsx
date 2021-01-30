@@ -1,6 +1,5 @@
 import { ICourse } from "../../types/ICourse";
-import { ICourseFilterParams } from "../../types/ICourseFilterParams";
-import { sendRequest } from "../requests/sendRequest";
+import { sendRequest } from "./sendRequest";
 import ITREXVARS from "../../Constants";
 import { ApiUrls } from "../../constants/ApiUrls";
 import { IEndpointsCourseExtended } from "../endpoints_interfaces/IEndpointsCourseExtended";
@@ -19,7 +18,7 @@ export class EndpointsCourseExtended implements IEndpointsCourseExtended {
         this.url = ITREXVARS().apiUrl + ApiUrls.URL_COURSES_EXTENDED;
     }
 
-    public getFilteredCourses(getRequest: RequestInit, params?: ICourseFilterParams): Promise<ICourse[]> {
+    public getFilteredCourses(getRequest: RequestInit, params?: ICourse): Promise<ICourse[]> {
         this.loggerApi.trace("Checking for additional parameters for GET request URL.");
         const url: string = this.appendCourseParams(params);
 
@@ -28,7 +27,7 @@ export class EndpointsCourseExtended implements IEndpointsCourseExtended {
         return response.then((response) => response.json()).then((data) => data as ICourse[]);
     }
 
-    private appendCourseParams(params?: ICourseFilterParams): string {
+    private appendCourseParams(params?: ICourse): string {
         let urlUpdated = this.url;
 
         if (params === undefined) {

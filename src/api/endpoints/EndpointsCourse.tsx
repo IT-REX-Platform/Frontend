@@ -1,5 +1,5 @@
 import { ICourse } from "../../types/ICourse";
-import { sendRequest } from "../requests/sendRequest";
+import { sendRequest } from "./sendRequest";
 import ITREXVARS from "../../Constants";
 import { ApiUrls } from "../../constants/ApiUrls";
 import { IEndpointsCourse } from "../endpoints_interfaces/IEndpointsCourse";
