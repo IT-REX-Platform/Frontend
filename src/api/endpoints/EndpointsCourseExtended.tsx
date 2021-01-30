@@ -4,7 +4,7 @@ import ITREXVARS from "../../Constants";
 import { ApiUrls } from "../../constants/ApiUrls";
 import { IEndpointsCourseExtended } from "../endpoints_interfaces/IEndpointsCourseExtended";
 import { loggerFactory } from "../../../logger/LoggerConfig";
-import { CourseUrlParams } from "./CourseUrlParams";
+import { CourseUrlParams } from "../../constants/CourseUrlParams";
 
 /**
  * Endpoints for /api/courses/extended.

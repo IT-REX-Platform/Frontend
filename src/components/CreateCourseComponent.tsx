@@ -84,7 +84,6 @@ export const CreateCourseComponent: React.FC = () => {
         loggerService.trace(`Validating course name: ${courseName}.`);
         if (validateCourseName(courseName) == false) {
             loggerService.warn("Course name invalid.");
-            alert("Course name invalid.");
             return;
         }
 
