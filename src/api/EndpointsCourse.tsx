@@ -15,14 +15,8 @@ export class EndpointsCourse implements IEndpointsCourse {
 
     public getAllCourses(getRequest: RequestInit): Promise<ICourse[]> {
         this.loggerApi.trace("Sending GET request to URL: " + this.url);
-
         const response: Promise<Response> = sendRequest(this.url, getRequest);
-
         return response.then((response) => response.json()).then((data) => data as ICourse[]);
-
-        // return sendRequest(this.url, getRequest)
-        //     .then((response) => response.json())
-        //     .then((data) => data as ICourse[]);
     }
 
     public getCourse(): void {
@@ -44,9 +38,9 @@ export class EndpointsCourse implements IEndpointsCourse {
     }
 
     public deleteCourse(deleteRequest: RequestInit, id: number): void {
-        const url = this.url + "/" + id;
-        this.loggerApi.trace("Sending DELETE request to URL: " + url);
-        const response: Promise<Response> = sendRequest(this.url, deleteRequest);
+        const urlUpdated = this.url + "/" + id;
+        this.loggerApi.trace("Sending DELETE request to URL: " + urlUpdated);
+        const response: Promise<Response> = sendRequest(urlUpdated, deleteRequest);
         response.then((data) => console.log(data));
     }
 }

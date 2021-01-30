@@ -95,7 +95,7 @@ export const CreateCourseComponent: React.FC = () => {
         loggerService.trace(`Creating course: name=${courseName}, startDate=${currentDate}.`);
         const postRequest: RequestInit = RequestFactory.createPostRequest(course);
         endpointsCourse.createCourse(postRequest);
-        alert("Course created successfully.");
+        // alert("Course created successfully.");
     }
 
     function getAllCourses(): void {
@@ -151,19 +151,19 @@ export const CreateCourseComponent: React.FC = () => {
             .then((receivedCoursesPublished) => {
                 setCoursesPublished(receivedCoursesPublished);
 
-                try {
-                    for (const coursePublished of receivedCoursesPublished) {
-                        loggerService.trace(
-                            coursePublished.id?.toString() +
-                                " " +
-                                coursePublished.name +
-                                " " +
-                                coursePublished.startDate?.toString()
-                        );
-                    }
-                } catch (error) {
-                    loggerService.error("An error occured when printing courses.", error);
-                }
+                // try {
+                //     for (const coursePublished of receivedCoursesPublished) {
+                //         loggerService.trace(
+                //             coursePublished.id?.toString() +
+                //                 " " +
+                //                 coursePublished.name +
+                //                 " " +
+                //                 coursePublished.startDate?.toString()
+                //         );
+                //     }
+                // } catch (error) {
+                //     loggerService.error("An error occured when printing courses.", error);
+                // }
             });
     }
 
