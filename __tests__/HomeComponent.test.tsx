@@ -2,8 +2,6 @@ import { HomeComponent } from "../src/components/HomeComponent";
 import "react-native";
 import React from "react";
 import { fireEvent, render } from "@testing-library/react-native";
-import { mocked } from "ts-jest/utils";
-import { useNavigation } from "@react-navigation/native";
 
 const mockedNavigate = jest.fn(() => {});
 jest.mock("@react-navigation/native", () => {
@@ -17,8 +15,6 @@ jest.mock("@react-navigation/native", () => {
 });
 
 describe("test home component", () => {
-    const mockedUseNavigation = mocked(useNavigation, true);
-
     it("see if stuff is rendered", () => {
         const { getByText } = render(<HomeComponent></HomeComponent>);
 
