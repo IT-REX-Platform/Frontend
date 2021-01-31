@@ -9,8 +9,6 @@ jest.mock("../src/api/createPostRequest", () => {
     return { createPostRequest: jest.fn() };
 });
 
-// const mockedSendRequest = jest.fn();
-
 jest.mock("../src/api/sendRequest", () => {
     return { sendRequest: jest.fn() };
 });
