@@ -6,13 +6,7 @@ import { IMedia } from "../../types/IMedia";
  * Class for backend request creation.
  */
 export class RequestFactory {
-    public static createGetAllRequest(): RequestInit {
-        const request = RequestAuthorization.createAuthorizedRequest();
-        request.method = "GET";
-        return request;
-    }
-
-    public static createGetOneRequest(): RequestInit {
+    public static createGetRequest(): RequestInit {
         const request = RequestAuthorization.createAuthorizedRequest();
         request.method = "GET";
         return request;
