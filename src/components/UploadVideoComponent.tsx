@@ -1,9 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import { StyleSheet, Button, Pressable, TextInput, Text, View } from "react-native";
 
 export const UploadVideoComponent: React.FC = () => {
-    const [setVideo] = useState("");
-
     return (
         <>
             <View style={styles.container}>
@@ -18,7 +16,9 @@ export const UploadVideoComponent: React.FC = () => {
         </>
     );
 
-    function changeStyle() {}
+    function changeStyle() {
+        return undefined;
+    }
 };
 
 const styles = StyleSheet.create({
