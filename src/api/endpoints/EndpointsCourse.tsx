@@ -30,16 +30,16 @@ export class EndpointsCourse implements IEndpointsCourse {
         return response.then((response) => response.json()).then((data) => data as ICourse);
     }
 
-    public createCourse(postRequest: RequestInit): void {
+    public createCourse(postRequest: RequestInit): Promise<ICourse> {
         this.loggerApi.trace("Sending POST request to URL: " + this.url);
         const response: Promise<Response> = sendRequest(this.url, postRequest);
-        response.then((response) => response.json()).then((data) => console.log(data));
+        return response.then((response) => response.json()).then((data) => data as ICourse);
     }
 
-    public updateCourse(putRequest: RequestInit): void {
+    public updateCourse(putRequest: RequestInit): Promise<ICourse> {
         this.loggerApi.trace("Sending PUT request to URL: " + this.url);
         const response: Promise<Response> = sendRequest(this.url, putRequest);
-        response.then((response) => response.json()).then((data) => console.log(data));
+        return response.then((response) => response.json()).then((data) => data as ICourse);
     }
 
     public deleteCourse(deleteRequest: RequestInit, id: number): void {

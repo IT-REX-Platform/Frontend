@@ -96,7 +96,7 @@ export const CreateCourseComponent: React.FC = () => {
 
         loggerService.trace(`Creating course: name=${courseName}, startDate=${currentDate}.`);
         const postRequest: RequestInit = RequestFactory.createPostRequest(course);
-        endpointsCourse.createCourse(postRequest);
+        endpointsCourse.createCourse(postRequest).then((data) => console.log(data));
     }
 
     function getAllCourses(): void {
@@ -119,7 +119,7 @@ export const CreateCourseComponent: React.FC = () => {
 
         loggerService.trace(`Updating course: name=${courseName}, publishedState=${CoursePublishState.PUBLISHED}.`);
         const putRequest: RequestInit = RequestFactory.createPutRequest(course);
-        endpointsCourse.updateCourse(putRequest);
+        endpointsCourse.updateCourse(putRequest).then((data) => console.log(data));
     }
 
     function parseCourseId(): number {

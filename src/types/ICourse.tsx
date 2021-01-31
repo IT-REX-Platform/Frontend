@@ -7,6 +7,6 @@ export interface ICourse {
     startDate?: Date;
     endDate?: Date;
     maxFoodSum?: number;
-    publishState: CoursePublishState;
+    publishState?: CoursePublishState;
     // ownership?: string;
 }
