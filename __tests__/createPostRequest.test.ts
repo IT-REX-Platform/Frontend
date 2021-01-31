@@ -1,7 +1,6 @@
 import { TokenResponse, TokenResponseConfig } from "expo-auth-session";
 import { Course, createPostRequest, createRequest } from "../src/api/createPostRequest";
 import AuthenticationService from "../src/services/AuthenticationService";
-import { mocked } from "ts-jest/utils";
 
 const tokenResponseConfig: TokenResponseConfig = { accessToken: "accessToken" };
 const tokenResponse: TokenResponse = new TokenResponse(tokenResponseConfig);
@@ -25,11 +24,7 @@ authInstance.getToken = jest.fn(() => {
     return tokenResponse;
 });
 
-global.alert = jest.fn();
-
 describe("create POST request", () => {
-    // const mockedAuthSrv = mocked("../src/services/AuthenticationService", true);
-
     it("check if generic post works", () => {
         const expectedRequest: RequestInit = {
             headers: {
