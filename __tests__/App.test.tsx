@@ -5,14 +5,13 @@ import App from "../src/App";
 
 jest.mock("react-native/Libraries/Animated/src/NativeAnimatedHelper");
 
-const mockFunctionOutput = {
-    apiUrl: "http://localhost:8080/",
-    authEndpoint: "http://keycloak:9080/auth/realms/jhipster/protocol/openid-connect/auth",
-    authTokenEndpoint: "http://keycloak:9080/auth/realms/jhipster/protocol/openid-connect/token",
-    channel: "dev",
-};
-
 jest.mock("../src/constants/Constants", () => {
+    const mockFunctionOutput = {
+        apiUrl: "http://localhost:8080/",
+        authEndpoint: "http://keycloak:9080/auth/realms/jhipster/protocol/openid-connect/auth",
+        authTokenEndpoint: "http://keycloak:9080/auth/realms/jhipster/protocol/openid-connect/token",
+        channel: "dev",
+    };
     return {
         itRexVars: jest.fn(() => {
             return mockFunctionOutput;
@@ -20,10 +19,12 @@ jest.mock("../src/constants/Constants", () => {
     };
 });
 
-it("this test should succeed", () => {
-    expect(true).toBe(true);
-});
+describe("test app.tsx", () => {
+    it("this test should succeed", () => {
+        expect(true).toBe(true);
+    });
 
-it("renders correctly", () => {
-    render(<App></App>);
+    it("renders correctly", () => {
+        render(<App></App>);
+    });
 });
