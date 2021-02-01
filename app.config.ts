@@ -1,15 +1,13 @@
-import { ExpoConfig, ConfigContext } from "@expo/config";
+import { ExpoConfig } from "@expo/config";
 
-interface ITREX_VARIABLES {
+interface Environment {
     apiUrl: string;
     authEndpoint: string;
     authTokenEndpoint: string;
 }
 
-export default ({ config }): ExpoConfig => {
-    let env_variables: { [id: string]: ITREX_VARIABLES } = {};
-
-    env_variables = {
+export default (config: ExpoConfig): ExpoConfig => {
+    const env_variables: { [id: string]: Environment } = {
         dev: {
             apiUrl: "http://localhost:8080/",
             authEndpoint: "http://keycloak:9080/auth/realms/jhipster/protocol/openid-connect/auth",
@@ -27,13 +25,13 @@ export default ({ config }): ExpoConfig => {
         },
     };
 
-    const channel = process.env.ITREX_CHANNEL || "dev";
+    const channel: string = process.env.ITREX_CHANNEL || "dev";
 
     return {
         ...config,
         extra: {
             channel: channel,
-            variables: { ...env_variables[channel], channel: channel },
+            ...env_variables[channel],
         },
     };
 };

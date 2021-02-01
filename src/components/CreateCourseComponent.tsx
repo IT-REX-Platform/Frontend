@@ -15,7 +15,8 @@ export const CreateCourseComponent: React.FC = () => {
                     <Text>Enter Course name:</Text>
                     <TextInput
                         onChangeText={(text: string) => setCourseName(text)}
-                        style={styles.StyledTextInput}></TextInput>
+                        style={styles.StyledTextInput}
+                        testID="courseNameInput"></TextInput>
                 </View>
                 <Pressable style={styles.StyledButton}>
                     <Button title="Create new Course" onPress={createCourse}></Button>

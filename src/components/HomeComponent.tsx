@@ -17,7 +17,6 @@ export const HomeComponent: React.FC = () => {
                 title="Go to Upload Video"
                 onPress={() => navigation.navigate(NavigationRoutes.ROUTE_UPLOAD_VIDEO)}
             />
-            <Button title="Go to Test" onPress={() => navigation.navigate(NavigationRoutes.ROUTE_TEST)} />
         </View>
     );
 };
