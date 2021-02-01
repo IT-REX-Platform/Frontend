@@ -1,10 +1,10 @@
-import { RequestFactory } from "../src/api/requests/RequestFactory";
-import AuthenticationService from "../src/services/AuthenticationService";
+import { RequestFactory } from "../../../src/api/requests/RequestFactory";
+import AuthenticationService from "../../../src/services/AuthenticationService";
 import { TokenResponse, TokenResponseConfig } from "expo-auth-session";
-import { ICourse } from "../src/types/ICourse";
+import { ICourse } from "../../../src/types/ICourse";
 
 // mock AuthService
-jest.mock("../src/services/AuthenticationService", () => {
+jest.mock("../../../src/services/AuthenticationService", () => {
     return {
         getInstance: jest.fn().mockImplementation(() => {
             return {

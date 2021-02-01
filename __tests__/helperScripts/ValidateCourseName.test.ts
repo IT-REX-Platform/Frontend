@@ -1,4 +1,4 @@
-import { validateCourseName } from "../src/helperScripts/validateCourseName";
+import { validateCourseName } from "../../src/helperScripts/validateCourseName";
 
 global.alert = jest.fn();
 

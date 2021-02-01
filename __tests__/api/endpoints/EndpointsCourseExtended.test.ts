@@ -1,7 +1,7 @@
-// import { EndpointsCourseExtended } from "../src/api/endpoints/EndpointsCourseExtended";
-// import { ICourse } from "../src/types/ICourse";
-// import { RequestFactory } from "../src/api/requests/RequestFactory";
-// import { CoursePublishState } from "../src/constants/CoursePublishState";
+// import { EndpointsCourseExtended } from "../../../src/api/endpoints/EndpointsCourseExtended";
+// import { ICourse } from "../../../src/types/ICourse";
+// import { RequestFactory } from "../../../src/api/requests/RequestFactory";
+// import { CoursePublishState } from "../../../src/constants/CoursePublishState";
 
 // describe("EndpointsCourseExtended", () => {
 //     let instance: EndpointsCourseExtended = new EndpointsCourseExtended();

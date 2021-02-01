@@ -1,7 +1,7 @@
-import { LoginComponent } from "../src/components/LoginComponent";
+import { LoginComponent } from "../../src/components/LoginComponent";
 import "react-native";
 import React from "react";
-import { itRexVars } from "../src/constants/Constants";
+import { itRexVars } from "../../src/constants/Constants";
 import { fireEvent, render } from "@testing-library/react-native";
 
 const mockFunctionOutput = {
@@ -11,7 +11,7 @@ const mockFunctionOutput = {
     channel: "dev",
 };
 
-jest.mock("../src/constants/Constants", () => {
+jest.mock("../../src/constants/Constants", () => {
     return {
         itRexVars: jest.fn(() => {
             return mockFunctionOutput;

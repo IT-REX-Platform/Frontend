@@ -1,7 +1,6 @@
-// import { EndpointsCourse } from "../src/api/endpoints/EndpointsCourse";
-// import { ICourse } from "../src/types/ICourse";
-// import { RequestFactory } from "../src/api/requests/RequestFactory";
-// import { CoursePublishState } from "../src/constants/CoursePublishState";
+// import { EndpointsCourse } from "../../../src/api/endpoints/EndpointsCourse";
+// import { ICourse } from "../../../src/types/ICourse";
+// import { RequestFactory } from "../../../src/api/requests/RequestFactory";
 
 // const fetch = jest.fn(() => Promise.resolve());
 

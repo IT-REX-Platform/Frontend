@@ -1,18 +1,13 @@
 import { TokenResponse, TokenResponseConfig } from "expo-auth-session";
-import AuthenticationService from "../src/services/AuthenticationService";
-import { RequestAuthorization } from "../src/api/requests/RequestAuthorization";
+import AuthenticationService from "../../../src/services/AuthenticationService";
+import { RequestFactory } from "../../../src/api/requests/RequestFactory";
+import { sendRequest } from "../../../src/api/endpoints/sendRequest";
+import "isomorphic-fetch";
 
-describe("RequestAuthorization", () => {
-    it("throws an error.", () => {
-        const expectedError = new Error("User must log in.");
-        expect(() => {
-            RequestAuthorization.createAuthorizedRequest();
-        }).toThrow(expectedError);
-    });
-
-    it("authorizes a request.", () => {
+describe("sendRequest()", () => {
+    it("sends an authorized request", () => {
         // mock AuthService
-        jest.mock("../src/services/AuthenticationService", () => {
+        jest.mock("../../../src/services/AuthenticationService", () => {
             return {
                 getInstance: jest.fn().mockImplementation(() => {
                     return {
@@ -26,19 +21,15 @@ describe("RequestAuthorization", () => {
 
         const tokenResponseConfig: TokenResponseConfig = { accessToken: "accessToken" };
         const tokenResponse: TokenResponse = new TokenResponse(tokenResponseConfig);
-
         const authInstance = AuthenticationService.getInstance();
         authInstance.getToken = jest.fn(() => {
             return tokenResponse;
         });
 
-        const expectedRequest: RequestInit = {
-            headers: {
-                Authorization: "bearer" + " " + "accessToken",
-            },
-            credentials: "include",
-        };
+        let getRequest: RequestInit = RequestFactory.createGetRequest();
 
-        expect(RequestAuthorization.createAuthorizedRequest()).toStrictEqual(expectedRequest);
+        const expectedResponse; // TODO
+
+        expect(sendRequest("URL", getRequest)).toMatchObject(expectedResponse);
     });
 });

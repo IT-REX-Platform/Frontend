@@ -1,4 +1,4 @@
-import { HomeComponent } from "../src/components/HomeComponent";
+import { HomeComponent } from "../../src/components/HomeComponent";
 import "react-native";
 import React from "react";
 import { fireEvent, render } from "@testing-library/react-native";
