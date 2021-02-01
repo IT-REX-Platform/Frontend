@@ -28,7 +28,8 @@ describe("sendRequest()", () => {
 
         let getRequest: RequestInit = RequestFactory.createGetRequest();
 
-        const expectedResponse; // TODO
+        // TODO
+        const expectedResponse;
 
         expect(sendRequest("URL", getRequest)).toMatchObject(expectedResponse);
     });
