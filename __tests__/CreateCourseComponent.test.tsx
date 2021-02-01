@@ -9,7 +9,7 @@ jest.mock("../src/api/createPostRequest", () => {
     return { createPostRequest: jest.fn() };
 });
 
-jest.mock("../src/api/sendRequest", () => {
+jest.mock("../src/api/endpoints/sendRequest", () => {
     return { sendRequest: jest.fn() };
 });
 
