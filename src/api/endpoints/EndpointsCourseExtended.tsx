@@ -1,6 +1,6 @@
 import { ICourse } from "../../types/ICourse";
 import { sendRequest } from "./sendRequest";
-import ITREXVARS from "../../Constants";
+import { itRexVars } from "../../constants/Constants";
 import { ApiUrls } from "../../constants/ApiUrls";
 import { IEndpointsCourseExtended } from "../endpoints_interfaces/IEndpointsCourseExtended";
 import { loggerFactory } from "../../../logger/LoggerConfig";
@@ -15,7 +15,7 @@ export class EndpointsCourseExtended implements IEndpointsCourseExtended {
     private url: string;
 
     public constructor() {
-        this.url = ITREXVARS().apiUrl + ApiUrls.URL_COURSES_EXTENDED;
+        this.url = itRexVars().apiUrl + ApiUrls.URL_COURSES_EXTENDED;
     }
 
     public getFilteredCourses(getRequest: RequestInit, params?: ICourse): Promise<ICourse[]> {

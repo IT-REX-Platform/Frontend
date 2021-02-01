@@ -2,12 +2,14 @@ import { Alert, Platform } from "react-native";
 
 export function validateCourseName(courseName: string): boolean {
     if (courseName === "invalid") {
-        alert("Course name invalid.");
+        createAlert("Course name invalid.");
         return false;
-    } else if (courseName.length > 3) {
-        createAlert("Course created succesfully");
+    }
+
+    if (courseName.length > 3) {
         return true;
     }
+
     createAlert("Course name invalid");
     return false;
 }

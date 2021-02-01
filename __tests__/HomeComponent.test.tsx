@@ -32,7 +32,7 @@ describe("test home component", () => {
 
         fireEvent.press(getByText("Go to Login"));
 
-        expect(mockedNavigate).toBeCalledWith("Login");
+        expect(mockedNavigate).toBeCalledWith("ROUTE_LOGIN");
     });
 
     it("check Create Course navigation", () => {
@@ -42,7 +42,7 @@ describe("test home component", () => {
 
         fireEvent.press(getByText("Go to Create Course"));
 
-        expect(mockedNavigate).toBeCalledWith("CreateCourse");
+        expect(mockedNavigate).toBeCalledWith("ROUTE_CREATE_COURSE");
     });
 
     it("check Upload Video navigation", () => {
@@ -52,6 +52,6 @@ describe("test home component", () => {
 
         fireEvent.press(getByText("Go to Upload Video"));
 
-        expect(mockedNavigate).toBeCalledWith("UploadVideo");
+        expect(mockedNavigate).toBeCalledWith("ROUTE_UPLOAD_VIDEO");
     });
 });

@@ -34,8 +34,8 @@ export const CreateCourseComponent: React.FC = () => {
                 <View style={styles.styledInputContainer}>
                     <Text>Enter Course name:</Text>
                     <TextInput
+                        style={styles.styledTextInput}
                         onChangeText={(text: string) => setCourseName(text)}
-                        style={styles.StyledTextInput}
                         testID="courseNameInput"></TextInput>
                 </View>
                 <Pressable style={styles.styledButton}>
@@ -59,7 +59,8 @@ export const CreateCourseComponent: React.FC = () => {
                     <TextInput
                         style={styles.styledTextInput}
                         keyboardType="numeric"
-                        onChangeText={(id: string) => setCourseId(id)}></TextInput>
+                        onChangeText={(id: string) => setCourseId(id)}
+                        testID="courseIdInput"></TextInput>
                 </View>
                 <Pressable style={styles.styledButton}>
                     <Button title="Publish Course" onPress={updateCourse}></Button>
