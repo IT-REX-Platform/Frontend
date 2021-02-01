@@ -5,12 +5,22 @@ import { fireEvent, render } from "@testing-library/react-native";
 import { sendRequest } from "../src/api/endpoints/sendRequest";
 import { mocked } from "ts-jest/utils";
 
-jest.mock("../src/api/createPostRequest", () => {
-    return { createPostRequest: jest.fn() };
-});
-
 jest.mock("../src/api/endpoints/sendRequest", () => {
     return { sendRequest: jest.fn() };
+});
+
+jest.mock("../src/constants/Constants", () => {
+    const mockFunctionOutput = {
+        apiUrl: "http://localhost:8080/",
+        authEndpoint: "http://keycloak:9080/auth/realms/jhipster/protocol/openid-connect/auth",
+        authTokenEndpoint: "http://keycloak:9080/auth/realms/jhipster/protocol/openid-connect/token",
+        channel: "dev",
+    };
+    return {
+        itRexVars: jest.fn(() => {
+            return mockFunctionOutput;
+        }),
+    };
 });
 
 global.alert = jest.fn();
