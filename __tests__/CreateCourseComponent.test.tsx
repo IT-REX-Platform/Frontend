@@ -2,7 +2,7 @@ import { CreateCourseComponent } from "../src/components/CreateCourseComponent";
 import "react-native";
 import React from "react";
 import { fireEvent, render } from "@testing-library/react-native";
-import { sendRequest } from "../src/api/sendRequest";
+import { sendRequest } from "../src/api/endpoints/sendRequest";
 import { mocked } from "ts-jest/utils";
 
 jest.mock("../src/api/createPostRequest", () => {
