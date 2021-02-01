@@ -1,44 +1,84 @@
-// import { EndpointsCourse } from "../../../src/api/endpoints/EndpointsCourse";
-// import { ICourse } from "../../../src/types/ICourse";
-// import { RequestFactory } from "../../../src/api/requests/RequestFactory";
+import { EndpointsCourse } from "../../../src/api/endpoints/EndpointsCourse";
+import { ICourse } from "../../../src/types/ICourse";
+import { RequestFactory } from "../../../src/api/requests/RequestFactory";
+import { CoursePublishState } from "../../../src/constants/CoursePublishState";
+import "isomorphic-fetch";
 
-// const fetch = jest.fn(() => Promise.resolve());
+const mockFunctionOutput = {
+    apiUrl: "http://localhost:8080/",
+    authEndpoint: "http://keycloak:9080/auth/realms/jhipster/protocol/openid-connect/auth",
+    authTokenEndpoint: "http://keycloak:9080/auth/realms/jhipster/protocol/openid-connect/token",
+    channel: "dev",
+};
 
-// describe("EndpointsCourse", () => {
-//     let instance: EndpointsCourse = new EndpointsCourse();
-//     expect(instance).toBeInstanceOf(EndpointsCourse);
+jest.mock("../../../src/constants/Constants", () => {
+    return {
+        itRexVars: jest.fn(() => {
+            return mockFunctionOutput;
+        }),
+    };
+});
 
-//     it("should get an array of courses.", () => {
-//         let getRequest: RequestInit = RequestFactory.createGetRequest();
-//         const response: Promise<ICourse[]> = instance.getAllCourses(getRequest);
-//         // TODO
-//     });
+describe("EndpointsCourse", () => {
+    let instance: EndpointsCourse = new EndpointsCourse();
+    expect(instance).toBeInstanceOf(EndpointsCourse);
 
-//     it("should get one course.", () => {
-//         let getRequest: RequestInit = RequestFactory.createGetRequest();
-//         let id: number = 12345;
-//         const response: Promise<ICourse> = instance.getCourse(getRequest, id);
-//         // TODO
-//     });
+    const request: RequestInit = {
+        headers: {
+            Authorization: "bearer" + " " + "accessToken",
+        },
+        credentials: "include",
+    };
+    const courseExpected: ICourse = {
+        id: 12345,
+        name: "TheoInf3",
+        publishState: CoursePublishState.PUBLISHED,
+    };
 
-//     it("should create a course.", () => {
-//         let course: ICourse = { name: "test_course_1" };
-//         let postRequest: RequestInit = RequestFactory.createPostRequest(course);
-//         const response: Promise<ICourse> = instance.createCourse(postRequest);
-//         // TODO
-//     });
+    it("should get an array of courses.", async () => {
+        try {
+            const response: ICourse[] = await instance.getAllCourses(request);
+            expect(response).resolves.toBe(courseExpected);
+        } catch (error) {
+            console.log("An error has occurred.", error);
+        }
+    });
 
-//     it("should update a course.", () => {
-//         let course: ICourse = { name: "test_course_2" };
-//         let putRequest: RequestInit = RequestFactory.createPutRequest(course);
-//         const response: Promise<ICourse> = instance.updateCourse(putRequest);
-//         // TODO
-//     });
+    it("should get one course.", async () => {
+        try {
+            let id: number = 12345;
+            const response: ICourse = await instance.getCourse(request, id);
+            expect(response).resolves.toBe(courseExpected);
+        } catch (error) {
+            console.log("An error has occurred.", error);
+        }
+    });
 
-//     it("should delete a course.", () => {
-//         let deleteRequest: RequestInit = RequestFactory.createDeleteRequest();
-//         let id: number = 12345;
-//         instance.deleteCourse(deleteRequest, id);
-//         // TODO
-//     });
-// });
+    it("should create a course.", async () => {
+        try {
+            const response: ICourse = await instance.createCourse(request);
+            expect(response).resolves.toBe(courseExpected);
+        } catch (error) {
+            console.log("An error has occurred.", error);
+        }
+    });
+
+    it("should update a course.", async () => {
+        try {
+            const response: ICourse = await instance.updateCourse(request);
+            expect(response).resolves.toBe(courseExpected);
+        } catch (error) {
+            console.log("An error has occurred.", error);
+        }
+    });
+
+    it("should delete a course.", async () => {
+        try {
+            let id: number = 12345;
+            const response: void = await instance.deleteCourse(request, id);
+            expect(response).resolves.toBe(courseExpected);
+        } catch (error) {
+            console.log("An error has occurred.", error);
+        }
+    });
+});
