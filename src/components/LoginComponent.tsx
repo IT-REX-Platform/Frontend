@@ -3,8 +3,8 @@ import { Button, View } from "react-native";
 import * as WebBrowser from "expo-web-browser";
 import * as AuthSession from "expo-auth-session";
 import AuthenticationService from "../services/AuthenticationService";
-import i18n from "../locales/index";
-
+import { itRexVars } from "../constants/Constants";
+import { LocalizationContext } from "../App";
 WebBrowser.maybeCompleteAuthSession();
 
 // Endpoint
@@ -44,38 +44,13 @@ export const LoginComponent: React.FC = () => {
         }
     }, [authResponse]);
 
-    const requestUserInfo = async () => {
-        console.log("Test");
-        try {
-            fetch("http://localhost:8080/api/account", {
-                method: "GET",
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                    Authorization: authToken?.tokenType + " " + authToken?.accessToken,
-                } /*
-                body:JSON.stringify({
-                    "endDate": "2021-01-11",
-                    "maxFoodSum": 0,
-                    "name": "Theo3",
-                    "startDate": "2021-01-11",
-                    "courseDescription": "Was für ein mega geiler Kurs..."
-                })*/,
-            })
-                .then((response) => response.json())
-                .then((responseJson) => {
-                    console.log(responseJson);
-                });
-        } catch (error) {
-            console.error(error);
-        }
-    };
+    const { t } = React.useContext(LocalizationContext);
 
     return (
         <View>
             <Button
                 disabled={authResponse?.type === "success"}
-                title={i18n.t("itrex.login")}
+                title={t("itrex.login")}
                 onPress={() => {
                     promptAuthentication();
                 }}

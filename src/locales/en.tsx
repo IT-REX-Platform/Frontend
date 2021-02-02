@@ -1,5 +1,6 @@
-export default {
+export const en = {
     itrex: {
+        home: "Home",
         login: "Login",
         enterCourseName: "Enter Course name:",
         createCourse: "Create new Course",
@@ -11,5 +12,8 @@ export default {
         de: "DE",
         devVariables_1: "! Your are running IT-REX with",
         devVariables_2: "variables !",
+        toCourse: "Create Course",
+        toUploadVideo: "Upload Video",
+        switchLangDE: "Switch to german",
     },
 };

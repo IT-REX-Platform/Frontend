@@ -1,7 +1,7 @@
 import i18n from "i18n-js";
 
-import en from "./en";
-import de from "./de";
+import { en } from "./en";
+import { de } from "./de";
 
 // mapping of language codes to files (en/de)
 i18n.translations = {
