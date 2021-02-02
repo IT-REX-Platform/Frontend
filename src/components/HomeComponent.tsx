@@ -2,19 +2,22 @@ import React from "react";
 import { Button, StyleSheet, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { NavigationRoutes } from "../constants/NavigationRoutes";
+import { LocalizationContext } from "../App";
 
 export const HomeComponent: React.FC = () => {
     const navigation = useNavigation();
 
+    const { t } = React.useContext(LocalizationContext);
+
     return (
         <View style={styles.container}>
-            <Button title="Go to Login" onPress={() => navigation.navigate(NavigationRoutes.ROUTE_LOGIN)} />
+            <Button title={t("itrex.login")} onPress={() => navigation.navigate(NavigationRoutes.ROUTE_LOGIN)} />
             <Button
-                title="Go to Create Course"
+                title={t("itrex.toCourse")}
                 onPress={() => navigation.navigate(NavigationRoutes.ROUTE_CREATE_COURSE)}
             />
             <Button
-                title="Go to Upload Video"
+                title={t("itrex.toUploadVideo")}
                 onPress={() => navigation.navigate(NavigationRoutes.ROUTE_UPLOAD_VIDEO)}
             />
         </View>
