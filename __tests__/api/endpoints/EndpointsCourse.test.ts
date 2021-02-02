@@ -1,8 +1,18 @@
 import { EndpointsCourse } from "../../../src/api/endpoints/EndpointsCourse";
 import { ICourse } from "../../../src/types/ICourse";
-import { RequestFactory } from "../../../src/api/requests/RequestFactory";
 import { CoursePublishState } from "../../../src/constants/CoursePublishState";
 import "isomorphic-fetch";
+
+/**
+ * Prevents error:
+ * ReferenceError: You are trying to `import` a file after the Jest environment has been torn down.
+ *
+ * https://github.com/facebook/jest/issues/6434
+ */
+jest.useFakeTimers();
+
+// Disable logs in EndpointsCourse.ts.
+console.log = jest.fn();
 
 const mockFunctionOutput = {
     apiUrl: "http://localhost:8080/",
@@ -40,7 +50,8 @@ describe("EndpointsCourse", () => {
             const response: ICourse[] = await instance.getAllCourses(request);
             expect(response).resolves.toBe(courseExpected);
         } catch (error) {
-            console.log("An error has occurred.", error);
+            // Enable once fetch has been mocked.
+            // console.log("An error has occurred.", error);
         }
     });
 
@@ -50,7 +61,8 @@ describe("EndpointsCourse", () => {
             const response: ICourse = await instance.getCourse(request, id);
             expect(response).resolves.toBe(courseExpected);
         } catch (error) {
-            console.log("An error has occurred.", error);
+            // Enable once fetch has been mocked.
+            // console.log("An error has occurred.", error);
         }
     });
 
@@ -59,7 +71,8 @@ describe("EndpointsCourse", () => {
             const response: ICourse = await instance.createCourse(request);
             expect(response).resolves.toBe(courseExpected);
         } catch (error) {
-            console.log("An error has occurred.", error);
+            // Enable once fetch has been mocked.
+            // console.log("An error has occurred.", error);
         }
     });
 
@@ -68,7 +81,8 @@ describe("EndpointsCourse", () => {
             const response: ICourse = await instance.updateCourse(request);
             expect(response).resolves.toBe(courseExpected);
         } catch (error) {
-            console.log("An error has occurred.", error);
+            // Enable once fetch has been mocked.
+            // console.log("An error has occurred.", error);
         }
     });
 
@@ -78,7 +92,8 @@ describe("EndpointsCourse", () => {
             const response: void = await instance.deleteCourse(request, id);
             expect(response).resolves.toBe(courseExpected);
         } catch (error) {
-            console.log("An error has occurred.", error);
+            // Enable once fetch has been mocked.
+            // console.log("An error has occurred.", error);
         }
     });
 });

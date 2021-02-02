@@ -134,27 +134,12 @@ export const CreateCourseComponent: React.FC = () => {
         return courseIdNumber;
     }
 
-    // TODO: get only published courses
     function getPublishedCourses(): void {
         const request: RequestInit = RequestFactory.createGetRequest();
         endpointsCourseExtended
             .getFilteredCourses(request, { publishState: CoursePublishState.PUBLISHED })
             .then((receivedCoursesPublished) => {
                 setCoursesPublished(receivedCoursesPublished);
-
-                // try {
-                //     for (const coursePublished of receivedCoursesPublished) {
-                //         loggerService.trace(
-                //             coursePublished.id?.toString() +
-                //                 " " +
-                //                 coursePublished.name +
-                //                 " " +
-                //                 coursePublished.startDate?.toString()
-                //         );
-                //     }
-                // } catch (error) {
-                //     loggerService.error("An error occured when printing courses.", error);
-                // }
             });
     }
 

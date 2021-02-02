@@ -1,3 +1,5 @@
+import { createAlert } from "../../helperScripts/createAlert";
+
 /**
  * Function for sending requests to backend and receiving responses from backend.
  *
@@ -6,5 +8,14 @@
  * @returns Response wrapped in promise.
  */
 export function sendRequest(url: string, request: RequestInit): Promise<Response> {
-    return fetch(url, request);
+    return new Promise((resolve, reject) => {
+        fetch(url, request)
+            .then((response) => {
+                resolve(response);
+            })
+            .catch((error) => {
+                reject(error);
+                createAlert("An error occured while accessing IT-REX service.");
+            });
+    });
 }

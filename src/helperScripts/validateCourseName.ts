@@ -1,4 +1,4 @@
-import { Alert, Platform } from "react-native";
+import { createAlert } from "./createAlert";
 
 export function validateCourseName(courseName: string): boolean {
     if (courseName === "invalid") {
@@ -12,12 +12,4 @@ export function validateCourseName(courseName: string): boolean {
 
     createAlert("Course name invalid");
     return false;
-}
-
-function createAlert(message: string) {
-    if (Platform.OS === ("android" || "ios")) {
-        Alert.alert(message);
-    } else {
-        alert(message);
-    }
 }

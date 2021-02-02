@@ -3,7 +3,11 @@ import AuthenticationService from "../../../src/services/AuthenticationService";
 import { RequestAuthorization } from "../../../src/api/requests/RequestAuthorization";
 
 describe("RequestAuthorization", () => {
-    it("throws an error.", () => {
+    /**
+     * Must be async to prevent warning:
+     * "Cannot log after tests are done. Did you forget to wait for something async in your test?""
+     */
+    it("throws an error.", async () => {
         const expectedError = new Error("User must log in.");
         expect(() => {
             RequestAuthorization.createAuthorizedRequest();

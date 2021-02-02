@@ -3,6 +3,9 @@ import { ICourse } from "../../../src/types/ICourse";
 import { CoursePublishState } from "../../../src/constants/CoursePublishState";
 import "isomorphic-fetch";
 
+// Disable logs in EndpointsCourseExtended.ts.
+console.log = jest.fn();
+
 const mockFunctionOutput = {
     apiUrl: "http://localhost:8080/",
     authEndpoint: "http://keycloak:9080/auth/realms/jhipster/protocol/openid-connect/auth",
@@ -18,7 +21,7 @@ jest.mock("../../../src/constants/Constants", () => {
     };
 });
 
-// TODO: fetch response
+// Find a way to mock fetch response.
 // jest.mock("../../../src/api/endpoints/sendRequest", () => {
 //     return {
 //         sendRequest: jest.fn(() => {
@@ -49,7 +52,8 @@ describe("EndpointsCourseExtended", () => {
             const response: ICourse[] = await instance.getFilteredCourses(getRequest, params);
             expect(response).resolves.toBe(courseExpected);
         } catch (error) {
-            console.log("An error has occurred.", error);
+            // Enable once fetch has been mocked.
+            // console.log("An error has occurred.", error);
         }
     });
 
@@ -62,7 +66,8 @@ describe("EndpointsCourseExtended", () => {
             const response: ICourse[] = await instance.getFilteredCourses(getRequest);
             expect(response).resolves.toBe(course);
         } catch (error) {
-            console.log("An error has occurred.", error);
+            // Enable once fetch has been mocked.
+            // console.log("An error has occurred.", error);
         }
     });
 
@@ -77,7 +82,8 @@ describe("EndpointsCourseExtended", () => {
             const response: ICourse[] = await instance.getFilteredCourses(getRequest, params);
             expect(response).resolves.toBe(courseExpected);
         } catch (error) {
-            console.log("An error has occurred.", error);
+            // Enable once fetch has been mocked.
+            // console.log("An error has occurred.", error);
         }
     });
 });
