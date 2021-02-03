@@ -2,9 +2,6 @@ import React from "react";
 import { useState } from "react";
 import { Button, FlatList, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { ICourse } from "../types/ICourse";
-import { Button, Text, TextInput, View, StyleSheet, Pressable } from "react-native";
-import { Course, createPostRequest } from "../api/createPostRequest";
-import { sendRequest } from "../api/sendRequest";
 import { LocalizationContext } from "../App";
 import { validateCourseName } from "../helperScripts/validateCourseName";
 import i18n from "../locales";
@@ -37,14 +34,14 @@ export const CreateCourseComponent: React.FC = () => {
     return (
         <ScrollView>
             <View style={styles.container}>
-                <View style={styles.StyledInputContainer}>
+                <View style={styles.styledInputContainer}>
                     <Text>{i18n.t("itrex.enterCourseName")}</Text>
                     <TextInput
                         style={styles.styledTextInput}
                         onChangeText={(text: string) => setCourseName(text)}
                         testID="courseNameInput"></TextInput>
                 </View>
-                <Pressable style={styles.StyledButton}>
+                <Pressable style={styles.styledButton}>
                     <Button title={i18n.t("itrex.createCourse")} onPress={createCourse}></Button>
                 </Pressable>
                 <Pressable style={styles.styledButton}>

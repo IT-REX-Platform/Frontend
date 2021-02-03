@@ -60,7 +60,7 @@ function App(): ReactElement {
                         options={{ title: i18n.t("itrex.toUploadVideo") }}
                     />
                 </Stack.Navigator>
-                {locale === "en" ? (
+                {locale == "en" || locale == "en-GB" || locale == "en-US" ? (
                     <Button title={i18n.t("itrex.switchLangDE")} onPress={() => setLocale("de-DE")} />
                 ) : (
                     <Button title={i18n.t("itrex.switchLangEN")} onPress={() => setLocale("en")} />
