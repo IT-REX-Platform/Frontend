@@ -6,9 +6,9 @@ import { NavigationRoutes } from "./constants/NavigationRoutes";
 import { Button, Linking } from "react-native";
 import i18n from "./locales/index";
 import * as Localization from "expo-localization";
+import { HomeComponent } from "./components/HomeComponent";
 import { CreateCourseComponent } from "./components/CreateCourseComponent";
 import { LoginComponent } from "./components/LoginComponent";
-import { HomeComponent } from "./components/HomeComponent";
 import { UploadVideoComponent } from "./components/UploadVideoComponent";
 import React from "react";
 
@@ -28,8 +28,7 @@ function App(): ReactElement {
     i18n.locale = locale;
     const localizationContext = React.useMemo(
         () => ({
-            t: (scope: string | string[], options: i18n.TranslateOptions | undefined) =>
-                i18n.t(scope, { locale, ...options }),
+            t: (scope: i18n.Scope, options: i18n.TranslateOptions | undefined) => i18n.t(scope, { locale, ...options }),
             locale,
             setLocale,
         }),

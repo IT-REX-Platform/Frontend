@@ -5,6 +5,7 @@ import * as AuthSession from "expo-auth-session";
 import AuthenticationService from "../services/AuthenticationService";
 import { itRexVars } from "../constants/Constants";
 import { LocalizationContext } from "../App";
+import i18n from "../locales";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -39,13 +40,13 @@ export const LoginComponent: React.FC = () => {
         }
     }, [authResponse]);
 
-    const { t } = React.useContext(LocalizationContext);
+    React.useContext(LocalizationContext);
 
     return (
         <View>
             <Button
                 disabled={authResponse?.type === "success"}
-                title={t("itrex.login")}
+                title={i18n.t("itrex.login")}
                 onPress={() => {
                     promptAuthentication();
                 }}

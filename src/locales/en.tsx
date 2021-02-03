@@ -6,7 +6,7 @@ export const en = {
         createCourse: "Create new Course",
         uploadVideo: "Upload Video here",
         videoName: "Document here",
-        browseFiles: "Browse files",
+        browseFiles: "Browse Files",
         localeLanguage: "Current locale:",
         en: "EN",
         de: "DE",
@@ -14,6 +14,7 @@ export const en = {
         devVariables_2: "variables !",
         toCourse: "Create Course",
         toUploadVideo: "Upload Video",
+        uploadVideoHere: "Upload Video here:",
         switchLangDE: "Switch to german",
     },
 };

@@ -14,6 +14,7 @@ export const de = {
         devVariables_2: "Variablen !",
         toCourse: "Kurserstellung",
         toUploadVideo: "Video-Upload",
+        uploadVideoHere: "Video hier einfügen:",
         switchLangEN: "Zu Englisch wechseln",
     },
 };

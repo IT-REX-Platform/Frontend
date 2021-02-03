@@ -1,19 +1,20 @@
 import React from "react";
 import { StyleSheet, Button, Pressable, TextInput, Text, View } from "react-native";
 import { LocalizationContext } from "../App";
+import i18n from "../locales";
 
 export const UploadVideoComponent: React.FC = () => {
-    const { t } = React.useContext(LocalizationContext);
+    React.useContext(LocalizationContext);
 
     return (
         <>
             <View style={styles.container}>
                 <View style={styles.StyledInputContainer}>
-                    <Text>Upload Video here:</Text>
-                    <TextInput defaultValue={t("itrex.videoName")} style={styles.StyledTextInput}></TextInput>
+                    <Text>{i18n.t("itrex.uploadVideoHere")}</Text>
+                    <TextInput style={styles.StyledTextInput}></TextInput>
                 </View>
                 <Pressable style={styles.StyledButton}>
-                    <Button title={t("itrex.browseFiles")} onPress={changeStyle}></Button>
+                    <Button title={i18n.t("itrex.browseFiles")} onPress={changeStyle}></Button>
                 </Pressable>
             </View>
         </>
