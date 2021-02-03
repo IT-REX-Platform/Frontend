@@ -13,6 +13,7 @@ export function sendRequest(url: string, request: RequestInit): Promise<Response
             .then((response) => {
                 resolve(response);
             })
+            // This does not catch HTTP error responses, e.g. 404, 500, etc.
             .catch((error) => {
                 reject(error);
                 createAlert("An error occured while accessing IT-REX service.");
