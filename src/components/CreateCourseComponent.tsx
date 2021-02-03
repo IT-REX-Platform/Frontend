@@ -45,7 +45,7 @@ export const CreateCourseComponent: React.FC = () => {
                     <Button title={i18n.t("itrex.createCourse")} onPress={createCourse}></Button>
                 </Pressable>
                 <Pressable style={styles.styledButton}>
-                    <Button title="Get All Courses" onPress={getAllCourses}></Button>
+                    <Button title={i18n.t("itrex.getAllCourses")} onPress={getAllCourses}></Button>
                 </Pressable>
                 <FlatList
                     data={courses}
@@ -58,7 +58,7 @@ export const CreateCourseComponent: React.FC = () => {
                 <View style={styles.separator}></View>
 
                 <View style={styles.styledInputContainer}>
-                    <Text>Enter Course ID:</Text>
+                    <Text>{i18n.t("itrex.enterCouseId")}</Text>
                     <TextInput
                         style={styles.styledTextInput}
                         keyboardType="numeric"
@@ -66,10 +66,10 @@ export const CreateCourseComponent: React.FC = () => {
                         testID="courseIdInput"></TextInput>
                 </View>
                 <Pressable style={styles.styledButton}>
-                    <Button title="Publish Course" onPress={updateCourse}></Button>
+                    <Button title={i18n.t("itrex.publishCourse")} onPress={updateCourse}></Button>
                 </Pressable>
                 <Pressable style={styles.styledButton}>
-                    <Button title="Get Published Courses" onPress={getPublishedCourses}></Button>
+                    <Button title={i18n.t("itrex.getPublishedCourses")} onPress={getPublishedCourses}></Button>
                 </Pressable>
                 <FlatList
                     data={coursesPublished}
@@ -79,7 +79,7 @@ export const CreateCourseComponent: React.FC = () => {
                     keyExtractor={(item, index) => String(index)}
                 />
                 <Pressable style={styles.styledButton}>
-                    <Button title="Delete Course" onPress={deleteCourse}></Button>
+                    <Button title={i18n.t("itrex.deleteCourse")} onPress={deleteCourse}></Button>
                 </Pressable>
             </View>
         </ScrollView>
