@@ -15,6 +15,7 @@ scanner(
             "sonar.typescript.lcov.reportPaths": "coverage/lcov.info",
             "sonar.testExecutionReportPaths": "coverage/test-reporter.xml",
             "sonar.eslint.reportPaths": "coverage/eslint_report.json",
+            "sonar.exclusions": ["/src/components/CreateCourseComponent.tsx", "/src/constants/**"],
         },
     },
 
