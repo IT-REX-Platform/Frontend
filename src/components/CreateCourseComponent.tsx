@@ -2,7 +2,12 @@ import React from "react";
 import { useState } from "react";
 import { Button, FlatList, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { ICourse } from "../types/ICourse";
+import { Button, Text, TextInput, View, StyleSheet, Pressable } from "react-native";
+import { Course, createPostRequest } from "../api/createPostRequest";
+import { sendRequest } from "../api/sendRequest";
+import { LocalizationContext } from "../App";
 import { validateCourseName } from "../helperScripts/validateCourseName";
+import i18n from "../locales";
 import { RequestFactory } from "../api/requests/RequestFactory";
 import { EndpointsCourse } from "../api/endpoints/EndpointsCourse";
 import { loggerFactory } from "../../logger/LoggerConfig";
@@ -16,6 +21,7 @@ const endpointsCourseExtended: EndpointsCourseExtended = new EndpointsCourseExte
 export const CreateCourseComponent: React.FC = () => {
     // Enter course name to create course
     const [courseName, setCourseName] = useState("");
+    React.useContext(LocalizationContext);
 
     // Display all courses
     const initialCourseState: ICourse[] = [];
@@ -31,15 +37,15 @@ export const CreateCourseComponent: React.FC = () => {
     return (
         <ScrollView>
             <View style={styles.container}>
-                <View style={styles.styledInputContainer}>
-                    <Text>Enter Course name:</Text>
+                <View style={styles.StyledInputContainer}>
+                    <Text>{i18n.t("itrex.enterCourseName")}</Text>
                     <TextInput
                         style={styles.styledTextInput}
                         onChangeText={(text: string) => setCourseName(text)}
                         testID="courseNameInput"></TextInput>
                 </View>
-                <Pressable style={styles.styledButton}>
-                    <Button title="Create New Course" onPress={createCourse}></Button>
+                <Pressable style={styles.StyledButton}>
+                    <Button title={i18n.t("itrex.createCourse")} onPress={createCourse}></Button>
                 </Pressable>
                 <Pressable style={styles.styledButton}>
                     <Button title="Get All Courses" onPress={getAllCourses}></Button>
