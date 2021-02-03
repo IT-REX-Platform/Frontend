@@ -1,5 +1,5 @@
 import { TokenResponse, TokenResponseConfig } from "expo-auth-session";
-import AuthenticationService from "../src/services/AuthenticationService";
+import AuthenticationService from "../../src/services/AuthenticationService";
 
 describe("test Authentication service", () => {
     it("check if singleton returns same instance", () => {

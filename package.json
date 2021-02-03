@@ -75,7 +75,10 @@
             "!**metro.config.js",
             "!**.test.ts",
             "!**/constants/**",
-            "!**.config.*"
+            "!**.config.*",
+            "!**/src/components/CreateCourseComponent.tsx",
+            "!**/src/types/**",
+            "!**/src/api/endpoints_interfaces/**"
         ],
         "testResultsProcessor": "jest-sonar-reporter"
     },

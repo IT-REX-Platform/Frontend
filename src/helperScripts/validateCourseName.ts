@@ -1,20 +1,15 @@
-import { Alert, Platform } from "react-native";
+import { createAlert } from "./createAlert";
 
 export function validateCourseName(courseName: string): boolean {
     if (courseName === "invalid") {
+        createAlert("Course name invalid.");
         return false;
-    } else if (courseName.length > 3) {
-        createAlert("Course created succesfully");
+    }
+
+    if (courseName.length > 3) {
         return true;
     }
+
     createAlert("Course name invalid");
     return false;
-}
-
-function createAlert(message: string) {
-    if (Platform.OS === ("android" || "ios")) {
-        Alert.alert(message);
-    } else {
-        alert(message);
-    }
 }
