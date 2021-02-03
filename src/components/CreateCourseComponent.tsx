@@ -3,23 +3,25 @@ import { useState } from "react";
 import { Button, Text, TextInput, View, StyleSheet, Pressable } from "react-native";
 import { Course, createPostRequest } from "../api/createPostRequest";
 import { sendRequest } from "../api/sendRequest";
+import { LocalizationContext } from "../App";
 import { validateCourseName } from "../helperScripts/validateCourseName";
+import i18n from "../locales";
 
 export const CreateCourseComponent: React.FC = () => {
     const [courseName, setCourseName] = useState("");
-
+    React.useContext(LocalizationContext);
     return (
         <>
             <View style={styles.container}>
                 <View style={styles.StyledInputContainer}>
-                    <Text>Enter Course name:</Text>
+                    <Text>{i18n.t("itrex.enterCourseName")}</Text>
                     <TextInput
                         onChangeText={(text: string) => setCourseName(text)}
                         style={styles.StyledTextInput}
                         testID="courseNameInput"></TextInput>
                 </View>
                 <Pressable style={styles.StyledButton}>
-                    <Button title="Create new Course" onPress={createCourse}></Button>
+                    <Button title={i18n.t("itrex.createCourse")} onPress={createCourse}></Button>
                 </Pressable>
             </View>
         </>
