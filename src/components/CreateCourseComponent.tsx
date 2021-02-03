@@ -16,9 +16,10 @@ const endpointsCourse: EndpointsCourse = new EndpointsCourse();
 const endpointsCourseExtended: EndpointsCourseExtended = new EndpointsCourseExtended();
 
 export const CreateCourseComponent: React.FC = () => {
+    React.useContext(LocalizationContext);
+
     // Enter course name to create course
     const [courseName, setCourseName] = useState("");
-    React.useContext(LocalizationContext);
 
     // Display all courses
     const initialCourseState: ICourse[] = [];
