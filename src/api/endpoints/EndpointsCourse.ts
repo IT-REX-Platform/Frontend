@@ -14,7 +14,7 @@ export class EndpointsCourse implements IEndpointsCourse {
     private url: string;
 
     public constructor() {
-        this.url = itRexVars().apiUrl + ApiUrls.URL_COURSES;
+        this.url = itRexVars().apiUrl + ApiUrls.URL_COURSES_EXTENDED;
     }
 
     public getAllCourses(getRequest: RequestInit): Promise<ICourse[]> {
