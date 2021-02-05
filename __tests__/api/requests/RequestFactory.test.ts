@@ -1,3 +1,4 @@
+import "../../../setupTests.ts";
 import { RequestFactory } from "../../../src/api/requests/RequestFactory";
 import AuthenticationService from "../../../src/services/AuthenticationService";
 import { TokenResponse, TokenResponseConfig } from "expo-auth-session";

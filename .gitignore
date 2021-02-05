@@ -63,6 +63,11 @@ buck-out/
 .expo/*
 web-build/
 
+# VSCode
+.vscode
+
 # TestOutput
 testOutput/
 coverage/
+.scannerwork
+__tests__/__snapshots__/

@@ -1,3 +1,4 @@
+import "../../setupTests.ts";
 import { CreateCourseComponent } from "../../src/components/CreateCourseComponent";
 import "react-native";
 import React from "react";

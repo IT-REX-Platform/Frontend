@@ -1,3 +1,4 @@
+import "../../../setupTests.ts";
 import "react-native";
 import React from "react";
 import { itRexVars } from "../../../src/constants/Constants";

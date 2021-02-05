@@ -1,3 +1,4 @@
+import "../../setupTests.ts";
 import { validateCourseName } from "../../src/helperScripts/validateCourseEntry";
 import { validateCourseDescription } from "../../src/helperScripts/validateCourseEntry";
 
