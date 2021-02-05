@@ -3,7 +3,8 @@ import { useState } from "react";
 import { Button, FlatList, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { ICourse } from "../types/ICourse";
 import { LocalizationContext } from "../App";
-import { validateCourseName } from "../helperScripts/validateCourseName";
+import { validateCourseName } from "../helperScripts/validateCourseEntry";
+import { validateCourseDescription } from "../helperScripts/validateCourseEntry";
 import i18n from "../locales";
 import { RequestFactory } from "../api/requests/RequestFactory";
 import { EndpointsCourse } from "../api/endpoints/EndpointsCourse";
@@ -20,6 +21,9 @@ export const CreateCourseComponent: React.FC = () => {
 
     // Enter course name to create course
     const [courseName, setCourseName] = useState("");
+
+    // Enter course description to create course
+    const [courseDescription, setCourseDescription] = useState("");
 
     // Display all courses
     const initialCourseState: ICourse[] = [];
@@ -42,6 +46,13 @@ export const CreateCourseComponent: React.FC = () => {
                         onChangeText={(text: string) => setCourseName(text)}
                         testID="courseNameInput"></TextInput>
                 </View>
+                <View style={styles.styledInputContainer}>
+                    <Text>{i18n.t("itrex.enterCourseDescription")}</Text>
+                    <TextInput
+                        style={styles.styledTextInput}
+                        onChangeText={(text: string) => setCourseDescription(text)}
+                        testID="courseDescriptionInput"></TextInput>
+                </View>
                 <Pressable style={styles.styledButton}>
                     <Button title={i18n.t("itrex.createCourse")} onPress={createCourse}></Button>
                 </Pressable>
@@ -51,7 +62,9 @@ export const CreateCourseComponent: React.FC = () => {
                 <FlatList
                     data={courses}
                     renderItem={({ item }) => (
-                        <Text style={{}}>{item.id + "\t" + item.publishState + "\t" + item.name}</Text>
+                        <Text style={{}}>
+                            {item.id + "\t" + item.publishState + "\t" + item.name + "\t" + item.description}
+                        </Text>
                     )}
                     keyExtractor={(item, index) => String(index)}
                 />
@@ -88,15 +101,21 @@ export const CreateCourseComponent: React.FC = () => {
 
     function createCourse(): void {
         loggerService.trace(`Validating course name: ${courseName}.`);
+
         if (validateCourseName(courseName) == false) {
             loggerService.warn("Course name invalid.");
             return;
+        }
+
+        if (validateCourseDescription(courseDescription) == false) {
+            loggerService.warn("Course description invalid.");
         }
 
         const currentDate: Date = new Date();
         const course: ICourse = {
             name: courseName,
             startDate: currentDate,
+            description: courseDescription,
             publishState: CoursePublishState.UNPUBLISHED,
         };
 
