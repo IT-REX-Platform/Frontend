@@ -1,7 +1,7 @@
 import { UploadVideoComponent } from "../../src/components/UploadVideoComponent";
 import "react-native";
 import React from "react";
-import { render } from "@testing-library/react-native";
+import { fireEvent, render } from "@testing-library/react-native";
 
 jest.mock("../../src/constants/Constants", () => {
     const mockFunctionOutput = {
@@ -18,10 +18,31 @@ jest.mock("../../src/constants/Constants", () => {
     };
 });
 
+const mockedDocument = jest.fn(() => {});
+jest.mock("expo-document-picker", () => {
+    return { getDocumentAsync: mockedDocument };
+});
+
 describe("test upload video component", () => {
     it("see if stuff is rendered", () => {
         const { getByText } = render(<UploadVideoComponent></UploadVideoComponent>);
 
         expect(getByText("Browse Files")).toBeDefined();
+    });
+
+    it("test document picker", () => {
+        const { getByText } = render(<UploadVideoComponent></UploadVideoComponent>);
+
+        expect(mockedDocument).not.toBeCalled;
+
+        fireEvent.press(getByText("Browse Files"));
+
+        expect(mockedDocument).toBeCalled;
+    });
+
+    it("test upload video", () => {
+        const { getByText } = render(<UploadVideoComponent></UploadVideoComponent>);
+
+        fireEvent.press(getByText("Upload Video"));
     });
 });

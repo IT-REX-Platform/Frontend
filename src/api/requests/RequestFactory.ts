@@ -1,6 +1,6 @@
 import { RequestAuthorization } from "./RequestAuthorization";
 import { ICourse } from "../../types/ICourse";
-import { IMedia } from "../../types/IMedia";
+import { IVideo } from "../../types/IVideo";
 
 /**
  * Class for backend request creation.
@@ -12,15 +12,23 @@ export class RequestFactory {
         return request;
     }
 
-    public static createPostRequest(object: ICourse | IMedia): RequestInit {
+    public static createPostRequest(object: ICourse | IVideo): RequestInit {
         return RequestFactory.createPostOrPutRequest("POST", object);
     }
 
-    public static createPutRequest(object: ICourse | IMedia): RequestInit {
+    public static createPostRequestWithFormData(formdata: FormData): RequestInit {
+        const request: RequestInit = RequestAuthorization.createAuthorizedRequest();
+        request.method = "POST";
+        request.body = formdata;
+
+        return request;
+    }
+
+    public static createPutRequest(object: ICourse | IVideo): RequestInit {
         return RequestFactory.createPostOrPutRequest("PUT", object);
     }
 
-    private static createPostOrPutRequest(httpMethod: string, object: ICourse | IMedia): RequestInit {
+    private static createPostOrPutRequest(httpMethod: string, object: ICourse | IVideo): RequestInit {
         const request: RequestInit = RequestAuthorization.createAuthorizedRequest();
 
         request.method = httpMethod;
