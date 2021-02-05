@@ -60,7 +60,7 @@
     "jest": {
         "globals": {
             "ts-jest": {
-                "tsConfig": "jest.config.ts"
+                "tsConfig": "jest.config.json"
             }
         }
     },
