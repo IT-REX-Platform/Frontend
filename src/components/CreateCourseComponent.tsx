@@ -36,6 +36,10 @@ export const CreateCourseComponent: React.FC = () => {
     const initialPublishedCourseState: ICourse[] = [];
     const [coursesPublished, setCoursesPublished] = useState(initialPublishedCourseState);
 
+    function checkIfUndefined(value: string | undefined): string {
+        return value ? value : "";
+    }
+
     return (
         <ScrollView>
             <View style={styles.container}>
@@ -63,7 +67,13 @@ export const CreateCourseComponent: React.FC = () => {
                     data={courses}
                     renderItem={({ item }) => (
                         <Text style={{}}>
-                            {item.id + "\t" + item.publishState + "\t" + item.name + "\t" + item.description}
+                            {item.id +
+                                "\t" +
+                                item.publishState +
+                                "\t" +
+                                item.name +
+                                "\t" +
+                                (item.courseDescription ? item.courseDescription : "")}
                         </Text>
                     )}
                     keyExtractor={(item, index) => String(index)}
@@ -115,7 +125,7 @@ export const CreateCourseComponent: React.FC = () => {
         const course: ICourse = {
             name: courseName,
             startDate: currentDate,
-            description: courseDescription,
+            courseDescription: courseDescription ? courseDescription : undefined,
             publishState: CoursePublishState.UNPUBLISHED,
         };
 
