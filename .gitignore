@@ -69,3 +69,4 @@ web-build/
 # TestOutput
 testOutput/
 coverage/
+.scannerwork
