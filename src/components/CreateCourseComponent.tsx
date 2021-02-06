@@ -36,10 +36,6 @@ export const CreateCourseComponent: React.FC = () => {
     const initialPublishedCourseState: ICourse[] = [];
     const [coursesPublished, setCoursesPublished] = useState(initialPublishedCourseState);
 
-    function checkIfUndefined(value: string | undefined): string {
-        return value ? value : "";
-    }
-
     return (
         <ScrollView>
             <View style={styles.container}>
