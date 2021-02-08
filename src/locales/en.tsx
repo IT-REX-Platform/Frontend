@@ -9,7 +9,6 @@ export const en = {
         publishCourse: "Publish Course",
         getPublishedCourses: "Get Published Courses",
         deleteCourse: "Delete Course",
-        uploadVideo: "Upload Video here",
         videoName: "Document here",
         browseFiles: "Browse Files",
         localeLanguage: "Current locale:",

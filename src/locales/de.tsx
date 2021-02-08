@@ -9,7 +9,6 @@ export const de = {
         publishCourse: "Kurs veröffentlichen",
         getPublishedCourses: "Alle veröffentlichte Kurse holen",
         deleteCourse: "Kurs löschen",
-        uploadVideo: "Video hier hochladen:",
         videoName: "Video hier ablegen",
         browseFiles: "Dateien durchsuchen",
         localeLanguage: "Aktueller Standort:",

@@ -29,7 +29,10 @@ export const UploadVideoComponent: React.FC = () => {
         const video = await buildVideoAsFormData();
         const postRequest = RequestFactory.createPostRequestWithFormData(video);
 
-        return await endpointsVideoExtended.uploadVideo(postRequest);
+        const response = await endpointsVideoExtended.uploadVideo(postRequest);
+
+        resetState();
+        return response;
     };
 
     const buildVideoAsFormData = async () => {
@@ -39,18 +42,23 @@ export const UploadVideoComponent: React.FC = () => {
         return formData;
     };
 
+    const resetState = () => {
+        setVideoUri("");
+        setVideoName("");
+    };
+
     return (
         <>
             <View style={styles.container}>
                 <View style={styles.StyledInputContainer}>
                     <Text>{i18n.t("itrex.uploadVideoHere")}</Text>
-                    <TextInput style={styles.StyledTextInput}></TextInput>
+                    <TextInput value={videoName} style={styles.StyledTextInput}></TextInput>
                     <Pressable style={styles.StyledButton}>
                         <Button title={i18n.t("itrex.browseFiles")} onPress={pickDocument}></Button>
                     </Pressable>
                 </View>
                 <Pressable style={styles.StyledButton}>
-                    <Button title="Upload Video" onPress={uploadVideo}></Button>
+                    <Button title={i18n.t("itrex.toUploadVideo")} onPress={uploadVideo}></Button>
                 </Pressable>
             </View>
         </>
