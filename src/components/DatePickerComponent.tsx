@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import React, { useState } from "react";
 import { Button, Platform, Text } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -8,7 +9,6 @@ interface DatePickerProps {
     onDateChanged: (event: any, selectedDate?: Date) => void;
 }
 
-// eslint-disable-next-line complexity
 export const DatePickerComponent: React.FC<DatePickerProps> = (props) => {
     const { title, date, onDateChanged } = props;
 
@@ -17,9 +17,12 @@ export const DatePickerComponent: React.FC<DatePickerProps> = (props) => {
         onDateChanged(event, selectedDate);
     }
 
+    const lastPickedDate = date ? date : new Date();
+
     const [show, setShow] = useState(false);
 
-    if (Platform.OS === ("android" || "ios")) {
+    const mobile: boolean = Platform.OS === ("android" || "ios");
+    if (mobile) {
         return (
             <>
                 <Button
@@ -31,11 +34,12 @@ export const DatePickerComponent: React.FC<DatePickerProps> = (props) => {
                 {show && (
                     <DateTimePicker
                         testID="dateTimePicker"
-                        value={date ? date : new Date()}
+                        value={lastPickedDate}
                         mode="date"
                         is24Hour={true}
                         display="default"
-                        onChange={closeDatePicker}></DateTimePicker>
+                        onChange={closeDatePicker}
+                    />
                 )}
                 {date && <Text>{date.toISOString()}</Text>}
             </>
@@ -45,7 +49,6 @@ export const DatePickerComponent: React.FC<DatePickerProps> = (props) => {
     return (
         <>
             <Text>{title}</Text>
-            {/* <input type="date" onChange={webDateChanged} value={date.toISOString()}></input> */}
             <input
                 type="date"
                 onChange={onDateChanged}
