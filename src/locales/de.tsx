@@ -22,5 +22,6 @@ export const de = {
         toUploadVideo: "Video-Upload",
         uploadVideoHere: "Video hier einfügen:",
         switchLangEN: "Zu Englisch wechseln",
+        courseDetails: "Kurs-Details",
     },
 };

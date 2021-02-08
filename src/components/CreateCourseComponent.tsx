@@ -1,6 +1,16 @@
 import React from "react";
 import { useState } from "react";
-import { Button, FlatList, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+    Button,
+    FlatList,
+    Pressable,
+    ScrollView,
+    StyleSheet,
+    TouchableOpacity,
+    Text,
+    TextInput,
+    View,
+} from "react-native";
 import { ICourse } from "../types/ICourse";
 import { LocalizationContext } from "../App";
 import { validateCourseName } from "../helperScripts/validateCourseEntry";
@@ -11,6 +21,9 @@ import { EndpointsCourse } from "../api/endpoints/EndpointsCourse";
 import { loggerFactory } from "../../logger/LoggerConfig";
 import { CoursePublishState } from "../constants/CoursePublishState";
 import { EndpointsCourseExtended } from "../api/endpoints/EndpointsCourseExtended";
+import { useNavigation } from "@react-navigation/native";
+import { NavigationRoutes } from "../constants/NavigationRoutes";
+import { TouchableHighlight } from "react-native-gesture-handler";
 
 const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");
 const endpointsCourse: EndpointsCourse = new EndpointsCourse();
@@ -18,6 +31,7 @@ const endpointsCourseExtended: EndpointsCourseExtended = new EndpointsCourseExte
 
 export const CreateCourseComponent: React.FC = () => {
     React.useContext(LocalizationContext);
+    const navigation = useNavigation();
 
     // Enter course name to create course
     const [courseName, setCourseName] = useState("");
@@ -59,22 +73,28 @@ export const CreateCourseComponent: React.FC = () => {
                 <Pressable style={styles.styledButton}>
                     <Button title={i18n.t("itrex.getAllCourses")} onPress={getAllCourses}></Button>
                 </Pressable>
+
                 <FlatList
                     data={courses}
                     renderItem={({ item }) => (
-                        <Text style={{}}>
-                            {item.id +
-                                "\t" +
-                                item.publishState +
-                                "\t" +
-                                item.name +
-                                "\t" +
-                                (item.courseDescription ? item.courseDescription : "")}
-                        </Text>
+                        <>
+                            <TouchableOpacity key={item.id} onPress={() => onPress(item)}>
+                                <View style={{ backgroundColor: "white" }}>
+                                    <Text style={styles.item}>
+                                        {item.id +
+                                            "\t" +
+                                            item.publishState +
+                                            "\t" +
+                                            item.name +
+                                            "\t" +
+                                            (item.courseDescription ? item.courseDescription : "")}
+                                    </Text>
+                                </View>
+                            </TouchableOpacity>
+                        </>
                     )}
                     keyExtractor={(item, index) => String(index)}
                 />
-
                 <View style={styles.separator}></View>
 
                 <View style={styles.styledInputContainer}>
@@ -104,6 +124,10 @@ export const CreateCourseComponent: React.FC = () => {
             </View>
         </ScrollView>
     );
+
+    function onPress(item: ICourse) {
+        navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, { item: item, name: item.name });
+    }
 
     function createCourse(): void {
         loggerService.trace(`Validating course name: ${courseName}.`);
@@ -207,5 +231,10 @@ const styles = StyleSheet.create({
         backgroundColor: "#eeeeee",
         padding: 2,
         margin: 10,
+    },
+    item: {
+        padding: 10,
+        fontSize: 18,
+        height: 44,
     },
 });

@@ -11,6 +11,7 @@ import { CreateCourseComponent } from "./components/CreateCourseComponent";
 import { LoginComponent } from "./components/LoginComponent";
 import { UploadVideoComponent } from "./components/UploadVideoComponent";
 import React from "react";
+import { CourseDetailsComponent } from "./components/CourseDetailsComponent";
 
 const loggerService = loggerFactory.getLogger("service.App");
 
@@ -58,6 +59,11 @@ function App(): ReactElement {
                         name={NavigationRoutes.ROUTE_UPLOAD_VIDEO}
                         component={UploadVideoComponent}
                         options={{ title: i18n.t("itrex.toUploadVideo") }}
+                    />
+                    <Stack.Screen
+                        name={NavigationRoutes.ROUTE_COURSE_DETAILS}
+                        component={CourseDetailsComponent}
+                        options={({ route }) => ({ title: route.params.name })}
                     />
                 </Stack.Navigator>
                 {locale == "en" || locale == "en-GB" || locale == "en-US" ? (
