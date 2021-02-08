@@ -149,7 +149,7 @@ export const CreateCourseComponent: React.FC = () => {
         };
 
         loggerService.trace(`Updating course: name=${courseName}, publishedState=${CoursePublishState.PUBLISHED}.`);
-        const putRequest: RequestInit = RequestFactory.createPutRequest(course);
+        const putRequest: RequestInit = RequestFactory.createPatchRequest(course);
         endpointsCourse.updateCourse(putRequest).then((data) => console.log(data));
     }
 
