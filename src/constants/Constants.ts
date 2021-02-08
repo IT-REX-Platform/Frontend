@@ -1,13 +1,13 @@
 import Constants from "expo-constants";
 
-interface ITREX_VARIABLES {
+interface IItrexVariables {
     apiUrl: string;
     authEndpoint: string;
     authTokenEndpoint: string;
     channel: string;
 }
 
-export default function ITREXVARS(): ITREX_VARIABLES {
-    const releaseChannel = Constants.manifest.extra.variables;
+export function itRexVars(): IItrexVariables {
+    const releaseChannel = Constants.manifest.extra;
     return releaseChannel;
 }

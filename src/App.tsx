@@ -1,28 +1,45 @@
-import React from "react";
+/* eslint-disable complexity */
+import { ReactElement } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { loggerFactory } from "./logger/LoggerConfig";
-import { NavigationRoutes } from "./src/constants/NavigationRoutes";
-import { ActivityIndicator, Linking } from "react-native";
-import { CreateCourseComponent } from "./src/components/CreateCourseComponent";
-import { LoginComponent } from "./src/components/LoginComponent";
-import { HomeComponent } from "./src/components/HomeComponent";
-import { UploadVideoComponent } from "./src/components/UploadVideoComponent";
-import TestComponent from "./src/components/TestComponent";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { AuthContext } from "./src/components/Context";
-import AuthenticationService from "./src/services/AuthenticationService";
+import { loggerFactory } from "../logger/LoggerConfig";
+import { NavigationRoutes } from "./constants/NavigationRoutes";
+import { ActivityIndicator, Button, Linking, SafeAreaView } from "react-native";
+import i18n from "./locales/index";
+import * as Localization from "expo-localization";
+import { HomeComponent } from "./components/HomeComponent";
+import { CreateCourseComponent } from "./components/CreateCourseComponent";
+import { LoginComponent } from "./components/LoginComponent";
+import { UploadVideoComponent } from "./components/UploadVideoComponent";
+import React from "react";
+import { AuthContext } from "./components/Context";
+import { LoggedInStack } from "./navigation/LoggedInStack";
+import { LoggedOutStack } from "./navigation/LoggedOutStack";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import AuthenticationService from "./services/AuthenticationService";
 import * as AuthSession from "expo-auth-session";
-import { LoggedInStack } from "./src/navigation/LoggedInStack";
-import { LoggedOutStack } from "./src/navigation/LoggedOutStack";
-import { IAuthContext } from "./src/components/Context";
+import { IAuthContext } from "./components/Context";
 
 const loggerService = loggerFactory.getLogger("service.App");
 
-function App(): JSX.Element {
+export const LocalizationContext = React.createContext({});
+
+function App(): ReactElement {
     Linking.addEventListener("login", (url) => {
         loggerService.trace("URL" + url);
     });
+
+    // Language Switch (save locale as const)
+    const [locale, setLocale] = React.useState(Localization.locale);
+    i18n.locale = locale;
+    const localizationContext = React.useMemo(
+        () => ({
+            t: (scope: i18n.Scope, options: i18n.TranslateOptions | undefined) => i18n.t(scope, { locale, ...options }),
+            locale,
+            setLocale,
+        }),
+        [locale]
+    );
 
     const initialLoginState = {
         isLoading: true,
@@ -92,33 +109,12 @@ function App(): JSX.Element {
 
     return (
         <AuthContext.Provider value={authContext}>
-            <NavigationContainer>
-                {loginState.userInfo != null ? <LoggedInStack /> : <LoggedOutStack />}
-            </NavigationContainer>
+            <LocalizationContext.Provider value={localizationContext}>
+                <NavigationContainer>
+                    {loginState.userInfo != null ? <LoggedInStack /> : <LoggedOutStack />}
+                </NavigationContainer>
+            </LocalizationContext.Provider>
         </AuthContext.Provider>
-        /*
-        <NavigationContainer>
-            <Stack.Navigator initialRouteName={NavigationRoutes.ROUTE_HOME}>
-                <Stack.Screen name={NavigationRoutes.ROUTE_HOME} component={HomeScreen} options={{ title: "Home" }} />
-                <Stack.Screen
-                    name={NavigationRoutes.ROUTE_LOGIN}
-                    component={LoginScreen}
-                    options={{ title: "Login" }}
-                />
-                <Stack.Screen
-                    name={NavigationRoutes.ROUTE_CREATE_COURSE}
-                    component={CreateCourseScreen}
-                    options={{ title: "Create Course" }}
-                />
-                <Stack.Screen
-                    name={NavigationRoutes.ROUTE_UPLOAD_VIDEO}
-                    component={UploadVideoScreen}
-                    options={{ title: "Upload Video" }}
-                />
-                <Stack.Screen name={NavigationRoutes.ROUTE_TEST} component={TestScreen} options={{ title: "Test" }} />
-            </Stack.Navigator>
-        </NavigationContainer>
-        */
     );
 }
 export default App;

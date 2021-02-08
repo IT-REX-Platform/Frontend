@@ -12,12 +12,15 @@
     "dependencies": {
         "@react-native-community/masked-view": "0.1.10",
         "@react-navigation/native": "^5.9.2",
-        "@react-navigation/stack": "^5.14.1",
+        "@react-navigation/stack": "^5.14.2",
+        "@unimodules/core": "~6.0.0",
         "expo": "~40.0.0",
         "expo-auth-session": "~3.0.0",
+        "expo-localization": "~9.1.0",
         "expo-random": "~10.0.0",
         "expo-splash-screen": "~0.8.0",
         "expo-updates": "~0.4.0",
+        "i18n-js": "^3.8.0",
         "react": "16.13.1",
         "react-dom": "16.13.1",
         "react-native": "~0.63.4",
@@ -30,10 +33,13 @@
     },
     "devDependencies": {
         "@babel/core": "~7.9.0",
+        "@testing-library/react-native": "^7.1.0",
+        "@types/i18n-js": "^3.8.0",
         "@types/jest": "^26.0.20",
         "@types/react": "~16.9.35",
         "@types/react-dom": "~16.9.8",
         "@types/react-native": "~0.63.2",
+        "@types/react-test-renderer": "^17.0.0",
         "@typescript-eslint/eslint-plugin": "^4.11.0",
         "@typescript-eslint/parser": "^4.11.0",
         "babel-preset-expo": "~8.3.0",
@@ -45,25 +51,18 @@
         "jest-sonar-reporter": "^2.0.0",
         "prettier": "2.2.1",
         "pretty-quick": "^3.1.0",
+        "react-test-renderer": "16.14.0",
         "sonarqube-scanner": "^2.8.0",
+        "ts-jest": "^26.4.4",
         "typescript": "~4.0.0",
         "typescript-logging": "^1.0.0"
     },
     "jest": {
-        "preset": "jest-expo/universal",
-        "collectCoverage": true,
-        "collectCoverageFrom": [
-            "**/*.{js,jsx,ts,tsx}",
-            "!**/coverage/**",
-            "!**/node_modules/**",
-            "!**/logger/**",
-            "!**/web-build/**",
-            "!**analyze.js",
-            "!**babel.config.js",
-            "!**index.js",
-            "!**metro.config.js"
-        ],
-        "testResultsProcessor": "jest-sonar-reporter"
+        "globals": {
+            "ts-jest": {
+                "tsConfig": "jest.config.json"
+            }
+        }
     },
     "jestSonar": {
         "reportPath": "./coverage",

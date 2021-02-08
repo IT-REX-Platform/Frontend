@@ -5,20 +5,21 @@ import { AuthContext } from "../Context";
 
 import * as WebBrowser from "expo-web-browser";
 import * as AuthSession from "expo-auth-session";
-import ITREXVARS from "../../Constants";
+import { itRexVars } from "../../constants/Constants";
+import i18n from "../../locales";
+import AuthenticationService from "../../services/AuthenticationService";
 
 WebBrowser.maybeCompleteAuthSession();
-
-// Endpoint
-const discovery = {
-    authorizationEndpoint: ITREXVARS().authEndpoint,
-    tokenEndpoint: ITREXVARS().authTokenEndpoint,
-};
 
 export const ScreenLogin: React.FC = () => {
     const { signIn } = React.useContext(AuthContext);
 
-    const [authToken, setTokenResponse] = React.useState<AuthSession.TokenResponse>();
+    //const [authToken, ] = React.useState<AuthSession.TokenResponse>();
+
+    const discovery = {
+        authorizationEndpoint: itRexVars().authEndpoint,
+        tokenEndpoint: itRexVars().authTokenEndpoint,
+    };
 
     const [, authResponse, promptAuthentication] = AuthSession.useAuthRequest(
         {
@@ -42,24 +43,19 @@ export const ScreenLogin: React.FC = () => {
         console.log("auth");
 
         if (authResponse?.type === "success" && authResponse.authentication != null) {
-            setTokenResponse(authResponse.authentication);
+            AuthenticationService.getInstance().setTokenResponse(authResponse.authentication);
             signIn(authResponse.authentication);
-
-            // authenticationService.setTokenResponse(authResponse.authentication);
-            // AuthenticationService.getInstance().setTokenResponse(authResponse.authentication);
         }
     }, [authResponse]);
 
     return (
         <View style={styles.container}>
-            <Image source={{}}></Image>
-            <Text style={styles.title}>Welcome</Text>
             <TouchableOpacity
                 style={styles.button}
                 onPress={() => {
                     promptAuthentication();
                 }}>
-                <Text style={styles.buttonText}>Login</Text>
+                <Text style={styles.buttonText}>{i18n.t("itrex.login")}</Text>
             </TouchableOpacity>
         </View>
     );
