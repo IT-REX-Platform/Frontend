@@ -19,10 +19,37 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import AuthenticationService from "./services/AuthenticationService";
 import * as AuthSession from "expo-auth-session";
 import { IAuthContext } from "./components/Context";
+import { ILoginReducerAction, ILoginReducerState } from "./types/ILoginReducer";
 
 const loggerService = loggerFactory.getLogger("service.App");
 
 export const LocalizationContext = React.createContext({});
+
+function loginReducer(prevState: ILoginReducerState, action: ILoginReducerAction): ILoginReducerState {
+    switch (action.type) {
+        case "RESTORE_TOKEN":
+            return {
+                ...prevState,
+                userInfo: null,
+                isLoading: false,
+            } as ILoginReducerState;
+        case "LOGIN":
+            AuthenticationService.getInstance().setTokenResponse(action.userInfo);
+            return {
+                ...prevState,
+                userInfo: action.userInfo,
+                isLoading: false,
+            } as ILoginReducerState;
+        case "LOGOUT":
+            return {
+                ...prevState,
+                userInfo: null,
+                isLoading: false,
+            } as ILoginReducerState;
+    }
+
+    return {} as ILoginReducerState;
+}
 
 function App(): ReactElement {
     Linking.addEventListener("login", (url) => {
@@ -41,33 +68,9 @@ function App(): ReactElement {
         [locale]
     );
 
-    const initialLoginState = {
+    const initialLoginState: ILoginReducerState = {
         isLoading: true,
         userInfo: null,
-    };
-
-    const loginReducer = (prevState, action) => {
-        switch (action.type) {
-            case "RESTORE_TOKEN":
-                return {
-                    ...prevState,
-                    userInfo: null,
-                    isLoading: false,
-                };
-            case "LOGIN":
-                console.log("LOGIN");
-                return {
-                    ...prevState,
-                    userInfo: action.userInfo,
-                    isLoading: false,
-                };
-            case "LOGOUT":
-                return {
-                    ...prevState,
-                    userInfo: null,
-                    isLoading: false,
-                };
-        }
     };
 
     const [loginState, dispatch] = React.useReducer(loginReducer, initialLoginState);
@@ -75,13 +78,12 @@ function App(): ReactElement {
     const authContext = React.useMemo<IAuthContext>(
         () => ({
             signIn: (userInfo: AuthSession.TokenResponse) => {
-                dispatch({ type: "LOGIN", userInfo: userInfo });
+                dispatch({ type: "LOGIN", userInfo: userInfo } as ILoginReducerAction);
                 // We call it doppelt gemoppelt
                 //TODO: Store in context ?
-                AuthenticationService.getInstance().setTokenResponse(userInfo);
             },
             signOut: () => {
-                dispatch({ type: "LOGOUT" });
+                dispatch({ type: "LOGOUT" } as ILoginReducerAction);
             },
             getUserInfo: () => {
                 return loginState;
@@ -92,8 +94,8 @@ function App(): ReactElement {
 
     React.useEffect(() => {
         setTimeout(() => {
-            //TODO: Load from local storage
-            dispatch({ type: "RESTORE_TOKEN", token: "myCoolToken" });
+            //TODO: Load Token from local-Storage
+            dispatch({ type: "RESTORE_TOKEN", token: "myCoolToken" } as ILoginReducerAction);
         }, 1000);
     }, []);
 
@@ -112,6 +114,12 @@ function App(): ReactElement {
             <LocalizationContext.Provider value={localizationContext}>
                 <NavigationContainer>
                     {loginState.userInfo != null ? <LoggedInStack /> : <LoggedOutStack />}
+
+                    {locale == "en" || locale == "en-GB" || locale == "en-US" ? (
+                        <Button title={i18n.t("itrex.switchLangDE")} onPress={() => setLocale("de-DE")} />
+                    ) : (
+                        <Button title={i18n.t("itrex.switchLangEN")} onPress={() => setLocale("en")} />
+                    )}
                 </NavigationContainer>
             </LocalizationContext.Provider>
         </AuthContext.Provider>

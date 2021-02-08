@@ -14,8 +14,6 @@ WebBrowser.maybeCompleteAuthSession();
 export const ScreenLogin: React.FC = () => {
     const { signIn } = React.useContext(AuthContext);
 
-    //const [authToken, ] = React.useState<AuthSession.TokenResponse>();
-
     const discovery = {
         authorizationEndpoint: itRexVars().authEndpoint,
         tokenEndpoint: itRexVars().authTokenEndpoint,
@@ -43,7 +41,6 @@ export const ScreenLogin: React.FC = () => {
         console.log("auth");
 
         if (authResponse?.type === "success" && authResponse.authentication != null) {
-            AuthenticationService.getInstance().setTokenResponse(authResponse.authentication);
             signIn(authResponse.authentication);
         }
     }, [authResponse]);
