@@ -1,6 +1,6 @@
-import React from "react";
+import React, { ChangeEvent, useEffect } from "react";
 import { useState } from "react";
-import { Button, FlatList, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { Button, FlatList, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { ICourse } from "../types/ICourse";
 import { LocalizationContext } from "../App";
 import { validateCourseName } from "../helperScripts/validateCourseEntry";
@@ -11,6 +11,7 @@ import { EndpointsCourse } from "../api/endpoints/EndpointsCourse";
 import { loggerFactory } from "../../logger/LoggerConfig";
 import { CoursePublishState } from "../constants/CoursePublishState";
 import { EndpointsCourseExtended } from "../api/endpoints/EndpointsCourseExtended";
+import { DatePickerComponent } from "./DatePickerComponent";
 
 const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");
 const endpointsCourse: EndpointsCourse = new EndpointsCourse();
@@ -35,6 +36,40 @@ export const CreateCourseComponent: React.FC = () => {
     // Display all published courses
     const initialPublishedCourseState: ICourse[] = [];
     const [coursesPublished, setCoursesPublished] = useState(initialPublishedCourseState);
+
+    // Start- and Enddate for a published course
+    const [startDate, setStartDate] = useState<Date | undefined>(undefined);
+    const [endDate, setEndDate] = useState<Date | undefined>(undefined);
+
+    useEffect(() => {
+        console.log(startDate);
+        console.log(endDate);
+        if (endDate && startDate) {
+            // Check values / Compare them here
+        }
+    }, [startDate, endDate]);
+
+    const startDateChanged = (event: any, selectedDate?: Date) => {
+        if (Platform.OS === ("android" || "ios")) {
+            const currentDate = selectedDate || startDate;
+            setStartDate(currentDate);
+        } else {
+            const target: HTMLInputElement = event.target as HTMLInputElement;
+            const currdate: Date = new Date(target.value);
+            setStartDate(currdate);
+        }
+    };
+
+    const endDateChanged = (event: any, selectedDate?: Date) => {
+        if (Platform.OS === ("android" || "ios")) {
+            const currentDate = selectedDate || endDate;
+            setEndDate(currentDate);
+        } else {
+            const target: HTMLInputElement = event.target as HTMLInputElement;
+            const currdate: Date = new Date(target.value);
+            setEndDate(currdate);
+        }
+    };
 
     return (
         <ScrollView>
@@ -101,6 +136,15 @@ export const CreateCourseComponent: React.FC = () => {
                 <Pressable style={styles.styledButton}>
                     <Button title={i18n.t("itrex.deleteCourse")} onPress={deleteCourse}></Button>
                 </Pressable>
+
+                <DatePickerComponent
+                    title="startDate"
+                    date={startDate}
+                    onDateChanged={startDateChanged}></DatePickerComponent>
+                <DatePickerComponent
+                    title="endDate"
+                    date={endDate}
+                    onDateChanged={endDateChanged}></DatePickerComponent>
             </View>
         </ScrollView>
     );
@@ -141,6 +185,8 @@ export const CreateCourseComponent: React.FC = () => {
     function updateCourse(): void {
         loggerService.trace("Parsing ID string to ID number");
         const courseIdNumber: number = parseCourseId();
+
+        // TODO: Validation: Check if start and Enddate are set
 
         // ATTENTION: fields without values will be overwritten with null in DB. @s.pastuchov 27.01.21
         const course: ICourse = {
