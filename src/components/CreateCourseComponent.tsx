@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { Button, FlatList, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { ICourse } from "../types/ICourse";
@@ -12,7 +12,6 @@ import { loggerFactory } from "../../logger/LoggerConfig";
 import { CoursePublishState } from "../constants/CoursePublishState";
 import { EndpointsCourseExtended } from "../api/endpoints/EndpointsCourseExtended";
 import { DatePickerComponent } from "./DatePickerComponent";
-import { createAlert } from "../helperScripts/createAlert";
 import { validateCourseDates } from "../helperScripts/validateCourseDates";
 
 const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");

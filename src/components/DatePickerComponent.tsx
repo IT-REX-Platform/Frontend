@@ -22,14 +22,12 @@ export const DatePickerComponent: React.FC<DatePickerProps> = (props) => {
     // Year-Month-Date format string of last selected value
     let yyyymmdd = "";
     if (lastPickedDate) {
-        yyyymmdd = lastPickedDate.toISOString().substr(0, 10);
+        yyyymmdd = lastPickedDate?.toISOString().substr(0, 10);
     }
 
     const [show, setShow] = useState(false);
 
     const mobile: boolean = Platform.OS === ("android" || "ios");
-
-    console.log("yeet");
 
     if (mobile) {
         return (
@@ -43,9 +41,8 @@ export const DatePickerComponent: React.FC<DatePickerProps> = (props) => {
                 {show && (
                     <DateTimePicker
                         testID="dateTimePicker"
-                        value={lastPickedDate}
+                        value={lastPickedDate ? lastPickedDate : new Date()}
                         mode="date"
-                        is24Hour={true}
                         display="default"
                         onChange={closeDatePicker}
                     />
