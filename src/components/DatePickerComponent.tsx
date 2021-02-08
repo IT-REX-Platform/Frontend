@@ -17,11 +17,20 @@ export const DatePickerComponent: React.FC<DatePickerProps> = (props) => {
         onDateChanged(event, selectedDate);
     }
 
-    const lastPickedDate = date ? date : new Date();
+    const lastPickedDate = date ? date : undefined;
+
+    // Year-Month-Date format string of last selected value
+    let yyyymmdd = "";
+    if (lastPickedDate) {
+        yyyymmdd = lastPickedDate.toISOString().substr(0, 10);
+    }
 
     const [show, setShow] = useState(false);
 
     const mobile: boolean = Platform.OS === ("android" || "ios");
+
+    console.log("yeet");
+
     if (mobile) {
         return (
             <>
@@ -49,10 +58,7 @@ export const DatePickerComponent: React.FC<DatePickerProps> = (props) => {
     return (
         <>
             <Text>{title}</Text>
-            <input
-                type="date"
-                onChange={onDateChanged}
-                value={date ? date.toISOString() : new Date().toISOString()}></input>
+            <input type="date" onChange={onDateChanged} value={yyyymmdd}></input>
             {date && <Text>{date.toISOString()}</Text>}
         </>
     );

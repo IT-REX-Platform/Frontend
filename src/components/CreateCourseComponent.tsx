@@ -12,6 +12,8 @@ import { loggerFactory } from "../../logger/LoggerConfig";
 import { CoursePublishState } from "../constants/CoursePublishState";
 import { EndpointsCourseExtended } from "../api/endpoints/EndpointsCourseExtended";
 import { DatePickerComponent } from "./DatePickerComponent";
+import { createAlert } from "../helperScripts/createAlert";
+import { validateCourseDates } from "../helperScripts/validateCourseDates";
 
 const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");
 const endpointsCourse: EndpointsCourse = new EndpointsCourse();
@@ -38,18 +40,31 @@ export const CreateCourseComponent: React.FC = () => {
     const [coursesPublished, setCoursesPublished] = useState(initialPublishedCourseState);
 
     // Start- and Enddate for a published course
-    const [startDate, setStartDate] = useState<Date | undefined>(undefined);
+    const [lastChangedDate, setLastChangedDate] = useState<"startDate" | "endDate" | undefined>(undefined);
+    const [startDate, setStartDate] = useState<Date | undefined>(new Date());
     const [endDate, setEndDate] = useState<Date | undefined>(undefined);
 
     useEffect(() => {
         console.log(startDate);
         console.log(endDate);
         if (endDate && startDate) {
-            // Check values / Compare them here
+            if (!validateCourseDates(startDate, endDate)) {
+                // Remove the Date because the combination is not ok
+                removeLastDateEntry();
+            }
         }
     }, [startDate, endDate]);
 
+    function removeLastDateEntry(): void {
+        if (lastChangedDate === "startDate") {
+            setStartDate(undefined);
+        } else {
+            setEndDate(undefined);
+        }
+    }
+
     const startDateChanged = (event: any, selectedDate?: Date) => {
+        setLastChangedDate("startDate");
         if (Platform.OS === ("android" || "ios")) {
             const currentDate = selectedDate || startDate;
             setStartDate(currentDate);
@@ -61,6 +76,7 @@ export const CreateCourseComponent: React.FC = () => {
     };
 
     const endDateChanged = (event: any, selectedDate?: Date) => {
+        setLastChangedDate("endDate");
         if (Platform.OS === ("android" || "ios")) {
             const currentDate = selectedDate || endDate;
             setEndDate(currentDate);
@@ -137,14 +153,20 @@ export const CreateCourseComponent: React.FC = () => {
                     <Button title={i18n.t("itrex.deleteCourse")} onPress={deleteCourse}></Button>
                 </Pressable>
 
-                <DatePickerComponent
-                    title="startDate"
-                    date={startDate}
-                    onDateChanged={startDateChanged}></DatePickerComponent>
-                <DatePickerComponent
-                    title="endDate"
-                    date={endDate}
-                    onDateChanged={endDateChanged}></DatePickerComponent>
+                <View style={styles.styledInputContainer}>
+                    <View>
+                        <DatePickerComponent
+                            title="startDate"
+                            date={startDate}
+                            onDateChanged={startDateChanged}></DatePickerComponent>
+                    </View>
+                    <View>
+                        <DatePickerComponent
+                            title="endDate"
+                            date={endDate}
+                            onDateChanged={endDateChanged}></DatePickerComponent>
+                    </View>
+                </View>
             </View>
         </ScrollView>
     );
