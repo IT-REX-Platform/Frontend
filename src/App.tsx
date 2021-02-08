@@ -1,4 +1,3 @@
-/* eslint-disable complexity */
 import { ReactElement } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -51,6 +50,11 @@ function loginReducer(prevState: ILoginReducerState, action: ILoginReducerAction
     return {} as ILoginReducerState;
 }
 
+const initialLoginState: ILoginReducerState = {
+    isLoading: true,
+    userInfo: null,
+};
+
 function App(): ReactElement {
     Linking.addEventListener("login", (url) => {
         loggerService.trace("URL" + url);
@@ -67,11 +71,6 @@ function App(): ReactElement {
         }),
         [locale]
     );
-
-    const initialLoginState: ILoginReducerState = {
-        isLoading: true,
-        userInfo: null,
-    };
 
     const [loginState, dispatch] = React.useReducer(loginReducer, initialLoginState);
 
@@ -113,9 +112,9 @@ function App(): ReactElement {
         <AuthContext.Provider value={authContext}>
             <LocalizationContext.Provider value={localizationContext}>
                 <NavigationContainer>
-                    {loginState.userInfo != null ? <LoggedInStack /> : <LoggedOutStack />}
+                    {getNavigationStack(loginState)}
 
-                    {locale == "en" || locale == "en-GB" || locale == "en-US" ? (
+                    {isLocaleEN(locale) ? (
                         <Button title={i18n.t("itrex.switchLangDE")} onPress={() => setLocale("de-DE")} />
                     ) : (
                         <Button title={i18n.t("itrex.switchLangEN")} onPress={() => setLocale("en")} />
@@ -126,3 +125,15 @@ function App(): ReactElement {
     );
 }
 export default App;
+
+function getNavigationStack(loginState: ILoginReducerState) {
+    return loginState.userInfo != null ? <LoggedInStack /> : <LoggedOutStack />;
+}
+
+function isLocaleEN(locale: string) {
+    if (locale == "en" || locale == "en-GB" || locale == "en-US") {
+        return true;
+    } else {
+        false;
+    }
+}
