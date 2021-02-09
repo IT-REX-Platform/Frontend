@@ -96,8 +96,9 @@ export const CreateCourseComponent: React.FC = () => {
                                 item.publishState +
                                 "\t" +
                                 item.name +
-                                "\t" +
-                                (item.courseDescription ? item.courseDescription : "")}
+                                (item.courseDescription ? "\t" + item.courseDescription : "") +
+                                (item.startDate ? "\t" + "startDate:" + item.startDate : "") +
+                                (item.endDate ? "\t" + "endDate:" + item.endDate : "")}
                         </Text>
                     )}
                     keyExtractor={(item, index) => String(index)}
@@ -196,6 +197,8 @@ export const CreateCourseComponent: React.FC = () => {
         const course: ICourse = {
             id: courseIdNumber,
             publishState: CoursePublishState.PUBLISHED,
+            startDate: startDate,
+            endDate: endDate,
         };
 
         loggerService.trace(`Updating course: name=${courseName}, publishedState=${CoursePublishState.PUBLISHED}.`);
