@@ -1,10 +1,31 @@
 import { createAlert } from "./createAlert";
 
-export function validateCourseDates(startDate: Date, endDate: Date): boolean {
-    if (endDate.getTime() < startDate.getTime()) {
-        createAlert("endDate can't be higher than startDate");
+// eslint-disable-next-line complexity
+export function validateCourseDates(startDate: Date | undefined, endDate: Date | undefined): boolean {
+    if (!isValidDate(startDate)) {
+        createAlert("startDate is undefined");
+        return false;
+    }
+    if (!isValidDate(endDate)) {
+        createAlert("endDate is undefined");
         return false;
     }
 
+    if (endDate && startDate) {
+        if (endDate < startDate) {
+            createAlert("startDate can't be higher than endDate");
+            return false;
+        }
+    }
+
     return true;
+}
+
+export function isValidDate(dateToTest: Date | undefined): boolean {
+    if (dateToTest) {
+        if (!isNaN(dateToTest.getTime())) {
+            return true;
+        }
+    }
+    return false;
 }

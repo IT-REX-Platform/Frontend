@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useState } from "react";
 import { Button, FlatList, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { ICourse } from "../types/ICourse";
@@ -39,31 +39,10 @@ export const CreateCourseComponent: React.FC = () => {
     const [coursesPublished, setCoursesPublished] = useState(initialPublishedCourseState);
 
     // Start- and Enddate for a published course
-    const [lastChangedDate, setLastChangedDate] = useState<"startDate" | "endDate" | undefined>(undefined);
-    const [startDate, setStartDate] = useState<Date | undefined>(new Date());
+    const [startDate, setStartDate] = useState<Date | undefined>(undefined);
     const [endDate, setEndDate] = useState<Date | undefined>(undefined);
 
-    useEffect(() => {
-        console.log(startDate);
-        console.log(endDate);
-        if (endDate && startDate) {
-            if (!validateCourseDates(startDate, endDate)) {
-                // Remove the Date because the combination is not ok
-                removeLastDateEntry();
-            }
-        }
-    }, [startDate, endDate]);
-
-    function removeLastDateEntry(): void {
-        if (lastChangedDate === "startDate") {
-            setStartDate(undefined);
-        } else {
-            setEndDate(undefined);
-        }
-    }
-
     const startDateChanged = (event: any, selectedDate?: Date) => {
-        setLastChangedDate("startDate");
         if (Platform.OS === ("android" || "ios")) {
             const currentDate = selectedDate || startDate;
             setStartDate(currentDate);
@@ -75,7 +54,6 @@ export const CreateCourseComponent: React.FC = () => {
     };
 
     const endDateChanged = (event: any, selectedDate?: Date) => {
-        setLastChangedDate("endDate");
         if (Platform.OS === ("android" || "ios")) {
             const currentDate = selectedDate || endDate;
             setEndDate(currentDate);
@@ -157,13 +135,15 @@ export const CreateCourseComponent: React.FC = () => {
                         <DatePickerComponent
                             title="startDate"
                             date={startDate}
-                            onDateChanged={startDateChanged}></DatePickerComponent>
+                            onDateChanged={startDateChanged}
+                            maxDate={endDate}></DatePickerComponent>
                     </View>
                     <View>
                         <DatePickerComponent
                             title="endDate"
                             date={endDate}
-                            onDateChanged={endDateChanged}></DatePickerComponent>
+                            onDateChanged={endDateChanged}
+                            minDate={startDate}></DatePickerComponent>
                     </View>
                 </View>
             </View>
@@ -208,6 +188,9 @@ export const CreateCourseComponent: React.FC = () => {
         const courseIdNumber: number = parseCourseId();
 
         // TODO: Validation: Check if start and Enddate are set
+        if (!validateCourseDates(startDate, endDate)) {
+            return;
+        }
 
         // ATTENTION: fields without values will be overwritten with null in DB. @s.pastuchov 27.01.21
         const course: ICourse = {
