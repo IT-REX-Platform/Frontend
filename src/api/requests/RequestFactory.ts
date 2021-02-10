@@ -13,14 +13,18 @@ export class RequestFactory {
     }
 
     public static createPostRequest(object: ICourse | IMedia): RequestInit {
-        return RequestFactory.createPostOrPutRequest("POST", object);
+        return RequestFactory.createRequestWithJson("POST", object);
     }
 
     public static createPutRequest(object: ICourse | IMedia): RequestInit {
-        return RequestFactory.createPostOrPutRequest("PUT", object);
+        return RequestFactory.createRequestWithJson("PUT", object);
     }
 
-    private static createPostOrPutRequest(httpMethod: string, object: ICourse | IMedia): RequestInit {
+    public static createPatchRequest(object: ICourse | IMedia): RequestInit {
+        return RequestFactory.createRequestWithJson("PATCH", object);
+    }
+
+    private static createRequestWithJson(httpMethod: string, object: ICourse | IMedia): RequestInit {
         const request: RequestInit = RequestAuthorization.createAuthorizedRequest();
 
         request.method = httpMethod;
