@@ -5,6 +5,7 @@ import i18n from "../locales";
 import * as DocumentPicker from "expo-document-picker";
 import { RequestFactory } from "../api/requests/RequestFactory";
 import { EndpointsVideoExtended } from "../api/endpoints/EndpointsVideoExtended";
+import { Video } from "expo-av";
 
 /*TODO: Configure Video-Upload for iOS as specified here: https://docs.expo.io/versions/latest/sdk/document-picker/*/
 
@@ -15,6 +16,7 @@ export const UploadVideoComponent: React.FC = () => {
 
     const [videoUri, setVideoUri] = useState("");
     const [videoName, setVideoName] = useState("");
+    const [videoPlayerUri, setVideoPlayerUri] = useState("");
 
     const pickDocument = async () => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -32,6 +34,9 @@ export const UploadVideoComponent: React.FC = () => {
         const response = await endpointsVideoExtended.uploadVideo(postRequest);
 
         resetState();
+
+        setVideoPlayerUri(endpointsVideoExtended.getVideoDownloadLink(response["id"]));
+
         return response;
     };
 
@@ -45,6 +50,7 @@ export const UploadVideoComponent: React.FC = () => {
     const resetState = () => {
         setVideoUri("");
         setVideoName("");
+        setVideoPlayerUri("");
     };
 
     return (
@@ -60,6 +66,17 @@ export const UploadVideoComponent: React.FC = () => {
                 <Pressable style={styles.StyledButton}>
                     <Button title={i18n.t("itrex.toUploadVideo")} onPress={uploadVideo}></Button>
                 </Pressable>
+                <View style={styles.video}></View>
+                <Video
+                    source={{ uri: videoPlayerUri }}
+                    rate={1.0}
+                    volume={1.0}
+                    isMuted={false}
+                    resizeMode="cover"
+                    shouldPlay={true}
+                    useNativeControls={true}
+                    style={{ width: 640, height: 360 }}
+                />
             </View>
         </>
     );
@@ -87,5 +104,10 @@ const styles = StyleSheet.create({
     },
     StyledButton: {
         marginTop: 16,
+    },
+    video: {
+        marginTop: 20,
+        marginBottom: 20,
+        alignItems: "center",
     },
 });

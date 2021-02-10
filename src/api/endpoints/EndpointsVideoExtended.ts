@@ -25,6 +25,11 @@ export class EndpointsVideoExtended implements IEndpointsVideoExtended {
         return this.sendVideoRequest(url, getRequest);
     }
 
+    public getVideoDownloadLink(id: number): string {
+        const url: string = this.appendUrlWithIdPath(id);
+        return url;
+    }
+
     public async uploadVideo(postRequest: RequestInit): Promise<IVideo[]> {
         const url: string = this.url;
 
@@ -48,5 +53,9 @@ export class EndpointsVideoExtended implements IEndpointsVideoExtended {
 
     private appendUrlWithId(id: number): string {
         return this.url + "?id=" + id;
+    }
+
+    private appendUrlWithIdPath(id: number): string {
+        return this.url + "/" + id;
     }
 }
