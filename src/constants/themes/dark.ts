@@ -1,4 +1,4 @@
-const dark = {
+export const dark = {
     theme: {
         darkBlue1: "#011B45",
         darkBlue2: "#012B56",
@@ -12,5 +12,3 @@ const dark = {
         pink: "#FA1772",
     },
 };
-
-export default dark;

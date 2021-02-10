@@ -1,4 +1,4 @@
-const light = {
+export const light = {
     theme: {
         orange: "#ED6A5A",
         lightYellow: "#F4F1BB",
@@ -7,5 +7,3 @@ const light = {
         beige: "#E6EBE0",
     },
 };
-
-export default light;
