@@ -38,7 +38,7 @@ function App(): ReactElement {
 
     return (
         <LocalizationContext.Provider value={localizationContext}>
-            <NavigationContainer>
+            <NavigationContainer linking={NavigationRoutes.linking}>
                 <Stack.Navigator initialRouteName={NavigationRoutes.ROUTE_HOME}>
                     <Stack.Screen
                         name={NavigationRoutes.ROUTE_HOME}
