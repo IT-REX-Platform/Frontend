@@ -3,6 +3,7 @@ export const en = {
         home: "Home",
         login: "Login",
         enterCourseName: "Enter Course name:",
+        enterCourseDescription: "Enter Course description:",
         createCourse: "Create New Course",
         getAllCourses: "Get All Courses",
         enterCouseId: "Enter Course ID:",

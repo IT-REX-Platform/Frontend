@@ -13,22 +13,18 @@ export class RequestFactory {
     }
 
     public static createPostRequest(object: ICourse | IVideo): RequestInit {
-        return RequestFactory.createPostOrPutRequest("POST", object);
-    }
-
-    public static createPostRequestWithFormData(formdata: FormData): RequestInit {
-        const request: RequestInit = RequestAuthorization.createAuthorizedRequest();
-        request.method = "POST";
-        request.body = formdata;
-
-        return request;
+        return RequestFactory.createRequestWithJson("POST", object);
     }
 
     public static createPutRequest(object: ICourse | IVideo): RequestInit {
-        return RequestFactory.createPostOrPutRequest("PUT", object);
+        return RequestFactory.createRequestWithJson("PUT", object);
     }
 
-    private static createPostOrPutRequest(httpMethod: string, object: ICourse | IVideo): RequestInit {
+    public static createPatchRequest(object: ICourse | IVideo): RequestInit {
+        return RequestFactory.createRequestWithJson("PATCH", object);
+    }
+
+    private static createRequestWithJson(httpMethod: string, object: ICourse | IVideo): RequestInit {
         const request: RequestInit = RequestAuthorization.createAuthorizedRequest();
 
         request.method = httpMethod;
@@ -38,6 +34,14 @@ export class RequestFactory {
             "Content-Type": "application/json",
         };
         request.body = JSON.stringify(object);
+
+        return request;
+    }
+
+    public static createPostRequestWithFormData(formdata: FormData): RequestInit {
+        const request: RequestInit = RequestAuthorization.createAuthorizedRequest();
+        request.method = "POST";
+        request.body = formdata;
 
         return request;
     }
