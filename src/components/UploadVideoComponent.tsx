@@ -58,7 +58,9 @@ export const UploadVideoComponent: React.FC = () => {
             <View style={styles.container}>
                 <View style={styles.StyledInputContainer}>
                     <Text>{i18n.t("itrex.uploadVideoHere")}</Text>
-                    <TextInput value={videoName} style={styles.StyledTextInput}></TextInput>
+                    <TextInput value={videoName} style={styles.StyledTextInput} testID="fileNameInput">
+                        testtext
+                    </TextInput>
                     <Pressable style={styles.StyledButton}>
                         <Button title={i18n.t("itrex.browseFiles")} onPress={pickDocument}></Button>
                     </Pressable>
