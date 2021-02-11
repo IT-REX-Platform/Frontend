@@ -1,21 +1,14 @@
 import { ReactElement } from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
 import { loggerFactory } from "../logger/LoggerConfig";
 import { NavigationRoutes } from "./constants/NavigationRoutes";
 import { Button, Linking } from "react-native";
 import i18n from "./locales/index";
 import * as Localization from "expo-localization";
-import { HomeComponent } from "./components/HomeComponent";
-import { CreateCourseComponent } from "./components/CreateCourseComponent";
-import { LoginComponent } from "./components/LoginComponent";
-import { UploadVideoComponent } from "./components/UploadVideoComponent";
+import DrawerNavigator from "./constants/DrawNavigation";
 import React from "react";
-import { CourseDetailsComponent } from "./components/CourseDetailsComponent";
 
 const loggerService = loggerFactory.getLogger("service.App");
-
-const Stack = createStackNavigator();
 
 export const LocalizationContext = React.createContext({});
 
@@ -39,37 +32,11 @@ function App(): ReactElement {
     return (
         <LocalizationContext.Provider value={localizationContext}>
             <NavigationContainer linking={NavigationRoutes.linking}>
-                <Stack.Navigator initialRouteName={NavigationRoutes.ROUTE_HOME}>
-                    <Stack.Screen
-                        name={NavigationRoutes.ROUTE_HOME}
-                        component={HomeComponent}
-                        options={{ title: i18n.t("itrex.home") }}
-                    />
-                    <Stack.Screen
-                        name={NavigationRoutes.ROUTE_LOGIN}
-                        component={LoginComponent}
-                        options={{ title: i18n.t("itrex.login") }}
-                    />
-                    <Stack.Screen
-                        name={NavigationRoutes.ROUTE_CREATE_COURSE}
-                        component={CreateCourseComponent}
-                        options={{ title: i18n.t("itrex.toCourse") }}
-                    />
-                    <Stack.Screen
-                        name={NavigationRoutes.ROUTE_UPLOAD_VIDEO}
-                        component={UploadVideoComponent}
-                        options={{ title: i18n.t("itrex.toUploadVideo") }}
-                    />
-                    <Stack.Screen
-                        name={NavigationRoutes.ROUTE_COURSE_DETAILS}
-                        component={CourseDetailsComponent}
-                        options={({ route }) => ({ title: route.params.name })}
-                    />
-                </Stack.Navigator>
+                <DrawerNavigator />
                 {locale == "en" || locale == "en-GB" || locale == "en-US" ? (
-                    <Button title={i18n.t("itrex.switchLangDE")} onPress={() => setLocale("de-DE")} />
+                    <Button title={i18n.t("itrex.switchLangDE")} onPress={() => setLocale("de-DE")} color="#4FAFA7" />
                 ) : (
-                    <Button title={i18n.t("itrex.switchLangEN")} onPress={() => setLocale("en")} />
+                    <Button title={i18n.t("itrex.switchLangEN")} onPress={() => setLocale("en")} color="#4FAFA7" />
                 )}
             </NavigationContainer>
         </LocalizationContext.Provider>

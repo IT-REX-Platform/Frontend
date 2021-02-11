@@ -1,26 +1,17 @@
 import React from "react";
-import { Button, StyleSheet, View } from "react-native";
+import { Button, Image, StyleSheet, View, Text } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { NavigationRoutes } from "../constants/NavigationRoutes";
 import { LocalizationContext } from "../App";
 import i18n from "../locales";
 
-export const HomeComponent: React.FC = () => {
-    const navigation = useNavigation();
-
+export const HomeComponent: React.FC = ({ navigation }) => {
     React.useContext(LocalizationContext);
 
     return (
         <View style={styles.container}>
-            <Button title={i18n.t("itrex.login")} onPress={() => navigation.navigate(NavigationRoutes.ROUTE_LOGIN)} />
-            <Button
-                title={i18n.t("itrex.toCourse")}
-                onPress={() => navigation.navigate(NavigationRoutes.ROUTE_CREATE_COURSE)}
-            />
-            <Button
-                title={i18n.t("itrex.toUploadVideo")}
-                onPress={() => navigation.navigate(NavigationRoutes.ROUTE_UPLOAD_VIDEO)}
-            />
+            <Image source={require("../constants/themes/ITRex-Logo-ob.svg")} style={[styles.icon]}></Image>
+            <Text>This is IT-Rex!</Text>
         </View>
     );
 };
@@ -31,5 +22,9 @@ const styles = StyleSheet.create({
         backgroundColor: "#fff",
         alignItems: "center",
         justifyContent: "center",
+    },
+    icon: {
+        width: 100,
+        height: 100,
     },
 });

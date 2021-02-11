@@ -1,8 +1,7 @@
 import { useRoute } from "@react-navigation/native";
 import React from "react";
-import { StyleSheet, Button, Pressable, TextInput, Text, View } from "react-native";
+import { Text } from "react-native";
 import { LocalizationContext } from "../App";
-import i18n from "../locales";
 
 export const CourseDetailsComponent: React.FC = () => {
     const route = useRoute();
@@ -20,26 +19,3 @@ export const CourseDetailsComponent: React.FC = () => {
         </>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        marginTop: 20,
-        marginBottom: 20,
-        flex: 1,
-        backgroundColor: "#fff",
-        alignItems: "center",
-        justifyContent: "center",
-    },
-    StyledInputContainer: {
-        flexDirection: "row",
-        justifyContent: "center",
-    },
-    StyledTextInput: {
-        marginLeft: 8,
-        borderColor: "lightgray",
-        borderWidth: 2,
-    },
-    StyledButton: {
-        marginTop: 16,
-    },
-});

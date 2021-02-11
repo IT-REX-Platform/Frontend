@@ -8,7 +8,15 @@ const config = {
         ROUTE_LOGIN: "login",
         ROUTE_CREATE_COURSE: "createCourse",
         ROUTE_UPLOAD_VIDEO: "uploadVideo",
-        ROUTE_COURSE_DETAILS: "courseDetails/:name",
+        ROUTE_COURSE_DETAILS: {
+            path: "courseDetails/:name",
+            parse: {
+                name: (name: string) => `${name}`,
+            },
+            stringify: {
+                name: (name: string) => name.replaceAll(" ", ""),
+            },
+        },
     },
 };
 export class NavigationRoutes {
