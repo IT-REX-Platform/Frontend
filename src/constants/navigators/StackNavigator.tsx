@@ -11,10 +11,12 @@ import { NavigationRoutes } from "../../constants/navigators/NavigationRoutes";
 import { dark } from "../themes/dark";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import i18n from "../../locales";
+import { LocalizationContext } from "../../App";
 
 const Stack = createStackNavigator();
 
 const MainStackNavigator = ({ navigation }) => {
+    React.useContext(LocalizationContext);
     return (
         <Stack.Navigator
             screenOptions={{
@@ -40,6 +42,7 @@ const MainStackNavigator = ({ navigation }) => {
 };
 
 const CourseStackNavigator = ({ navigation }) => {
+    React.useContext(LocalizationContext);
     return (
         <Stack.Navigator
             screenOptions={{
@@ -83,6 +86,7 @@ const CourseStackNavigator = ({ navigation }) => {
 };
 
 const UploadVideoStackNavigator = ({ navigation }) => {
+    React.useContext(LocalizationContext);
     return (
         <Stack.Navigator
             screenOptions={{
@@ -121,6 +125,7 @@ const UploadVideoStackNavigator = ({ navigation }) => {
 };
 
 const LoginComponentStackNavigator = ({ navigation }) => {
+    React.useContext(LocalizationContext);
     return (
         <Stack.Navigator
             screenOptions={{
