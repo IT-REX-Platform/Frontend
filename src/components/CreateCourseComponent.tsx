@@ -10,6 +10,7 @@ import {
     Text,
     TextInput,
     View,
+    ImageBackground,
 } from "react-native";
 import { ICourse } from "../types/ICourse";
 import { LocalizationContext } from "../App";
@@ -48,8 +49,8 @@ export const CreateCourseComponent: React.FC = () => {
     const [coursesPublished, setCoursesPublished] = useState(initialPublishedCourseState);
 
     return (
-        <ScrollView>
-            <View style={styles.container}>
+        <View style={styles.container}>
+            <ImageBackground source={require("../constants/images/Background_forest.svg")} style={styles.image}>
                 <View style={styles.styledInputContainer}>
                     <Text>{i18n.t("itrex.enterCourseName")}</Text>
                     <TextInput
@@ -92,8 +93,6 @@ export const CreateCourseComponent: React.FC = () => {
                     )}
                     keyExtractor={(item, index) => String(index)}
                 />
-                <View style={styles.separator}></View>
-
                 <View style={styles.styledInputContainer}>
                     <Text>{i18n.t("itrex.enterCouseId")}</Text>
                     <TextInput
@@ -118,8 +117,8 @@ export const CreateCourseComponent: React.FC = () => {
                 <Pressable style={styles.styledButton}>
                     <Button title={i18n.t("itrex.deleteCourse")} onPress={deleteCourse}></Button>
                 </Pressable>
-            </View>
-        </ScrollView>
+            </ImageBackground>
+        </View>
     );
 
     function onPress(item: ICourse) {
@@ -206,8 +205,11 @@ export const CreateCourseComponent: React.FC = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#fff",
-        alignItems: "center",
+        flexDirection: "column",
+    },
+    image: {
+        flex: 1,
+        resizeMode: "stretch",
         justifyContent: "center",
     },
     styledInputContainer: {

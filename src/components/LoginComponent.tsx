@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, View } from "react-native";
+import { Button, View, ImageBackground, StyleSheet, Pressable } from "react-native";
 import * as WebBrowser from "expo-web-browser";
 import * as AuthSession from "expo-auth-session";
 import AuthenticationService from "../services/AuthenticationService";
@@ -43,14 +43,35 @@ export const LoginComponent: React.FC = () => {
     React.useContext(LocalizationContext);
 
     return (
-        <View>
-            <Button
-                disabled={authResponse?.type === "success"}
-                title={i18n.t("itrex.login")}
-                onPress={() => {
-                    promptAuthentication();
-                }}
-            />
+        <View style={styles.container}>
+            <ImageBackground source={require("../constants/images/Background_forest.svg")} style={styles.image}>
+                <Pressable style={styles.StyledButton}>
+                    <Button
+                        disabled={authResponse?.type === "success"}
+                        title={i18n.t("itrex.login")}
+                        onPress={() => {
+                            promptAuthentication();
+                        }}
+                    />
+                </Pressable>
+            </ImageBackground>
         </View>
     );
 };
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        flexDirection: "column",
+    },
+    image: {
+        flex: 1,
+        resizeMode: "stretch",
+        justifyContent: "center",
+    },
+    StyledButton: {
+        marginTop: 16,
+        marginLeft: 500,
+        marginRight: 500,
+    },
+});

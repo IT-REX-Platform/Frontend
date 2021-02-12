@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Button, Pressable, TextInput, Text, View } from "react-native";
+import { StyleSheet, Button, Pressable, TextInput, Text, View, ImageBackground } from "react-native";
 import { LocalizationContext } from "../App";
 import i18n from "../locales";
 
@@ -7,7 +7,7 @@ export const UploadVideoComponent: React.FC = () => {
     React.useContext(LocalizationContext);
 
     return (
-        <>
+        <ImageBackground source={require("../constants/images/Background_forest.svg")} style={styles.image}>
             <View style={styles.container}>
                 <View style={styles.StyledInputContainer}>
                     <Text>{i18n.t("itrex.uploadVideoHere")}</Text>
@@ -17,7 +17,7 @@ export const UploadVideoComponent: React.FC = () => {
                     <Button title={i18n.t("itrex.browseFiles")} onPress={changeStyle}></Button>
                 </Pressable>
             </View>
-        </>
+        </ImageBackground>
     );
 
     function changeStyle() {
@@ -27,10 +27,7 @@ export const UploadVideoComponent: React.FC = () => {
 
 const styles = StyleSheet.create({
     container: {
-        marginTop: 20,
-        marginBottom: 20,
         flex: 1,
-        backgroundColor: "#fff",
         alignItems: "center",
         justifyContent: "center",
     },
@@ -45,5 +42,10 @@ const styles = StyleSheet.create({
     },
     StyledButton: {
         marginTop: 16,
+    },
+    image: {
+        flex: 1,
+        resizeMode: "stretch",
+        justifyContent: "center",
     },
 });

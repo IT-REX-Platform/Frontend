@@ -32,24 +32,22 @@ function App(): ReactElement {
 
     return (
         <LocalizationContext.Provider value={localizationContext}>
-            <ImageBackground source={require("./constants/images/Background_forest.svg")} style={styles.image}>
-                <NavigationContainer linking={NavigationRoutes.linking}>
-                    <DrawerNavigator />
-                    {locale == "en" || locale == "en-GB" || locale == "en-US" ? (
-                        <>
-                            <TouchableOpacity onPress={() => setLocale("de-DE")} style={styles.appButtonContainer}>
-                                <Text style={styles.buttonText}>{i18n.t("itrex.switchLangDE")}</Text>
-                            </TouchableOpacity>
-                        </>
-                    ) : (
-                        <>
-                            <TouchableOpacity onPress={() => setLocale("en")} style={styles.appButtonContainer}>
-                                <Text style={styles.buttonText}>{i18n.t("itrex.switchLangEN")}</Text>
-                            </TouchableOpacity>
-                        </>
-                    )}
-                </NavigationContainer>
-            </ImageBackground>
+            <NavigationContainer>
+                <DrawerNavigator />
+                {locale == "en" || locale == "en-GB" || locale == "en-US" ? (
+                    <>
+                        <TouchableOpacity onPress={() => setLocale("de-DE")} style={styles.appButtonContainer}>
+                            <Text style={styles.buttonText}>{i18n.t("itrex.switchLangDE")}</Text>
+                        </TouchableOpacity>
+                    </>
+                ) : (
+                    <>
+                        <TouchableOpacity onPress={() => setLocale("en")} style={styles.appButtonContainer}>
+                            <Text style={styles.buttonText}>{i18n.t("itrex.switchLangEN")}</Text>
+                        </TouchableOpacity>
+                    </>
+                )}
+            </NavigationContainer>
         </LocalizationContext.Provider>
     );
 }
