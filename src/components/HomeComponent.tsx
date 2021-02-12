@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, Image, StyleSheet, View, Text } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { NavigationRoutes } from "../constants/NavigationRoutes";
+import { NavigationRoutes } from "../constants/navigators/NavigationRoutes";
 import { LocalizationContext } from "../App";
 import i18n from "../locales";
 
@@ -10,8 +10,9 @@ export const HomeComponent: React.FC = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-            <Image source={require("../constants/themes/ITRex-Logo-ob.svg")} style={[styles.icon]}></Image>
-            <Text>This is IT-Rex!</Text>
+            <Image source={require("../constants/images/ITRex-Logo-ob.svg")} style={[styles.icon]}></Image>
+            <Text>{i18n.t("itrex.welcome")}</Text>
+            <Text>{i18n.t("itrex.starter")}</Text>
         </View>
     );
 };

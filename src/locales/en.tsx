@@ -1,5 +1,8 @@
 export const en = {
     itrex: {
+        welcome: "Welcome to IT-Rex!",
+        starter: "Start learning right away!",
+        itrex: "IT-Rex",
         home: "Home",
         login: "Login",
         enterCourseName: "Enter Course name:",

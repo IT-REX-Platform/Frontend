@@ -2,13 +2,15 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 
-import { HomeComponent } from "../components/HomeComponent";
-import { CreateCourseComponent } from "../components/CreateCourseComponent";
-import { UploadVideoComponent } from "../components/UploadVideoComponent";
-import { LoginComponent } from "../components/LoginComponent";
-import { dark } from "./themes/dark";
+import { HomeComponent } from "../../components/HomeComponent";
+import { CreateCourseComponent } from "../../components/CreateCourseComponent";
+import { CourseDetailsComponent } from "../../components/CourseDetailsComponent";
+import { UploadVideoComponent } from "../../components/UploadVideoComponent";
+import { LoginComponent } from "../../components/LoginComponent";
+import { NavigationRoutes } from "../../constants/navigators/NavigationRoutes";
+import { dark } from "../themes/dark";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import i18n from "../locales";
+import i18n from "../../locales";
 
 const Stack = createStackNavigator();
 
@@ -22,11 +24,6 @@ const MainStackNavigator = ({ navigation }) => {
                 },
                 headerTintColor: dark.theme.darkBlue1,
                 headerBackTitle: "Back",
-                headerRight: () => (
-                    <View style={{ flexDirection: "row" }}>
-                        <MaterialCommunityIcons name="home-outline" size={28} color="#011B45" style={styles.icon} />
-                    </View>
-                ),
                 headerLeft: () => (
                     <MaterialCommunityIcons
                         name="menu"
@@ -37,7 +34,7 @@ const MainStackNavigator = ({ navigation }) => {
                     />
                 ),
             }}>
-            <Stack.Screen name="Home" component={HomeComponent} options={{ title: i18n.t("itrex.home") }} />
+            <Stack.Screen name="Home" component={HomeComponent} options={{ title: i18n.t("itrex.itrex") }} />
         </Stack.Navigator>
     );
 };
@@ -53,9 +50,13 @@ const CourseStackNavigator = ({ navigation }) => {
                 headerTintColor: dark.theme.darkBlue1,
                 headerBackTitle: "Back",
                 headerRight: () => (
-                    <View style={{ flexDirection: "row" }}>
-                        <MaterialCommunityIcons name="home-outline" size={28} color="#011B45" style={styles.icon} />
-                    </View>
+                    <MaterialCommunityIcons
+                        name="home-outline"
+                        size={28}
+                        color="#011B45"
+                        style={styles.icon}
+                        onPress={() => navigation.navigate(NavigationRoutes.ROUTE_HOME)}
+                    />
                 ),
                 headerLeft: () => (
                     <MaterialCommunityIcons
@@ -72,6 +73,11 @@ const CourseStackNavigator = ({ navigation }) => {
                 component={CreateCourseComponent}
                 options={{ title: i18n.t("itrex.toCourse") }}
             />
+            <Stack.Screen
+                name={NavigationRoutes.ROUTE_COURSE_DETAILS}
+                component={CourseDetailsComponent}
+                options={({ route }) => ({ title: route.params.name })}
+            />
         </Stack.Navigator>
     );
 };
@@ -87,9 +93,13 @@ const UploadVideoStackNavigator = ({ navigation }) => {
                 headerTintColor: dark.theme.darkBlue1,
                 headerBackTitle: "Back",
                 headerRight: () => (
-                    <View style={{ flexDirection: "row" }}>
-                        <MaterialCommunityIcons name="home-outline" size={28} color="#011B45" style={styles.icon} />
-                    </View>
+                    <MaterialCommunityIcons
+                        name="home-outline"
+                        size={28}
+                        color="#011B45"
+                        style={styles.icon}
+                        onPress={() => navigation.navigate(NavigationRoutes.ROUTE_HOME)}
+                    />
                 ),
                 headerLeft: () => (
                     <MaterialCommunityIcons
@@ -121,9 +131,13 @@ const LoginComponentStackNavigator = ({ navigation }) => {
                 headerTintColor: dark.theme.darkBlue1,
                 headerBackTitle: "Back",
                 headerRight: () => (
-                    <View style={{ flexDirection: "row" }}>
-                        <MaterialCommunityIcons name="home-outline" size={28} color="#011B45" style={styles.icon} />
-                    </View>
+                    <MaterialCommunityIcons
+                        name="home-outline"
+                        size={28}
+                        color="#011B45"
+                        style={styles.icon}
+                        onPress={() => navigation.navigate(NavigationRoutes.ROUTE_HOME)}
+                    />
                 ),
                 headerLeft: () => (
                     <MaterialCommunityIcons

@@ -21,8 +21,7 @@ import { loggerFactory } from "../../logger/LoggerConfig";
 import { CoursePublishState } from "../constants/CoursePublishState";
 import { EndpointsCourseExtended } from "../api/endpoints/EndpointsCourseExtended";
 import { useNavigation } from "@react-navigation/native";
-import { NavigationRoutes } from "../constants/NavigationRoutes";
-import { TouchableHighlight } from "react-native-gesture-handler";
+import { NavigationRoutes } from "../constants/navigators/NavigationRoutes";
 
 const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");
 const endpointsCourseExtended: EndpointsCourseExtended = new EndpointsCourseExtended();
