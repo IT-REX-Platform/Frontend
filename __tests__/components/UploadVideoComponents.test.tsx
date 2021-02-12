@@ -32,7 +32,7 @@ jest.mock("expo-document-picker", () => {
                 console.log("called!!");
                 resolve({
                     type: "success",
-                    uri: "",
+                    uri: "http://localhost:8080/",
                     name: "test.mp4",
                     file: null,
                     lastModified: "",
@@ -80,12 +80,11 @@ describe("test upload video component", () => {
 
         expect(getByTestId("fileNameInput").props.value).toMatch("test.mp4");
 
-        await act(() => {
-            fireEvent.press(getByText("Upload Video"));
-        });
+        await fireEvent.press(getByText("Upload Video"));
 
         // komponenten des upload-vorgangs müssen hierfür noch korrekt gemockt werden
         // der document picker scheint so weit mehr oder weniger zu tun
-        // expect(sendRequestMock).toBeCalled();
+
+        expect(sendRequestMock).toBeCalled();
     });
 });
