@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 
 import { HomeComponent } from "../../components/HomeComponent";
@@ -15,7 +15,7 @@ import { LocalizationContext } from "../../App";
 
 const Stack = createStackNavigator();
 
-const MainStackNavigator = ({ navigation }) => {
+const MainStackNavigator: React.FC = ({ navigation }) => {
     React.useContext(LocalizationContext);
     return (
         <Stack.Navigator
@@ -41,7 +41,7 @@ const MainStackNavigator = ({ navigation }) => {
     );
 };
 
-const CourseStackNavigator = ({ navigation }) => {
+const CourseStackNavigator: React.FC = ({ navigation }) => {
     React.useContext(LocalizationContext);
     return (
         <Stack.Navigator
@@ -85,7 +85,7 @@ const CourseStackNavigator = ({ navigation }) => {
     );
 };
 
-const UploadVideoStackNavigator = ({ navigation }) => {
+const UploadVideoStackNavigator: React.FC = ({ navigation }) => {
     React.useContext(LocalizationContext);
     return (
         <Stack.Navigator
@@ -124,7 +124,7 @@ const UploadVideoStackNavigator = ({ navigation }) => {
     );
 };
 
-const LoginComponentStackNavigator = ({ navigation }) => {
+const LoginComponentStackNavigator: React.FC = ({ navigation }) => {
     React.useContext(LocalizationContext);
     return (
         <Stack.Navigator

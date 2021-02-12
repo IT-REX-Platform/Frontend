@@ -1,7 +1,7 @@
 import React from "react";
 
-import { createDrawerNavigator, DrawerItem, DrawerItemList, DrawerContentScrollView } from "@react-navigation/drawer";
-import { Image, StyleSheet, Text } from "react-native";
+import { createDrawerNavigator } from "@react-navigation/drawer";
+import { Image, StyleSheet } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import {
@@ -15,7 +15,7 @@ import i18n from "../../locales";
 
 const Drawer = createDrawerNavigator();
 
-const DrawerNavigator = () => {
+const DrawerNavigator: React.FC = () => {
     return (
         <Drawer.Navigator>
             <Drawer.Screen

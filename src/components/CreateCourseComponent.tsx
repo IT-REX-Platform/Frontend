@@ -4,7 +4,6 @@ import {
     Button,
     FlatList,
     Pressable,
-    ScrollView,
     StyleSheet,
     TouchableOpacity,
     Text,
@@ -13,7 +12,6 @@ import {
     ImageBackground,
 } from "react-native";
 import { ICourse } from "../types/ICourse";
-import { LocalizationContext } from "../App";
 import { validateCourseName } from "../helperScripts/validateCourseEntry";
 import { validateCourseDescription } from "../helperScripts/validateCourseEntry";
 import i18n from "../locales";
@@ -23,6 +21,7 @@ import { CoursePublishState } from "../constants/CoursePublishState";
 import { EndpointsCourseExtended } from "../api/endpoints/EndpointsCourseExtended";
 import { useNavigation } from "@react-navigation/native";
 import { NavigationRoutes } from "../constants/navigators/NavigationRoutes";
+import { LocalizationContext } from "../App";
 
 const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");
 const endpointsCourseExtended: EndpointsCourseExtended = new EndpointsCourseExtended();

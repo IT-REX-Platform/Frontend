@@ -1,10 +1,7 @@
 import React from "react";
-import { Button, Image, StyleSheet, View, Text, ImageBackground } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { NavigationRoutes } from "../constants/navigators/NavigationRoutes";
+import { Image, StyleSheet, View, Text, ImageBackground } from "react-native";
 import { LocalizationContext } from "../App";
 import i18n from "../locales";
-import { dark } from "../constants/themes/dark";
 
 export const HomeComponent: React.FC = ({ navigation }) => {
     React.useContext(LocalizationContext);
