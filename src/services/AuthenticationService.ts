@@ -23,10 +23,4 @@ export default class AuthenticationService {
         const jwt = JSON.parse(atob(this.tokenResponse.accessToken.split(".")[1]));
         return jwt.roles;
     }
-
-    public tokenStillFresh(): boolean {
-        console.log("Check-Fresh");
-        const fresh = TokenResponse.isTokenFresh(this.tokenResponse);
-        return fresh;
-    }
 }
