@@ -1,7 +1,7 @@
 export const de = {
     itrex: {
         home: "Home",
-        login: "Login",
+        login: "Einloggen",
         enterCourseName: "Geben Sie einen Kursnamen ein:",
         enterCourseDescription: "Geben Sie einen Kursbeschreibung ein:",
         createCourse: "Neuen Kurs erstellen",
