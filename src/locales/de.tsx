@@ -4,7 +4,7 @@ export const de = {
         starter: "Starte direkt durch mit dem Lernen!",
         itrex: "IT-Rex",
         home: "Home",
-        login: "Login",
+        login: "Einloggen",
         enterCourseName: "Geben Sie einen Kursnamen ein:",
         enterCourseDescription: "Geben Sie einen Kursbeschreibung ein:",
         createCourse: "Neuen Kurs erstellen",
