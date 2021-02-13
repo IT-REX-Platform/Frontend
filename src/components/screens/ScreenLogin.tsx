@@ -38,8 +38,6 @@ export const ScreenLogin: React.FC = () => {
     );
 
     React.useEffect(() => {
-        console.log("auth");
-
         if (authResponse?.type === "success" && authResponse.authentication != null) {
             signIn(authResponse.authentication);
         }
