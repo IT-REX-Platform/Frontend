@@ -12,17 +12,18 @@ import { LoginComponent } from "./components/LoginComponent";
 import { UploadVideoComponent } from "./components/UploadVideoComponent";
 import React from "react";
 import { AuthContext } from "./components/Context";
-import { LoggedInStack } from "./navigation/LoggedInStack";
-import { LoggedOutStack } from "./navigation/LoggedOutStack";
+import { LoggedInNavigator } from "./navigation/LoggedInNavigator";
+import { LoggedOutNavigator } from "./navigation/LoggedOutNavigator";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import AuthenticationService from "./services/AuthenticationService";
 import * as AuthSession from "expo-auth-session";
 import { IAuthContext } from "./components/Context";
 import { ILoginReducerAction, ILoginReducerState } from "./types/ILoginReducer";
+import { ILocalizationContext } from "./types/ILocalizationContext";
 
 const loggerService = loggerFactory.getLogger("service.App");
 
-export const LocalizationContext = React.createContext({});
+export const LocalizationContext = React.createContext({} as ILocalizationContext);
 
 function loginReducer(prevState: ILoginReducerState, action: ILoginReducerAction): ILoginReducerState {
     switch (action.type) {
@@ -111,29 +112,9 @@ function App(): ReactElement {
     return (
         <AuthContext.Provider value={authContext}>
             <LocalizationContext.Provider value={localizationContext}>
-                <NavigationContainer>
-                    {getNavigationStack(loginState)}
-
-                    {isLocaleEN(locale) ? (
-                        <Button title={i18n.t("itrex.switchLangDE")} onPress={() => setLocale("de-DE")} />
-                    ) : (
-                        <Button title={i18n.t("itrex.switchLangEN")} onPress={() => setLocale("en")} />
-                    )}
-                </NavigationContainer>
+                {loginState.userInfo != null ? <LoggedInNavigator /> : <LoggedOutNavigator />}
             </LocalizationContext.Provider>
         </AuthContext.Provider>
     );
 }
 export default App;
-
-function getNavigationStack(loginState: ILoginReducerState) {
-    return loginState.userInfo != null ? <LoggedInStack /> : <LoggedOutStack />;
-}
-
-function isLocaleEN(locale: string) {
-    if (locale == "en" || locale == "en-GB" || locale == "en-US") {
-        return true;
-    } else {
-        false;
-    }
-}

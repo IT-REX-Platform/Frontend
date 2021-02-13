@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Button, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import React from "react";
 import { AuthContext } from "../Context";
@@ -6,13 +6,16 @@ import { AuthContext } from "../Context";
 import * as WebBrowser from "expo-web-browser";
 import * as AuthSession from "expo-auth-session";
 import { itRexVars } from "../../constants/Constants";
-import i18n from "../../locales";
 import AuthenticationService from "../../services/AuthenticationService";
+import { LocalizationContext } from "../../App";
+import i18n from "../../locales";
 
 WebBrowser.maybeCompleteAuthSession();
 
 export const ScreenLogin: React.FC = () => {
     const { signIn } = React.useContext(AuthContext);
+
+    const { locale, setLocale } = React.useContext(LocalizationContext);
 
     const discovery = {
         authorizationEndpoint: itRexVars().authEndpoint,
@@ -52,6 +55,11 @@ export const ScreenLogin: React.FC = () => {
                 }}>
                 <Text style={styles.buttonText}>{i18n.t("itrex.login")}</Text>
             </TouchableOpacity>
+            {locale == "en" || locale == "en-GB" || locale == "en-US" ? (
+                <Button title={i18n.t("itrex.switchLangDE")} onPress={() => setLocale("de-DE")} />
+            ) : (
+                <Button title={i18n.t("itrex.switchLangEN")} onPress={() => setLocale("en")} />
+            )}
         </View>
     );
 };

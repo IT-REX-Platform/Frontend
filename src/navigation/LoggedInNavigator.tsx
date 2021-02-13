@@ -9,10 +9,11 @@ import { ScreenHomeAdmin } from "../components/screens/ScreenHomeAdmin";
 import { ITREXRoles } from "../constants/ITREXRoles";
 import { NavigationRoutes } from "../constants/NavigationRoutes";
 import { UploadVideoComponent } from "../components/UploadVideoComponent";
+import { NavigationContainer } from "@react-navigation/native";
 
 const Stack = createStackNavigator();
 
-export const LoggedInStack: React.FC = () => {
+export const LoggedInNavigator: React.FC = () => {
     const authenticationService = AuthenticationService.getInstance();
 
     // May complete different stacks for Lecturer/Student/Admin ?
@@ -45,14 +46,15 @@ export const LoggedInStack: React.FC = () => {
     }
 
     return (
-        <Stack.Navigator initialRouteName={NavigationRoutes.ROUTE_HOME}>
-            {homeScreen}
-
-            <Stack.Screen
-                name={NavigationRoutes.ROUTE_UPLOAD_VIDEO}
-                component={UploadVideoComponent}
-                options={{ title: "Upload Video" }}
-            />
-        </Stack.Navigator>
+        <NavigationContainer>
+            <Stack.Navigator initialRouteName={NavigationRoutes.ROUTE_HOME}>
+                {homeScreen}
+                <Stack.Screen
+                    name={NavigationRoutes.ROUTE_UPLOAD_VIDEO}
+                    component={UploadVideoComponent}
+                    options={{ title: "Upload Video" }}
+                />
+            </Stack.Navigator>
+        </NavigationContainer>
     );
 };

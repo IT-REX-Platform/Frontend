@@ -5,10 +5,12 @@ import { ScreenLogin } from "../components/screens/ScreenLogin";
 
 const Stack = createStackNavigator();
 
-export const LoggedOutStack: React.FC = () => {
+export const LoggedOutNavigator: React.FC = () => {
     return (
-        <Stack.Navigator headerMode="none">
-            <Stack.Screen name="Login" component={ScreenLogin} />
-        </Stack.Navigator>
+        <NavigationContainer>
+            <Stack.Navigator headerMode="none">
+                <Stack.Screen name="Login" component={ScreenLogin} />
+            </Stack.Navigator>
+        </NavigationContainer>
     );
 };
