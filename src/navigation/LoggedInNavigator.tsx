@@ -12,6 +12,9 @@ import { UploadVideoComponent } from "../components/UploadVideoComponent";
 import { NavigationContainer } from "@react-navigation/native";
 import DrawerLayout from "react-native-gesture-handler/DrawerLayout";
 import { DrawerNavigator } from "../constants/navigators/DrawNavigation";
+import { View } from "react-native";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { dark } from "../constants/themes/dark";
 
 const Stack = createStackNavigator();
 

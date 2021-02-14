@@ -6,12 +6,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { dark } from "../themes/dark";
 
-import {
-    MainStackNavigator,
-    CourseStackNavigator,
-    UploadVideoStackNavigator,
-    LoginComponentStackNavigator,
-} from "./StackNavigator";
+import { MainStackNavigator, CourseStackNavigator, UploadVideoStackNavigator } from "./StackNavigator";
 
 import { NavigationRoutes } from "./NavigationRoutes";
 import i18n from "../../locales";
@@ -45,7 +40,7 @@ export const DrawerNavigator: React.FC = () => {
 
     useEffect(() => {
         getAllCourses();
-    });
+    }, []);
 
     for (const course of courses) {
         items.push(
@@ -59,6 +54,8 @@ export const DrawerNavigator: React.FC = () => {
             />
         );
     }
+
+    console.log("" + dimensions);
 
     return (
         <Drawer.Navigator
