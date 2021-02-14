@@ -3,7 +3,7 @@ import { Button, Text, View } from "react-native";
 import React from "react";
 import { CreateCourseComponent } from "../CreateCourseComponent";
 import { useNavigation } from "@react-navigation/native";
-import { NavigationRoutes } from "../../constants/NavigationRoutes";
+import { NavigationRoutes } from "../../constants/navigators/NavigationRoutes";
 
 export const ScreenHomeLecturer: React.FC = () => {
     const navigation = useNavigation();

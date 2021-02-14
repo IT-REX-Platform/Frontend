@@ -7,9 +7,11 @@ import { ScreenHomeLecturer } from "../components/screens/ScreenHomeLecturer";
 import { ScreenHomeStudent } from "../components/screens/ScreenHomeStudent";
 import { ScreenHomeAdmin } from "../components/screens/ScreenHomeAdmin";
 import { ITREXRoles } from "../constants/ITREXRoles";
-import { NavigationRoutes } from "../constants/NavigationRoutes";
+import { NavigationRoutes } from "../constants/navigators/NavigationRoutes";
 import { UploadVideoComponent } from "../components/UploadVideoComponent";
 import { NavigationContainer } from "@react-navigation/native";
+import DrawerLayout from "react-native-gesture-handler/DrawerLayout";
+import { DrawerNavigator } from "../constants/navigators/DrawNavigation";
 
 const Stack = createStackNavigator();
 
@@ -47,14 +49,7 @@ export const LoggedInNavigator: React.FC = () => {
 
     return (
         <NavigationContainer>
-            <Stack.Navigator initialRouteName={NavigationRoutes.ROUTE_HOME}>
-                {homeScreen}
-                <Stack.Screen
-                    name={NavigationRoutes.ROUTE_UPLOAD_VIDEO}
-                    component={UploadVideoComponent}
-                    options={{ title: "Upload Video" }}
-                />
-            </Stack.Navigator>
+            <DrawerNavigator />
         </NavigationContainer>
     );
 };

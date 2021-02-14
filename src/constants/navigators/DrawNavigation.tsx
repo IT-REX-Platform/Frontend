@@ -23,7 +23,7 @@ import { CourseDetailsComponent } from "../../components/CourseDetailsComponent"
 
 const Drawer = createDrawerNavigator();
 
-const DrawerNavigator: React.FC = () => {
+export const DrawerNavigator: React.FC = () => {
     const dimensions = useWindowDimensions();
 
     // Display all courses
@@ -50,10 +50,10 @@ const DrawerNavigator: React.FC = () => {
     for (const course of courses) {
         items.push(
             <Drawer.Screen
-                name={course.name}
+                name={course.id?.toString()}
                 component={CourseDetailsComponent}
                 options={{
-                    title: course.name,
+                    title: course.id?.toString(),
                     drawerIcon: () => <MaterialIcons name="login" size={28} color="#011B45" style={styles.icon} />,
                 }}
             />
@@ -91,15 +91,6 @@ const DrawerNavigator: React.FC = () => {
                     drawerIcon: () => (
                         <MaterialCommunityIcons name="upload-outline" size={28} color="#011B45" style={styles.icon} />
                     ),
-                }}
-            />
-
-            <Drawer.Screen
-                name={NavigationRoutes.ROUTE_LOGIN}
-                component={LoginComponentStackNavigator}
-                options={{
-                    title: i18n.t("itrex.login"),
-                    drawerIcon: () => <MaterialIcons name="login" size={28} color="#011B45" style={styles.icon} />,
                 }}
             />
 

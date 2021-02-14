@@ -6,7 +6,6 @@ import { HomeComponent } from "../../components/HomeComponent";
 import { CreateCourseComponent } from "../../components/CreateCourseComponent";
 import { CourseDetailsComponent } from "../../components/CourseDetailsComponent";
 import { UploadVideoComponent } from "../../components/UploadVideoComponent";
-import { LoginComponent } from "../../components/LoginComponent";
 import { NavigationRoutes } from "../../constants/navigators/NavigationRoutes";
 import { dark } from "../themes/dark";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -124,41 +123,6 @@ const UploadVideoStackNavigator: React.FC = ({ navigation }) => {
     );
 };
 
-const LoginComponentStackNavigator: React.FC = ({ navigation }) => {
-    React.useContext(LocalizationContext);
-    return (
-        <Stack.Navigator
-            screenOptions={{
-                headerTitleAlign: "center",
-                headerStyle: {
-                    backgroundColor: dark.theme.blueGreen,
-                },
-                headerTintColor: dark.theme.darkBlue1,
-                headerBackTitle: "Back",
-                headerRight: () => (
-                    <MaterialCommunityIcons
-                        name="home-outline"
-                        size={28}
-                        color="#011B45"
-                        style={styles.icon}
-                        onPress={() => navigation.navigate(NavigationRoutes.ROUTE_HOME)}
-                    />
-                ),
-                headerLeft: () => (
-                    <MaterialCommunityIcons
-                        name="menu"
-                        color="#011B45"
-                        size={28}
-                        onPress={() => navigation.openDrawer()}
-                        style={styles.icon}
-                    />
-                ),
-            }}>
-            <Stack.Screen name="Login" component={LoginComponent} options={{ title: i18n.t("itrex.login") }} />
-        </Stack.Navigator>
-    );
-};
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -173,4 +137,4 @@ const styles = StyleSheet.create({
         width: 120,
     },
 });
-export { MainStackNavigator, CourseStackNavigator, UploadVideoStackNavigator, LoginComponentStackNavigator };
+export { MainStackNavigator, CourseStackNavigator, UploadVideoStackNavigator };
