@@ -51,7 +51,7 @@ export const LoggedInNavigator: React.FC = () => {
     }
 
     return (
-        <NavigationContainer>
+        <NavigationContainer linking={NavigationRoutes.linking}>
             <DrawerNavigator />
         </NavigationContainer>
     );
