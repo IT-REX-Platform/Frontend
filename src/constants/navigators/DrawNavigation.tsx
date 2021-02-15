@@ -15,6 +15,11 @@ import { ICourse } from "../../types/ICourse";
 import { CourseDetailsComponent } from "../../components/CourseDetailsComponent";
 import { CreateCourseComponent } from "../../components/CreateCourseComponent";
 import { UploadVideoComponent } from "../../components/UploadVideoComponent";
+import AuthenticationService from "../../services/AuthenticationService";
+import { ITREXRoles } from "../ITREXRoles";
+import { ScreenHomeLecturer } from "../../components/screens/ScreenHomeLecturer";
+import { ScreenHomeAdmin } from "../../components/screens/ScreenHomeAdmin";
+import { ScreenHomeStudent } from "../../components/screens/ScreenHomeStudent";
 
 const Drawer = createDrawerNavigator();
 
@@ -63,25 +68,21 @@ export const DrawerNavigator: React.FC = () => {
         <Drawer.Navigator
             drawerType={dimensions.width >= 1400 ? "permanent" : "front"}
             drawerStyle={{ backgroundColor: "lightgrey" }}>
-            <Drawer.Screen
-                name={NavigationRoutes.ROUTE_HOME}
-                component={HomeComponent}
-                options={{
-                    title: i18n.t("itrex.home"),
-                    drawerIcon: () => (
-                        <Image source={require("../images/ITRex-Logo-ob.svg")} style={[styles.icon]}></Image>
-                    ),
-                }}
-            />
+            {getHomeScreen()}
+            {getCreateCourseScreen()}
+            {getUploadVideoScreen()}
 
-            <Drawer.Screen
-                name={NavigationRoutes.ROUTE_CREATE_COURSE}
-                component={CreateCourseComponent}
-                options={{
-                    title: i18n.t("itrex.createCourse"),
-                    drawerIcon: () => <MaterialIcons name="add" size={28} color="#011B45" style={styles.icon} />,
-                }}
-            />
+            {items}
+        </Drawer.Navigator>
+    );
+};
+
+function getUploadVideoScreen() {
+    if (
+        AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_LECTURER) ||
+        AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_ADMIN)
+    ) {
+        return (
             <Drawer.Screen
                 name={NavigationRoutes.ROUTE_UPLOAD_VIDEO}
                 component={UploadVideoComponent}
@@ -92,11 +93,74 @@ export const DrawerNavigator: React.FC = () => {
                     ),
                 }}
             />
+        );
+    }
+}
 
-            {items}
-        </Drawer.Navigator>
-    );
-};
+function getCreateCourseScreen() {
+    if (
+        AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_LECTURER) ||
+        AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_ADMIN)
+    ) {
+        return (
+            <Drawer.Screen
+                name={NavigationRoutes.ROUTE_CREATE_COURSE}
+                component={CreateCourseComponent}
+                options={{
+                    title: i18n.t("itrex.createCourse"),
+                    drawerIcon: () => <MaterialIcons name="add" size={28} color="#011B45" style={styles.icon} />,
+                }}
+            />
+        );
+    }
+}
+
+function getHomeScreen() {
+    let homeScreen;
+    if (AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_LECTURER)) {
+        homeScreen = (
+            <Drawer.Screen
+                name={NavigationRoutes.ROUTE_HOME}
+                component={ScreenHomeLecturer}
+                options={{
+                    title: i18n.t("itrex.home"),
+                    drawerIcon: () => (
+                        <Image source={require("../images/ITRex-Logo-ob_750x750.png")} style={[styles.icon]}></Image>
+                    ),
+                }}
+            />
+        );
+    }
+    if (AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_ADMIN)) {
+        homeScreen = (
+            <Drawer.Screen
+                name={NavigationRoutes.ROUTE_HOME}
+                component={ScreenHomeAdmin}
+                options={{
+                    title: i18n.t("itrex.home"),
+                    drawerIcon: () => (
+                        <Image source={require("../images/ITRex-Logo-ob_750x750.png")} style={[styles.icon]}></Image>
+                    ),
+                }}
+            />
+        );
+    }
+    if (AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_STUDENT)) {
+        homeScreen = (
+            <Drawer.Screen
+                name={NavigationRoutes.ROUTE_HOME}
+                component={ScreenHomeStudent}
+                options={{
+                    title: i18n.t("itrex.home"),
+                    drawerIcon: () => (
+                        <Image source={require("../images/ITRex-Logo-ob_750x750.png")} style={[styles.icon]}></Image>
+                    ),
+                }}
+            />
+        );
+    }
+    return homeScreen;
+}
 
 const styles = StyleSheet.create({
     icon: {

@@ -27,7 +27,13 @@ export const Header: React.FC<string> = ({ title }) => {
                     flexDirection: "row",
                     margin: 5,
                 }}>
-                <MaterialCommunityIcons name="menu" color="#011B45" size={28} style={styles.iconLeft} />
+                <MaterialCommunityIcons
+                    name="menu"
+                    color="#011B45"
+                    size={28}
+                    style={styles.iconLeft}
+                    onPress={() => navigation.openDrawer()}
+                />
                 <Text
                     style={{
                         fontSize: 22,
