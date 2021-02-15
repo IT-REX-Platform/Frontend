@@ -4,7 +4,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 
 import { HomeComponent } from "../../components/HomeComponent";
 import { CreateCourseComponent } from "../../components/CreateCourseComponent";
-import { CourseDetailsComponent } from "../../components/CourseDetailsComponent";
+import { CourseDetailsComponent } from "../../components/screens/ScreenCourse";
 import { UploadVideoComponent } from "../../components/UploadVideoComponent";
 import { NavigationRoutes } from "../../constants/navigators/NavigationRoutes";
 import { dark } from "../themes/dark";

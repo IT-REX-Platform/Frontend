@@ -1,21 +1,17 @@
 import * as Linking from "expo-linking";
+import { RouteProp } from "@react-navigation/native";
+import { DrawerNavigationProp } from "@react-navigation/drawer";
 
 const prefix = Linking.makeUrl();
 
-const config = {
+export const config = {
     screens: {
         ROUTE_HOME: "home",
         ROUTE_LOGIN: "login",
         ROUTE_CREATE_COURSE: "createCourse",
         ROUTE_UPLOAD_VIDEO: "uploadVideo",
         ROUTE_COURSE_DETAILS: {
-            path: "courseDetails/:name",
-            parse: {
-                name: (name: string) => `${name}`,
-            },
-            stringify: {
-                name: (name: string) => name.replaceAll(" ", ""),
-            },
+            path: "course/:courseId",
         },
     },
 };
@@ -31,3 +27,18 @@ export class NavigationRoutes {
         config,
     };
 }
+
+// TESTS
+export enum NAV_SCREENS {
+    ROUTE_COURSE_DETAILS = "ROUTE_COURSE_DETAILS",
+}
+
+export type DrawerParamList = {
+    [NAV_SCREENS.ROUTE_COURSE_DETAILS]: { courseId: number } | undefined;
+};
+
+export type ScreenCourseProps = {
+    route: RouteProp<DrawerParamList, NAV_SCREENS.ROUTE_COURSE_DETAILS>;
+    navigation: DrawerNavigationProp<DrawerParamList, NAV_SCREENS.ROUTE_COURSE_DETAILS>;
+};
+// TESTS
