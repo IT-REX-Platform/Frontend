@@ -11,7 +11,6 @@ import { dark } from "../themes/dark";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import i18n from "../../locales";
 import { LocalizationContext } from "../../App";
-import { nodeModuleNameResolver } from "typescript";
 
 const Stack = createStackNavigator();
 

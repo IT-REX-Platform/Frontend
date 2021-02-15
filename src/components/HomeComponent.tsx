@@ -2,13 +2,15 @@ import React from "react";
 import { Image, StyleSheet, View, Text, ImageBackground } from "react-native";
 import { LocalizationContext } from "../App";
 import i18n from "../locales";
+import { Header } from "../constants/navigators/Header";
 
-export const HomeComponent: React.FC = ({ navigation }) => {
+export const HomeComponent: React.FC = () => {
     React.useContext(LocalizationContext);
 
     return (
         <View style={styles.container}>
             <ImageBackground source={require("../constants/images/Background_forest.svg")} style={styles.image}>
+                <Header title={i18n.t("itrex.home")} />
                 <View style={styles.textContainer}>
                     <Image source={require("../constants/images/ITRex-Logo-ob.svg")} style={[styles.icon]}></Image>
                     <Text>{i18n.t("itrex.welcome")}</Text>

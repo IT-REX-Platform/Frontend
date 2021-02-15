@@ -2,12 +2,14 @@ import React from "react";
 import { StyleSheet, Button, Pressable, TextInput, Text, View, ImageBackground } from "react-native";
 import { LocalizationContext } from "../App";
 import i18n from "../locales";
+import { Header } from "../constants/navigators/Header";
 
 export const UploadVideoComponent: React.FC = () => {
     React.useContext(LocalizationContext);
 
     return (
         <ImageBackground source={require("../constants/images/Background_forest.svg")} style={styles.image}>
+            <Header title={i18n.t("itrex.toUploadVideo")} />
             <View style={styles.container}>
                 <View style={styles.StyledInputContainer}>
                     <Text>{i18n.t("itrex.uploadVideoHere")}</Text>

@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
 
 import { createDrawerNavigator } from "@react-navigation/drawer";
-import { FlatList, Image, StyleSheet, TouchableOpacity, useWindowDimensions, View, Text } from "react-native";
+import { Image, StyleSheet, useWindowDimensions } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { dark } from "../themes/dark";
 
-import { MainStackNavigator, CourseStackNavigator, UploadVideoStackNavigator } from "./StackNavigator";
-
+import { HomeComponent } from "../../components/HomeComponent";
 import { NavigationRoutes } from "./NavigationRoutes";
 import i18n from "../../locales";
 import { loggerFactory } from "../../../logger/LoggerConfig";
@@ -15,6 +13,8 @@ import { RequestFactory } from "../../api/requests/RequestFactory";
 import { EndpointsCourseExtended } from "../../api/endpoints/EndpointsCourseExtended";
 import { ICourse } from "../../types/ICourse";
 import { CourseDetailsComponent } from "../../components/CourseDetailsComponent";
+import { CreateCourseComponent } from "../../components/CreateCourseComponent";
+import { UploadVideoComponent } from "../../components/UploadVideoComponent";
 
 const Drawer = createDrawerNavigator();
 
@@ -49,7 +49,9 @@ export const DrawerNavigator: React.FC = () => {
                 component={CourseDetailsComponent}
                 options={{
                     title: course.id?.toString(),
-                    drawerIcon: () => <MaterialIcons name="login" size={28} color="#011B45" style={styles.icon} />,
+                    drawerIcon: () => (
+                        <MaterialCommunityIcons name="notebook-outline" size={28} color="#011B45" style={styles.icon} />
+                    ),
                 }}
             />
         );
@@ -63,7 +65,7 @@ export const DrawerNavigator: React.FC = () => {
             drawerStyle={{ backgroundColor: "lightgrey" }}>
             <Drawer.Screen
                 name={NavigationRoutes.ROUTE_HOME}
-                component={MainStackNavigator}
+                component={HomeComponent}
                 options={{
                     title: i18n.t("itrex.home"),
                     drawerIcon: () => (
@@ -74,7 +76,7 @@ export const DrawerNavigator: React.FC = () => {
 
             <Drawer.Screen
                 name={NavigationRoutes.ROUTE_CREATE_COURSE}
-                component={CourseStackNavigator}
+                component={CreateCourseComponent}
                 options={{
                     title: i18n.t("itrex.createCourse"),
                     drawerIcon: () => <MaterialIcons name="add" size={28} color="#011B45" style={styles.icon} />,
@@ -82,7 +84,7 @@ export const DrawerNavigator: React.FC = () => {
             />
             <Drawer.Screen
                 name={NavigationRoutes.ROUTE_UPLOAD_VIDEO}
-                component={UploadVideoStackNavigator}
+                component={UploadVideoComponent}
                 options={{
                     title: i18n.t("itrex.toUploadVideo"),
                     drawerIcon: () => (

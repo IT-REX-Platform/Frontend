@@ -22,6 +22,7 @@ import { EndpointsCourseExtended } from "../api/endpoints/EndpointsCourseExtende
 import { useNavigation } from "@react-navigation/native";
 import { NavigationRoutes } from "../constants/navigators/NavigationRoutes";
 import { LocalizationContext } from "../App";
+import { Header } from "../constants/navigators/Header";
 
 const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");
 const endpointsCourseExtended: EndpointsCourseExtended = new EndpointsCourseExtended();
@@ -50,6 +51,8 @@ export const CreateCourseComponent: React.FC = () => {
     return (
         <View style={styles.container}>
             <ImageBackground source={require("../constants/images/Background_forest.svg")} style={styles.image}>
+                <Header title={i18n.t("itrex.toCourse")} />
+                <View style={styles.pageContainer} />
                 <View style={styles.styledInputContainer}>
                     <Text>{i18n.t("itrex.enterCourseName")}</Text>
                     <TextInput
@@ -205,6 +208,9 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         flexDirection: "column",
+    },
+    pageContainer: {
+        marginTop: 70,
     },
     image: {
         flex: 1,
