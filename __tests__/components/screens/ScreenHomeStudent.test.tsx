@@ -9,10 +9,25 @@ import { ScreenHomeStudent } from "../../../src/components/screens/ScreenHomeStu
 
 console.log = jest.fn();
 
+jest.mock("../../../src/constants/Constants", () => {
+    const mockFunctionOutput = {
+        apiUrl: "http://localhost:8080/",
+        authEndpoint: "http://keycloak:9080/auth/realms/jhipster/protocol/openid-connect/auth",
+        authTokenEndpoint: "http://keycloak:9080/auth/realms/jhipster/protocol/openid-connect/token",
+        channel: "dev",
+    };
+
+    return {
+        itRexVars: jest.fn(() => {
+            return mockFunctionOutput;
+        }),
+    };
+});
+
 describe("test HomeScreenStudent", () => {
     it("see if stuff is rendered", () => {
         const { getByText } = render(<ScreenHomeStudent></ScreenHomeStudent>);
 
-        expect(getByText("Student Home")).toBeDefined();
+        expect(getByText("hello student")).toBeDefined();
     });
 });

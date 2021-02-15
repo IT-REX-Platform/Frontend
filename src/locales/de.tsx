@@ -2,6 +2,13 @@ export const de = {
     itrex: {
         home: "Home",
         login: "Einloggen",
+        homeStudentTitle: "Home",
+        homeStudentText: "Hallo Student",
+        homeLecturerTitle: "Home",
+        homeLecturerText: "Hallo Dozent",
+        homeAdminTitle: "Home",
+        homeAdminText: "Aloha Admin",
+        homeErrorText: "Fehlende Konfiguration",
         enterCourseName: "Geben Sie einen Kursnamen ein:",
         enterCourseDescription: "Geben Sie einen Kursbeschreibung ein:",
         createCourse: "Neuen Kurs erstellen",

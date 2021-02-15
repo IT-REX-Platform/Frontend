@@ -10,10 +10,14 @@ import { ITREXRoles } from "../constants/ITREXRoles";
 import { NavigationRoutes } from "../constants/NavigationRoutes";
 import { UploadVideoComponent } from "../components/UploadVideoComponent";
 import { NavigationContainer } from "@react-navigation/native";
+import { LocalizationContext } from "../App";
+import i18n from "../locales";
+import { Text, View } from "react-native";
 
 const Stack = createStackNavigator();
 
 export const LoggedInNavigator: React.FC = () => {
+    const { t } = React.useContext(LocalizationContext);
     const authenticationService = AuthenticationService.getInstance();
 
     // May complete different stacks for Lecturer/Student/Admin ?
@@ -24,7 +28,7 @@ export const LoggedInNavigator: React.FC = () => {
             <Stack.Screen
                 name={NavigationRoutes.ROUTE_HOME}
                 component={ScreenHomeLecturer}
-                options={{ title: "Home Lecturer" }}
+                options={{ title: i18n.t("itrex.homeLecturerTitle") }}
             />
         );
     } else if (authenticationService.getRoles().includes(ITREXRoles.ROLE_STUDENT)) {
@@ -32,7 +36,7 @@ export const LoggedInNavigator: React.FC = () => {
             <Stack.Screen
                 name={NavigationRoutes.ROUTE_HOME}
                 component={ScreenHomeStudent}
-                options={{ title: "Home Student" }}
+                options={{ title: i18n.t("itrex.homeStudentTitle") }}
             />
         );
     } else if (authenticationService.getRoles().includes(ITREXRoles.ROLE_ADMIN)) {
@@ -40,8 +44,14 @@ export const LoggedInNavigator: React.FC = () => {
             <Stack.Screen
                 name={NavigationRoutes.ROUTE_HOME}
                 component={ScreenHomeAdmin}
-                options={{ title: "Home Admin" }}
+                options={{ title: i18n.t("itrex.homeAdminTitle") }}
             />
+        );
+    } else {
+        return (
+            <View>
+                <Text>{i18n.t("itrex.homeErrorText")}</Text>
+            </View>
         );
     }
 
