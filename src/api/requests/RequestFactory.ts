@@ -12,6 +12,14 @@ export class RequestFactory {
         return request;
     }
 
+    public static createPostRequestWithFormData(formdata: FormData): RequestInit {
+        const request: RequestInit = RequestAuthorization.createAuthorizedRequest();
+        request.method = "POST";
+        request.body = formdata;
+
+        return request;
+    }
+
     public static createPostRequest(object: ICourse | IVideo): RequestInit {
         return RequestFactory.createRequestWithJson("POST", object);
     }
@@ -34,14 +42,6 @@ export class RequestFactory {
             "Content-Type": "application/json",
         };
         request.body = JSON.stringify(object);
-
-        return request;
-    }
-
-    public static createPostRequestWithFormData(formdata: FormData): RequestInit {
-        const request: RequestInit = RequestAuthorization.createAuthorizedRequest();
-        request.method = "POST";
-        request.body = formdata;
 
         return request;
     }

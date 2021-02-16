@@ -217,41 +217,4 @@ describe("test upload video component", () => {
             */
         }
     });
-
-    it("test document picker", async () => {
-        const { getByText } = render(<UploadVideoComponent></UploadVideoComponent>);
-
-        expect(getDocumentAsync).not.toBeCalled;
-
-        await act(() => {
-            fireEvent.press(getByText("Browse Files"));
-        });
-
-        expect(getDocumentAsync).toBeCalled;
-    });
-
-    it("test upload video", async () => {
-        const { getByText, getByTestId } = render(<UploadVideoComponent></UploadVideoComponent>);
-
-        const sendRequestMock = mocked(sendRequest);
-
-        fireEvent.press(getByText("Upload Video"));
-
-        expect(sendRequestMock).not.toBeCalled();
-
-        expect(getByTestId("fileNameInput").props.value).toMatch("");
-
-        await act(() => {
-            fireEvent.press(getByText("Browse Files"));
-        });
-
-        expect(getByTestId("fileNameInput").props.value).toMatch("test.mp4");
-
-        await fireEvent.press(getByText("Upload Video"));
-
-        // komponenten des upload-vorgangs müssen hierfür noch korrekt gemockt werden
-        // der document picker scheint so weit mehr oder weniger zu tun
-
-        expect(sendRequestMock).toBeCalled();
-    });
 });
