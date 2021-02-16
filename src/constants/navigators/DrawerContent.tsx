@@ -8,8 +8,11 @@ import { EndpointsCourseExtended } from "../../api/endpoints/EndpointsCourseExte
 import { RequestFactory } from "../../api/requests/RequestFactory";
 import { useNavigation } from "@react-navigation/native";
 import { NavigationRoutes } from "./NavigationRoutes";
+import { AuthContext } from "../../components/Context";
 
 export const DrawerContent: React.FC = (props) => {
+    const { signOut } = React.useContext(AuthContext);
+
     const { navigation } = props;
 
     // Display all courses
@@ -77,7 +80,12 @@ export const DrawerContent: React.FC = (props) => {
                     <Switch value={isDarkTheme} onValueChange={toggleIsDarkTheme}></Switch>
                 </View>
             </DrawerContentScrollView>
-            <DrawerItem label="Sign Out" onPress={() => {}}></DrawerItem>
+            <DrawerItem
+                icon={() => <MaterialCommunityIcons name="logout" size={28} color="#011B45" style={styles.icon} />}
+                label="Sign Out"
+                onPress={() => {
+                    signOut();
+                }}></DrawerItem>
         </View>
     );
 };
