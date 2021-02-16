@@ -70,3 +70,4 @@ web-build/
 testOutput/
 coverage/
 .scannerwork
+__tests__/__snapshots__/

@@ -12,7 +12,6 @@ export const HomeComponent: React.FC = () => {
 
     return (
         <View style={styles.container}>
-            <Button title={i18n.t("itrex.login")} onPress={() => navigation.navigate(NavigationRoutes.ROUTE_LOGIN)} />
             <Button
                 title={i18n.t("itrex.toCourse")}
                 onPress={() => navigation.navigate(NavigationRoutes.ROUTE_CREATE_COURSE)}

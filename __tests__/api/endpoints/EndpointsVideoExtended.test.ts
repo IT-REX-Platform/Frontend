@@ -1,3 +1,4 @@
+import "../../../setupTests.ts";
 import { EndpointsVideoExtended } from "../../../src/api/endpoints/EndpointsVideoExtended";
 import { IVideo } from "../../../src/types/IVideo";
 import "isomorphic-fetch";

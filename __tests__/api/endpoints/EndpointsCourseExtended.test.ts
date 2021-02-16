@@ -1,3 +1,4 @@
+import "../../../setupTests.ts";
 import { EndpointsCourseExtended } from "../../../src/api/endpoints/EndpointsCourseExtended";
 import { ICourse } from "../../../src/types/ICourse";
 import { CoursePublishState } from "../../../src/constants/CoursePublishState";
