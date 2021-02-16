@@ -1,3 +1,4 @@
+import "../../setupTests.ts";
 import { HomeComponent } from "../../src/components/HomeComponent";
 import "react-native";
 import React from "react";

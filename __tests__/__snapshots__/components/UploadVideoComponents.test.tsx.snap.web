@@ -1,0 +1,222 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`test upload video component see if stuff is rendered 1`] = `
+<div
+  className="css-view-1dbjc4n"
+  style={
+    Object {
+      "WebkitAlignItems": "center",
+      "WebkitBoxAlign": "center",
+      "WebkitBoxFlex": 1,
+      "WebkitBoxPack": "center",
+      "WebkitFlexBasis": "0%",
+      "WebkitFlexGrow": 1,
+      "WebkitFlexShrink": 1,
+      "WebkitJustifyContent": "center",
+      "alignItems": "center",
+      "backgroundColor": "rgba(255,255,255,1.00)",
+      "flexBasis": "0%",
+      "flexGrow": 1,
+      "flexShrink": 1,
+      "justifyContent": "center",
+      "marginBottom": "20px",
+      "marginTop": "20px",
+      "msFlexAlign": "center",
+      "msFlexNegative": 1,
+      "msFlexPack": "center",
+      "msFlexPositive": 1,
+      "msFlexPreferredSize": "0%",
+    }
+  }
+>
+  <div
+    className="css-view-1dbjc4n"
+    style={
+      Object {
+        "WebkitBoxDirection": "normal",
+        "WebkitBoxOrient": "vertical",
+        "WebkitBoxPack": "center",
+        "WebkitFlexDirection": "column",
+        "WebkitJustifyContent": "center",
+        "flexDirection": "column",
+        "justifyContent": "center",
+        "msFlexDirection": "column",
+        "msFlexPack": "center",
+      }
+    }
+  >
+    <div
+      className="css-text-901oao"
+      dir="auto"
+      onClick={[Function]}
+    >
+      Upload Video here:
+    </div>
+    <input
+      autoCapitalize="sentences"
+      autoComplete="on"
+      autoCorrect="on"
+      className="css-textinput-11aywtz"
+      data-focusable={true}
+      data-testid="videoNameInput"
+      dir="auto"
+      onBlur={[Function]}
+      onChange={[Function]}
+      onFocus={[Function]}
+      onKeyDown={[Function]}
+      onSelect={[Function]}
+      readOnly={true}
+      spellCheck={true}
+      style={
+        Object {
+          "borderBottomColor": "rgba(211,211,211,1.00)",
+          "borderBottomWidth": "2px",
+          "borderLeftColor": "rgba(211,211,211,1.00)",
+          "borderLeftWidth": "2px",
+          "borderRightColor": "rgba(211,211,211,1.00)",
+          "borderRightWidth": "2px",
+          "borderTopColor": "rgba(211,211,211,1.00)",
+          "borderTopWidth": "2px",
+          "marginLeft": "8px",
+          "marginRight": "8px",
+          "width": "100%",
+        }
+      }
+      type="text"
+      value=""
+    />
+    <div
+      className="css-view-1dbjc4n"
+      data-focusable={true}
+      onBlur={[Function]}
+      onClick={[Function]}
+      onContextMenu={[Function]}
+      onFocus={[Function]}
+      onKeyDown={[Function]}
+      style={
+        Object {
+          "marginTop": "16px",
+        }
+      }
+      tabIndex="0"
+    >
+      <div
+        className="css-cursor-18t94o4 css-view-1dbjc4n"
+        data-focusable={true}
+        onClick={[Function]}
+        onContextMenu={[Function]}
+        onKeyDown={[Function]}
+        role="button"
+        style={
+          Object {
+            "MozTransitionProperty": "opacity",
+            "MozUserSelect": "none",
+            "WebkitTransitionDuration": "0s",
+            "WebkitTransitionProperty": "opacity",
+            "WebkitUserSelect": "none",
+            "backgroundColor": "rgba(33,150,243,1.00)",
+            "borderBottomLeftRadius": "2px",
+            "borderBottomRightRadius": "2px",
+            "borderTopLeftRadius": "2px",
+            "borderTopRightRadius": "2px",
+            "cursor": "pointer",
+            "msTouchAction": "manipulation",
+            "msUserSelect": "none",
+            "touchAction": "manipulation",
+            "transitionDuration": "0s",
+            "transitionProperty": "opacity",
+            "userSelect": "none",
+          }
+        }
+        tabIndex="0"
+      >
+        <div
+          className="css-text-901oao"
+          dir="auto"
+          onClick={[Function]}
+          style={
+            Object {
+              "color": "rgba(255,255,255,1.00)",
+              "fontWeight": "500",
+              "paddingBottom": "8px",
+              "paddingLeft": "8px",
+              "paddingRight": "8px",
+              "paddingTop": "8px",
+              "textAlign": "center",
+              "textTransform": "uppercase",
+            }
+          }
+        >
+          Browse Videos
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    className="css-view-1dbjc4n"
+    data-focusable={true}
+    onBlur={[Function]}
+    onClick={[Function]}
+    onContextMenu={[Function]}
+    onFocus={[Function]}
+    onKeyDown={[Function]}
+    style={
+      Object {
+        "marginTop": "16px",
+      }
+    }
+    tabIndex="0"
+  >
+    <div
+      className="css-cursor-18t94o4 css-view-1dbjc4n"
+      data-focusable={true}
+      onClick={[Function]}
+      onContextMenu={[Function]}
+      onKeyDown={[Function]}
+      role="button"
+      style={
+        Object {
+          "MozTransitionProperty": "opacity",
+          "MozUserSelect": "none",
+          "WebkitTransitionDuration": "0s",
+          "WebkitTransitionProperty": "opacity",
+          "WebkitUserSelect": "none",
+          "backgroundColor": "rgba(33,150,243,1.00)",
+          "borderBottomLeftRadius": "2px",
+          "borderBottomRightRadius": "2px",
+          "borderTopLeftRadius": "2px",
+          "borderTopRightRadius": "2px",
+          "cursor": "pointer",
+          "msTouchAction": "manipulation",
+          "msUserSelect": "none",
+          "touchAction": "manipulation",
+          "transitionDuration": "0s",
+          "transitionProperty": "opacity",
+          "userSelect": "none",
+        }
+      }
+      tabIndex="0"
+    >
+      <div
+        className="css-text-901oao"
+        dir="auto"
+        onClick={[Function]}
+        style={
+          Object {
+            "color": "rgba(255,255,255,1.00)",
+            "fontWeight": "500",
+            "paddingBottom": "8px",
+            "paddingLeft": "8px",
+            "paddingRight": "8px",
+            "paddingTop": "8px",
+            "textAlign": "center",
+            "textTransform": "uppercase",
+          }
+        }
+      >
+        Upload Video
+      </div>
+    </div>
+  </div>
+</div>
+`;
