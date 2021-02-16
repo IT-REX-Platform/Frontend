@@ -1,6 +1,6 @@
 {
     "setupFiles": ["./setupTests.ts"],
-    "projects": [{ "preset": "jest-expo/web" }, { "preset": "jest-expo/ios" }],
+    "projects": [{ "preset": "jest-expo/ios" }],
     "collectCoverage": true,
     "collectCoverageFrom": [
         "**/*.{js,jsx,ts,tsx}",
