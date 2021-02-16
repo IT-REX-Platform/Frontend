@@ -30,7 +30,7 @@ describe("test login component", () => {
         expect(getByText("Login")).toBeDefined();
     });
 
-    xit("see if login button triggers authentication", () => {
+    it("see if login button triggers authentication", () => {
         const { getByText } = render(<ScreenLogin></ScreenLogin>);
 
         act(() => {
