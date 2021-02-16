@@ -1,7 +1,7 @@
 import "../../setupTests.ts";
-import { UploadVideoComponent } from "../../src/components/UploadVideoComponent";
 import "react-native";
 import React from "react";
+import { UploadVideoComponent } from "../../src/components/UploadVideoComponent";
 import { fireEvent, render, act, waitFor } from "@testing-library/react-native";
 import { sendRequest } from "../../src/api/endpoints/sendRequest";
 import { getDocumentAsync } from "expo-document-picker";

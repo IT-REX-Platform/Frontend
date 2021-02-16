@@ -28,7 +28,7 @@ export const de = {
         toCourse: "Kurserstellung",
         toUploadVideo: "Video hochladen",
         uploadVideoHere: "Video hier einfügen:",
-        uploadVideoSuccessMsg: "Video wurde erfolgreich hochgeladen!!",
+        uploadVideoSuccessMsg: "Video wurde erfolgreich hochgeladen!",
         toUploadDocument: "Dokumenten hochladen",
         uploadDocumentHere: "Dokument hier einfügen:",
         switchLangEN: "Zu Englisch wechseln",
