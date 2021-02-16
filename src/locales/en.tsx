@@ -5,6 +5,7 @@ export const en = {
         itrex: "IT-Rex",
         home: "Home",
         login: "Login",
+        logout: "Logout",
         enterCourseName: "Enter Course name:",
         enterCourseDescription: "Enter Course description:",
         createCourse: "Create New Course",
@@ -25,6 +26,8 @@ export const en = {
         toUploadVideo: "Upload Video",
         uploadVideoHere: "Upload Video here:",
         switchLangDE: "Switch to german",
+        switchLang: "Switch to german",
         courseDetails: "Course Details",
+        darkTheme: "Dark Xeme",
     },
 };

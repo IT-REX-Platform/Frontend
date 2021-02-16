@@ -5,6 +5,7 @@ export const de = {
         itrex: "IT-Rex",
         home: "Home",
         login: "Einloggen",
+        logout: "Ausloggen",
         enterCourseName: "Geben Sie einen Kursnamen ein:",
         enterCourseDescription: "Geben Sie einen Kursbeschreibung ein:",
         createCourse: "Neuen Kurs erstellen",
@@ -25,6 +26,8 @@ export const de = {
         toUploadVideo: "Video-Upload",
         uploadVideoHere: "Video hier einfügen:",
         switchLangEN: "Zu Englisch wechseln",
+        switchLang: "Zu Englisch wechseln",
         courseDetails: "Kurs-Details",
+        darkTheme: "Dark-Theme",
     },
 };

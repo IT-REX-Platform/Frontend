@@ -9,6 +9,8 @@ import { RequestFactory } from "../../api/requests/RequestFactory";
 import { useNavigation } from "@react-navigation/native";
 import { NavigationRoutes } from "./NavigationRoutes";
 import { AuthContext } from "../../components/Context";
+import { LocalizationContext } from "../../App";
+import i18n from "../../locales";
 
 export const DrawerContent: React.FC = (props) => {
     const { signOut } = React.useContext(AuthContext);
@@ -26,6 +28,16 @@ export const DrawerContent: React.FC = (props) => {
 
     const [isDarkTheme, setIsDarkTheme] = React.useState(false);
     const toggleIsDarkTheme = () => setIsDarkTheme((previousState) => !previousState);
+
+    const { t, locale, setLocale } = React.useContext(LocalizationContext);
+
+    const toggleIsGerman = () => {
+        if (locale == "de-DE") {
+            setLocale("en");
+        } else {
+            setLocale("de-DE");
+        }
+    };
 
     function getAllCourses(): void {
         loggerService.trace("Getting all courses.");
@@ -63,26 +75,34 @@ export const DrawerContent: React.FC = (props) => {
             </View>
             <DrawerItem
                 icon={() => <MaterialCommunityIcons name="home" size={28} color="#011B45" style={styles.icon} />}
-                label="Home"
+                label={i18n.t("itrex.home")}
                 onPress={() => {
                     navigation.navigate(NavigationRoutes.ROUTE_HOME);
                 }}></DrawerItem>
-            <DrawerContentScrollView {...props}>
-                {drawerItems}
-                <View
-                    style={{
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        paddingVertical: 12,
-                        paddingHorizontal: 16,
-                    }}>
-                    <Text>Dark Theme</Text>
-                    <Switch value={isDarkTheme} onValueChange={toggleIsDarkTheme}></Switch>
-                </View>
-            </DrawerContentScrollView>
+            <DrawerContentScrollView {...props}>{drawerItems}</DrawerContentScrollView>
+            <View
+                style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    paddingVertical: 12,
+                    paddingHorizontal: 16,
+                }}>
+                <Text>{i18n.t("itrex.darkTheme")}</Text>
+                <Switch value={isDarkTheme} onValueChange={toggleIsDarkTheme}></Switch>
+            </View>
+            <View
+                style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    paddingVertical: 12,
+                    paddingHorizontal: 16,
+                }}>
+                <Text>{i18n.t("itrex.switchLang")}</Text>
+                <Switch value={locale == "de-DE"} onValueChange={toggleIsGerman}></Switch>
+            </View>
             <DrawerItem
                 icon={() => <MaterialCommunityIcons name="logout" size={28} color="#011B45" style={styles.icon} />}
-                label="Sign Out"
+                label={i18n.t("itrex.logout")}
                 onPress={() => {
                     signOut();
                 }}></DrawerItem>
