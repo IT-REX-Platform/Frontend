@@ -15,7 +15,7 @@ export class EndpointsCourseExtended implements IEndpointsCourseExtended {
     private url: string;
 
     public constructor() {
-        this.url = itRexVars().apiUrl + ApiUrls.URL_COURSES_EXTENDED;
+        this.url = itRexVars().apiUrl + ApiUrls.URL_COURSES;
     }
 
     /**
