@@ -1,8 +1,8 @@
 import React from "react";
 import { StyleSheet, Button, Pressable, TextInput, Text, View, ImageBackground } from "react-native";
-import { LocalizationContext } from "../App";
 import i18n from "../locales";
 import { Header } from "../constants/navigators/Header";
+import { LocalizationContext } from "./Context";
 
 export const UploadVideoComponent: React.FC = () => {
     React.useContext(LocalizationContext);

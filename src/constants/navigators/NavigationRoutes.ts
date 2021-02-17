@@ -1,8 +1,8 @@
 import * as Linking from "expo-linking";
-import { RouteProp } from "@react-navigation/native";
+import { LinkingOptions, RouteProp } from "@react-navigation/native";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 
-const prefix = Linking.makeUrl();
+const prefix = Linking.makeUrl("it-rex://");
 
 export const config = {
     screens: {
@@ -12,6 +12,16 @@ export const config = {
         ROUTE_UPLOAD_VIDEO: "uploadVideo",
         ROUTE_COURSE_DETAILS: {
             path: "course/:courseId",
+            screens: {
+                INFO: {
+                    path: "INFO",
+                    screens: {
+                        path: "/",
+                        TIMELINE: "TIMELINE",
+                        OVERVIEW: "OVERVIEW",
+                    },
+                },
+            },
         },
     },
 };
@@ -21,10 +31,13 @@ export class NavigationRoutes {
     static ROUTE_CREATE_COURSE = "ROUTE_CREATE_COURSE";
     static ROUTE_UPLOAD_VIDEO = "ROUTE_UPLOAD_VIDEO";
     static ROUTE_COURSE_DETAILS = "ROUTE_COURSE_DETAILS";
+    static ROUTE_COURSE_DETAILS_TABS = "ROUTE_COURSE_DETAILS_TABS";
+    static ROUTE_COURSE_DETAILS_OVERVIEW = "ROUTE_COURSE_DETAILS_OVERVIEW";
+    static ROUTE_COURSE_DETAILS_TIMELINE = "ROUTE_COURSE_DETAILS_TIMELINE";
 
-    static linking = {
+    static linking: LinkingOptions = {
         prefixes: [prefix],
-        config,
+        config: config,
     };
 }
 

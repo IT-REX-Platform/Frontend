@@ -29,5 +29,7 @@ export const de = {
         switchLang: "Zu Englisch wechseln",
         courseDetails: "Kurs-Details",
         darkTheme: "Dark-Theme",
+        courseTabOverview: "Übersicht",
+        courseTabTimeline: "Zeitachse",
     },
 };

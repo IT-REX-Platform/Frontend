@@ -29,5 +29,7 @@ export const en = {
         switchLang: "Switch to german",
         courseDetails: "Course Details",
         darkTheme: "Dark Xeme",
+        courseTabOverview: "Overview",
+        courseTabTimeline: "Timeline",
     },
 };

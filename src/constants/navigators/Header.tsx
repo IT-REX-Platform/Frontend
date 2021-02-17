@@ -4,7 +4,7 @@ import { dark } from "../themes/dark";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { NavigationRoutes } from "../../constants/navigators/NavigationRoutes";
 import { useNavigation } from "@react-navigation/native";
-import { LocalizationContext } from "../../App";
+import { LocalizationContext } from "../../components/Context";
 
 export const Header: React.FC<string> = ({ title }) => {
     React.useContext(LocalizationContext);

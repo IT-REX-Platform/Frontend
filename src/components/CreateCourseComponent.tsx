@@ -21,8 +21,8 @@ import { CoursePublishState } from "../constants/CoursePublishState";
 import { EndpointsCourseExtended } from "../api/endpoints/EndpointsCourseExtended";
 import { useNavigation } from "@react-navigation/native";
 import { NavigationRoutes } from "../constants/navigators/NavigationRoutes";
-import { LocalizationContext } from "../App";
 import { Header } from "../constants/navigators/Header";
+import { LocalizationContext } from "./Context";
 
 const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");
 const endpointsCourseExtended: EndpointsCourseExtended = new EndpointsCourseExtended();

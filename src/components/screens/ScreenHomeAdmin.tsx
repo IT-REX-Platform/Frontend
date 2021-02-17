@@ -4,7 +4,7 @@ import React from "react";
 import { useNavigation } from "@react-navigation/native";
 import i18n from "../../locales";
 import { Header } from "../../constants/navigators/Header";
-import { LocalizationContext } from "../../App";
+import { LocalizationContext } from "../Context";
 
 export const ScreenHomeAdmin: React.FC = () => {
     const navigation = useNavigation();

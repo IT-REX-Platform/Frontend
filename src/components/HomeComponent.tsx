@@ -1,8 +1,8 @@
 import React from "react";
 import { Image, StyleSheet, View, Text, ImageBackground } from "react-native";
-import { LocalizationContext } from "../App";
 import i18n from "../locales";
 import { Header } from "../constants/navigators/Header";
+import { LocalizationContext } from "./Context";
 
 export const HomeComponent: React.FC = () => {
     React.useContext(LocalizationContext);

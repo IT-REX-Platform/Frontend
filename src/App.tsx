@@ -7,7 +7,7 @@ import * as Localization from "expo-localization";
 import DrawerNavigator from "./constants/navigators/DrawNavigation";
 import React from "react";
 import { dark } from "./constants/themes/dark";
-import { AuthContext } from "./components/Context";
+import { AuthContext, LocalizationContext } from "./components/Context";
 import { LoggedInNavigator } from "./navigation/LoggedInNavigator";
 import { LoggedOutNavigator } from "./navigation/LoggedOutNavigator";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -15,11 +15,8 @@ import AuthenticationService from "./services/AuthenticationService";
 import * as AuthSession from "expo-auth-session";
 import { IAuthContext } from "./components/Context";
 import { ILoginReducerAction, ILoginReducerState } from "./types/ILoginReducer";
-import { ILocalizationContext } from "./types/ILocalizationContext";
 
 const loggerService = loggerFactory.getLogger("service.App");
-
-export const LocalizationContext = React.createContext({} as ILocalizationContext);
 
 function loginReducer(prevState: ILoginReducerState, action: ILoginReducerAction): ILoginReducerState {
     switch (action.type) {

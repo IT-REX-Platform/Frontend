@@ -8,8 +8,7 @@ import { EndpointsCourseExtended } from "../../api/endpoints/EndpointsCourseExte
 import { RequestFactory } from "../../api/requests/RequestFactory";
 import { useNavigation } from "@react-navigation/native";
 import { NavigationRoutes } from "./NavigationRoutes";
-import { AuthContext } from "../../components/Context";
-import { LocalizationContext } from "../../App";
+import { AuthContext, LocalizationContext } from "../../components/Context";
 import i18n from "../../locales";
 
 export const DrawerContent: React.FC = (props) => {
