@@ -31,6 +31,8 @@ export const DatePickerComponent: React.FC<DatePickerProps> = (props) => {
     // Year-Month-Date format string of last selected value
     const yyyymmdd = getDateIsoString(date);
 
+    const displayTitle: string = yyyymmdd.length > 0 ? title + ": " + yyyymmdd : title;
+
     const [show, setShow] = useState(false);
 
     const mobile: boolean = Platform.OS === ("android" || "ios");
@@ -39,7 +41,7 @@ export const DatePickerComponent: React.FC<DatePickerProps> = (props) => {
         return (
             <>
                 <Button
-                    title={title}
+                    title={displayTitle}
                     onPress={() => {
                         setShow(true);
                     }}
@@ -55,7 +57,6 @@ export const DatePickerComponent: React.FC<DatePickerProps> = (props) => {
                         maximumDate={maxDate}
                     />
                 )}
-                {date && <Text>{date.toISOString()}</Text>}
             </>
         );
     }
