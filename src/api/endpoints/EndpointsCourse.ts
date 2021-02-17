@@ -2,16 +2,16 @@ import { ICourse } from "../../types/ICourse";
 import { sendRequest } from "./sendRequest";
 import { itRexVars } from "../../constants/Constants";
 import { ApiUrls } from "../../constants/ApiUrls";
-import { IEndpointsCourseExtended } from "../endpoints_interfaces/IEndpointsCourseExtended";
+import { IEndpointsCourse } from "../endpoints_interfaces/IEndpointsCourse";
 import { loggerFactory } from "../../../logger/LoggerConfig";
 import { CourseUrlParams } from "../../constants/CourseUrlParams";
 
 /**
- * Endpoints for /api/courses/extended.
- * Look in backend course-service CourseResourceExtended.java.
+ * Endpoints for /api/courses/.
+ * Look in backend course-service CourseResource.java.
  */
-export class EndpointsCourseExtended implements IEndpointsCourseExtended {
-    private loggerApi = loggerFactory.getLogger("API.EndpointsCourseExtended");
+export class EndpointsCourse implements IEndpointsCourse {
+    private loggerApi = loggerFactory.getLogger("API.EndpointsCourse");
     private url: string;
 
     public constructor() {

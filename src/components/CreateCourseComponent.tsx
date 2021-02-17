@@ -9,10 +9,10 @@ import i18n from "../locales";
 import { RequestFactory } from "../api/requests/RequestFactory";
 import { loggerFactory } from "../../logger/LoggerConfig";
 import { CoursePublishState } from "../constants/CoursePublishState";
-import { EndpointsCourseExtended } from "../api/endpoints/EndpointsCourseExtended";
+import { EndpointsCourse } from "../api/endpoints/EndpointsCourse";
 
 const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");
-const endpointsCourseExtended: EndpointsCourseExtended = new EndpointsCourseExtended();
+const endpointsCourse: EndpointsCourse = new EndpointsCourse();
 
 export const CreateCourseComponent: React.FC = () => {
     React.useContext(LocalizationContext);
@@ -125,13 +125,13 @@ export const CreateCourseComponent: React.FC = () => {
 
         loggerService.trace(`Creating course: name=${courseName}, startDate=${currentDate}.`);
         const postRequest: RequestInit = RequestFactory.createPostRequest(course);
-        endpointsCourseExtended.createCourse(postRequest).then((data) => console.log(data));
+        endpointsCourse.createCourse(postRequest).then((data) => console.log(data));
     }
 
     function getAllCourses(): void {
         loggerService.trace("Getting all courses.");
         const request: RequestInit = RequestFactory.createGetRequest();
-        endpointsCourseExtended.getFilteredCourses(request).then((receivedCourses) => {
+        endpointsCourse.getFilteredCourses(request).then((receivedCourses) => {
             setCourses(receivedCourses);
         });
     }
@@ -148,7 +148,7 @@ export const CreateCourseComponent: React.FC = () => {
 
         loggerService.trace(`Updating course: name=${courseName}, publishedState=${CoursePublishState.PUBLISHED}.`);
         const putRequest: RequestInit = RequestFactory.createPatchRequest(course);
-        endpointsCourseExtended.patchCourse(putRequest).then((data) => console.log(data));
+        endpointsCourse.patchCourse(putRequest).then((data) => console.log(data));
     }
 
     function parseCourseId(): number {
@@ -163,7 +163,7 @@ export const CreateCourseComponent: React.FC = () => {
 
     function getPublishedCourses(): void {
         const request: RequestInit = RequestFactory.createGetRequest();
-        endpointsCourseExtended
+        endpointsCourse
             .getFilteredCourses(request, { publishState: CoursePublishState.PUBLISHED })
             .then((receivedCoursesPublished) => {
                 setCoursesPublished(receivedCoursesPublished);
@@ -176,7 +176,7 @@ export const CreateCourseComponent: React.FC = () => {
         loggerService.trace("Parsing ID string to ID number");
         const courseIdNumber: number = parseCourseId();
 
-        endpointsCourseExtended.deleteCourse(request, courseIdNumber);
+        endpointsCourse.deleteCourse(request, courseIdNumber);
     }
 };
 

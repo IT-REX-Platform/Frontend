@@ -1,9 +1,9 @@
 import { ICourse } from "../../types/ICourse";
 
 /**
- * Wrapper for endpoints in backend course-service CourseResourceExtended.java.
+ * Wrapper for endpoints in backend course-service CourseResource.java.
  */
-export interface IEndpointsCourseExtended {
+export interface IEndpointsCourse {
     getFilteredCourses(getRequest: RequestInit, params?: ICourse): Promise<ICourse[]>;
     getCourse(getRequest: RequestInit, id: number): Promise<ICourse>;
     createCourse(postRequest: RequestInit): Promise<ICourse>;
