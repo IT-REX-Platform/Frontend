@@ -7,16 +7,14 @@ import { validateCourseName } from "../helperScripts/validateCourseEntry";
 import { validateCourseDescription } from "../helperScripts/validateCourseEntry";
 import i18n from "../locales";
 import { RequestFactory } from "../api/requests/RequestFactory";
-import { EndpointsCourse } from "../api/endpoints/EndpointsCourse";
 import { loggerFactory } from "../../logger/LoggerConfig";
 import { CoursePublishState } from "../constants/CoursePublishState";
-import { EndpointsCourseExtended } from "../api/endpoints/EndpointsCourseExtended";
 import { DatePickerComponent } from "./DatePickerComponent";
 import { validateCourseDates } from "../helperScripts/validateCourseDates";
+import { EndpointsCourse } from "../api/endpoints/EndpointsCourse";
 
 const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");
 const endpointsCourse: EndpointsCourse = new EndpointsCourse();
-const endpointsCourseExtended: EndpointsCourseExtended = new EndpointsCourseExtended();
 
 export const CreateCourseComponent: React.FC = () => {
     React.useContext(LocalizationContext);
@@ -115,7 +113,7 @@ export const CreateCourseComponent: React.FC = () => {
                         testID="courseIdInput"></TextInput>
                 </View>
                 <Pressable style={styles.styledButton}>
-                    <Button title={i18n.t("itrex.publishCourse")} onPress={updateCourse}></Button>
+                    <Button title={i18n.t("itrex.publishCourse")} onPress={patchCourse}></Button>
                 </Pressable>
                 <Pressable style={styles.styledButton}>
                     <Button title={i18n.t("itrex.getPublishedCourses")} onPress={getPublishedCourses}></Button>
@@ -178,46 +176,35 @@ export const CreateCourseComponent: React.FC = () => {
     function getAllCourses(): void {
         loggerService.trace("Getting all courses.");
         const request: RequestInit = RequestFactory.createGetRequest();
-        endpointsCourse.getAllCourses(request).then((receivedCourses) => {
+        endpointsCourse.getFilteredCourses(request).then((receivedCourses) => {
             setCourses(receivedCourses);
         });
     }
 
-    function updateCourse(): void {
+    function patchCourse(): void {
         loggerService.trace("Parsing ID string to ID number");
-        const courseIdNumber: number = parseCourseId();
 
-        // TODO: Validation: Check if start and Enddate are set
+        // Check if start and Enddate are set
         if (!validateCourseDates(startDate, endDate)) {
             return;
         }
 
         // ATTENTION: fields without values will be overwritten with null in DB. @s.pastuchov 27.01.21
         const course: ICourse = {
-            id: courseIdNumber,
+            id: courseIdString,
             publishState: CoursePublishState.PUBLISHED,
             startDate: startDate,
             endDate: endDate,
         };
 
         loggerService.trace(`Updating course: name=${courseName}, publishedState=${CoursePublishState.PUBLISHED}.`);
-        const putRequest: RequestInit = RequestFactory.createPutRequest(course);
-        endpointsCourse.updateCourse(putRequest).then((data) => console.log(data));
-    }
-
-    function parseCourseId(): number {
-        let courseIdNumber = 0;
-        try {
-            courseIdNumber = +courseIdString;
-        } catch (error) {
-            loggerService.error("An error occured while parsing course ID.", error);
-        }
-        return courseIdNumber;
+        const putRequest: RequestInit = RequestFactory.createPatchRequest(course);
+        endpointsCourse.patchCourse(putRequest).then((data) => console.log(data));
     }
 
     function getPublishedCourses(): void {
         const request: RequestInit = RequestFactory.createGetRequest();
-        endpointsCourseExtended
+        endpointsCourse
             .getFilteredCourses(request, { publishState: CoursePublishState.PUBLISHED })
             .then((receivedCoursesPublished) => {
                 setCoursesPublished(receivedCoursesPublished);
@@ -228,9 +215,8 @@ export const CreateCourseComponent: React.FC = () => {
         const request: RequestInit = RequestFactory.createDeleteRequest();
 
         loggerService.trace("Parsing ID string to ID number");
-        const courseIdNumber: number = parseCourseId();
 
-        endpointsCourse.deleteCourse(request, courseIdNumber);
+        endpointsCourse.deleteCourse(request, courseIdString);
     }
 };
 

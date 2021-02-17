@@ -18,4 +18,9 @@ export default class AuthenticationService {
     public getToken(): TokenResponse {
         return this.tokenResponse;
     }
+
+    public getRoles(): string[] {
+        const jwt = JSON.parse(atob(this.tokenResponse.accessToken.split(".")[1]));
+        return jwt.roles;
+    }
 }

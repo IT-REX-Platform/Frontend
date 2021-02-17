@@ -1,3 +1,4 @@
+import "../../../setupTests.ts";
 import { RequestFactory } from "../../../src/api/requests/RequestFactory";
 import AuthenticationService from "../../../src/services/AuthenticationService";
 import { TokenResponse, TokenResponseConfig } from "expo-auth-session";
@@ -42,7 +43,7 @@ describe("RequestFactory", () => {
     it("createPostRequest() should generate an authorized POST request for createCourse endpoint.", () => {
         const course: ICourse = {
             name: "test_course",
-            description: "test_description",
+            courseDescription: "test_description",
             endDate: new Date(),
             maxFoodSum: 420,
             startDate: new Date(),
@@ -67,7 +68,7 @@ describe("RequestFactory", () => {
     it("createPutRequest() should generate an authorized PUT request for updateCourse endpoint.", () => {
         const course: ICourse = {
             name: "test_course",
-            description: "test_description",
+            courseDescription: "test_description",
             endDate: new Date(),
             maxFoodSum: 420,
             startDate: new Date(),
@@ -87,6 +88,31 @@ describe("RequestFactory", () => {
         const actualPutRequest: RequestInit = RequestFactory.createPutRequest(course);
 
         expect(actualPutRequest).toMatchObject(expectedPutRequest);
+    });
+
+    it("createPatchRequest() should generate an authorized PATCH request for patchCourse endpoint.", () => {
+        const course: ICourse = {
+            name: "test_course",
+            courseDescription: "test_description",
+            endDate: new Date(),
+            maxFoodSum: 420,
+            startDate: new Date(),
+        };
+
+        const expectedPatchRequest: RequestInit = {
+            headers: {
+                Authorization: "tokenType" + " " + "accessToken",
+                Accept: "application/json",
+                "Content-Type": "application/json",
+            },
+            credentials: "include",
+            method: "PATCH",
+            body: JSON.stringify(course),
+        };
+
+        const actualPatchRequest: RequestInit = RequestFactory.createPatchRequest(course);
+
+        expect(actualPatchRequest).toMatchObject(expectedPatchRequest);
     });
 
     it("createDeleteRequest() should generate an authorized DELETE request for deleteCourse endpoint.", () => {

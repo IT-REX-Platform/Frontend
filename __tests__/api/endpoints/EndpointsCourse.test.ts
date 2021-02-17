@@ -1,3 +1,4 @@
+import "../../../setupTests.ts";
 import { EndpointsCourse } from "../../../src/api/endpoints/EndpointsCourse";
 import { ICourse } from "../../../src/types/ICourse";
 import { CoursePublishState } from "../../../src/constants/CoursePublishState";
@@ -29,6 +30,15 @@ jest.mock("../../../src/constants/Constants", () => {
     };
 });
 
+// Find a way to mock fetch response.
+// jest.mock("../../../src/api/endpoints/sendRequest", () => {
+//     return {
+//         sendRequest: jest.fn(() => {
+//             return Response;
+//         }),
+//     };
+// });
+
 describe("EndpointsCourse", () => {
     let instance: EndpointsCourse = new EndpointsCourse();
     expect(instance).toBeInstanceOf(EndpointsCourse);
@@ -39,15 +49,16 @@ describe("EndpointsCourse", () => {
         },
         credentials: "include",
     };
+
     const courseExpected: ICourse = {
         id: 12345,
         name: "TheoInf3",
         publishState: CoursePublishState.PUBLISHED,
     };
 
-    it("should get an array of courses.", async () => {
+    it("getFilteredCourses() should return an array of all courses.", async () => {
         try {
-            const response: ICourse[] = await instance.getAllCourses(request);
+            const response: ICourse[] = await instance.getFilteredCourses(request);
             expect(response).resolves.toBe(courseExpected);
         } catch (error) {
             // Enable once fetch has been mocked.
@@ -55,7 +66,31 @@ describe("EndpointsCourse", () => {
         }
     });
 
-    it("should get one course.", async () => {
+    it("getFilteredCourses() should return an array of published courses.", async () => {
+        const params: ICourse = { publishState: CoursePublishState.PUBLISHED };
+
+        try {
+            const response: ICourse[] = await instance.getFilteredCourses(request, params);
+            expect(response).resolves.toBe(courseExpected);
+        } catch (error) {
+            // Enable once fetch has been mocked.
+            // console.log("An error has occurred.", error);
+        }
+    });
+
+    it("getFilteredCourses() should return an array of all courses with name TheoInf2.", async () => {
+        const params: ICourse = { name: "TheoInf3" };
+
+        try {
+            const response: ICourse[] = await instance.getFilteredCourses(request, params);
+            expect(response).resolves.toBe(courseExpected);
+        } catch (error) {
+            // Enable once fetch has been mocked.
+            // console.log("An error has occurred.", error);
+        }
+    });
+
+    it("getCourse() should return one course.", async () => {
         try {
             let id: number = 12345;
             const response: ICourse = await instance.getCourse(request, id);
@@ -66,7 +101,7 @@ describe("EndpointsCourse", () => {
         }
     });
 
-    it("should create a course.", async () => {
+    it("createCourse() should create a course.", async () => {
         try {
             const response: ICourse = await instance.createCourse(request);
             expect(response).resolves.toBe(courseExpected);
@@ -76,7 +111,7 @@ describe("EndpointsCourse", () => {
         }
     });
 
-    it("should update a course.", async () => {
+    it("updateCourse() should update a course.", async () => {
         try {
             const response: ICourse = await instance.updateCourse(request);
             expect(response).resolves.toBe(courseExpected);
@@ -86,7 +121,17 @@ describe("EndpointsCourse", () => {
         }
     });
 
-    it("should delete a course.", async () => {
+    it("patchCourse() should update a course.", async () => {
+        try {
+            const response: ICourse = await instance.patchCourse(request);
+            expect(response).resolves.toBe(courseExpected);
+        } catch (error) {
+            // Enable once fetch has been mocked.
+            // console.log("An error has occurred.", error);
+        }
+    });
+
+    it("delete() should delete a course.", async () => {
         try {
             let id: number = 12345;
             const response: void = await instance.deleteCourse(request, id);

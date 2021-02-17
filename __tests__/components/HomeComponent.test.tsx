@@ -1,3 +1,4 @@
+import "../../setupTests.ts";
 import { HomeComponent } from "../../src/components/HomeComponent";
 import "react-native";
 import React from "react";
@@ -33,21 +34,9 @@ describe("test home component", () => {
     xit("see if stuff is rendered", () => {
         const { getByText } = render(<HomeComponent></HomeComponent>);
 
-        expect(getByText("Login")).toBeDefined();
-
         expect(getByText("Create Course")).toBeDefined();
 
         expect(getByText("Upload Video")).toBeDefined();
-    });
-
-    xit("check Login navigation", () => {
-        const { getByText } = render(<HomeComponent></HomeComponent>);
-
-        expect(mockedNavigate).not.toBeCalled;
-
-        fireEvent.press(getByText("Login"));
-
-        expect(mockedNavigate).toBeCalledWith("ROUTE_LOGIN");
     });
 
     xit("check Create Course navigation", () => {
