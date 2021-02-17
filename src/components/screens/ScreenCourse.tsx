@@ -51,6 +51,9 @@ export const ScreenCourse: React.FC = (props) => {
                         headerTitleAlign: "center",
                         headerStyle: {
                             backgroundColor: dark.theme.darkBlue1,
+                            borderBottomWidth: 3,
+                            borderBottomColor: dark.theme.darkBlue2,
+                            borderLeftColor: dark.theme.darkBlue2,
                         },
                         headerTintColor: "white",
                         headerBackTitle: "Back",

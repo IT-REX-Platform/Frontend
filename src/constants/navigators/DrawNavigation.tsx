@@ -48,7 +48,7 @@ export const DrawerNavigator: React.FC = () => {
             <Drawer.Screen
                 name={NavigationRoutes.ROUTE_COURSE_DETAILS}
                 component={ScreenCourse}
-                options={{ title: "Last learned Course" }}
+                options={{ title: i18n.t("itrex.lastLearned") }}
             />
         </Drawer.Navigator>
     );

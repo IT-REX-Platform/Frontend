@@ -33,5 +33,6 @@ export const de = {
         courseTabTimeline: "Zeitachse",
         myCoursesDevider: "Meine Kurse",
         fastSettings: "Kurzeinstellung",
+        lastLearned: "Zuletzt gelernter Kurs",
     },
 };

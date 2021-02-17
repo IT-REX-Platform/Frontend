@@ -22,6 +22,8 @@ const MainStackNavigator: React.FC = ({ navigation }) => {
                 headerTitleAlign: "center",
                 headerStyle: {
                     backgroundColor: dark.theme.darkBlue1,
+                    borderBottomWidth: 3,
+                    borderBottomColor: dark.theme.darkBlue2,
                 },
                 headerTintColor: dark.theme.darkBlue1,
                 headerBackTitle: "Back",

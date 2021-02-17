@@ -1,12 +1,5 @@
-import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
-import { Text, ImageBackground, StyleSheet } from "react-native";
+import React from "react";
 import { dark } from "../../../constants/themes/dark";
-import { Header } from "../../../constants/navigators/Header";
-import { RequestFactory } from "../../../api/requests/RequestFactory";
-import { EndpointsCourseExtended } from "../../../api/endpoints/EndpointsCourseExtended";
-import { ICourse } from "../../../types/ICourse";
-import { NavigationRoutes, ScreenCourseProps } from "../../../constants/navigators/NavigationRoutes";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { ScreenCourseOverview } from "./ScreenCourseOverview";
 import { ScreenCourseTimeline } from "./ScreenCourseTimeline";
@@ -14,10 +7,7 @@ import { LocalizationContext } from "../../Context";
 
 const CourseTab = createMaterialTopTabNavigator();
 
-export const ScreenCourseTabs: React.FC = (props) => {
-    const navigation = useNavigation();
-    const route = useRoute();
-
+export const ScreenCourseTabs: React.FC = () => {
     React.useContext(LocalizationContext);
 
     return (
@@ -34,7 +24,7 @@ export const ScreenCourseTabs: React.FC = (props) => {
                 },
                 tabStyle: {},
                 labelStyle: {
-                    color: "yellow",
+                    color: dark.theme.lightGreen,
                 },
             }}>
             <CourseTab.Screen name="OVERVIEW" component={ScreenCourseOverview}></CourseTab.Screen>

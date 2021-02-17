@@ -21,6 +21,8 @@ export const Header: React.FC<string> = ({ title }) => {
                 backgroundColor: dark.theme.darkBlue1,
                 flexDirection: "row",
                 justifyContent: "space-between",
+                borderBottomWidth: 3,
+                borderBottomColor: dark.theme.darkBlue2,
             }}>
             <View
                 style={{

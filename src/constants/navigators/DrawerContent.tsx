@@ -78,7 +78,7 @@ export const DrawerContent: React.FC = (props) => {
                     borderBottomWidth: 3,
                     borderBottomColor: dark.theme.darkBlue2,
                 }}>
-                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", height: 60 }}>
+                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", height: 56 }}>
                     <Image source={require("../images/Logo_white.png")} style={[styles.icon]}></Image>
                     <Text style={styles.textWithShadow}>IT-REX</Text>
                 </View>

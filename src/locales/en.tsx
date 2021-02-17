@@ -33,5 +33,6 @@ export const en = {
         courseTabTimeline: "Timeline",
         myCoursesDevider: "My Courses",
         fastSettings: "Fast Settings",
+        lastLearned: "Last learned Course",
     },
 };
