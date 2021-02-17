@@ -2,19 +2,19 @@ import { IVideo } from "../../types/IVideo";
 import { sendRequest } from "./sendRequest";
 import { itRexVars } from "../../constants/Constants";
 import { ApiUrls } from "../../constants/ApiUrls";
-import { IEndpointsVideoExtended } from "../endpoints_interfaces/IEndpointsVideoExtended";
+import { IEndpointsVideo } from "../endpoints_interfaces/IEndpointsVideo";
 import { loggerFactory } from "../../../logger/LoggerConfig";
 
 /**
- * Endpoints for mediaservice/api/extended.
- * Look in backend media-service VideoResourceExtended.java.
+ * Endpoints for mediaservice/api/videos.
+ * Look in backend media-service VideoResource.java.
  */
-export class EndpointsVideoExtended implements IEndpointsVideoExtended {
-    private loggerApi = loggerFactory.getLogger("API.EndpointsVideoExtended");
+export class EndpointsVideo implements IEndpointsVideo {
+    private loggerApi = loggerFactory.getLogger("API.EndpointsVideo");
     private url: string;
 
     public constructor() {
-        this.url = itRexVars().apiUrl + ApiUrls.URL_VIDEOS_EXTENDED;
+        this.url = itRexVars().apiUrl + ApiUrls.URL_VIDEOS;
     }
 
     public async getVideoById(getRequest: RequestInit, id: number): Promise<IVideo[]> {

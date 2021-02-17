@@ -1,9 +1,9 @@
 import "../../../setupTests.ts";
-import { EndpointsVideoExtended } from "../../../src/api/endpoints/EndpointsVideoExtended";
+import { EndpointsVideo } from "../../../src/api/endpoints/EndpointsVideo";
 import { IVideo } from "../../../src/types/IVideo";
 import "isomorphic-fetch";
 
-// Disable logs in EndpointsVideoExtended.ts.
+// Disable logs in EndpointsVideo.ts.
 console.log = jest.fn();
 
 const mockFunctionOutput = {
@@ -30,9 +30,9 @@ jest.mock("../../../src/constants/Constants", () => {
 //     };
 // });
 
-describe("EndpointsVideoExtended", () => {
-    let instance: EndpointsVideoExtended = new EndpointsVideoExtended();
-    expect(instance).toBeInstanceOf(EndpointsVideoExtended);
+describe("EndpointsVideo", () => {
+    let instance: EndpointsVideo = new EndpointsVideo();
+    expect(instance).toBeInstanceOf(EndpointsVideo);
 
     const request: RequestInit = {
         headers: {
