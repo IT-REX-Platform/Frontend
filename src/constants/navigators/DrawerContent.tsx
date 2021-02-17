@@ -72,20 +72,43 @@ export const DrawerContent: React.FC = (props) => {
 
     return (
         <View style={{ flex: 1 }}>
-            <Drawer.Section style={{ backgroundColor: dark.theme.darkBlue1 }}>
+            <Drawer.Section
+                style={{
+                    backgroundColor: dark.theme.darkBlue1,
+                    borderBottomWidth: 3,
+                    borderBottomColor: dark.theme.darkBlue2,
+                }}>
                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", height: 60 }}>
-                    <Image source={require("../images/ITRex-Logo-ob_750x750.png")} style={[styles.icon]}></Image>
+                    <Image source={require("../images/Logo_white.png")} style={[styles.icon]}></Image>
                     <Text style={styles.textWithShadow}>IT-REX</Text>
                 </View>
             </Drawer.Section>
-            <Drawer.Section>
+            <Drawer.Section
+                style={{
+                    backgroundColor: dark.theme.darkBlue1,
+                    borderBottomWidth: 3,
+                    borderBottomColor: dark.theme.darkBlue2,
+                }}>
                 <DrawerItemList {...props} />
             </Drawer.Section>
 
             <DrawerContentScrollView {...props}>
-                <Drawer.Section title={i18n.t("itrex.myCoursesDevider")}>{drawerItems}</Drawer.Section>
+                <Drawer.Section
+                    style={{
+                        backgroundColor: dark.theme.darkBlue1,
+                        borderBottomWidth: 3,
+                        borderBottomColor: dark.theme.darkBlue2,
+                    }}>
+                    <View>
+                        <Text style={styles.sectionHeader}> {i18n.t("itrex.myCoursesDevider")}</Text>
+                    </View>
+                    {drawerItems}
+                </Drawer.Section>
             </DrawerContentScrollView>
-            <Drawer.Section title={i18n.t("itrex.fastSettings")}>
+            <Drawer.Section>
+                <View>
+                    <Text style={styles.sectionHeader}> {i18n.t("itrex.fastSettings")}</Text>
+                </View>
                 <View
                     style={{
                         flexDirection: "row",
@@ -133,5 +156,11 @@ const styles = StyleSheet.create({
         fontSize: 30,
         tintColor: "white",
         color: "white",
+    },
+    sectionHeader: {
+        color: dark.theme.darkBlue4,
+        marginTop: 3,
+        marginBottom: 10,
+        fontSize: 15,
     },
 });

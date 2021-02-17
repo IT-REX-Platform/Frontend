@@ -34,17 +34,7 @@ export const Header: React.FC<string> = ({ title }) => {
                     style={styles.iconLeft}
                     onPress={() => navigation.openDrawer()}
                 />
-                <Text
-                    style={{
-                        fontSize: 22,
-                        marginLeft: 395,
-                        marginTop: 10,
-                        color: "white",
-                        textAlignVertical: "center",
-                        justifyContent: "center",
-                    }}>
-                    {title}
-                </Text>
+                <Text style={styles.headerTitle}>{title}</Text>
             </View>
             <View
                 style={{
@@ -77,5 +67,16 @@ const styles = StyleSheet.create({
         paddingRight: 10,
         marginTop: 10,
         marginRight: -100,
+    },
+    headerTitle: {
+        textShadowColor: "white",
+        textShadowOffset: { width: -1, height: 1 },
+        textShadowRadius: 2,
+        fontSize: 22,
+        marginLeft: 395,
+        marginTop: 10,
+        color: "white",
+        textAlignVertical: "center",
+        justifyContent: "center",
     },
 });

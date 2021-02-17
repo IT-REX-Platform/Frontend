@@ -47,18 +47,18 @@ export const ScreenCourse: React.FC = (props) => {
                 <CourseStack.Navigator
                     initialRouteName="INFO"
                     screenOptions={{
-                        headerTitle: () => <Text>{course.name}</Text>,
+                        headerTitle: () => <Text style={styles.headerTitle}>{course.name}</Text>,
                         headerTitleAlign: "center",
                         headerStyle: {
-                            backgroundColor: dark.theme.blueGreen,
+                            backgroundColor: dark.theme.darkBlue1,
                         },
-                        headerTintColor: dark.theme.darkBlue1,
+                        headerTintColor: "white",
                         headerBackTitle: "Back",
                         headerRight: () => (
                             <MaterialCommunityIcons
                                 name="home-outline"
                                 size={28}
-                                color="#011B45"
+                                color="white"
                                 style={styles.icon}
                                 onPress={() => navigation.navigate(NavigationRoutes.ROUTE_HOME)}
                             />
@@ -66,7 +66,7 @@ export const ScreenCourse: React.FC = (props) => {
                         headerLeft: () => (
                             <MaterialCommunityIcons
                                 name="menu"
-                                color="#011B45"
+                                color="white"
                                 size={28}
                                 onPress={() => navigation.openDrawer()}
                                 style={styles.icon}
@@ -97,5 +97,12 @@ const styles = StyleSheet.create({
         alignItems: "center",
         paddingLeft: 10,
         paddingRight: 10,
+    },
+    headerTitle: {
+        textShadowColor: "white",
+        textShadowOffset: { width: -1, height: 1 },
+        textShadowRadius: 2,
+        fontSize: 22,
+        color: "white",
     },
 });
