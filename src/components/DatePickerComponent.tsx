@@ -1,6 +1,6 @@
 /* eslint-disable complexity */
 import React, { useState } from "react";
-import { Button, Platform, Text } from "react-native";
+import { StyleSheet, Button, Platform, Text, View } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { getDateIsoString } from "../helperScripts/validateCourseDates";
 
@@ -58,14 +58,42 @@ export const DatePickerComponent: React.FC<DatePickerProps> = (props) => {
 
     return (
         <>
-            <Text>{title}</Text>
-            <input
-                type="date"
-                onChange={onDateChanged}
-                value={yyyymmdd ? yyyymmdd : "yyyy-mm-dd"}
-                min={getDateIsoString(minDate)}
-                max={getDateIsoString(maxDate)}></input>
-            {/* {date && <Text>{date.toISOString()}</Text>} */}
+            <View style={styles.container}>
+                <View style={{ flexDirection: "row", position: "absolute" }}>
+                    <Text style={styles.styledText}>{title}</Text>
+                </View>
+                <input
+                    style={styles.styledInput}
+                    type="date"
+                    onChange={onDateChanged}
+                    value={yyyymmdd ? yyyymmdd : "yyyy-mm-dd"}
+                    min={getDateIsoString(minDate)}
+                    max={getDateIsoString(maxDate)}></input>
+            </View>
         </>
     );
 };
+
+const styles = StyleSheet.create({
+    container: {
+        borderStyle: "solid",
+        borderColor: "black",
+        borderWidth: 1,
+        borderRadius: 4,
+    },
+    styledText: {
+        fontSize: 12,
+        marginTop: -8,
+        marginLeft: 8,
+        paddingLeft: 8,
+        paddingRight: 8,
+        backgroundColor: "white",
+    },
+    styledInput: {
+        fontSize: 18,
+        borderStyle: "hidden",
+        backgroundColor: "transparent",
+        lineHeight: 1.25,
+        paddingTop: 8,
+    },
+});

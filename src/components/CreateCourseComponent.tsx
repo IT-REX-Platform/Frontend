@@ -132,20 +132,19 @@ export const CreateCourseComponent: React.FC = () => {
                 </Pressable>
 
                 <View style={styles.styledInputContainer}>
-                    <View>
-                        <DatePickerComponent
-                            title="startDate"
-                            date={startDate}
-                            onDateChanged={startDateChanged}
-                            maxDate={endDate}></DatePickerComponent>
-                    </View>
-                    <View>
-                        <DatePickerComponent
-                            title="endDate"
-                            date={endDate}
-                            onDateChanged={endDateChanged}
-                            minDate={startDate}></DatePickerComponent>
-                    </View>
+                    <DatePickerComponent
+                        title="startDate"
+                        date={startDate}
+                        onDateChanged={startDateChanged}
+                        maxDate={endDate}></DatePickerComponent>
+
+                    <View style={{ margin: 16 }}></View>
+
+                    <DatePickerComponent
+                        title="endDate"
+                        date={endDate}
+                        onDateChanged={endDateChanged}
+                        minDate={startDate}></DatePickerComponent>
                 </View>
             </View>
         </ScrollView>
