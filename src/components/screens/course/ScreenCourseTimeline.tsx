@@ -7,7 +7,6 @@ import { RequestFactory } from "../../../api/requests/RequestFactory";
 import { EndpointsCourseExtended } from "../../../api/endpoints/EndpointsCourseExtended";
 import { ICourse } from "../../../types/ICourse";
 import { NavigationRoutes, ScreenCourseProps } from "../../../constants/navigators/NavigationRoutes";
-import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { LocalizationContext } from "../../Context";
 
 export const ScreenCourseTimeline: React.FC = (props) => {

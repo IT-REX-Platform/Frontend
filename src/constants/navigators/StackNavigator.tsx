@@ -21,7 +21,7 @@ const MainStackNavigator: React.FC = ({ navigation }) => {
             screenOptions={{
                 headerTitleAlign: "center",
                 headerStyle: {
-                    backgroundColor: dark.theme.blueGreen,
+                    backgroundColor: dark.theme.darkBlue1,
                 },
                 headerTintColor: dark.theme.darkBlue1,
                 headerBackTitle: "Back",

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Image, StyleSheet, Switch, Text, View } from "react-native";
-import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
+import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, DrawerItemList } from "@react-navigation/drawer";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { ICourse } from "../../types/ICourse";
 import { loggerFactory } from "../../../logger/LoggerConfig";
@@ -10,6 +10,8 @@ import { useNavigation } from "@react-navigation/native";
 import { NavigationRoutes } from "./NavigationRoutes";
 import { AuthContext, LocalizationContext } from "../../components/Context";
 import i18n from "../../locales";
+import { Drawer } from "react-native-paper";
+import { dark } from "../themes/dark";
 
 export const DrawerContent: React.FC = (props) => {
     const { signOut } = React.useContext(AuthContext);
@@ -49,12 +51,14 @@ export const DrawerContent: React.FC = (props) => {
     for (const course of courses) {
         drawerItems.push(
             <DrawerItem
+                {...props}
                 icon={() => (
-                    <MaterialCommunityIcons name="notebook-outline" size={28} color="#011B45" style={styles.icon} />
+                    <MaterialCommunityIcons name="notebook-outline" size={28} color="white" style={styles.icon} />
                 )}
                 label={"" + course.name}
                 key={course.id}
                 onPress={() => {
+                    console.log("Course Details");
                     navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, {
                         courseId: course.id,
                     });
@@ -68,50 +72,66 @@ export const DrawerContent: React.FC = (props) => {
 
     return (
         <View style={{ flex: 1 }}>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Image source={require("../images/ITRex-Logo-ob_750x750.png")} style={[styles.icon]}></Image>
-                <Text>IT-REX</Text>
-            </View>
-            <DrawerItem
-                icon={() => <MaterialCommunityIcons name="home" size={28} color="#011B45" style={styles.icon} />}
-                label={i18n.t("itrex.home")}
-                onPress={() => {
-                    navigation.navigate(NavigationRoutes.ROUTE_HOME);
-                }}></DrawerItem>
-            <DrawerContentScrollView {...props}>{drawerItems}</DrawerContentScrollView>
-            <View
-                style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    paddingVertical: 12,
-                    paddingHorizontal: 16,
-                }}>
-                <Text>{i18n.t("itrex.darkTheme")}</Text>
-                <Switch value={isDarkTheme} onValueChange={toggleIsDarkTheme}></Switch>
-            </View>
-            <View
-                style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    paddingVertical: 12,
-                    paddingHorizontal: 16,
-                }}>
-                <Text>{i18n.t("itrex.switchLang")}</Text>
-                <Switch value={locale == "de-DE"} onValueChange={toggleIsGerman}></Switch>
-            </View>
-            <DrawerItem
-                icon={() => <MaterialCommunityIcons name="logout" size={28} color="#011B45" style={styles.icon} />}
-                label={i18n.t("itrex.logout")}
-                onPress={() => {
-                    signOut();
-                }}></DrawerItem>
+            <Drawer.Section style={{ backgroundColor: dark.theme.darkBlue1 }}>
+                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", height: 60 }}>
+                    <Image source={require("../images/ITRex-Logo-ob_750x750.png")} style={[styles.icon]}></Image>
+                    <Text style={styles.textWithShadow}>IT-REX</Text>
+                </View>
+            </Drawer.Section>
+            <Drawer.Section>
+                <DrawerItemList {...props} />
+            </Drawer.Section>
+
+            <DrawerContentScrollView {...props}>
+                <Drawer.Section title={i18n.t("itrex.myCoursesDevider")}>{drawerItems}</Drawer.Section>
+            </DrawerContentScrollView>
+            <Drawer.Section title={i18n.t("itrex.fastSettings")}>
+                <View
+                    style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        paddingVertical: 12,
+                        paddingHorizontal: 16,
+                    }}>
+                    <Text style={{ color: "white" }}>{i18n.t("itrex.darkTheme")}</Text>
+                    <Switch value={isDarkTheme} onValueChange={toggleIsDarkTheme}></Switch>
+                </View>
+                <View
+                    style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        paddingVertical: 12,
+                        paddingHorizontal: 16,
+                    }}>
+                    <Text style={{ color: "white" }}>{i18n.t("itrex.switchLang")}</Text>
+                    <Switch value={locale == "de-DE"} onValueChange={toggleIsGerman}></Switch>
+                </View>
+                <DrawerItem
+                    {...props}
+                    icon={() => <MaterialCommunityIcons name="logout" size={28} color="white" style={styles.icon} />}
+                    label={i18n.t("itrex.logout")}
+                    onPress={() => {
+                        signOut();
+                    }}></DrawerItem>
+            </Drawer.Section>
         </View>
     );
 };
 
 const styles = StyleSheet.create({
     icon: {
+        marginTop: 10,
         width: 36,
         height: 36,
+    },
+    textWithShadow: {
+        marginLeft: 10,
+        marginTop: 10,
+        textShadowColor: "white",
+        textShadowOffset: { width: -1, height: 1 },
+        textShadowRadius: 2,
+        fontSize: 30,
+        tintColor: "white",
+        color: "white",
     },
 });

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { createDrawerNavigator, DrawerNavigationProp } from "@react-navigation/drawer";
+import { createDrawerNavigator, DrawerItem, DrawerItemList, DrawerNavigationProp } from "@react-navigation/drawer";
 import { Image, StyleSheet, useWindowDimensions } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -22,6 +22,7 @@ import { ScreenHomeStudent } from "../../components/screens/ScreenHomeStudent";
 import { DrawerContent } from "./DrawerContent";
 import { ScreenCourse } from "../../components/screens/ScreenCourse";
 import { RouteProp } from "@react-navigation/native";
+import { dark } from "../themes/dark";
 
 const Drawer = createDrawerNavigator();
 
@@ -32,19 +33,23 @@ export const DrawerNavigator: React.FC = () => {
 
     return (
         <Drawer.Navigator
+            drawerContentOptions={{
+                activeBackgroundColor: dark.theme.pink,
+                activeTintColor: "white",
+                inactiveBackgroundColor: dark.theme.darkBlue2,
+                inactiveTintColor: "white",
+            }}
             drawerType={dimensions.width >= 1400 ? "permanent" : "front"}
-            drawerStyle={{ backgroundColor: "lightgrey" }}
+            drawerStyle={{ backgroundColor: dark.theme.darkBlue1 }}
             drawerContent={(props) => <DrawerContent {...props}></DrawerContent>}>
             {getHomeScreen()}
-
+            {getCreateCourseScreen()}
+            {getUploadVideoScreen()}
             <Drawer.Screen
                 name={NavigationRoutes.ROUTE_COURSE_DETAILS}
                 component={ScreenCourse}
-                options={{ title: "Course Details" }}
+                options={{ title: "Last learned Course" }}
             />
-
-            {getCreateCourseScreen()}
-            {getUploadVideoScreen()}
         </Drawer.Navigator>
     );
 };
@@ -61,7 +66,7 @@ function getUploadVideoScreen() {
                 options={{
                     title: i18n.t("itrex.toUploadVideo"),
                     drawerIcon: () => (
-                        <MaterialCommunityIcons name="upload-outline" size={28} color="#011B45" style={styles.icon} />
+                        <MaterialCommunityIcons name="upload-outline" size={28} color="white" style={styles.icon} />
                     ),
                 }}
             />
@@ -80,7 +85,7 @@ function getCreateCourseScreen() {
                 component={CreateCourseComponent}
                 options={{
                     title: i18n.t("itrex.createCourse"),
-                    drawerIcon: () => <MaterialIcons name="add" size={28} color="#011B45" style={styles.icon} />,
+                    drawerIcon: () => <MaterialIcons name="add" size={28} color="white" style={styles.icon} />,
                 }}
             />
         );
@@ -97,7 +102,7 @@ function getHomeScreen() {
                 options={{
                     title: i18n.t("itrex.home"),
                     drawerIcon: () => (
-                        <Image source={require("../images/ITRex-Logo-ob_750x750.png")} style={[styles.icon]}></Image>
+                        <MaterialCommunityIcons name="home" size={28} color="white" style={styles.icon} />
                     ),
                 }}
             />

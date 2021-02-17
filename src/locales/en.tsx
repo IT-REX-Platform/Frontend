@@ -31,5 +31,7 @@ export const en = {
         darkTheme: "Dark Xeme",
         courseTabOverview: "Overview",
         courseTabTimeline: "Timeline",
+        myCoursesDevider: "My Courses",
+        fastSettings: "Fast Settings",
     },
 };

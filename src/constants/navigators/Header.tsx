@@ -18,7 +18,7 @@ export const Header: React.FC<string> = ({ title }) => {
                 left: 0,
                 right: 0,
                 height: 65,
-                backgroundColor: dark.theme.blueGreen,
+                backgroundColor: dark.theme.darkBlue1,
                 flexDirection: "row",
                 justifyContent: "space-between",
             }}>
@@ -29,7 +29,7 @@ export const Header: React.FC<string> = ({ title }) => {
                 }}>
                 <MaterialCommunityIcons
                     name="menu"
-                    color="#011B45"
+                    color="white"
                     size={28}
                     style={styles.iconLeft}
                     onPress={() => navigation.openDrawer()}
@@ -39,7 +39,7 @@ export const Header: React.FC<string> = ({ title }) => {
                         fontSize: 22,
                         marginLeft: 395,
                         marginTop: 10,
-                        color: dark.theme.darkBlue1,
+                        color: "white",
                         textAlignVertical: "center",
                         justifyContent: "center",
                     }}>
@@ -56,7 +56,7 @@ export const Header: React.FC<string> = ({ title }) => {
                 <MaterialCommunityIcons
                     name="home-outline"
                     size={28}
-                    color="#011B45"
+                    color="white"
                     style={styles.iconRight}
                     onPress={() => navigation.navigate(NavigationRoutes.ROUTE_HOME)}
                 />

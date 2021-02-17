@@ -31,5 +31,7 @@ export const de = {
         darkTheme: "Dark-Theme",
         courseTabOverview: "Übersicht",
         courseTabTimeline: "Zeitachse",
+        myCoursesDevider: "Meine Kurse",
+        fastSettings: "Kurzeinstellung",
     },
 };
