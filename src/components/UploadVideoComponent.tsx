@@ -5,11 +5,11 @@ import i18n from "../locales";
 import * as DocumentPicker from "expo-document-picker";
 import * as ImagePicker from "expo-image-picker";
 import { RequestFactory } from "../api/requests/RequestFactory";
-import { EndpointsVideoExtended } from "../api/endpoints/EndpointsVideoExtended";
+import { EndpointsVideo } from "../api/endpoints/EndpointsVideo";
 import { createAlert } from "../helperScripts/createAlert";
 import { Video } from "expo-av";
 
-const endpointsVideoExtended = new EndpointsVideoExtended();
+const endpointsVideo = new EndpointsVideo();
 
 export const UploadVideoComponent: React.FC = () => {
     React.useContext(LocalizationContext);
@@ -93,7 +93,7 @@ export const UploadVideoComponent: React.FC = () => {
 
         const video = await buildVideoAsFormData();
         const postRequest = RequestFactory.createPostRequestWithFormData(video);
-        const response = await endpointsVideoExtended.uploadVideo(postRequest);
+        const response = await endpointsVideo.uploadVideo(postRequest);
 
         resetVideoState();
         createAlert(i18n.t("itrex.uploadVideoSuccessMsg"));

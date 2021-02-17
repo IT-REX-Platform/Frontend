@@ -1,5 +1,5 @@
 import "../../../setupTests.ts";
-import { EndpointsCourseExtended } from "../../../src/api/endpoints/EndpointsCourseExtended";
+import { EndpointsCourse } from "../../../src/api/endpoints/EndpointsCourse";
 import { ICourse } from "../../../src/types/ICourse";
 import { CoursePublishState } from "../../../src/constants/CoursePublishState";
 import "isomorphic-fetch";
@@ -12,7 +12,7 @@ import "isomorphic-fetch";
  */
 jest.useFakeTimers();
 
-// Disable logs in EndpointsCourseExtended.ts.
+// Disable logs in EndpointsCourse.ts.
 console.log = jest.fn();
 
 const mockFunctionOutput = {
@@ -39,9 +39,9 @@ jest.mock("../../../src/constants/Constants", () => {
 //     };
 // });
 
-describe("EndpointsCourseExtended", () => {
-    let instance: EndpointsCourseExtended = new EndpointsCourseExtended();
-    expect(instance).toBeInstanceOf(EndpointsCourseExtended);
+describe("EndpointsCourse", () => {
+    let instance: EndpointsCourse = new EndpointsCourse();
+    expect(instance).toBeInstanceOf(EndpointsCourse);
 
     const request: RequestInit = {
         headers: {
