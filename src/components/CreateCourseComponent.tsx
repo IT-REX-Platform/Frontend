@@ -9,10 +9,10 @@ import i18n from "../locales";
 import { RequestFactory } from "../api/requests/RequestFactory";
 import { loggerFactory } from "../../logger/LoggerConfig";
 import { CoursePublishState } from "../constants/CoursePublishState";
-import { EndpointsCourseExtended } from "../api/endpoints/EndpointsCourseExtended";
+import { EndpointsCourse } from "../api/endpoints/EndpointsCourse";
 
 const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");
-const endpointsCourseExtended: EndpointsCourseExtended = new EndpointsCourseExtended();
+const endpointsCourse: EndpointsCourse = new EndpointsCourse();
 
 export const CreateCourseComponent: React.FC = () => {
     React.useContext(LocalizationContext);
@@ -125,45 +125,33 @@ export const CreateCourseComponent: React.FC = () => {
 
         loggerService.trace(`Creating course: name=${courseName}, startDate=${currentDate}.`);
         const postRequest: RequestInit = RequestFactory.createPostRequest(course);
-        endpointsCourseExtended.createCourse(postRequest).then((data) => console.log(data));
+        endpointsCourse.createCourse(postRequest).then((data) => console.log(data));
     }
 
     function getAllCourses(): void {
         loggerService.trace("Getting all courses.");
         const request: RequestInit = RequestFactory.createGetRequest();
-        endpointsCourseExtended.getFilteredCourses(request).then((receivedCourses) => {
+        endpointsCourse.getFilteredCourses(request).then((receivedCourses) => {
             setCourses(receivedCourses);
         });
     }
 
     function patchCourse(): void {
         loggerService.trace("Parsing ID string to ID number");
-        const courseIdNumber: number = parseCourseId();
 
-        // ATTENTION: fields without values will be overwritten with null in DB. @s.pastuchov 27.01.21
         const course: ICourse = {
-            id: courseIdNumber,
+            id: courseIdString,
             publishState: CoursePublishState.PUBLISHED,
         };
 
         loggerService.trace(`Updating course: name=${courseName}, publishedState=${CoursePublishState.PUBLISHED}.`);
         const putRequest: RequestInit = RequestFactory.createPatchRequest(course);
-        endpointsCourseExtended.patchCourse(putRequest).then((data) => console.log(data));
-    }
-
-    function parseCourseId(): number {
-        let courseIdNumber = 0;
-        try {
-            courseIdNumber = +courseIdString;
-        } catch (error) {
-            loggerService.error("An error occured while parsing course ID.", error);
-        }
-        return courseIdNumber;
+        endpointsCourse.patchCourse(putRequest).then((data) => console.log(data));
     }
 
     function getPublishedCourses(): void {
         const request: RequestInit = RequestFactory.createGetRequest();
-        endpointsCourseExtended
+        endpointsCourse
             .getFilteredCourses(request, { publishState: CoursePublishState.PUBLISHED })
             .then((receivedCoursesPublished) => {
                 setCoursesPublished(receivedCoursesPublished);
@@ -174,9 +162,8 @@ export const CreateCourseComponent: React.FC = () => {
         const request: RequestInit = RequestFactory.createDeleteRequest();
 
         loggerService.trace("Parsing ID string to ID number");
-        const courseIdNumber: number = parseCourseId();
 
-        endpointsCourseExtended.deleteCourse(request, courseIdNumber);
+        endpointsCourse.deleteCourse(request, courseIdString);
     }
 };
 

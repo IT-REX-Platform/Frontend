@@ -1,7 +1,7 @@
 import { CoursePublishState } from "../constants/CoursePublishState";
 
 export interface ICourse {
-    id?: number;
+    id?: string;
     name?: string;
     courseDescription?: string;
     startDate?: Date;
