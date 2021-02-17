@@ -29,3 +29,10 @@ export function isValidDate(dateToTest: Date | undefined): boolean {
     }
     return false;
 }
+
+export function getDateIsoString(dateToTest: Date | undefined): string {
+    if (isValidDate(dateToTest) && dateToTest) {
+        return dateToTest.toISOString().substr(0, 10);
+    }
+    return "";
+}

@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Button, Platform, Text } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { isValidDate } from "../helperScripts/validateCourseDates";
+import { getDateIsoString } from "../helperScripts/validateCourseDates";
 
 interface DatePickerProps {
     title: string;
@@ -10,14 +10,6 @@ interface DatePickerProps {
     onDateChanged: (event: any, selectedDate?: Date) => void;
     minDate?: Date;
     maxDate?: Date;
-}
-
-// TODO: export
-export function getDateIsoString(dateToTest: Date | undefined): string {
-    if (isValidDate(dateToTest) && dateToTest) {
-        return dateToTest.toISOString().substr(0, 10);
-    }
-    return "";
 }
 
 export const DatePickerComponent: React.FC<DatePickerProps> = (props) => {
@@ -40,7 +32,10 @@ export const DatePickerComponent: React.FC<DatePickerProps> = (props) => {
     if (mobile) {
         return (
             <>
+                {console.log("yeeeeeeeeet")}
+                {console.log(displayTitle)}
                 <Button
+                    testID="datePickerButtonMobile"
                     title={displayTitle}
                     onPress={() => {
                         setShow(true);
