@@ -65,7 +65,7 @@ export class EndpointsCourse implements IEndpointsCourse {
      * @param getRequest GET request.
      * @param id Course ID for URL parameter.
      */
-    public getCourse(getRequest: RequestInit, id: number): Promise<ICourse> {
+    public getCourse(getRequest: RequestInit, id: string): Promise<ICourse> {
         const urlUpdated = this.url + "/" + id;
         this.loggerApi.trace("Sending GET request to URL: " + urlUpdated);
         const response: Promise<Response> = sendRequest(urlUpdated, getRequest);
@@ -111,7 +111,7 @@ export class EndpointsCourse implements IEndpointsCourse {
      * @param deleteRequest DELETE request.
      * @param id Course ID for URL parameter.
      */
-    public deleteCourse(deleteRequest: RequestInit, id: number): void {
+    public deleteCourse(deleteRequest: RequestInit, id: string): void {
         const urlUpdated = this.url + "/" + id;
         this.loggerApi.trace("Sending DELETE request to URL: " + urlUpdated);
         const response: Promise<Response> = sendRequest(urlUpdated, deleteRequest);

@@ -138,27 +138,15 @@ export const CreateCourseComponent: React.FC = () => {
 
     function patchCourse(): void {
         loggerService.trace("Parsing ID string to ID number");
-        const courseIdNumber: number = parseCourseId();
 
-        // ATTENTION: fields without values will be overwritten with null in DB. @s.pastuchov 27.01.21
         const course: ICourse = {
-            id: courseIdNumber,
+            id: courseIdString,
             publishState: CoursePublishState.PUBLISHED,
         };
 
         loggerService.trace(`Updating course: name=${courseName}, publishedState=${CoursePublishState.PUBLISHED}.`);
         const putRequest: RequestInit = RequestFactory.createPatchRequest(course);
         endpointsCourse.patchCourse(putRequest).then((data) => console.log(data));
-    }
-
-    function parseCourseId(): number {
-        let courseIdNumber = 0;
-        try {
-            courseIdNumber = +courseIdString;
-        } catch (error) {
-            loggerService.error("An error occured while parsing course ID.", error);
-        }
-        return courseIdNumber;
     }
 
     function getPublishedCourses(): void {
@@ -174,9 +162,8 @@ export const CreateCourseComponent: React.FC = () => {
         const request: RequestInit = RequestFactory.createDeleteRequest();
 
         loggerService.trace("Parsing ID string to ID number");
-        const courseIdNumber: number = parseCourseId();
 
-        endpointsCourse.deleteCourse(request, courseIdNumber);
+        endpointsCourse.deleteCourse(request, courseIdString);
     }
 };
 
