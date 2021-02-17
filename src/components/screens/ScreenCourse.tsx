@@ -15,7 +15,7 @@ import i18n from "../../locales";
 
 import { createStackNavigator } from "@react-navigation/stack";
 import { ScreenCourseTabs } from "./course/ScreenCourseTabs";
-import { LocalizationContext } from "../Context";
+import { CourseContext, LocalizationContext } from "../Context";
 
 const CourseStack = createStackNavigator();
 
@@ -43,37 +43,39 @@ export const ScreenCourse: React.FC = (props) => {
 
     return (
         <>
-            <CourseStack.Navigator
-                initialRouteName="info"
-                screenOptions={{
-                    headerTitle: () => <Text>{course.name}</Text>,
-                    headerTitleAlign: "center",
-                    headerStyle: {
-                        backgroundColor: dark.theme.blueGreen,
-                    },
-                    headerTintColor: dark.theme.darkBlue1,
-                    headerBackTitle: "Back",
-                    headerRight: () => (
-                        <MaterialCommunityIcons
-                            name="home-outline"
-                            size={28}
-                            color="#011B45"
-                            style={styles.icon}
-                            onPress={() => navigation.navigate(NavigationRoutes.ROUTE_HOME)}
-                        />
-                    ),
-                    headerLeft: () => (
-                        <MaterialCommunityIcons
-                            name="menu"
-                            color="#011B45"
-                            size={28}
-                            onPress={() => navigation.openDrawer()}
-                            style={styles.icon}
-                        />
-                    ),
-                }}>
-                <CourseStack.Screen name="INFO" component={ScreenCourseTabs}></CourseStack.Screen>
-            </CourseStack.Navigator>
+            <CourseContext.Provider value={course}>
+                <CourseStack.Navigator
+                    initialRouteName="INFO"
+                    screenOptions={{
+                        headerTitle: () => <Text>{course.name}</Text>,
+                        headerTitleAlign: "center",
+                        headerStyle: {
+                            backgroundColor: dark.theme.blueGreen,
+                        },
+                        headerTintColor: dark.theme.darkBlue1,
+                        headerBackTitle: "Back",
+                        headerRight: () => (
+                            <MaterialCommunityIcons
+                                name="home-outline"
+                                size={28}
+                                color="#011B45"
+                                style={styles.icon}
+                                onPress={() => navigation.navigate(NavigationRoutes.ROUTE_HOME)}
+                            />
+                        ),
+                        headerLeft: () => (
+                            <MaterialCommunityIcons
+                                name="menu"
+                                color="#011B45"
+                                size={28}
+                                onPress={() => navigation.openDrawer()}
+                                style={styles.icon}
+                            />
+                        ),
+                    }}>
+                    <CourseStack.Screen name="INFO" component={ScreenCourseTabs}></CourseStack.Screen>
+                </CourseStack.Navigator>
+            </CourseContext.Provider>
         </>
     );
 };

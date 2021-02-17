@@ -13,10 +13,9 @@ export const config = {
         ROUTE_COURSE_DETAILS: {
             path: "course/:courseId",
             screens: {
+                initialRouteName: "INFO",
                 INFO: {
-                    path: "INFO",
                     screens: {
-                        path: "/",
                         TIMELINE: "TIMELINE",
                         OVERVIEW: "OVERVIEW",
                     },

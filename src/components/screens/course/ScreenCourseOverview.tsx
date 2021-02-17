@@ -8,7 +8,7 @@ import { EndpointsCourseExtended } from "../../../api/endpoints/EndpointsCourseE
 import { ICourse } from "../../../types/ICourse";
 import { NavigationRoutes, ScreenCourseProps } from "../../../constants/navigators/NavigationRoutes";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import { LocalizationContext } from "../../Context";
+import { CourseContext, LocalizationContext } from "../../Context";
 
 export const ScreenCourseOverview: React.FC = (props) => {
     const navigation = useNavigation();
@@ -16,10 +16,12 @@ export const ScreenCourseOverview: React.FC = (props) => {
 
     React.useContext(LocalizationContext);
 
+    const course = React.useContext(CourseContext);
     return (
         <>
             <ImageBackground source={require("../../../constants/images/Background_forest.svg")} style={styles.image}>
                 <Text style={styles.container}>Course Overview</Text>
+                <Text>{course.courseDescription}</Text>
             </ImageBackground>
         </>
     );
