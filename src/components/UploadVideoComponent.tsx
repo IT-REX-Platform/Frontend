@@ -98,7 +98,7 @@ export const UploadVideoComponent: React.FC = () => {
         resetVideoState();
         createAlert(i18n.t("itrex.uploadVideoSuccessMsg"));
 
-        setVideoPlayerUri(endpointsVideoExtended.getVideoDownloadLink(response["id"]));
+        setVideoPlayerUri(endpointsVideo.getVideoDownloadLink(response.id));
 
         return response;
     };

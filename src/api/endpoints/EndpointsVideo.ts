@@ -17,7 +17,7 @@ export class EndpointsVideo implements IEndpointsVideo {
         this.url = itRexVars().apiUrl + ApiUrls.URL_VIDEOS;
     }
 
-    public async getVideoById(getRequest: RequestInit, id: number): Promise<IVideo[]> {
+    public async getVideoById(getRequest: RequestInit, id: number): Promise<IVideo> {
         this.loggerApi.trace("Checking for additional parameters for GET request URL.");
         const url: string = this.appendUrlWithId(id);
 
@@ -30,14 +30,14 @@ export class EndpointsVideo implements IEndpointsVideo {
         return url;
     }
 
-    public async uploadVideo(postRequest: RequestInit): Promise<IVideo[]> {
+    public async uploadVideo(postRequest: RequestInit): Promise<IVideo> {
         const url: string = this.url;
 
         this.loggerApi.trace("Sending POST request to URL: " + url);
         return this.sendVideoRequest(url, postRequest);
     }
 
-    public async deleteVideoById(deleteRequest: RequestInit, id: number): Promise<IVideo[]> {
+    public async deleteVideoById(deleteRequest: RequestInit, id: number): Promise<IVideo> {
         this.loggerApi.trace("Checking for additional parameters for DELETE request URL.");
         const url: string = this.appendUrlWithId(id);
 
@@ -45,7 +45,7 @@ export class EndpointsVideo implements IEndpointsVideo {
         return this.sendVideoRequest(url, deleteRequest);
     }
 
-    private async sendVideoRequest(url: string, request: RequestInit): Promise<IVideo[]> {
+    private async sendVideoRequest(url: string, request: RequestInit): Promise<IVideo> {
         const response = await sendRequest(url, request);
         const data = await response.json();
         return data as IVideo[];
