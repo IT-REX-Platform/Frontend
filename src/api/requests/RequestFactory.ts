@@ -12,11 +12,10 @@ export class RequestFactory {
         return request;
     }
 
-    public static createPostRequestWithFormData(formdata: FormData): RequestInit {
+    public static createPostRequestWithFormData(formData: FormData): RequestInit {
         const request: RequestInit = RequestAuthorization.createAuthorizedRequest();
         request.method = "POST";
-        request.body = formdata;
-
+        request.body = formData;
         return request;
     }
 

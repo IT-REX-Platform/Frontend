@@ -8,8 +8,10 @@ import { RequestFactory } from "../api/requests/RequestFactory";
 import { EndpointsVideo } from "../api/endpoints/EndpointsVideo";
 import { createAlert } from "../helperScripts/createAlert";
 import { Video } from "expo-av";
+import { IVideo } from "../types/IVideo";
 
 const endpointsVideo = new EndpointsVideo();
+const courseUuid = "6ec0bd7f-11c0-43da-975e-2a8ad9ebae0b"; // TODO: get course ID from context.
 
 export const UploadVideoComponent: React.FC = () => {
     React.useContext(LocalizationContext);
@@ -92,13 +94,16 @@ export const UploadVideoComponent: React.FC = () => {
         }
 
         const video = await buildVideoAsFormData();
-        const postRequest = RequestFactory.createPostRequestWithFormData(video);
-        const response = await endpointsVideo.uploadVideo(postRequest);
+        const postRequest: RequestInit = RequestFactory.createPostRequestWithFormData(video);
+        const response: IVideo = await endpointsVideo.uploadVideo(postRequest);
 
         resetVideoState();
         createAlert(i18n.t("itrex.uploadVideoSuccessMsg"));
 
-        setVideoPlayerUri(endpointsVideo.getVideoDownloadLink(response.id));
+        console.log(response);
+        if (response.id != null) {
+            setVideoPlayerUri(endpointsVideo.getVideoDownloadLink(response.id));
+        }
 
         return response;
     };
@@ -107,9 +112,11 @@ export const UploadVideoComponent: React.FC = () => {
      * Build a FormData object from the video uri.
      */
     const buildVideoAsFormData = async () => {
-        const fileBlob = await (await fetch(videoUri)).blob();
-        const formData = new FormData();
-        formData.append("file", fileBlob);
+        const response: Response = await fetch(videoUri);
+        const fileBlob: Blob = await response.blob();
+        const formData: FormData = new FormData();
+        formData.append("videoFile", fileBlob);
+        formData.append("courseId", courseUuid);
         return formData;
     };
 

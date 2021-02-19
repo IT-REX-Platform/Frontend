@@ -7,4 +7,5 @@ export interface IVideo {
     width?: number;
     height?: number;
     length?: number;
+    courseId?: string;
 }
