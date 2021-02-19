@@ -1,9 +1,8 @@
 /* eslint-disable complexity */
 import React, { ChangeEvent, useState } from "react";
 import { StyleSheet, Button, Platform, Text, View } from "react-native";
-import DateTimePicker from "@react-native-community/datetimepicker";
+import DateTimePicker, { Event } from "@react-native-community/datetimepicker";
 import { getDateIsoString } from "../helperScripts/validateCourseDates";
-import { Event } from "@react-native-community/datetimepicker";
 
 interface DatePickerProps {
     title: string;
