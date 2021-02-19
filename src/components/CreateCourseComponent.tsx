@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ChangeEvent } from "react";
 import { useState } from "react";
 import { Button, FlatList, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { ICourse } from "../types/ICourse";
@@ -12,6 +12,7 @@ import { CoursePublishState } from "../constants/CoursePublishState";
 import { DatePickerComponent } from "./DatePickerComponent";
 import { validateCourseDates } from "../helperScripts/validateCourseDates";
 import { EndpointsCourse } from "../api/endpoints/EndpointsCourse";
+import { Event } from "@react-native-community/datetimepicker";
 
 const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");
 const endpointsCourse: EndpointsCourse = new EndpointsCourse();
@@ -40,7 +41,7 @@ export const CreateCourseComponent: React.FC = () => {
     const [startDate, setStartDate] = useState<Date | undefined>(undefined);
     const [endDate, setEndDate] = useState<Date | undefined>(undefined);
 
-    const startDateChanged = (event: any, selectedDate?: Date) => {
+    const startDateChanged = (event: ChangeEvent | Event, selectedDate?: Date) => {
         if (Platform.OS === ("android" || "ios")) {
             const currentDate = selectedDate || startDate;
             setStartDate(currentDate);
@@ -51,7 +52,7 @@ export const CreateCourseComponent: React.FC = () => {
         }
     };
 
-    const endDateChanged = (event: any, selectedDate?: Date) => {
+    const endDateChanged = (event: ChangeEvent | Event, selectedDate?: Date) => {
         if (Platform.OS === ("android" || "ios")) {
             const currentDate = selectedDate || endDate;
             setEndDate(currentDate);
@@ -160,15 +161,14 @@ export const CreateCourseComponent: React.FC = () => {
             loggerService.warn("Course description invalid.");
         }
 
-        const currentDate: Date = new Date();
         const course: ICourse = {
             name: courseName,
-            startDate: currentDate,
+            startDate: startDate,
             courseDescription: courseDescription ? courseDescription : undefined,
             publishState: CoursePublishState.UNPUBLISHED,
         };
 
-        loggerService.trace(`Creating course: name=${courseName}, startDate=${currentDate}.`);
+        loggerService.trace(`Creating course: name=${courseName}.`);
         const postRequest: RequestInit = RequestFactory.createPostRequest(course);
         endpointsCourse.createCourse(postRequest).then((data) => console.log(data));
     }

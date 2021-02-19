@@ -1,13 +1,14 @@
 /* eslint-disable complexity */
-import React, { useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 import { StyleSheet, Button, Platform, Text, View } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { getDateIsoString } from "../helperScripts/validateCourseDates";
+import { Event } from "@react-native-community/datetimepicker";
 
 interface DatePickerProps {
     title: string;
     date: Date | undefined;
-    onDateChanged: (event: any, selectedDate?: Date) => void;
+    onDateChanged: (event: ChangeEvent | Event, selectedDate?: Date) => void;
     minDate?: Date;
     maxDate?: Date;
 }
@@ -15,7 +16,7 @@ interface DatePickerProps {
 export const DatePickerComponent: React.FC<DatePickerProps> = (props) => {
     const { title, date, onDateChanged, minDate, maxDate } = props;
 
-    function closeDatePicker(event: any, selectedDate?: Date): void {
+    function closeDatePicker(event: ChangeEvent | Event, selectedDate?: Date): void {
         setShow(false);
         onDateChanged(event, selectedDate);
     }
