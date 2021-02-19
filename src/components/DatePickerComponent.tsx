@@ -33,8 +33,6 @@ export const DatePickerComponent: React.FC<DatePickerProps> = (props) => {
     if (mobile) {
         return (
             <>
-                {console.log("yeeeeeeeeet")}
-                {console.log(displayTitle)}
                 <Button
                     testID="datePickerButtonMobile"
                     title={displayTitle}

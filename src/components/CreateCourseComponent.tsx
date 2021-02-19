@@ -132,7 +132,7 @@ export const CreateCourseComponent: React.FC = () => {
 
                 <View style={styles.styledInputContainer}>
                     <DatePickerComponent
-                        title="startDate"
+                        title={i18n.t("itrex.startDate")}
                         date={startDate}
                         onDateChanged={startDateChanged}
                         maxDate={endDate}></DatePickerComponent>
@@ -140,7 +140,7 @@ export const CreateCourseComponent: React.FC = () => {
                     <View style={{ margin: 16 }}></View>
 
                     <DatePickerComponent
-                        title="endDate"
+                        title={i18n.t("itrex.endDate")}
                         date={endDate}
                         onDateChanged={endDateChanged}
                         minDate={startDate}></DatePickerComponent>
