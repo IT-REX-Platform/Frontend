@@ -1,3 +1,4 @@
+import "../../../setupTests.ts";
 import "react-native";
 import React from "react";
 import { itRexVars } from "../../../src/constants/Constants";
@@ -38,6 +39,6 @@ describe("test HomeScreenLecturer", () => {
     xit("see if stuff is rendered", () => {
         const { getByText } = render(<ScreenHomeLecturer></ScreenHomeLecturer>);
 
-        expect(getByText("Go to Upload Video")).toBeDefined();
+        expect(getByText("hello lecturer")).toBeDefined();
     });
 });

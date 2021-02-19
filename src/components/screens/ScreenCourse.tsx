@@ -4,7 +4,7 @@ import { Text, ImageBackground, StyleSheet, View } from "react-native";
 import { dark } from "../../constants/themes/dark";
 import { Header } from "../../constants/navigators/Header";
 import { RequestFactory } from "../../api/requests/RequestFactory";
-import { EndpointsCourseExtended } from "../../api/endpoints/EndpointsCourseExtended";
+import { EndpointsCourse } from "../../api/endpoints/EndpointsCourse";
 import { ICourse } from "../../types/ICourse";
 import { NavigationRoutes, ScreenCourseProps } from "../../constants/navigators/NavigationRoutes";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
@@ -32,11 +32,11 @@ export const ScreenCourse: React.FC = (props) => {
     const courseInitial: ICourse = {};
     const [course, setCourse] = useState(courseInitial);
 
-    const endpointsCourseExtended: EndpointsCourseExtended = new EndpointsCourseExtended();
+    const endpointsCourse: EndpointsCourse = new EndpointsCourse();
 
     useEffect(() => {
         const request: RequestInit = RequestFactory.createGetRequest();
-        endpointsCourseExtended.getCourse(request, courseId).then((receivedCourse) => {
+        endpointsCourse.getCourse(request, courseId).then((receivedCourse) => {
             setCourse(receivedCourse);
         });
     }, [courseId]);

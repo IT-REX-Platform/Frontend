@@ -1,3 +1,4 @@
+import "../../setupTests.ts";
 import { createAlert } from "../../src/helperScripts/createAlert";
 import { Alert, Platform } from "react-native";
 

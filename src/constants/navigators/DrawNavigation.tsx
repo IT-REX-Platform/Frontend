@@ -10,7 +10,7 @@ import { DrawerParamList, NavigationRoutes } from "./NavigationRoutes";
 import i18n from "../../locales";
 import { loggerFactory } from "../../../logger/LoggerConfig";
 import { RequestFactory } from "../../api/requests/RequestFactory";
-import { EndpointsCourseExtended } from "../../api/endpoints/EndpointsCourseExtended";
+import { EndpointsCourse } from "../../api/endpoints/EndpointsCourse";
 import { ICourse } from "../../types/ICourse";
 import { CreateCourseComponent } from "../../components/CreateCourseComponent";
 import { UploadVideoComponent } from "../../components/UploadVideoComponent";

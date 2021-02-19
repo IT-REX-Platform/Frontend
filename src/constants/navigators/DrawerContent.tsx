@@ -4,7 +4,7 @@ import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, DrawerItemL
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { ICourse } from "../../types/ICourse";
 import { loggerFactory } from "../../../logger/LoggerConfig";
-import { EndpointsCourseExtended } from "../../api/endpoints/EndpointsCourseExtended";
+import { EndpointsCourse } from "../../api/endpoints/EndpointsCourse";
 import { RequestFactory } from "../../api/requests/RequestFactory";
 import { useNavigation } from "@react-navigation/native";
 import { NavigationRoutes } from "./NavigationRoutes";
@@ -23,7 +23,7 @@ export const DrawerContent: React.FC = (props) => {
     const [courses, setCourses] = useState(initialCourseState);
 
     const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");
-    const endpointsCourseExtended: EndpointsCourseExtended = new EndpointsCourseExtended();
+    const endpointsCourse: EndpointsCourse = new EndpointsCourse();
 
     const drawerItems = [];
 
@@ -43,7 +43,7 @@ export const DrawerContent: React.FC = (props) => {
     function getAllCourses(): void {
         loggerService.trace("Getting all courses.");
         const request: RequestInit = RequestFactory.createGetRequest();
-        endpointsCourseExtended.getFilteredCourses(request).then((receivedCourses) => {
+        endpointsCourse.getFilteredCourses(request).then((receivedCourses) => {
             setCourses(receivedCourses);
         });
     }

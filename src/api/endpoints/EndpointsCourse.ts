@@ -2,20 +2,20 @@ import { ICourse } from "../../types/ICourse";
 import { sendRequest } from "./sendRequest";
 import { itRexVars } from "../../constants/Constants";
 import { ApiUrls } from "../../constants/ApiUrls";
-import { IEndpointsCourseExtended } from "../endpoints_interfaces/IEndpointsCourseExtended";
+import { IEndpointsCourse } from "../endpoints_interfaces/IEndpointsCourse";
 import { loggerFactory } from "../../../logger/LoggerConfig";
 import { CourseUrlParams } from "../../constants/CourseUrlParams";
 
 /**
- * Endpoints for /api/courses/extended.
- * Look in backend course-service CourseResourceExtended.java.
+ * Endpoints for /api/courses/.
+ * Look in backend course-service CourseResource.java.
  */
-export class EndpointsCourseExtended implements IEndpointsCourseExtended {
-    private loggerApi = loggerFactory.getLogger("API.EndpointsCourseExtended");
+export class EndpointsCourse implements IEndpointsCourse {
+    private loggerApi = loggerFactory.getLogger("API.EndpointsCourse");
     private url: string;
 
     public constructor() {
-        this.url = itRexVars().apiUrl + ApiUrls.URL_COURSES_EXTENDED;
+        this.url = itRexVars().apiUrl + ApiUrls.URL_COURSES;
     }
 
     /**
@@ -65,7 +65,7 @@ export class EndpointsCourseExtended implements IEndpointsCourseExtended {
      * @param getRequest GET request.
      * @param id Course ID for URL parameter.
      */
-    public getCourse(getRequest: RequestInit, id: number): Promise<ICourse> {
+    public getCourse(getRequest: RequestInit, id: string): Promise<ICourse> {
         const urlUpdated = this.url + "/" + id;
         this.loggerApi.trace("Sending GET request to URL: " + urlUpdated);
         const response: Promise<Response> = sendRequest(urlUpdated, getRequest);
@@ -111,7 +111,7 @@ export class EndpointsCourseExtended implements IEndpointsCourseExtended {
      * @param deleteRequest DELETE request.
      * @param id Course ID for URL parameter.
      */
-    public deleteCourse(deleteRequest: RequestInit, id: number): void {
+    public deleteCourse(deleteRequest: RequestInit, id: string): void {
         const urlUpdated = this.url + "/" + id;
         this.loggerApi.trace("Sending DELETE request to URL: " + urlUpdated);
         const response: Promise<Response> = sendRequest(urlUpdated, deleteRequest);

@@ -10,7 +10,6 @@ import { LocalizationContext } from "../Context";
 
 export const ScreenHomeLecturer: React.FC = () => {
     const navigation = useNavigation();
-
     const { t, locale, setLocale } = React.useContext(LocalizationContext);
 
     return (

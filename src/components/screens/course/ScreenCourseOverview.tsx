@@ -4,7 +4,7 @@ import { Text, ImageBackground, StyleSheet } from "react-native";
 import { dark } from "../../../constants/themes/dark";
 import { Header } from "../../../constants/navigators/Header";
 import { RequestFactory } from "../../../api/requests/RequestFactory";
-import { EndpointsCourseExtended } from "../../../api/endpoints/EndpointsCourseExtended";
+import { EndpointsCourse } from "../../../api/endpoints/EndpointsCourse";
 import { ICourse } from "../../../types/ICourse";
 import { NavigationRoutes, ScreenCourseProps } from "../../../constants/navigators/NavigationRoutes";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
