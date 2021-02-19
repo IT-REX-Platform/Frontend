@@ -63,7 +63,13 @@ export const DatePickerComponent: React.FC<DatePickerProps> = (props) => {
                     <Text style={styles.styledText}>{title}</Text>
                 </View>
                 <input
-                    style={styles.styledInput}
+                    style={{
+                        fontSize: 18,
+                        borderStyle: "hidden",
+                        backgroundColor: "transparent",
+                        lineHeight: 1.25,
+                        paddingTop: 8,
+                    }}
                     type="date"
                     onChange={onDateChanged}
                     value={yyyymmdd ? yyyymmdd : "yyyy-mm-dd"}
@@ -78,7 +84,7 @@ const styles = StyleSheet.create({
     container: {
         borderStyle: "solid",
         borderColor: "black",
-        borderWidth: 1,
+        borderWidth: 2,
         borderRadius: 4,
     },
     styledText: {
@@ -88,12 +94,5 @@ const styles = StyleSheet.create({
         paddingLeft: 8,
         paddingRight: 8,
         backgroundColor: "white",
-    },
-    styledInput: {
-        fontSize: 18,
-        borderStyle: "hidden",
-        backgroundColor: "transparent",
-        lineHeight: 1.25,
-        paddingTop: 8,
     },
 });
