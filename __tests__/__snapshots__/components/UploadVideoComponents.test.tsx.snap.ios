@@ -162,5 +162,59 @@ exports[`test upload video component see if stuff is rendered 1`] = `
       </View>
     </View>
   </View>
+  <View
+    style={
+      Object {
+        "alignItems": "center",
+        "marginBottom": 20,
+        "marginTop": 20,
+      }
+    }
+  />
+  <View
+    pointerEvents="box-none"
+    style={
+      Object {
+        "height": 360,
+        "overflow": "hidden",
+        "width": 640,
+      }
+    }
+  >
+    <ViewManagerAdapter_ExpoVideoView
+      proxiedProperties={
+        Object {
+          "onError": [Function],
+          "onFullscreenUpdate": [Function],
+          "onLoad": [Function],
+          "onLoadStart": [Function],
+          "onReadyForDisplay": [Function],
+          "onStatusUpdate": [Function],
+          "resizeMode": "mock",
+          "source": Object {
+            "headers": undefined,
+            "overridingExtension": null,
+            "uri": "",
+          },
+          "status": Object {
+            "isMuted": false,
+            "rate": 1,
+            "shouldPlay": true,
+            "volume": 1,
+          },
+          "useNativeControls": true,
+        }
+      }
+      style={
+        Object {
+          "bottom": 0,
+          "left": 0,
+          "position": "absolute",
+          "right": 0,
+          "top": 0,
+        }
+      }
+    />
+  </View>
 </View>
 `;
