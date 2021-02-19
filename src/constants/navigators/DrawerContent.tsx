@@ -4,7 +4,6 @@ import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, DrawerItemL
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { ICourse } from "../../types/ICourse";
 import { loggerFactory } from "../../../logger/LoggerConfig";
-import { EndpointsCourse } from "../../api/endpoints/EndpointsCourse";
 import { RequestFactory } from "../../api/requests/RequestFactory";
 import { useNavigation } from "@react-navigation/native";
 import { NavigationRoutes } from "./NavigationRoutes";
@@ -12,6 +11,9 @@ import { AuthContext, LocalizationContext } from "../../components/Context";
 import i18n from "../../locales";
 import { Drawer } from "react-native-paper";
 import { dark } from "../themes/dark";
+import { EndpointsCourse } from "../../api/endpoints/EndpointsCourse";
+import AuthenticationService from "../../services/AuthenticationService";
+import { ITREXRoles } from "../ITREXRoles";
 
 export const DrawerContent: React.FC = (props) => {
     const { signOut } = React.useContext(AuthContext);
@@ -48,22 +50,37 @@ export const DrawerContent: React.FC = (props) => {
         });
     }
 
-    for (const course of courses) {
-        drawerItems.push(
-            <DrawerItem
-                {...props}
-                icon={() => (
-                    <MaterialCommunityIcons name="notebook-outline" size={28} color="white" style={styles.icon} />
-                )}
-                label={"" + course.name}
-                key={course.id}
-                onPress={() => {
-                    console.log("Course Details");
-                    navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, {
-                        courseId: course.id,
-                    });
-                }}></DrawerItem>
-        );
+    function noCourses() {
+        if (
+            AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_LECTURER) ||
+            AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_ADMIN)
+        ) {
+            drawerItems.push(<Text style={styles.textNoCourses}>{i18n.t("itrex.noCoursesLecturer")}</Text>);
+        } else {
+            drawerItems.push(<Text style={styles.textNoCourses}>{i18n.t("itrex.noCoursesStudent")}</Text>);
+        }
+    }
+
+    if (courses.length > 0) {
+        for (const course of courses) {
+            drawerItems.push(
+                <DrawerItem
+                    {...props}
+                    icon={() => (
+                        <MaterialCommunityIcons name="notebook-outline" size={28} color="white" style={styles.icon} />
+                    )}
+                    label={"" + course.name}
+                    key={course.id}
+                    onPress={() => {
+                        console.log("Course Details");
+                        navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, {
+                            courseId: course.id,
+                        });
+                    }}></DrawerItem>
+            );
+        }
+    } else {
+        noCourses();
     }
 
     useEffect(() => {
@@ -163,4 +180,5 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         fontSize: 15,
     },
+    textNoCourses: { justifyContent: "center", color: "white", alignContent: "center", marginLeft: 25, fontSize: 15 },
 });

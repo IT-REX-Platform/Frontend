@@ -45,5 +45,7 @@ export const de = {
         fastSettings: "Kurzeinstellung",
         lastLearned: "Zuletzt gelernter Kurs",
         imagePickerPermAlert: "Entschuldigung, wir benötigen die Kamera-Berechtigung, damit das funktioniert!",
+        noCoursesLecturer: "Bisher wurden keine Kurse erstellt!",
+        noCoursesStudent: "Bisher wurde keinem Kursen beigetreten!",
     },
 };

@@ -45,5 +45,7 @@ export const en = {
         fastSettings: "Fast Settings",
         lastLearned: "Last learned Course",
         imagePickerPermAlert: "Sorry, we need camera roll permissions to make this work!",
+        noCoursesLecturer: "No courses have been created yet!",
+        noCoursesStudent: "No courses have been joined so far!",
     },
 };

@@ -6,13 +6,8 @@ import { MaterialIcons } from "@expo/vector-icons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { HomeComponent } from "../../components/HomeComponent";
-import { DrawerParamList, NavigationRoutes } from "./NavigationRoutes";
 import i18n from "../../locales";
 import { loggerFactory } from "../../../logger/LoggerConfig";
-import { RequestFactory } from "../../api/requests/RequestFactory";
-import { EndpointsCourse } from "../../api/endpoints/EndpointsCourse";
-import { ICourse } from "../../types/ICourse";
-import { CreateCourseComponent } from "../../components/CreateCourseComponent";
 import { UploadVideoComponent } from "../../components/UploadVideoComponent";
 import AuthenticationService from "../../services/AuthenticationService";
 import { ITREXRoles } from "../ITREXRoles";
@@ -23,6 +18,8 @@ import { DrawerContent } from "./DrawerContent";
 import { ScreenCourse } from "../../components/screens/ScreenCourse";
 import { RouteProp } from "@react-navigation/native";
 import { dark } from "../themes/dark";
+import { NavigationRoutes } from "./NavigationRoutes";
+import { CreateCourseComponent } from "../../components/CreateCourseComponent";
 
 const Drawer = createDrawerNavigator();
 
