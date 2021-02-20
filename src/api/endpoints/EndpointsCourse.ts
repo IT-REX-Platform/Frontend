@@ -5,6 +5,7 @@ import { ApiUrls } from "../../constants/ApiUrls";
 import { IEndpointsCourse } from "../endpoints_interfaces/IEndpointsCourse";
 import { loggerFactory } from "../../../logger/LoggerConfig";
 import { CourseUrlParams } from "../../constants/CourseUrlParams";
+import { ResponseParser } from "./ResponseParser";
 
 /**
  * Endpoints for /api/courses/.
@@ -24,13 +25,13 @@ export class EndpointsCourse implements IEndpointsCourse {
      * @param getRequest GET request.
      * @param params Optional parameters for GET request URL to filter all existing courses.
      */
-    public getFilteredCourses(getRequest: RequestInit, params?: ICourse): Promise<ICourse[]> {
+    public getAllCourses(getRequest: RequestInit, params?: ICourse): Promise<ICourse[]> {
         this.loggerApi.trace("Checking for additional parameters for GET request URL.");
         const url: string = this.appendCourseParams(params);
 
         this.loggerApi.trace("Sending GET request to URL: " + url);
         const response: Promise<Response> = sendRequest(url, getRequest);
-        return response.then((response) => response.json()).then((data) => data as ICourse[]);
+        return ResponseParser.parseCourses(response);
     }
 
     /**
@@ -69,7 +70,7 @@ export class EndpointsCourse implements IEndpointsCourse {
         const urlUpdated = this.url + "/" + id;
         this.loggerApi.trace("Sending GET request to URL: " + urlUpdated);
         const response: Promise<Response> = sendRequest(urlUpdated, getRequest);
-        return response.then((response) => response.json()).then((data) => data as ICourse);
+        return ResponseParser.parseCourse(response);
     }
 
     /**
@@ -80,7 +81,7 @@ export class EndpointsCourse implements IEndpointsCourse {
     public createCourse(postRequest: RequestInit): Promise<ICourse> {
         this.loggerApi.trace("Sending POST request to URL: " + this.url);
         const response: Promise<Response> = sendRequest(this.url, postRequest);
-        return response.then((response) => response.json()).then((data) => data as ICourse);
+        return ResponseParser.parseCourse(response);
     }
 
     /**
@@ -91,7 +92,7 @@ export class EndpointsCourse implements IEndpointsCourse {
     public updateCourse(putRequest: RequestInit): Promise<ICourse> {
         this.loggerApi.trace("Sending PUT request to URL: " + this.url);
         const response: Promise<Response> = sendRequest(this.url, putRequest);
-        return response.then((response) => response.json()).then((data) => data as ICourse);
+        return ResponseParser.parseCourse(response);
     }
 
     /**
@@ -102,7 +103,7 @@ export class EndpointsCourse implements IEndpointsCourse {
     public patchCourse(patchRequest: RequestInit): Promise<ICourse> {
         this.loggerApi.trace("Sending PATCH request to URL: " + this.url);
         const response: Promise<Response> = sendRequest(this.url, patchRequest);
-        return response.then((response) => response.json()).then((data) => data as ICourse);
+        return ResponseParser.parseCourse(response);
     }
 
     /**

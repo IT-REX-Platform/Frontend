@@ -34,5 +34,6 @@ export const de = {
         switchLangEN: "Zu Englisch wechseln",
         imagePickerPermAlert: "Entschuldigung, wir benötigen die Kamera-Berechtigung, damit das funktioniert!",
         videoPool: "Video Pool",
+        getAllVideos: "Alle Videos holen",
     },
 };

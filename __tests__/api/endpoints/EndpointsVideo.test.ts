@@ -41,7 +41,7 @@ describe("EndpointsVideo", () => {
         credentials: "include",
     };
 
-    const videoId: number = 24;
+    const videoId: string = "24";
 
     const videoExpected: IVideo = {
         id: 24,
@@ -54,7 +54,7 @@ describe("EndpointsVideo", () => {
 
     it("getVideoById() should return a video with the given id.", async () => {
         try {
-            const response: IVideo = await instance.getVideoById(request, videoId);
+            const response: IVideo = await instance.downloadVideo(request, videoId);
             expect(response).resolves.toBe(videoExpected);
         } catch (error) {
             // Enable once fetch has been mocked.
@@ -74,7 +74,7 @@ describe("EndpointsVideo", () => {
 
     it("deleteVideoById() should return a video with the given id.", async () => {
         try {
-            const response: IVideo = await instance.deleteVideoById(request, videoId);
+            const response: IVideo = await instance.deleteVideo(request, videoId);
             expect(response).resolves.toBe(videoExpected);
         } catch (error) {
             // Enable once fetch has been mocked.

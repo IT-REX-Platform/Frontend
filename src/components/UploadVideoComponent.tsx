@@ -12,7 +12,7 @@ import { IVideo } from "../types/IVideo";
 import { VideoFormDataParams } from "../constants/VideoFormDataParams";
 
 const endpointsVideo = new EndpointsVideo();
-const courseUuid = "6ec0bd7f-11c0-43da-975e-2a8ad9ebae0b"; // TODO: get course ID from context.
+const courseUuid = "af45cc33-5ea8-45aa-b878-7105f24343a2"; // TODO: get course ID from context.
 
 export const UploadVideoComponent: React.FC = () => {
     React.useContext(LocalizationContext);
@@ -83,9 +83,9 @@ export const UploadVideoComponent: React.FC = () => {
 
     /**
      * Upload the picked video to the backend.
-     * If no video was selected previously do
+     * If no video was selected previously do nothing.
      */
-    const uploadVideo = async () => {
+    const uploadVideo = async (): Promise<void> => {
         if (videoUri === "") {
             return;
         }
@@ -93,16 +93,16 @@ export const UploadVideoComponent: React.FC = () => {
         const video = await buildVideoAsFormData();
         const postRequest: RequestInit = RequestFactory.createPostRequestWithFormData(video);
         const response: IVideo = await endpointsVideo.uploadVideo(postRequest);
+        console.log(response);
 
         resetVideoState();
         createAlert(i18n.t("itrex.uploadVideoSuccessMsg"));
 
-        console.log(response);
-        if (response.id != null) {
-            setVideoPlayerUri(endpointsVideo.getVideoDownloadLink(response.id));
+        if (response.id == null) {
+            return;
         }
-
-        return response;
+        const videoUrl: string = endpointsVideo.getVideoUrl(response.id);
+        setVideoPlayerUri(videoUrl);
     };
 
     /**

@@ -34,5 +34,6 @@ export const en = {
         switchLangDE: "Switch to german",
         imagePickerPermAlert: "Sorry, we need camera roll permissions to make this work!",
         videoPool: "Video Pool",
+        getAllVideos: "Get All Videos",
     },
 };

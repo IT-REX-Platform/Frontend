@@ -131,7 +131,7 @@ export const CreateCourseComponent: React.FC = () => {
     function getAllCourses(): void {
         loggerService.trace("Getting all courses.");
         const request: RequestInit = RequestFactory.createGetRequest();
-        endpointsCourse.getFilteredCourses(request).then((receivedCourses) => {
+        endpointsCourse.getAllCourses(request).then((receivedCourses) => {
             setCourses(receivedCourses);
         });
     }
@@ -152,7 +152,7 @@ export const CreateCourseComponent: React.FC = () => {
     function getPublishedCourses(): void {
         const request: RequestInit = RequestFactory.createGetRequest();
         endpointsCourse
-            .getFilteredCourses(request, { publishState: CoursePublishState.PUBLISHED })
+            .getAllCourses(request, { publishState: CoursePublishState.PUBLISHED })
             .then((receivedCoursesPublished) => {
                 setCoursesPublished(receivedCoursesPublished);
             });
