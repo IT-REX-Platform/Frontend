@@ -47,5 +47,7 @@ export const en = {
         imagePickerPermAlert: "Sorry, we need camera roll permissions to make this work!",
         noCoursesLecturer: "No courses have been created yet!",
         noCoursesStudent: "No courses have been joined so far!",
+        startDate: "Start Date",
+        endDate: "End Date",
     },
 };

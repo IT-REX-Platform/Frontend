@@ -47,5 +47,7 @@ export const de = {
         imagePickerPermAlert: "Entschuldigung, wir benötigen die Kamera-Berechtigung, damit das funktioniert!",
         noCoursesLecturer: "Bisher wurden keine Kurse erstellt!",
         noCoursesStudent: "Bisher wurde keinem Kursen beigetreten!",
+        startDate: "Startdatum",
+        endDate: "Enddatum",
     },
 };

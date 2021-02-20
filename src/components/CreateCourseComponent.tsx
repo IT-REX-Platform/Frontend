@@ -1,15 +1,17 @@
-import React from "react";
+import React, { ChangeEvent } from "react";
 import { useState } from "react";
 import {
     Button,
     FlatList,
+    ImageBackground,
+    Platform,
     Pressable,
+    ScrollView,
     StyleSheet,
-    TouchableOpacity,
     Text,
     TextInput,
+    TouchableOpacity,
     View,
-    ImageBackground,
 } from "react-native";
 import { ICourse } from "../types/ICourse";
 import { validateCourseName } from "../helperScripts/validateCourseEntry";
@@ -18,11 +20,14 @@ import i18n from "../locales";
 import { RequestFactory } from "../api/requests/RequestFactory";
 import { loggerFactory } from "../../logger/LoggerConfig";
 import { CoursePublishState } from "../constants/CoursePublishState";
+import { DatePickerComponent } from "./DatePickerComponent";
+import { validateCourseDates } from "../helperScripts/validateCourseDates";
 import { EndpointsCourse } from "../api/endpoints/EndpointsCourse";
 import { useNavigation } from "@react-navigation/native";
 import { NavigationRoutes } from "../constants/navigators/NavigationRoutes";
 import { Header } from "../constants/navigators/Header";
 import { LocalizationContext } from "./Context";
+import { Event } from "@react-native-community/datetimepicker";
 
 const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");
 const endpointsCourse: EndpointsCourse = new EndpointsCourse();
@@ -48,79 +53,123 @@ export const CreateCourseComponent: React.FC = () => {
     const initialPublishedCourseState: ICourse[] = [];
     const [coursesPublished, setCoursesPublished] = useState(initialPublishedCourseState);
 
-    return (
-        <View style={styles.container}>
-            <ImageBackground source={require("../constants/images/Background_forest.svg")} style={styles.image}>
-                <Header title={i18n.t("itrex.toCourse")} />
-                <View style={styles.pageContainer} />
-                <View style={styles.styledInputContainer}>
-                    <Text>{i18n.t("itrex.enterCourseName")}</Text>
-                    <TextInput
-                        style={styles.styledTextInput}
-                        onChangeText={(text: string) => setCourseName(text)}
-                        testID="courseNameInput"></TextInput>
-                </View>
-                <View style={styles.styledInputContainer}>
-                    <Text>{i18n.t("itrex.enterCourseDescription")}</Text>
-                    <TextInput
-                        style={styles.styledTextInput}
-                        onChangeText={(text: string) => setCourseDescription(text)}
-                        testID="courseDescriptionInput"></TextInput>
-                </View>
-                <Pressable style={styles.styledButton}>
-                    <Button title={i18n.t("itrex.createCourse")} onPress={createCourse}></Button>
-                </Pressable>
-                <Pressable style={styles.styledButton}>
-                    <Button title={i18n.t("itrex.getAllCourses")} onPress={getAllCourses}></Button>
-                </Pressable>
+    // Start- and Enddate for a published course
+    const [startDate, setStartDate] = useState<Date | undefined>(undefined);
+    const [endDate, setEndDate] = useState<Date | undefined>(undefined);
 
-                <FlatList
-                    data={courses}
-                    renderItem={({ item }) => (
-                        <>
-                            <TouchableOpacity key={item.id} onPress={() => onPress(item)}>
-                                <View style={{ backgroundColor: "white" }}>
-                                    <Text style={styles.item}>
-                                        {item.id +
-                                            "\t" +
-                                            item.publishState +
-                                            "\t" +
-                                            item.name +
-                                            "\t" +
-                                            (item.courseDescription ? item.courseDescription : "")}
-                                    </Text>
-                                </View>
-                            </TouchableOpacity>
-                        </>
-                    )}
-                    keyExtractor={(item, index) => String(index)}
-                />
-                <View style={styles.styledInputContainer}>
-                    <Text>{i18n.t("itrex.enterCouseId")}</Text>
-                    <TextInput
-                        style={styles.styledTextInput}
-                        keyboardType="numeric"
-                        onChangeText={(id: string) => setCourseId(id)}
-                        testID="courseIdInput"></TextInput>
-                </View>
-                <Pressable style={styles.styledButton}>
-                    <Button title={i18n.t("itrex.publishCourse")} onPress={patchCourse}></Button>
-                </Pressable>
-                <Pressable style={styles.styledButton}>
-                    <Button title={i18n.t("itrex.getPublishedCourses")} onPress={getPublishedCourses}></Button>
-                </Pressable>
-                <FlatList
-                    data={coursesPublished}
-                    renderItem={({ item }) => (
-                        <Text style={{}}>{item.id + "\t" + item.publishState + "\t" + item.name}</Text>
-                    )}
-                    keyExtractor={(item, index) => String(index)}
-                />
-                <Pressable style={styles.styledButton}>
-                    <Button title={i18n.t("itrex.deleteCourse")} onPress={deleteCourse}></Button>
-                </Pressable>
-            </ImageBackground>
-        </View>
+    const startDateChanged = (event: ChangeEvent | Event, selectedDate?: Date) => {
+        if (Platform.OS === ("android" || "ios")) {
+            const currentDate = selectedDate || startDate;
+            setStartDate(currentDate);
+        } else {
+            const target: HTMLInputElement = event.target as HTMLInputElement;
+            const currdate: Date = new Date(target.value);
+            setStartDate(currdate);
+        }
+    };
+
+    const endDateChanged = (event: ChangeEvent | Event, selectedDate?: Date) => {
+        if (Platform.OS === ("android" || "ios")) {
+            const currentDate = selectedDate || endDate;
+            setEndDate(currentDate);
+        } else {
+            const target: HTMLInputElement = event.target as HTMLInputElement;
+            const currdate: Date = new Date(target.value);
+            setEndDate(currdate);
+        }
+    };
+
+    return (
+        <ScrollView>
+            <View style={styles.container}>
+                <ImageBackground source={require("../constants/images/Background_forest.svg")} style={styles.image}>
+                    <Header title={i18n.t("itrex.toCourse")} />
+                    <View style={styles.pageContainer} />
+                    <View style={styles.styledInputContainer}>
+                        <Text>{i18n.t("itrex.enterCourseName")}</Text>
+                        <TextInput
+                            style={styles.styledTextInput}
+                            onChangeText={(text: string) => setCourseName(text)}
+                            testID="courseNameInput"></TextInput>
+                    </View>
+                    <View style={styles.styledInputContainer}>
+                        <Text>{i18n.t("itrex.enterCourseDescription")}</Text>
+                        <TextInput
+                            style={styles.styledTextInput}
+                            onChangeText={(text: string) => setCourseDescription(text)}
+                            testID="courseDescriptionInput"></TextInput>
+                    </View>
+                    <Pressable style={styles.styledButton}>
+                        <Button title={i18n.t("itrex.createCourse")} onPress={createCourse}></Button>
+                    </Pressable>
+                    <Pressable style={styles.styledButton}>
+                        <Button title={i18n.t("itrex.getAllCourses")} onPress={getAllCourses}></Button>
+                    </Pressable>
+
+                    <FlatList
+                        data={courses}
+                        renderItem={({ item }) => (
+                            <>
+                                <TouchableOpacity key={item.id} onPress={() => onPress(item)}>
+                                    <View style={{ backgroundColor: "white" }}>
+                                        <Text style={styles.item}>
+                                            {item.id +
+                                                "\t" +
+                                                item.publishState +
+                                                "\t" +
+                                                item.name +
+                                                "\t" +
+                                                (item.courseDescription ? item.courseDescription : "")}
+                                        </Text>
+                                    </View>
+                                </TouchableOpacity>
+                            </>
+                        )}
+                        keyExtractor={(item, index) => String(index)}
+                    />
+                    <View style={styles.styledInputContainer}>
+                        <Text>{i18n.t("itrex.enterCouseId")}</Text>
+                        <TextInput
+                            style={styles.styledTextInput}
+                            keyboardType="numeric"
+                            onChangeText={(id: string) => setCourseId(id)}
+                            testID="courseIdInput"></TextInput>
+                    </View>
+                    <Pressable style={styles.styledButton}>
+                        <Button title={i18n.t("itrex.publishCourse")} onPress={patchCourse}></Button>
+                    </Pressable>
+                    <Pressable style={styles.styledButton}>
+                        <Button title={i18n.t("itrex.getPublishedCourses")} onPress={getPublishedCourses}></Button>
+                    </Pressable>
+                    <FlatList
+                        data={coursesPublished}
+                        renderItem={({ item }) => (
+                            <Text style={{}}>{item.id + "\t" + item.publishState + "\t" + item.name}</Text>
+                        )}
+                        keyExtractor={(item, index) => String(index)}
+                    />
+                    <Pressable style={styles.styledButton}>
+                        <Button title={i18n.t("itrex.deleteCourse")} onPress={deleteCourse}></Button>
+                    </Pressable>
+
+                    <View style={styles.styledInputContainer}>
+                        <DatePickerComponent
+                            title={i18n.t("itrex.startDate")}
+                            date={startDate}
+                            onDateChanged={startDateChanged}
+                            maxDate={endDate}></DatePickerComponent>
+
+                        <View style={{ margin: 16 }}></View>
+
+                        <DatePickerComponent
+                            title={i18n.t("itrex.endDate")}
+                            date={endDate}
+                            onDateChanged={endDateChanged}
+                            minDate={startDate}></DatePickerComponent>
+                    </View>
+                </ImageBackground>
+            </View>
+        </ScrollView>
     );
 
     function onPress(item: ICourse) {
@@ -139,15 +188,14 @@ export const CreateCourseComponent: React.FC = () => {
             loggerService.warn("Course description invalid.");
         }
 
-        const currentDate: Date = new Date();
         const course: ICourse = {
             name: courseName,
-            startDate: currentDate,
+            startDate: startDate,
             courseDescription: courseDescription ? courseDescription : undefined,
             publishState: CoursePublishState.UNPUBLISHED,
         };
 
-        loggerService.trace(`Creating course: name=${courseName}, startDate=${currentDate}.`);
+        loggerService.trace(`Creating course: name=${courseName}.`);
         const postRequest: RequestInit = RequestFactory.createPostRequest(course);
         endpointsCourse.createCourse(postRequest).then((data) => console.log(data));
     }
@@ -163,9 +211,17 @@ export const CreateCourseComponent: React.FC = () => {
     function patchCourse(): void {
         loggerService.trace("Parsing ID string to ID number");
 
+        // Check if start and Enddate are set
+        if (!validateCourseDates(startDate, endDate)) {
+            return;
+        }
+
+        // ATTENTION: fields without values will be overwritten with null in DB. @s.pastuchov 27.01.21
         const course: ICourse = {
             id: courseIdString,
             publishState: CoursePublishState.PUBLISHED,
+            startDate: startDate,
+            endDate: endDate,
         };
 
         loggerService.trace(`Updating course: name=${courseName}, publishedState=${CoursePublishState.PUBLISHED}.`);

@@ -8,6 +8,7 @@ import * as ImagePicker from "expo-image-picker";
 import { RequestFactory } from "../api/requests/RequestFactory";
 import { EndpointsVideo } from "../api/endpoints/EndpointsVideo";
 import { createAlert } from "../helperScripts/createAlert";
+import { Video } from "expo-av";
 
 const endpointsVideo = new EndpointsVideo();
 
@@ -16,6 +17,7 @@ export const UploadVideoComponent: React.FC = () => {
 
     const [videoUri, setVideoUri] = useState("");
     const [videoName, setVideoName] = useState("");
+    const [videoPlayerUri, setVideoPlayerUri] = useState("");
 
     /**
      * Make sure that the necessary permissions are given for the image picker.
@@ -96,6 +98,9 @@ export const UploadVideoComponent: React.FC = () => {
 
         resetVideoState();
         createAlert(i18n.t("itrex.uploadVideoSuccessMsg"));
+
+        setVideoPlayerUri(endpointsVideo.getVideoDownloadLink(response.id));
+
         return response;
     };
 
@@ -112,6 +117,7 @@ export const UploadVideoComponent: React.FC = () => {
     const resetVideoState = () => {
         setVideoUri("");
         setVideoName("");
+        setVideoPlayerUri("");
     };
 
     return (
@@ -132,6 +138,17 @@ export const UploadVideoComponent: React.FC = () => {
                 <Pressable style={styles.StyledButton}>
                     <Button title={i18n.t("itrex.toUploadVideo")} onPress={uploadVideo}></Button>
                 </Pressable>
+                <View style={styles.video}></View>
+                <Video
+                    source={{ uri: videoPlayerUri }}
+                    rate={1.0}
+                    volume={1.0}
+                    isMuted={false}
+                    resizeMode="cover"
+                    shouldPlay={true}
+                    useNativeControls={true}
+                    style={{ width: 640, height: 360 }}
+                />
             </View>
         </ImageBackground>
     );
@@ -160,9 +177,9 @@ const styles = StyleSheet.create({
     StyledButton: {
         marginTop: 16,
     },
-    image: {
-        flex: 1,
-        resizeMode: "stretch",
-        justifyContent: "center",
+    video: {
+        marginTop: 20,
+        marginBottom: 20,
+        alignItems: "center",
     },
 });
