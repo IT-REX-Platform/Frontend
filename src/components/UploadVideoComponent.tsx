@@ -52,9 +52,7 @@ export const UploadVideoComponent: React.FC = () => {
      * Expo image picker that only allows picking of video files.
      */
     const imagePicker = async () => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        let video: any = {};
-        video = await ImagePicker.launchImageLibraryAsync({
+        const video: ImagePicker.ImagePickerResult = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Videos,
             allowsEditing: true,
         });
@@ -71,9 +69,7 @@ export const UploadVideoComponent: React.FC = () => {
      * Expo document picker that only allows picking of video files in mp4 format.
      */
     const documentPicker = async () => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        let document: any = {};
-        document = await DocumentPicker.getDocumentAsync({
+        const document: DocumentPicker.DocumentResult = await DocumentPicker.getDocumentAsync({
             type: "video/mp4",
         });
 

@@ -16,8 +16,8 @@ export const ScreenHomeLecturer: React.FC = () => {
             <Text>{i18n.t("itrex.homeLecturerText")}</Text>
             <CreateCourseComponent />
             <Button
-                title="Go to Upload Video"
-                onPress={() => navigation.navigate(NavigationRoutes.ROUTE_UPLOAD_VIDEO)}
+                title={i18n.t("itrex.videoPool")}
+                onPress={() => navigation.navigate(NavigationRoutes.ROUTE_VIDEO_POOL)}
             />
         </View>
     );

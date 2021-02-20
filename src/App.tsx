@@ -1,15 +1,8 @@
 import { ReactElement } from "react";
-import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
 import { loggerFactory } from "../logger/LoggerConfig";
-import { NavigationRoutes } from "./constants/NavigationRoutes";
-import { ActivityIndicator, Button, Linking, SafeAreaView } from "react-native";
+import { ActivityIndicator, Linking, SafeAreaView } from "react-native";
 import i18n from "./locales/index";
 import * as Localization from "expo-localization";
-import { HomeComponent } from "./components/HomeComponent";
-import { CreateCourseComponent } from "./components/CreateCourseComponent";
-import { LoginComponent } from "./components/LoginComponent";
-import { UploadVideoComponent } from "./components/UploadVideoComponent";
 import React from "react";
 import { AuthContext } from "./components/Context";
 import { LoggedInNavigator } from "./navigation/LoggedInNavigator";
