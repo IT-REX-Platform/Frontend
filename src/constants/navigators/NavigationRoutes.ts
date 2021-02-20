@@ -30,7 +30,7 @@ export const config = {
 export type RootDrawerParamList = {
     ROUTE_HOME: undefined;
     ROUTE_CREATE_COURSE: undefined;
-    ROUTE_COURSE_DETAILS: { courseId: number };
+    ROUTE_COURSE_DETAILS: { courseId: string };
     ROUTE_UPLOAD_VIDEO: undefined;
 };
 

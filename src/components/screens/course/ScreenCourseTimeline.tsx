@@ -1,17 +1,24 @@
-import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import { CompositeNavigationProp, RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import React from "react";
 import { Text, ImageBackground, StyleSheet } from "react-native";
 import { dark } from "../../../constants/themes/dark";
-import { Header } from "../../../constants/navigators/Header";
-import { RequestFactory } from "../../../api/requests/RequestFactory";
-import { EndpointsCourse } from "../../../api/endpoints/EndpointsCourse";
-import { ICourse } from "../../../types/ICourse";
-import { NavigationRoutes, ScreenCourseProps } from "../../../constants/navigators/NavigationRoutes";
+import {
+    CourseStackParamList,
+    CourseTabParamList,
+    RootDrawerParamList,
+} from "../../../constants/navigators/NavigationRoutes";
 import { LocalizationContext } from "../../Context";
+import { MaterialTopTabNavigationProp } from "@react-navigation/material-top-tabs";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { DrawerNavigationProp } from "@react-navigation/drawer";
 
-export const ScreenCourseTimeline: React.FC = (props) => {
-    const navigation = useNavigation();
-    const route = useRoute();
+export type ScreenCourseTimelineNavigationProp = CompositeNavigationProp<
+    MaterialTopTabNavigationProp<CourseTabParamList, "TIMELINE">,
+    CompositeNavigationProp<StackNavigationProp<CourseStackParamList>, DrawerNavigationProp<RootDrawerParamList>>
+>;
+
+export const ScreenCourseTimeline: React.FC = () => {
+    const navigation = useNavigation<ScreenCourseTimelineNavigationProp>();
 
     React.useContext(LocalizationContext);
 
