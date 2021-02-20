@@ -178,6 +178,7 @@ export const CreateCourseComponent: React.FC = () => {
         const request: RequestInit = RequestFactory.createGetRequest();
         endpointsCourse.getFilteredCourses(request).then((receivedCourses) => {
             setCourses(receivedCourses);
+            console.log(receivedCourses);
         });
     }
 

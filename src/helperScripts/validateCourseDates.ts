@@ -30,6 +30,15 @@ export function isValidDate(dateToTest: Date | undefined): boolean {
     return false;
 }
 
+export function dateConverter(dateToConvert: Date | undefined): string {
+    if (isValidDate(dateToConvert) && dateToConvert) {
+        console.log(dateToConvert.getDate());
+        const date = dateToConvert.getDate() + "." + dateToConvert.getMonth() + "." + dateToConvert.getFullYear();
+        return date;
+    }
+    return "";
+}
+
 export function getDateIsoString(dateToTest: Date | undefined): string {
     if (isValidDate(dateToTest) && dateToTest) {
         return dateToTest.toISOString().substr(0, 10);
