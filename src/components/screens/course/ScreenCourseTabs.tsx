@@ -4,11 +4,30 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 import { ScreenCourseOverview } from "./ScreenCourseOverview";
 import { ScreenCourseTimeline } from "./ScreenCourseTimeline";
 import { LocalizationContext } from "../../Context";
+import {
+    CourseStackParamList,
+    CourseTabParamList,
+    RootDrawerParamList,
+} from "../../../constants/navigators/NavigationRoutes";
+import { CompositeNavigationProp, RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
+import { DrawerNavigationProp } from "@react-navigation/drawer";
 
-const CourseTab = createMaterialTopTabNavigator();
+const CourseTab = createMaterialTopTabNavigator<CourseTabParamList>();
+
+export type ScreenCourseTabsNavigationProp = CompositeNavigationProp<
+    StackNavigationProp<CourseStackParamList, "INFO">,
+    DrawerNavigationProp<RootDrawerParamList>
+>;
+
+export type ScreenCourseTabsRouteProp = RouteProp<CourseStackParamList, "INFO">;
+export type ScreenCourseTabsProps = StackScreenProps<CourseStackParamList, "INFO">;
 
 export const ScreenCourseTabs: React.FC = () => {
     React.useContext(LocalizationContext);
+
+    const navigation = useNavigation<ScreenCourseTabsNavigationProp>();
+    const route = useRoute<ScreenCourseTabsRouteProp>();
 
     return (
         <CourseTab.Navigator

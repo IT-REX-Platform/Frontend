@@ -1,6 +1,8 @@
 import * as Linking from "expo-linking";
-import { LinkingOptions, RouteProp } from "@react-navigation/native";
-import { DrawerNavigationProp } from "@react-navigation/drawer";
+import { CompositeNavigationProp, LinkingOptions, NavigatorScreenParams, RouteProp } from "@react-navigation/native";
+import { DrawerNavigationProp, DrawerScreenProps } from "@react-navigation/drawer";
+import { MaterialTopTabNavigationProp } from "@react-navigation/material-top-tabs";
+import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
 
 const prefix = Linking.makeUrl("it-rex://");
 
@@ -24,6 +26,22 @@ export const config = {
         },
     },
 };
+
+export type RootDrawerParamList = {
+    ROUTE_HOME: undefined;
+    ROUTE_CREATE_COURSE: undefined;
+    ROUTE_COURSE_DETAILS: { courseId: number };
+    ROUTE_UPLOAD_VIDEO: undefined;
+};
+
+export type CourseStackParamList = {
+    INFO: NavigatorScreenParams<CourseTabParamList>;
+};
+export type CourseTabParamList = {
+    OVERVIEW: undefined;
+    TIMELINE: undefined;
+};
+
 export class NavigationRoutes {
     static ROUTE_HOME = "ROUTE_HOME";
     static ROUTE_LOGIN = "ROUTE_LOGIN";
@@ -39,18 +57,3 @@ export class NavigationRoutes {
         config: config,
     };
 }
-
-// TESTS
-export enum NAV_SCREENS {
-    ROUTE_COURSE_DETAILS = "ROUTE_COURSE_DETAILS",
-}
-
-export type DrawerParamList = {
-    [NAV_SCREENS.ROUTE_COURSE_DETAILS]: { courseId: number } | undefined;
-};
-
-export type ScreenCourseProps = {
-    route: RouteProp<DrawerParamList, NAV_SCREENS.ROUTE_COURSE_DETAILS>;
-    navigation: DrawerNavigationProp<DrawerParamList, NAV_SCREENS.ROUTE_COURSE_DETAILS>;
-};
-// TESTS

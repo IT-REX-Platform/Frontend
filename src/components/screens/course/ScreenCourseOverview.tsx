@@ -1,4 +1,4 @@
-import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import { CompositeNavigationProp, RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { Text, ImageBackground, StyleSheet } from "react-native";
 import { dark } from "../../../constants/themes/dark";
@@ -6,13 +6,27 @@ import { Header } from "../../../constants/navigators/Header";
 import { RequestFactory } from "../../../api/requests/RequestFactory";
 import { EndpointsCourse } from "../../../api/endpoints/EndpointsCourse";
 import { ICourse } from "../../../types/ICourse";
-import { NavigationRoutes, ScreenCourseProps } from "../../../constants/navigators/NavigationRoutes";
-import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+import {
+    CourseStackParamList,
+    CourseTabParamList,
+    NavigationRoutes,
+    RootDrawerParamList,
+} from "../../../constants/navigators/NavigationRoutes";
+import { MaterialTopTabNavigationProp } from "@react-navigation/material-top-tabs";
 import { CourseContext, LocalizationContext } from "../../Context";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { DrawerNavigationProp } from "@react-navigation/drawer";
 
-export const ScreenCourseOverview: React.FC = (props) => {
-    const navigation = useNavigation();
-    const route = useRoute();
+export type ScreenCourseOverviewNavigationProp = CompositeNavigationProp<
+    MaterialTopTabNavigationProp<CourseTabParamList, "OVERVIEW">,
+    CompositeNavigationProp<StackNavigationProp<CourseStackParamList>, DrawerNavigationProp<RootDrawerParamList>>
+>;
+
+//export type ScreenCourseTabsRouteProp = RouteProp<CourseStackParamList, "INFO">;
+//export type ScreenCourseTabsProps = StackScreenProps<CourseStackParamList, "INFO">;
+
+export const ScreenCourseOverview: React.FC = () => {
+    const navigation = useNavigation<ScreenCourseOverviewNavigationProp>();
 
     React.useContext(LocalizationContext);
 

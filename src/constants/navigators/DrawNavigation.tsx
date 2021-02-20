@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
-import { createDrawerNavigator, DrawerItem, DrawerItemList, DrawerNavigationProp } from "@react-navigation/drawer";
+import { createDrawerNavigator } from "@react-navigation/drawer";
 import { Image, StyleSheet, useWindowDimensions } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-
-import { HomeComponent } from "../../components/HomeComponent";
+import { RootDrawerParamList } from "./NavigationRoutes";
 import i18n from "../../locales";
 import { loggerFactory } from "../../../logger/LoggerConfig";
+
 import { UploadVideoComponent } from "../../components/UploadVideoComponent";
 import AuthenticationService from "../../services/AuthenticationService";
 import { ITREXRoles } from "../ITREXRoles";
@@ -16,14 +16,12 @@ import { ScreenHomeAdmin } from "../../components/screens/ScreenHomeAdmin";
 import { ScreenHomeStudent } from "../../components/screens/ScreenHomeStudent";
 import { DrawerContent } from "./DrawerContent";
 import { ScreenCourse } from "../../components/screens/ScreenCourse";
-import { RouteProp } from "@react-navigation/native";
 import { dark } from "../themes/dark";
-import { NavigationRoutes } from "./NavigationRoutes";
 import { CreateCourseComponent } from "../../components/CreateCourseComponent";
 
-const Drawer = createDrawerNavigator();
+const Drawer = createDrawerNavigator<RootDrawerParamList>();
 
-export const DrawerNavigator: React.FC = () => {
+export const DrawerNavigator: React.FC = (props) => {
     const dimensions = useWindowDimensions();
 
     const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");
@@ -43,7 +41,7 @@ export const DrawerNavigator: React.FC = () => {
             {getCreateCourseScreen()}
             {getUploadVideoScreen()}
             <Drawer.Screen
-                name={NavigationRoutes.ROUTE_COURSE_DETAILS}
+                name="ROUTE_COURSE_DETAILS"
                 component={ScreenCourse}
                 options={{ title: i18n.t("itrex.lastLearned") }}
             />
@@ -58,7 +56,7 @@ function getUploadVideoScreen() {
     ) {
         return (
             <Drawer.Screen
-                name={NavigationRoutes.ROUTE_UPLOAD_VIDEO}
+                name="ROUTE_UPLOAD_VIDEO"
                 component={UploadVideoComponent}
                 options={{
                     title: i18n.t("itrex.toUploadVideo"),
@@ -78,7 +76,7 @@ function getCreateCourseScreen() {
     ) {
         return (
             <Drawer.Screen
-                name={NavigationRoutes.ROUTE_CREATE_COURSE}
+                name="ROUTE_CREATE_COURSE"
                 component={CreateCourseComponent}
                 options={{
                     title: i18n.t("itrex.createCourse"),
@@ -94,7 +92,7 @@ function getHomeScreen() {
     if (AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_LECTURER)) {
         homeScreen = (
             <Drawer.Screen
-                name={NavigationRoutes.ROUTE_HOME}
+                name="ROUTE_HOME"
                 component={ScreenHomeLecturer}
                 options={{
                     title: i18n.t("itrex.home"),
@@ -108,7 +106,7 @@ function getHomeScreen() {
     if (AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_ADMIN)) {
         homeScreen = (
             <Drawer.Screen
-                name={NavigationRoutes.ROUTE_HOME}
+                name="ROUTE_HOME"
                 component={ScreenHomeAdmin}
                 options={{
                     title: i18n.t("itrex.home"),
@@ -122,7 +120,7 @@ function getHomeScreen() {
     if (AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_STUDENT)) {
         homeScreen = (
             <Drawer.Screen
-                name={NavigationRoutes.ROUTE_HOME}
+                name="ROUTE_HOME"
                 component={ScreenHomeStudent}
                 options={{
                     title: i18n.t("itrex.home"),

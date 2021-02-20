@@ -1,30 +1,31 @@
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import { Text, ImageBackground, StyleSheet, View } from "react-native";
+import { Text, StyleSheet } from "react-native";
 import { dark } from "../../constants/themes/dark";
-import { Header } from "../../constants/navigators/Header";
 import { RequestFactory } from "../../api/requests/RequestFactory";
 import { EndpointsCourse } from "../../api/endpoints/EndpointsCourse";
 import { ICourse } from "../../types/ICourse";
-import { NavigationRoutes, ScreenCourseProps } from "../../constants/navigators/NavigationRoutes";
-import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import { ScreenCourseOverview } from "./course/ScreenCourseOverview";
-import { ScreenCourseTimeline } from "./course/ScreenCourseTimeline";
+
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import i18n from "../../locales";
 
 import { createStackNavigator } from "@react-navigation/stack";
 import { ScreenCourseTabs } from "./course/ScreenCourseTabs";
 import { CourseContext, LocalizationContext } from "../Context";
+import { DrawerNavigationProp, DrawerScreenProps } from "@react-navigation/drawer";
+import { CourseStackParamList, RootDrawerParamList } from "../../constants/navigators/NavigationRoutes";
 
-const CourseStack = createStackNavigator();
+export type ScreenCourseNavigationProp = DrawerNavigationProp<RootDrawerParamList, "ROUTE_COURSE_DETAILS">;
+export type ScreenCourseRouteProp = RouteProp<RootDrawerParamList, "ROUTE_COURSE_DETAILS">;
+export type ScreenCourseProps = DrawerScreenProps<RootDrawerParamList, "ROUTE_COURSE_DETAILS">;
 
-//courseTabOverview: "Overview",
-//courseTabTimeline: "Timeline",
-export const ScreenCourse: React.FC = (props) => {
-    const navigation = useNavigation();
-    const route = useRoute();
+const CourseStack = createStackNavigator<CourseStackParamList>();
 
+export const ScreenCourse: React.FC = () => {
+    const navigation = useNavigation<ScreenCourseNavigationProp>();
+    const route = useRoute<ScreenCourseRouteProp>();
+
+    //const courseId: number = route.params.courseId;
     const courseId = route.params.courseId;
 
     React.useContext(LocalizationContext);
@@ -63,7 +64,7 @@ export const ScreenCourse: React.FC = (props) => {
                                 size={28}
                                 color="white"
                                 style={styles.icon}
-                                onPress={() => navigation.navigate(NavigationRoutes.ROUTE_HOME)}
+                                onPress={() => navigation.navigate("ROUTE_HOME")}
                             />
                         ),
                         headerLeft: () => (

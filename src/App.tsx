@@ -15,6 +15,7 @@ import AuthenticationService from "./services/AuthenticationService";
 import * as AuthSession from "expo-auth-session";
 import { IAuthContext } from "./components/Context";
 import { ILoginReducerAction, ILoginReducerState } from "./types/ILoginReducer";
+import { Provider as PaperProvider } from "react-native-paper";
 
 const loggerService = loggerFactory.getLogger("service.App");
 
@@ -103,11 +104,13 @@ function App(): ReactElement {
     }
 
     return (
-        <AuthContext.Provider value={authContext}>
-            <LocalizationContext.Provider value={localizationContext}>
-                {loginState.userInfo != null ? <LoggedInNavigator /> : <LoggedOutNavigator />}
-            </LocalizationContext.Provider>
-        </AuthContext.Provider>
+        <PaperProvider>
+            <AuthContext.Provider value={authContext}>
+                <LocalizationContext.Provider value={localizationContext}>
+                    {loginState.userInfo != null ? <LoggedInNavigator /> : <LoggedOutNavigator />}
+                </LocalizationContext.Provider>
+            </AuthContext.Provider>
+        </PaperProvider>
     );
 }
 

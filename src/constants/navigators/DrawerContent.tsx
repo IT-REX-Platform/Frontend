@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Image, StyleSheet, Switch, Text, View } from "react-native";
-import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, DrawerItemList } from "@react-navigation/drawer";
+import {
+    createDrawerNavigator,
+    DrawerContentComponentProps,
+    DrawerContentScrollView,
+    DrawerItem,
+    DrawerItemList,
+} from "@react-navigation/drawer";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { ICourse } from "../../types/ICourse";
 import { loggerFactory } from "../../../logger/LoggerConfig";
@@ -15,7 +21,7 @@ import { EndpointsCourse } from "../../api/endpoints/EndpointsCourse";
 import AuthenticationService from "../../services/AuthenticationService";
 import { ITREXRoles } from "../ITREXRoles";
 
-export const DrawerContent: React.FC = (props) => {
+export const DrawerContent: React.FC<DrawerContentComponentProps> = (props: DrawerContentComponentProps) => {
     const { signOut } = React.useContext(AuthContext);
 
     const { navigation } = props;
@@ -89,6 +95,7 @@ export const DrawerContent: React.FC = (props) => {
 
     return (
         <View style={{ flex: 1 }}>
+            {/* https://stackoverflow.com/questions/65773696/react-native-paper-drawer-section-not-working-as-intended*/}
             <Drawer.Section
                 style={{
                     backgroundColor: dark.theme.darkBlue1,
