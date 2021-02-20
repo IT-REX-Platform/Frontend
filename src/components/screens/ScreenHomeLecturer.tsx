@@ -5,6 +5,7 @@ import { CreateCourseComponent } from "../CreateCourseComponent";
 import { useNavigation } from "@react-navigation/native";
 import { NavigationRoutes } from "../../constants/NavigationRoutes";
 import { LocalizationContext } from "../../App";
+import { CourseList } from "../CourseList";
 import i18n from "../../locales";
 
 export const ScreenHomeLecturer: React.FC = () => {
@@ -14,6 +15,7 @@ export const ScreenHomeLecturer: React.FC = () => {
     return (
         <View>
             <Text>{i18n.t("itrex.homeLecturerText")}</Text>
+            <CourseList />
             <CreateCourseComponent />
             <Button
                 title="Go to Upload Video"
