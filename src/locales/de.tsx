@@ -33,5 +33,6 @@ export const de = {
         uploadDocumentHere: "Dokument hier einfügen:",
         switchLangEN: "Zu Englisch wechseln",
         imagePickerPermAlert: "Entschuldigung, wir benötigen die Kamera-Berechtigung, damit das funktioniert!",
+        videoPool: "Video Pool",
     },
 };

@@ -1,18 +1,17 @@
-/* eslint-disable complexity */
 import * as React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import { ScreenCourses } from "../components/screens/ScreenCourses";
 import AuthenticationService from "../services/AuthenticationService";
 import { ScreenHomeLecturer } from "../components/screens/ScreenHomeLecturer";
 import { ScreenHomeStudent } from "../components/screens/ScreenHomeStudent";
 import { ScreenHomeAdmin } from "../components/screens/ScreenHomeAdmin";
 import { ITREXRoles } from "../constants/ITREXRoles";
 import { NavigationRoutes } from "../constants/NavigationRoutes";
-import { UploadVideoComponent } from "../components/UploadVideoComponent";
 import { NavigationContainer } from "@react-navigation/native";
 import { LocalizationContext } from "../App";
 import i18n from "../locales";
 import { Text, View } from "react-native";
+import { VideoPoolComponent } from "../components/VideoPoolComponent";
+import { UploadVideoComponent } from "../components/UploadVideoComponent";
 
 const Stack = createStackNavigator();
 
@@ -55,15 +54,28 @@ export const LoggedInNavigator: React.FC = () => {
         );
     }
 
+    const videoPoolScreen = (
+        <Stack.Screen
+            name={NavigationRoutes.ROUTE_VIDEO_POOL}
+            component={VideoPoolComponent}
+            options={{ title: i18n.t("itrex.videoPool") }}
+        />
+    );
+
+    const videoUploadScreen = (
+        <Stack.Screen
+            name={NavigationRoutes.ROUTE_UPLOAD_VIDEO}
+            component={UploadVideoComponent}
+            options={{ title: i18n.t("itrex.toUploadVideo") }}
+        />
+    );
+
     return (
         <NavigationContainer>
             <Stack.Navigator initialRouteName={NavigationRoutes.ROUTE_HOME}>
                 {homeScreen}
-                <Stack.Screen
-                    name={NavigationRoutes.ROUTE_UPLOAD_VIDEO}
-                    component={UploadVideoComponent}
-                    options={{ title: "Upload Video" }}
-                />
+                {videoPoolScreen}
+                {videoUploadScreen}
             </Stack.Navigator>
         </NavigationContainer>
     );

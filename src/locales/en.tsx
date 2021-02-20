@@ -33,5 +33,6 @@ export const en = {
         uploadDocumentHere: "Upload Document here:",
         switchLangDE: "Switch to german",
         imagePickerPermAlert: "Sorry, we need camera roll permissions to make this work!",
+        videoPool: "Video Pool",
     },
 };

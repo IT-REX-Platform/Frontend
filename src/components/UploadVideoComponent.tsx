@@ -9,6 +9,7 @@ import { EndpointsVideo } from "../api/endpoints/EndpointsVideo";
 import { createAlert } from "../helperScripts/createAlert";
 import { Video } from "expo-av";
 import { IVideo } from "../types/IVideo";
+import { VideoFormDataParams } from "../constants/VideoFormDataParams";
 
 const endpointsVideo = new EndpointsVideo();
 const courseUuid = "6ec0bd7f-11c0-43da-975e-2a8ad9ebae0b"; // TODO: get course ID from context.
@@ -115,8 +116,8 @@ export const UploadVideoComponent: React.FC = () => {
         const response: Response = await fetch(videoUri);
         const fileBlob: Blob = await response.blob();
         const formData: FormData = new FormData();
-        formData.append("videoFile", fileBlob);
-        formData.append("courseId", courseUuid);
+        formData.append(VideoFormDataParams.PARAM_VIDEO_FILE, fileBlob);
+        formData.append(VideoFormDataParams.PARAM_COURSE_ID, courseUuid);
         return formData;
     };
 
