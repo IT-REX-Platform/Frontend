@@ -10,12 +10,17 @@ import { createAlert } from "../helperScripts/createAlert";
 import { Video } from "expo-av";
 import { IVideo } from "../types/IVideo";
 import { VideoFormDataParams } from "../constants/VideoFormDataParams";
+import { NavigationProps } from "../types/NavigationProps";
+import { loggerFactory } from "../../logger/LoggerConfig";
 
 const endpointsVideo = new EndpointsVideo();
-const courseUuid = "af45cc33-5ea8-45aa-b878-7105f24343a2"; // TODO: get course ID from context.
+const loggerService = loggerFactory.getLogger("service.UploadVideoComponent");
 
-export const UploadVideoComponent: React.FC = () => {
+export const UploadVideoComponent: React.FC<NavigationProps> = ({ route }) => {
     React.useContext(LocalizationContext);
+
+    const courseId: string = route.params.courseId;
+    loggerService.trace("Course ID: " + courseId);
 
     const [videoUri, setVideoUri] = useState("");
     const [videoName, setVideoName] = useState("");
@@ -114,7 +119,7 @@ export const UploadVideoComponent: React.FC = () => {
         const fileBlob: Blob = await response.blob();
         const formData: FormData = new FormData();
         formData.append(VideoFormDataParams.PARAM_VIDEO_FILE, fileBlob);
-        formData.append(VideoFormDataParams.PARAM_COURSE_ID, courseUuid);
+        formData.append(VideoFormDataParams.PARAM_COURSE_ID, courseId);
         return formData;
     };
 

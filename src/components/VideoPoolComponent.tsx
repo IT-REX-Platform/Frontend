@@ -12,7 +12,6 @@ import { IVideo } from "../types/IVideo";
 import { NavigationProps } from "../types/NavigationProps";
 
 const endpointsVideo = new EndpointsVideo();
-const courseUuid = "af45cc33-5ea8-45aa-b878-7105f24343a2"; // TODO: get course ID from context.
 const loggerService = loggerFactory.getLogger("service.VideoPoolComponent");
 
 const dummyVideos: IVideo[] = [
@@ -65,7 +64,7 @@ export const VideoPoolComponent: React.FC<NavigationProps> = ({ route }) => {
     React.useContext(LocalizationContext);
 
     const courseId: string = route.params.courseId;
-    console.log(courseId);
+    loggerService.trace("Course ID: " + courseId);
 
     // Display all videos
     const initialVideoState: IVideo[] = [];
@@ -105,7 +104,7 @@ export const VideoPoolComponent: React.FC<NavigationProps> = ({ route }) => {
             </Pressable>
             <Button
                 title={i18n.t("itrex.toUploadVideo")}
-                onPress={() => navigation.navigate(NavigationRoutes.ROUTE_UPLOAD_VIDEO)}
+                onPress={() => navigation.navigate(NavigationRoutes.ROUTE_UPLOAD_VIDEO, { courseId })}
             />
 
             <FlatList data={dummyVideos} renderItem={listItem} keyExtractor={(item, index) => index.toString()} />
@@ -115,7 +114,7 @@ export const VideoPoolComponent: React.FC<NavigationProps> = ({ route }) => {
     async function getAllVideos(): Promise<void> {
         loggerService.trace("Getting all videos of this course.");
         const request: RequestInit = RequestFactory.createGetRequest();
-        const response: Promise<IVideo[]> = endpointsVideo.getAllVideos(request, courseUuid);
+        const response: Promise<IVideo[]> = endpointsVideo.getAllVideos(request, courseId);
 
         await response.then((videosReceived: IVideo[]) => {
             setVideos(videosReceived);
