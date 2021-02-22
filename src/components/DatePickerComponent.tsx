@@ -3,6 +3,7 @@ import React, { ChangeEvent, useState } from "react";
 import { StyleSheet, Button, Platform, Text, View } from "react-native";
 import DateTimePicker, { Event } from "@react-native-community/datetimepicker";
 import { getDateIsoString } from "../helperScripts/validateCourseDates";
+import { dark } from "../constants/themes/dark";
 
 interface DatePickerProps {
     title: string;
@@ -67,6 +68,7 @@ export const DatePickerComponent: React.FC<DatePickerProps> = (props) => {
                         backgroundColor: "transparent",
                         lineHeight: 1.25,
                         paddingTop: 8,
+                        color: "white",
                     }}
                     type="date"
                     onChange={onDateChanged}
@@ -81,7 +83,7 @@ export const DatePickerComponent: React.FC<DatePickerProps> = (props) => {
 const styles = StyleSheet.create({
     container: {
         borderStyle: "solid",
-        borderColor: "black",
+        borderColor: "white",
         borderWidth: 2,
         borderRadius: 4,
     },
@@ -91,6 +93,8 @@ const styles = StyleSheet.create({
         marginLeft: 8,
         paddingLeft: 8,
         paddingRight: 8,
-        backgroundColor: "white",
+        backgroundColor: dark.theme.darkBlue2,
+        tintColor: "white",
+        color: "white",
     },
 });

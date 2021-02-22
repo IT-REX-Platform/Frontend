@@ -28,6 +28,7 @@ import { NavigationRoutes } from "../constants/navigators/NavigationRoutes";
 import { Header } from "../constants/navigators/Header";
 import { LocalizationContext } from "./Context";
 import { Event } from "@react-native-community/datetimepicker";
+import { colors } from "react-native-elements";
 
 const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");
 const endpointsCourse: EndpointsCourse = new EndpointsCourse();
