@@ -94,7 +94,6 @@ const styles = StyleSheet.create({
         paddingLeft: 8,
         paddingRight: 8,
         backgroundColor: dark.theme.darkBlue2,
-        tintColor: "white",
         color: "white",
     },
 });
