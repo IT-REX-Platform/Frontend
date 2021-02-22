@@ -1,8 +1,10 @@
 import React from "react";
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet, Text, ImageBackground, TouchableOpacity } from "react-native";
 import { ICourse } from "../types/ICourse";
 import { dark } from "../constants/themes/dark";
 import { dateConverter } from "../helperScripts/validateCourseDates";
+import { Alert } from "react-native";
+import { createAlert } from "../helperScripts/createAlert";
 
 interface CourseCardProps {
     course: ICourse;
@@ -54,19 +56,33 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
         return lecturerString;
     }
 
-    return (
-        <View style={styles.card}>
-            {getPublishedSate(course.publishState)}
-            <Text style={styles.cardHeader}>{course.name}</Text>
-            <Text style={styles.cardContent}>Lecturer: {getCourseOwner(course.ownership)}</Text>
+    function getDate(showDate: Date | undefined, title: string) {
+        return (
+            <Text style={styles.cardContent}>
+                <Text style={{ fontWeight: "bold" }}>{title}</Text> {dateConverter(showDate)}
+            </Text>
+        );
+    }
 
-            <Text style={styles.cardContent}>
-                {dateConverter(course.startDate) === "" ? "" : "Start Date: " + dateConverter(course.startDate)}
-            </Text>
-            <Text style={styles.cardContent}>
-                {dateConverter(course.endDate) === "" ? "" : "End Date: " + dateConverter(course.endDate)}
-            </Text>
-        </View>
+    function getAlert() {
+        console.log("open Details Page  ");
+    }
+
+    return (
+        <TouchableOpacity style={styles.card} onPress={getAlert} activeOpacity={0.7}>
+            <ImageBackground source={require("../constants/images/Background1-4.png")} style={styles.image}>
+                {getPublishedSate(course.publishState)}
+                <Text style={styles.cardHeader}>{course.name}</Text>
+                <View style={styles.break} />
+                <Text style={styles.cardContent}>
+                    <Text style={{ fontWeight: "bold" }}>Lecturer:</Text> {getCourseOwner(course.ownership)}
+                </Text>
+
+                {dateConverter(course.startDate) === "" ? "" : getDate(course.startDate, "Start Date: ")}
+
+                {dateConverter(course.endDate) === "" ? "" : getDate(course.startDate, "End Date: ")}
+            </ImageBackground>
+        </TouchableOpacity>
     );
 };
 
@@ -74,7 +90,7 @@ const styles = StyleSheet.create({
     card: {
         backgroundColor: dark.theme.darkBlue3,
         shadowRadius: 10,
-        shadowColor: dark.theme.darkBlue4,
+        shadowColor: dark.theme.darkBlue1,
         shadowOffset: { width: -1, height: 1 },
         margin: 5,
         maxWidth: 400,
@@ -82,19 +98,15 @@ const styles = StyleSheet.create({
     },
     cardHeader: {
         margin: 5,
-        textShadowColor: "white",
-        textShadowOffset: { width: -1, height: 1 },
-        textShadowRadius: 1,
         fontSize: 20,
+        fontWeight: "bold",
         color: "white",
         textAlignVertical: "center",
-        justifyContent: "center",
     },
     cardContent: {
         fontSize: 15,
         color: "white",
         textAlignVertical: "center",
-        justifyContent: "center",
         marginLeft: 5,
         marginBottom: 5,
     },
@@ -110,6 +122,8 @@ const styles = StyleSheet.create({
         textShadowRadius: 3,
         width: 80,
         height: 15,
+        marginLeft: 315,
+        marginTop: 5,
     },
     textUnpublished: {
         color: dark.theme.pink,
@@ -137,6 +151,8 @@ const styles = StyleSheet.create({
         textShadowRadius: 3,
         width: 80,
         height: 15,
+        marginLeft: 315,
+        marginTop: 5,
     },
     textPublished: {
         color: dark.theme.lightGreen,
@@ -151,5 +167,17 @@ const styles = StyleSheet.create({
         borderRadius: 8 / 2,
         backgroundColor: dark.theme.lightGreen,
         marginRight: 5,
+    },
+    break: {
+        backgroundColor: dark.theme.darkBlue4,
+        height: 1,
+    },
+    image: {
+        flex: 1,
+        resizeMode: "stretch",
+        justifyContent: "center",
+    },
+    touchableStyle: {
+        color: dark.theme.pink,
     },
 });
