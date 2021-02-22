@@ -1,16 +1,24 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
-import { courseList } from "../constants/fixtures/courseList.fixture";
 import { CourseCard } from "./CourseCard";
+import { ICourse } from "../types/ICourse";
 
-export const CourseList: React.FC = () => {
-    const allCourses = [];
+interface CourseListProps {
+    courses: ICourse[];
+}
 
-    for (const singleCourse of courseList) {
-        allCourses.push(<CourseCard course={singleCourse} />);
-    }
+export const CourseList: React.FC<CourseListProps> = (props) => {
+    const { courses } = props;
 
-    return <View style={styles.cardView}>{allCourses}</View>;
+    return (
+        <>
+            <View style={styles.cardView}>
+                {courses.map((course) => {
+                    return <CourseCard course={course} />;
+                })}
+            </View>
+        </>
+    );
 };
 
 const styles = StyleSheet.create({
