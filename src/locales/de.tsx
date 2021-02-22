@@ -35,5 +35,6 @@ export const de = {
         imagePickerPermAlert: "Entschuldigung, wir benötigen die Kamera-Berechtigung, damit das funktioniert!",
         videoPool: "Video Pool",
         getAllVideos: "Alle Videos holen",
+        video: "Video",
     },
 };

@@ -1,16 +1,6 @@
 import React from "react";
 import { useState, useEffect, useRef } from "react";
-import {
-    Button,
-    FlatList,
-    Pressable,
-    SafeAreaView,
-    StyleSheet,
-    Text,
-    TouchableHighlight,
-    View,
-    Animated,
-} from "react-native";
+import { Button, FlatList, Pressable, StyleSheet, Text, TouchableHighlight, View, Animated } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { NavigationRoutes } from "../constants/NavigationRoutes";
 import { LocalizationContext } from "../App";
@@ -19,6 +9,7 @@ import { loggerFactory } from "../../logger/LoggerConfig";
 import { EndpointsVideo } from "../api/endpoints/EndpointsVideo";
 import { RequestFactory } from "../api/requests/RequestFactory";
 import { IVideo } from "../types/IVideo";
+import { NavigationProps } from "../types/NavigationProps";
 
 const endpointsVideo = new EndpointsVideo();
 const courseUuid = "af45cc33-5ea8-45aa-b878-7105f24343a2"; // TODO: get course ID from context.
@@ -26,7 +17,7 @@ const loggerService = loggerFactory.getLogger("service.VideoPoolComponent");
 
 const dummyVideos: IVideo[] = [
     {
-        id: 1111111111111111,
+        id: 1,
         title: "title_1_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
         startDate: new Date(),
         endDate: new Date(),
@@ -39,7 +30,7 @@ const dummyVideos: IVideo[] = [
         height: 480,
     },
     {
-        id: 22222222222222222,
+        id: 2,
         title: "title_2_bbbbbbbbbbb",
         startDate: new Date(),
         endDate: new Date(),
@@ -52,7 +43,7 @@ const dummyVideos: IVideo[] = [
         height: 480,
     },
     {
-        id: 3333333333333333333,
+        id: 3,
         title: "title_3_cccccccccccccccccccccccccccccccc",
         startDate: new Date(),
         endDate: new Date(),
@@ -66,12 +57,15 @@ const dummyVideos: IVideo[] = [
     },
 ];
 
-export const VideoPoolComponent: React.FC = () => {
+export const VideoPoolComponent: React.FC<NavigationProps> = ({ route }) => {
     loggerService.trace("Started VideoPoolComponent.");
 
     const navigation = useNavigation();
 
     React.useContext(LocalizationContext);
+
+    const courseId: string = route.params.courseId;
+    console.log(courseId);
 
     // Display all videos
     const initialVideoState: IVideo[] = [];
@@ -96,7 +90,7 @@ export const VideoPoolComponent: React.FC = () => {
         // <Animated.View style={{ transform: [{ translateX: translateY }] }}>
         <Animated.View style={{ transform: [{ translateY }] }}>
             <View style={[styles.separator]} />
-            <TouchableHighlight onPress={() => buttonPressed()}>
+            <TouchableHighlight onPress={() => navigation.navigate(NavigationRoutes.ROUTE_VIDEO, { video: item })}>
                 <View style={styles.listItem}>
                     <Text>{item.title}</Text>
                 </View>
@@ -105,7 +99,7 @@ export const VideoPoolComponent: React.FC = () => {
     );
 
     return (
-        <SafeAreaView style={styles.container}>
+        <View style={styles.container}>
             <Pressable style={styles.styledButton}>
                 <Button title={i18n.t("itrex.getAllVideos")} onPress={getAllVideos}></Button>
             </Pressable>
@@ -115,7 +109,7 @@ export const VideoPoolComponent: React.FC = () => {
             />
 
             <FlatList data={dummyVideos} renderItem={listItem} keyExtractor={(item, index) => index.toString()} />
-        </SafeAreaView>
+        </View>
     );
 
     async function getAllVideos(): Promise<void> {
@@ -129,10 +123,6 @@ export const VideoPoolComponent: React.FC = () => {
             // loggerService.trace(JSON.stringify(videos));
             // console.log(videos);
         });
-    }
-
-    function buttonPressed(): void {
-        console.log("BUTTON PRESS");
     }
 };
 

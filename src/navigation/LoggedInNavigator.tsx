@@ -12,6 +12,7 @@ import i18n from "../locales";
 import { Text, View } from "react-native";
 import { VideoPoolComponent } from "../components/VideoPoolComponent";
 import { UploadVideoComponent } from "../components/UploadVideoComponent";
+import { VideoComponent } from "../components/VideoComponent";
 
 const Stack = createStackNavigator();
 
@@ -62,6 +63,14 @@ export const LoggedInNavigator: React.FC = () => {
         />
     );
 
+    const videoScreen = (
+        <Stack.Screen
+            name={NavigationRoutes.ROUTE_VIDEO}
+            component={VideoComponent}
+            options={{ title: i18n.t("itrex.video") }}
+        />
+    );
+
     const videoUploadScreen = (
         <Stack.Screen
             name={NavigationRoutes.ROUTE_UPLOAD_VIDEO}
@@ -75,6 +84,7 @@ export const LoggedInNavigator: React.FC = () => {
             <Stack.Navigator initialRouteName={NavigationRoutes.ROUTE_HOME}>
                 {homeScreen}
                 {videoPoolScreen}
+                {videoScreen}
                 {videoUploadScreen}
             </Stack.Navigator>
         </NavigationContainer>

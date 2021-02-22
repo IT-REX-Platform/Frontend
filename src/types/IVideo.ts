@@ -1,4 +1,4 @@
-export interface IVideo {
+export type IVideo = {
     id?: number;
     title?: string;
     startDate?: Date;
@@ -10,4 +10,4 @@ export interface IVideo {
     length?: number;
     width?: number;
     height?: number;
-}
+};
