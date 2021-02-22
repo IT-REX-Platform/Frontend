@@ -86,14 +86,14 @@ export const CreateCourseComponent: React.FC = () => {
                     <Header title={i18n.t("itrex.toCourse")} />
                     <View style={styles.pageContainer} />
                     <View style={styles.styledInputContainer}>
-                        <Text>{i18n.t("itrex.enterCourseName")}</Text>
+                        <Text style={styles.textSytle}>{i18n.t("itrex.enterCourseName")}</Text>
                         <TextInput
                             style={styles.styledTextInput}
                             onChangeText={(text: string) => setCourseName(text)}
                             testID="courseNameInput"></TextInput>
                     </View>
                     <View style={styles.styledInputContainer}>
-                        <Text>{i18n.t("itrex.enterCourseDescription")}</Text>
+                        <Text style={styles.textSytle}>{i18n.t("itrex.enterCourseDescription")}</Text>
                         <TextInput
                             style={styles.styledTextInput}
                             onChangeText={(text: string) => setCourseDescription(text)}
@@ -128,7 +128,7 @@ export const CreateCourseComponent: React.FC = () => {
                         keyExtractor={(item, index) => String(index)}
                     />
                     <View style={styles.styledInputContainer}>
-                        <Text>{i18n.t("itrex.enterCouseId")}</Text>
+                        <Text style={styles.textSytle}>{i18n.t("itrex.enterCouseId")}</Text>
                         <TextInput
                             style={styles.styledTextInput}
                             keyboardType="numeric"
@@ -277,5 +277,8 @@ const styles = StyleSheet.create({
         padding: 10,
         fontSize: 18,
         height: 44,
+    },
+    textSytle: {
+        color: "white",
     },
 });
