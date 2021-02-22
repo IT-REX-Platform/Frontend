@@ -102,6 +102,7 @@ export const UploadVideoComponent: React.FC = () => {
             return;
         }
         const videoUrl: string = endpointsVideo.getVideoUrl(response.id);
+        console.log(videoUrl);
         setVideoPlayerUri(videoUrl);
     };
 
