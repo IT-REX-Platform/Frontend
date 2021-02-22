@@ -7,7 +7,6 @@ import { EndpointsCourse } from "../../api/endpoints/EndpointsCourse";
 import { ICourse } from "../../types/ICourse";
 
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import i18n from "../../locales";
 
 import { createStackNavigator } from "@react-navigation/stack";
 import { ScreenCourseTabs } from "./course/ScreenCourseTabs";

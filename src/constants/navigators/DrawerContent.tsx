@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Image, StyleSheet, Switch, Text, View } from "react-native";
 import {
-    createDrawerNavigator,
     DrawerContentComponentProps,
     DrawerContentScrollView,
     DrawerItem,
@@ -11,7 +10,6 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { ICourse } from "../../types/ICourse";
 import { loggerFactory } from "../../../logger/LoggerConfig";
 import { RequestFactory } from "../../api/requests/RequestFactory";
-import { useNavigation } from "@react-navigation/native";
 import { NavigationRoutes } from "./NavigationRoutes";
 import { AuthContext, LocalizationContext } from "../../components/Context";
 import i18n from "../../locales";
@@ -38,7 +36,7 @@ export const DrawerContent: React.FC<DrawerContentComponentProps> = (props: Draw
     const [isDarkTheme, setIsDarkTheme] = React.useState(false);
     const toggleIsDarkTheme = () => setIsDarkTheme((previousState) => !previousState);
 
-    const { t, locale, setLocale } = React.useContext(LocalizationContext);
+    const { locale, setLocale } = React.useContext(LocalizationContext);
 
     const toggleIsGerman = () => {
         if (locale == "de-DE") {

@@ -1,15 +1,12 @@
 import { Image, ImageBackground, StyleSheet, Text, View } from "react-native";
 
 import React from "react";
-import { useNavigation } from "@react-navigation/native";
 import i18n from "../../locales";
 import { Header } from "../../constants/navigators/Header";
 import { LocalizationContext } from "../Context";
 
 export const ScreenHomeStudent: React.FC = () => {
-    const navigation = useNavigation();
-
-    const { t, locale, setLocale } = React.useContext(LocalizationContext);
+    React.useContext(LocalizationContext);
 
     return (
         <View style={styles.container}>
@@ -19,8 +16,8 @@ export const ScreenHomeStudent: React.FC = () => {
                     <Image
                         source={require("../../constants/images/ITRex-Logo-ob_750x750.png")}
                         style={[styles.icon]}></Image>
-                    <Text>{i18n.t("itrex.welcome")} Student</Text>
-                    <Text>{i18n.t("itrex.starter")}</Text>
+                    <Text style={styles.textSytle}>{i18n.t("itrex.welcome")} Student</Text>
+                    <Text style={styles.textSytle}>{i18n.t("itrex.starter")}</Text>
                 </View>
             </ImageBackground>
         </View>
@@ -47,5 +44,8 @@ const styles = StyleSheet.create({
     icon: {
         width: 100,
         height: 100,
+    },
+    textSytle: {
+        color: "white",
     },
 });

@@ -80,9 +80,9 @@ export const CreateCourseComponent: React.FC = () => {
     };
 
     return (
-        <ScrollView>
-            <View style={styles.container}>
-                <ImageBackground source={require("../constants/images/Background_forest.svg")} style={styles.image}>
+        <ImageBackground source={require("../constants/images/Background2.png")} style={styles.image}>
+            <ScrollView>
+                <View style={styles.container}>
                     <Header title={i18n.t("itrex.toCourse")} />
                     <View style={styles.pageContainer} />
                     <View style={styles.styledInputContainer}>
@@ -167,9 +167,9 @@ export const CreateCourseComponent: React.FC = () => {
                             onDateChanged={endDateChanged}
                             minDate={startDate}></DatePickerComponent>
                     </View>
-                </ImageBackground>
-            </View>
-        </ScrollView>
+                </View>
+            </ScrollView>
+        </ImageBackground>
     );
 
     function onPress(item: ICourse) {
@@ -272,12 +272,6 @@ const styles = StyleSheet.create({
     },
     styledButton: {
         margin: 5,
-    },
-    separator: {
-        width: "100%",
-        backgroundColor: "#eeeeee",
-        padding: 2,
-        margin: 10,
     },
     item: {
         padding: 10,

@@ -121,11 +121,11 @@ export const UploadVideoComponent: React.FC = () => {
     };
 
     return (
-        <ImageBackground source={require("../constants/images/Background_forest.svg")} style={styles.image}>
+        <ImageBackground source={require("../constants/images/Background2.png")} style={styles.image}>
             <Header title={i18n.t("itrex.toUploadVideo")} />
             <View style={styles.container}>
                 <View style={styles.StyledInputContainer}>
-                    <Text>{i18n.t("itrex.uploadVideoHere")}</Text>
+                    <Text style={{ color: "white" }}>{i18n.t("itrex.uploadVideoHere")}</Text>
                     <TextInput
                         style={styles.StyledTextInput}
                         value={videoName}
@@ -159,15 +159,16 @@ const styles = StyleSheet.create({
         flex: 1,
         marginTop: 20,
         marginBottom: 20,
-        backgroundColor: "#fff",
         alignItems: "center",
         justifyContent: "center",
     },
     StyledInputContainer: {
         flexDirection: "column",
         justifyContent: "center",
+        tintColor: "white",
     },
     StyledTextInput: {
+        tintColor: "white",
         width: "100%",
         marginLeft: 8,
         marginRight: 8,
@@ -181,5 +182,10 @@ const styles = StyleSheet.create({
         marginTop: 20,
         marginBottom: 20,
         alignItems: "center",
+    },
+    image: {
+        flex: 1,
+        resizeMode: "stretch",
+        justifyContent: "center",
     },
 });

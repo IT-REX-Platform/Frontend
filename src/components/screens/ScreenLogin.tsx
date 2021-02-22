@@ -1,4 +1,4 @@
-import { Button, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import React from "react";
 import { AuthContext, LocalizationContext } from "../Context";
@@ -6,7 +6,6 @@ import { AuthContext, LocalizationContext } from "../Context";
 import * as WebBrowser from "expo-web-browser";
 import * as AuthSession from "expo-auth-session";
 import { itRexVars } from "../../constants/Constants";
-import AuthenticationService from "../../services/AuthenticationService";
 import i18n from "../../locales";
 
 WebBrowser.maybeCompleteAuthSession();

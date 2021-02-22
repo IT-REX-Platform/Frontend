@@ -6,7 +6,6 @@ import { MaterialIcons } from "@expo/vector-icons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { RootDrawerParamList } from "./NavigationRoutes";
 import i18n from "../../locales";
-import { loggerFactory } from "../../../logger/LoggerConfig";
 
 import { UploadVideoComponent } from "../../components/UploadVideoComponent";
 import AuthenticationService from "../../services/AuthenticationService";
@@ -21,10 +20,8 @@ import { CreateCourseComponent } from "../../components/CreateCourseComponent";
 
 const Drawer = createDrawerNavigator<RootDrawerParamList>();
 
-export const DrawerNavigator: React.FC = (props) => {
+export const DrawerNavigator: React.FC = () => {
     const dimensions = useWindowDimensions();
-
-    const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");
 
     return (
         <Drawer.Navigator

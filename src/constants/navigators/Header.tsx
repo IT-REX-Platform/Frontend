@@ -6,7 +6,13 @@ import { NavigationRoutes } from "../../constants/navigators/NavigationRoutes";
 import { useNavigation } from "@react-navigation/native";
 import { LocalizationContext } from "../../components/Context";
 
-export const Header: React.FC<string> = ({ title }) => {
+interface Title {
+    title: string;
+}
+
+export const Header: React.FC<Title> = (props) => {
+    const title = props.title;
+    console.log(props.title);
     React.useContext(LocalizationContext);
     const navigation = useNavigation();
     return (
