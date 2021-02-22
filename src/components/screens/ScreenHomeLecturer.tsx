@@ -11,56 +11,50 @@ import i18n from "../../locales";
 import Select from "react-select";
 import { ICourse } from "../../types/ICourse";
 
-const filterOptions = [
-    { value: "PUBLISHED", label: "Published" },
-    { value: "UNPUBLISHED", label: "Unpublished" },
-    { value: "ALL", label: "All" },
-];
-
-//TODO: Replace with real endpoint-logic
-function fetchCourses(publishState: string): ICourse[] {
-    const filteredCourses: ICourse[] = [];
-
-    if (publishState === "ALL") {
-        return courseList;
-    }
-    for (const course of courseList) {
-        if (course.publishState === publishState) {
-            filteredCourses.push(course);
-        }
-    }
-
-    return filteredCourses;
-}
-
 export const ScreenHomeLecturer: React.FC = () => {
     const navigation = useNavigation();
     const { t } = React.useContext(LocalizationContext);
 
     const [filteredCourses, setFilteredCourses] = useState<ICourse[]>([]);
 
-    const [selectedPublishStateFilter, setPublishStateFilter] = useState<string | undefined>(filterOptions[0].value);
+    const [selectedPublishStateFilter, setPublishStateFilter] = useState<string | undefined>("PUBLISHED");
+    const [selectedActiveState, setSelectedActiveState] = useState<string | undefined>("ACTIVE");
 
     useEffect(() => {
-        console.log(selectedPublishStateFilter);
         if (selectedPublishStateFilter === undefined) {
             return;
         }
-        setFilteredCourses(fetchCourses(selectedPublishStateFilter));
-    }, [selectedPublishStateFilter]);
+        if (selectedActiveState === undefined) {
+            return;
+        }
+        const courseList: ICourse[] = fetchCourses(selectedPublishStateFilter, selectedActiveState);
+        setFilteredCourses(courseList);
+    }, [selectedPublishStateFilter, selectedActiveState]);
 
     return (
         <View>
             <Text>{i18n.t("itrex.homeLecturerText")}</Text>
-            <View style={{ width: 300, zIndex: 10 }}>
-                <Text>Filter for published/unpublished courses</Text>
-                <Select
-                    options={filterOptions}
-                    defaultValue={filterOptions[0]}
-                    onChange={(option) => {
-                        setPublishStateFilter(option?.value);
-                    }}
-                />
+            <View style={{ flexDirection: "row", zIndex: 1 }}>
+                <View style={{ width: 300, zIndex: 3 }}>
+                    <Text>Filter for published/unpublished courses</Text>
+                    <Select
+                        options={publishStateFilterOptions}
+                        defaultValue={publishStateFilterOptions[0]}
+                        onChange={(option) => {
+                            setPublishStateFilter(option?.value);
+                        }}
+                    />
+                </View>
+                <View style={{ width: 300, zIndex: 3 }}>
+                    <Text>Filter for active/inactive courses</Text>
+                    <Select
+                        options={activeStateFilterOptions}
+                        defaultValue={activeStateFilterOptions[0]}
+                        onChange={(option) => {
+                            setSelectedActiveState(option?.value);
+                        }}
+                    />
+                </View>
             </View>
             <CourseList courses={filteredCourses} />
             <CreateCourseComponent />
@@ -71,3 +65,62 @@ export const ScreenHomeLecturer: React.FC = () => {
         </View>
     );
 };
+
+const publishStateFilterOptions = [
+    { value: "PUBLISHED", label: "Published" },
+    { value: "UNPUBLISHED", label: "Unpublished" },
+    { value: "ALL", label: "All" },
+];
+
+const activeStateFilterOptions = [
+    { value: "ACTIVE", label: "Active" },
+    { value: "INACTIVE", label: "Inactive" },
+    { value: "ALL", label: "All" },
+];
+
+//TODO: Replace with real endpoint-logic and export to other file
+function fetchCourses(publishState: string, setSelectedActiveState: string): ICourse[] {
+    // initial : all relevant courses
+    let filteredCourses: ICourse[] = courseList;
+    if (publishState !== "ALL") {
+        filteredCourses = getMatchingPublishStateCourses(publishState, filteredCourses);
+    }
+    if (setSelectedActiveState !== "ALL") {
+        filteredCourses = getMatchingActivityStateCourses(setSelectedActiveState, filteredCourses);
+    }
+    return filteredCourses;
+}
+
+//TODO: Replace with real endpoint-logic
+function getMatchingPublishStateCourses(publishState: string, inputCourseList: ICourse[]): ICourse[] {
+    const filteredCourses: ICourse[] = [];
+
+    for (const course of inputCourseList) {
+        if (course.publishState === publishState) {
+            filteredCourses.push(course);
+        }
+    }
+    return filteredCourses;
+}
+
+//TODO: Replace with real endpoint-logic and export to other file
+// eslint-disable-next-line complexity
+function getMatchingActivityStateCourses(activeState: string, inputCourseList: ICourse[]): ICourse[] {
+    const activeCourses: ICourse[] = [];
+    const inactiveCourses: ICourse[] = [];
+
+    // Curr date
+    const offset = new Date();
+    // Offset = Curr date + 8 weeks
+    offset.setDate(offset.getDate() + 8 * 7);
+
+    for (const course of inputCourseList) {
+        if (course.endDate && course.endDate <= offset) {
+            activeCourses.push(course);
+        } else {
+            inactiveCourses.push(course);
+        }
+    }
+
+    return activeState === "ACTIVE" ? activeCourses : inactiveCourses;
+}
