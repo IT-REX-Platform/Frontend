@@ -1,34 +1,45 @@
 import React from "react";
-import { Button, StyleSheet, View } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { NavigationRoutes } from "../constants/NavigationRoutes";
-import { LocalizationContext } from "../App";
+import { Image, StyleSheet, View, Text, ImageBackground } from "react-native";
 import i18n from "../locales";
+import { Header } from "../constants/navigators/Header";
+import { LocalizationContext } from "./Context";
 
 export const HomeComponent: React.FC = () => {
-    const navigation = useNavigation();
-
     React.useContext(LocalizationContext);
 
     return (
         <View style={styles.container}>
-            <Button
-                title={i18n.t("itrex.toCourse")}
-                onPress={() => navigation.navigate(NavigationRoutes.ROUTE_CREATE_COURSE)}
-            />
-            <Button
-                title={i18n.t("itrex.toUploadVideo")}
-                onPress={() => navigation.navigate(NavigationRoutes.ROUTE_UPLOAD_VIDEO)}
-            />
+            <ImageBackground source={require("../constants/images/Background_forest.svg")} style={styles.image}>
+                <Header title={i18n.t("itrex.home")} />
+                <View style={styles.textContainer}>
+                    <Image source={require("../constants/images/ITRex-Logo-ob.svg")} style={[styles.icon]}></Image>
+                    <Text>{i18n.t("itrex.welcome")}</Text>
+                    <Text>{i18n.t("itrex.starter")}</Text>
+                </View>
+            </ImageBackground>
         </View>
     );
 };
 
 const styles = StyleSheet.create({
-    container: {
+    textContainer: {
+        marginTop: 20,
+        marginBottom: 20,
         flex: 1,
-        backgroundColor: "#fff",
         alignItems: "center",
         justifyContent: "center",
+    },
+    container: {
+        flex: 1,
+        flexDirection: "column",
+    },
+    image: {
+        flex: 1,
+        resizeMode: "stretch",
+        justifyContent: "center",
+    },
+    icon: {
+        width: 100,
+        height: 100,
     },
 });

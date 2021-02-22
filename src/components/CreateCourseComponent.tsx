@@ -1,8 +1,19 @@
 import React, { ChangeEvent } from "react";
 import { useState } from "react";
-import { Button, FlatList, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+    Button,
+    FlatList,
+    ImageBackground,
+    Platform,
+    Pressable,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
+} from "react-native";
 import { ICourse } from "../types/ICourse";
-import { LocalizationContext } from "../App";
 import { validateCourseName } from "../helperScripts/validateCourseEntry";
 import { validateCourseDescription } from "../helperScripts/validateCourseEntry";
 import i18n from "../locales";
@@ -12,6 +23,10 @@ import { CoursePublishState } from "../constants/CoursePublishState";
 import { DatePickerComponent } from "./DatePickerComponent";
 import { validateCourseDates } from "../helperScripts/validateCourseDates";
 import { EndpointsCourse } from "../api/endpoints/EndpointsCourse";
+import { useNavigation } from "@react-navigation/native";
+import { NavigationRoutes } from "../constants/navigators/NavigationRoutes";
+import { Header } from "../constants/navigators/Header";
+import { LocalizationContext } from "./Context";
 import { Event } from "@react-native-community/datetimepicker";
 
 const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");
@@ -19,6 +34,7 @@ const endpointsCourse: EndpointsCourse = new EndpointsCourse();
 
 export const CreateCourseComponent: React.FC = () => {
     React.useContext(LocalizationContext);
+    const navigation = useNavigation();
 
     // Enter course name to create course
     const [courseName, setCourseName] = useState("");
@@ -64,90 +80,101 @@ export const CreateCourseComponent: React.FC = () => {
     };
 
     return (
-        <ScrollView>
-            <View style={styles.container}>
-                <View style={styles.styledInputContainer}>
-                    <Text>{i18n.t("itrex.enterCourseName")}</Text>
-                    <TextInput
-                        style={styles.styledTextInput}
-                        onChangeText={(text: string) => setCourseName(text)}
-                        testID="courseNameInput"></TextInput>
+        <ImageBackground source={require("../constants/images/Background2.png")} style={styles.image}>
+            <ScrollView>
+                <View style={styles.container}>
+                    <Header title={i18n.t("itrex.toCourse")} />
+                    <View style={styles.pageContainer} />
+                    <View style={styles.styledInputContainer}>
+                        <Text style={styles.textSytle}>{i18n.t("itrex.enterCourseName")}</Text>
+                        <TextInput
+                            style={styles.styledTextInput}
+                            onChangeText={(text: string) => setCourseName(text)}
+                            testID="courseNameInput"></TextInput>
+                    </View>
+                    <View style={styles.styledInputContainer}>
+                        <Text style={styles.textSytle}>{i18n.t("itrex.enterCourseDescription")}</Text>
+                        <TextInput
+                            style={styles.styledTextInput}
+                            onChangeText={(text: string) => setCourseDescription(text)}
+                            testID="courseDescriptionInput"></TextInput>
+                    </View>
+                    <Pressable style={styles.styledButton}>
+                        <Button title={i18n.t("itrex.createCourse")} onPress={createCourse}></Button>
+                    </Pressable>
+                    <Pressable style={styles.styledButton}>
+                        <Button title={i18n.t("itrex.getAllCourses")} onPress={getAllCourses}></Button>
+                    </Pressable>
+
+                    <FlatList
+                        data={courses}
+                        renderItem={({ item }) => (
+                            <>
+                                <TouchableOpacity key={item.id} onPress={() => onPress(item)}>
+                                    <View style={{ backgroundColor: "white" }}>
+                                        <Text style={styles.item}>
+                                            {item.id +
+                                                "\t" +
+                                                item.publishState +
+                                                "\t" +
+                                                item.name +
+                                                "\t" +
+                                                (item.courseDescription ? item.courseDescription : "")}
+                                        </Text>
+                                    </View>
+                                </TouchableOpacity>
+                            </>
+                        )}
+                        keyExtractor={(item, index) => String(index)}
+                    />
+                    <View style={styles.styledInputContainer}>
+                        <Text style={styles.textSytle}>{i18n.t("itrex.enterCouseId")}</Text>
+                        <TextInput
+                            style={styles.styledTextInput}
+                            keyboardType="numeric"
+                            onChangeText={(id: string) => setCourseId(id)}
+                            testID="courseIdInput"></TextInput>
+                    </View>
+                    <Pressable style={styles.styledButton}>
+                        <Button title={i18n.t("itrex.publishCourse")} onPress={patchCourse}></Button>
+                    </Pressable>
+                    <Pressable style={styles.styledButton}>
+                        <Button title={i18n.t("itrex.getPublishedCourses")} onPress={getPublishedCourses}></Button>
+                    </Pressable>
+                    <FlatList
+                        data={coursesPublished}
+                        renderItem={({ item }) => (
+                            <Text style={{}}>{item.id + "\t" + item.publishState + "\t" + item.name}</Text>
+                        )}
+                        keyExtractor={(item, index) => String(index)}
+                    />
+                    <Pressable style={styles.styledButton}>
+                        <Button title={i18n.t("itrex.deleteCourse")} onPress={deleteCourse}></Button>
+                    </Pressable>
+
+                    <View style={styles.styledInputContainer}>
+                        <DatePickerComponent
+                            title={i18n.t("itrex.startDate")}
+                            date={startDate}
+                            onDateChanged={startDateChanged}
+                            maxDate={endDate}></DatePickerComponent>
+
+                        <View style={{ margin: 16 }}></View>
+
+                        <DatePickerComponent
+                            title={i18n.t("itrex.endDate")}
+                            date={endDate}
+                            onDateChanged={endDateChanged}
+                            minDate={startDate}></DatePickerComponent>
+                    </View>
                 </View>
-                <View style={styles.styledInputContainer}>
-                    <Text>{i18n.t("itrex.enterCourseDescription")}</Text>
-                    <TextInput
-                        style={styles.styledTextInput}
-                        onChangeText={(text: string) => setCourseDescription(text)}
-                        testID="courseDescriptionInput"></TextInput>
-                </View>
-                <Pressable style={styles.styledButton}>
-                    <Button title={i18n.t("itrex.createCourse")} onPress={createCourse}></Button>
-                </Pressable>
-                <Pressable style={styles.styledButton}>
-                    <Button title={i18n.t("itrex.getAllCourses")} onPress={getAllCourses}></Button>
-                </Pressable>
-                <FlatList
-                    data={courses}
-                    renderItem={({ item }) => (
-                        <Text style={{}}>
-                            {item.id +
-                                "\t" +
-                                item.publishState +
-                                "\t" +
-                                item.name +
-                                (item.courseDescription ? "\t" + item.courseDescription : "") +
-                                (item.startDate ? "\t" + "startDate:" + item.startDate : "") +
-                                (item.endDate ? "\t" + "endDate:" + item.endDate : "")}
-                        </Text>
-                    )}
-                    keyExtractor={(item, index) => String(index)}
-                />
-
-                <View style={styles.separator}></View>
-
-                <View style={styles.styledInputContainer}>
-                    <Text>{i18n.t("itrex.enterCouseId")}</Text>
-                    <TextInput
-                        style={styles.styledTextInput}
-                        keyboardType="numeric"
-                        onChangeText={(id: string) => setCourseId(id)}
-                        testID="courseIdInput"></TextInput>
-                </View>
-                <Pressable style={styles.styledButton}>
-                    <Button title={i18n.t("itrex.publishCourse")} onPress={patchCourse}></Button>
-                </Pressable>
-                <Pressable style={styles.styledButton}>
-                    <Button title={i18n.t("itrex.getPublishedCourses")} onPress={getPublishedCourses}></Button>
-                </Pressable>
-                <FlatList
-                    data={coursesPublished}
-                    renderItem={({ item }) => (
-                        <Text style={{}}>{item.id + "\t" + item.publishState + "\t" + item.name}</Text>
-                    )}
-                    keyExtractor={(item, index) => String(index)}
-                />
-                <Pressable style={styles.styledButton}>
-                    <Button title={i18n.t("itrex.deleteCourse")} onPress={deleteCourse}></Button>
-                </Pressable>
-
-                <View style={styles.styledInputContainer}>
-                    <DatePickerComponent
-                        title={i18n.t("itrex.startDate")}
-                        date={startDate}
-                        onDateChanged={startDateChanged}
-                        maxDate={endDate}></DatePickerComponent>
-
-                    <View style={{ margin: 16 }}></View>
-
-                    <DatePickerComponent
-                        title={i18n.t("itrex.endDate")}
-                        date={endDate}
-                        onDateChanged={endDateChanged}
-                        minDate={startDate}></DatePickerComponent>
-                </View>
-            </View>
-        </ScrollView>
+            </ScrollView>
+        </ImageBackground>
     );
+
+    function onPress(item: ICourse) {
+        navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, { item: item, name: item.name });
+    }
 
     function createCourse(): void {
         loggerService.trace(`Validating course name: ${courseName}.`);
@@ -223,8 +250,14 @@ export const CreateCourseComponent: React.FC = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#fff",
-        alignItems: "center",
+        flexDirection: "column",
+    },
+    pageContainer: {
+        marginTop: 70,
+    },
+    image: {
+        flex: 1,
+        resizeMode: "stretch",
         justifyContent: "center",
     },
     styledInputContainer: {
@@ -240,10 +273,12 @@ const styles = StyleSheet.create({
     styledButton: {
         margin: 5,
     },
-    separator: {
-        width: "100%",
-        backgroundColor: "#eeeeee",
-        padding: 2,
-        margin: 10,
+    item: {
+        padding: 10,
+        fontSize: 18,
+        height: 44,
+    },
+    textSytle: {
+        color: "white",
     },
 });

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Button, Platform, Pressable, TextInput, Text, View } from "react-native";
-import { LocalizationContext } from "../App";
 import i18n from "../locales";
+import { Header } from "../constants/navigators/Header";
+import { LocalizationContext } from "./Context";
+import { StyleSheet, Button, Platform, Pressable, TextInput, Text, View, ImageBackground } from "react-native";
 import * as DocumentPicker from "expo-document-picker";
 import * as ImagePicker from "expo-image-picker";
 import { RequestFactory } from "../api/requests/RequestFactory";
@@ -120,10 +121,11 @@ export const UploadVideoComponent: React.FC = () => {
     };
 
     return (
-        <>
+        <ImageBackground source={require("../constants/images/Background2.png")} style={styles.image}>
+            <Header title={i18n.t("itrex.toUploadVideo")} />
             <View style={styles.container}>
                 <View style={styles.StyledInputContainer}>
-                    <Text>{i18n.t("itrex.uploadVideoHere")}</Text>
+                    <Text style={{ color: "white" }}>{i18n.t("itrex.uploadVideoHere")}</Text>
                     <TextInput
                         style={styles.StyledTextInput}
                         value={videoName}
@@ -148,7 +150,7 @@ export const UploadVideoComponent: React.FC = () => {
                     style={{ width: 640, height: 360 }}
                 />
             </View>
-        </>
+        </ImageBackground>
     );
 };
 
@@ -157,15 +159,16 @@ const styles = StyleSheet.create({
         flex: 1,
         marginTop: 20,
         marginBottom: 20,
-        backgroundColor: "#fff",
         alignItems: "center",
         justifyContent: "center",
     },
     StyledInputContainer: {
         flexDirection: "column",
         justifyContent: "center",
+        tintColor: "white",
     },
     StyledTextInput: {
+        tintColor: "white",
         width: "100%",
         marginLeft: 8,
         marginRight: 8,
@@ -179,5 +182,10 @@ const styles = StyleSheet.create({
         marginTop: 20,
         marginBottom: 20,
         alignItems: "center",
+    },
+    image: {
+        flex: 1,
+        resizeMode: "stretch",
+        justifyContent: "center",
     },
 });

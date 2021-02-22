@@ -1,17 +1,13 @@
 import { ReactElement } from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
 import { loggerFactory } from "../logger/LoggerConfig";
-import { NavigationRoutes } from "./constants/NavigationRoutes";
-import { ActivityIndicator, Button, Linking, SafeAreaView } from "react-native";
+import { Linking, TouchableOpacity, Text, StyleSheet, ActivityIndicator, Button, SafeAreaView } from "react-native";
 import i18n from "./locales/index";
 import * as Localization from "expo-localization";
-import { HomeComponent } from "./components/HomeComponent";
-import { CreateCourseComponent } from "./components/CreateCourseComponent";
-import { LoginComponent } from "./components/LoginComponent";
-import { UploadVideoComponent } from "./components/UploadVideoComponent";
+import DrawerNavigator from "./constants/navigators/DrawNavigation";
 import React from "react";
-import { AuthContext } from "./components/Context";
+import { dark } from "./constants/themes/dark";
+import { AuthContext, LocalizationContext } from "./components/Context";
 import { LoggedInNavigator } from "./navigation/LoggedInNavigator";
 import { LoggedOutNavigator } from "./navigation/LoggedOutNavigator";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -19,11 +15,9 @@ import AuthenticationService from "./services/AuthenticationService";
 import * as AuthSession from "expo-auth-session";
 import { IAuthContext } from "./components/Context";
 import { ILoginReducerAction, ILoginReducerState } from "./types/ILoginReducer";
-import { ILocalizationContext } from "./types/ILocalizationContext";
+import { Provider as PaperProvider } from "react-native-paper";
 
 const loggerService = loggerFactory.getLogger("service.App");
-
-export const LocalizationContext = React.createContext({} as ILocalizationContext);
 
 function loginReducer(prevState: ILoginReducerState, action: ILoginReducerAction): ILoginReducerState {
     switch (action.type) {
@@ -110,11 +104,34 @@ function App(): ReactElement {
     }
 
     return (
-        <AuthContext.Provider value={authContext}>
-            <LocalizationContext.Provider value={localizationContext}>
-                {loginState.userInfo != null ? <LoggedInNavigator /> : <LoggedOutNavigator />}
-            </LocalizationContext.Provider>
-        </AuthContext.Provider>
+        <PaperProvider>
+            <AuthContext.Provider value={authContext}>
+                <LocalizationContext.Provider value={localizationContext}>
+                    {loginState.userInfo != null ? <LoggedInNavigator /> : <LoggedOutNavigator />}
+                </LocalizationContext.Provider>
+            </AuthContext.Provider>
+        </PaperProvider>
     );
 }
+
+const styles = StyleSheet.create({
+    appButtonContainer: {
+        elevation: 8,
+        backgroundColor: dark.theme.blueGreen,
+        paddingVertical: 10,
+        paddingHorizontal: 12,
+    },
+    buttonText: {
+        alignContent: "center",
+        textAlign: "center",
+        fontSize: 15,
+        color: dark.theme.darkBlue1,
+    },
+    image: {
+        flex: 1,
+        resizeMode: "cover",
+        justifyContent: "center",
+    },
+});
+
 export default App;
