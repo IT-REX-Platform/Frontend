@@ -37,18 +37,19 @@ export const ScreenCourseOverview: React.FC = () => {
             <ImageBackground source={require("../../../constants/images/Background_forest.svg")} style={styles.image}>
                 <Text style={styles.container}>Course Overview</Text>
                 <Text>{course.courseDescription}</Text>
-                <Button
-                    title={i18n.t("itrex.videoPool")}
-                    onPress={() =>
-                        navigation.navigate("ROUTE_COURSE_DETAILS", {
-                            params: { courseId: course.id },
-                            screen: NavigationRoutes.ROUTE_VIDEO_POOL,
-                        })
-                    }
-                />
+                <Button title={i18n.t("itrex.videoPool")} onPress={() => goToVideoPool()} />
             </ImageBackground>
         </>
     );
+
+    function goToVideoPool() {
+        if (course.id !== undefined) {
+            navigation.navigate("ROUTE_COURSE_DETAILS", {
+                courseId: course.id,
+                screen: "VIDEO_POOL",
+            });
+        }
+    }
 };
 
 const styles = StyleSheet.create({
