@@ -1,15 +1,11 @@
-import { CompositeNavigationProp, RouteProp, useNavigation, useRoute } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import { CompositeNavigationProp, useNavigation } from "@react-navigation/native";
+import React from "react";
 import { Text, ImageBackground, StyleSheet, Button } from "react-native";
 import { dark } from "../../../constants/themes/dark";
-import { Header } from "../../../constants/navigators/Header";
-import { RequestFactory } from "../../../api/requests/RequestFactory";
-import { EndpointsCourse } from "../../../api/endpoints/EndpointsCourse";
 import { ICourse } from "../../../types/ICourse";
 import {
     CourseStackParamList,
     CourseTabParamList,
-    NavigationRoutes,
     RootDrawerParamList,
 } from "../../../constants/navigators/NavigationRoutes";
 import { MaterialTopTabNavigationProp } from "@react-navigation/material-top-tabs";
