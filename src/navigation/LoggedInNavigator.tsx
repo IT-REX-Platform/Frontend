@@ -1,4 +1,3 @@
-/* eslint-disable complexity */
 import * as React from "react";
 import { NavigationRoutes } from "../constants/navigators/NavigationRoutes";
 import { NavigationContainer } from "@react-navigation/native";

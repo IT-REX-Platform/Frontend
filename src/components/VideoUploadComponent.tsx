@@ -1,19 +1,29 @@
 import React, { useState, useEffect } from "react";
 import i18n from "../locales";
 import { Header } from "../constants/navigators/Header";
-import { LocalizationContext } from "./Context";
-import { StyleSheet, Button, Platform, Pressable, TextInput, Text, View, ImageBackground } from "react-native";
+import { CourseContext, LocalizationContext } from "./Context";
+import { Button, ImageBackground, Platform, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import * as DocumentPicker from "expo-document-picker";
 import * as ImagePicker from "expo-image-picker";
 import { RequestFactory } from "../api/requests/RequestFactory";
 import { EndpointsVideo } from "../api/endpoints/EndpointsVideo";
 import { createAlert } from "../helperScripts/createAlert";
 import { Video } from "expo-av";
+import { IVideo } from "../types/IVideo";
+import { VideoFormDataParams } from "../constants/VideoFormDataParams";
+import { loggerFactory } from "../../logger/LoggerConfig";
+import { createVideoUrl } from "../services/createVideoUrl";
+import { ICourse } from "../types/ICourse";
 
+const loggerService = loggerFactory.getLogger("service.UploadVideoComponent");
 const endpointsVideo = new EndpointsVideo();
 
-export const UploadVideoComponent: React.FC = () => {
+export const VideoUploadComponent: React.FC = () => {
     React.useContext(LocalizationContext);
+
+    const course: ICourse = React.useContext(CourseContext);
+
+    loggerService.trace("Course ID: " + course.id);
 
     const [videoUri, setVideoUri] = useState("");
     const [videoName, setVideoName] = useState("");
@@ -50,9 +60,7 @@ export const UploadVideoComponent: React.FC = () => {
      * Expo image picker that only allows picking of video files.
      */
     const imagePicker = async () => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        let video: any = {};
-        video = await ImagePicker.launchImageLibraryAsync({
+        const video: ImagePicker.ImagePickerResult = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Videos,
             allowsEditing: true,
         });
@@ -69,9 +77,7 @@ export const UploadVideoComponent: React.FC = () => {
      * Expo document picker that only allows picking of video files in mp4 format.
      */
     const documentPicker = async () => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        let document: any = {};
-        document = await DocumentPicker.getDocumentAsync({
+        const document: DocumentPicker.DocumentResult = await DocumentPicker.getDocumentAsync({
             type: "video/mp4",
         });
 
@@ -85,32 +91,38 @@ export const UploadVideoComponent: React.FC = () => {
 
     /**
      * Upload the picked video to the backend.
-     * If no video was selected previously do
+     * If no video was selected previously do nothing.
      */
-    const uploadVideo = async () => {
-        if (videoUri === "") {
+    const uploadVideo = async (): Promise<void> => {
+        if (videoUri === "" || course.id === undefined) {
             return;
         }
 
-        const video = await buildVideoAsFormData();
-        const postRequest = RequestFactory.createPostRequestWithFormData(video);
-        const response = await endpointsVideo.uploadVideo(postRequest);
+        const video = await buildVideoAsFormData(course.id);
+        const postRequest: RequestInit = RequestFactory.createPostRequestWithFormData(video);
+        const response: IVideo = await endpointsVideo.uploadVideo(postRequest);
+        console.log(response);
 
         resetVideoState();
         createAlert(i18n.t("itrex.uploadVideoSuccessMsg"));
 
-        setVideoPlayerUri(endpointsVideo.getVideoDownloadLink(response.id));
-
-        return response;
+        if (response.id == null) {
+            return;
+        }
+        const videoUrl: string = createVideoUrl(response.id);
+        console.log(videoUrl);
+        setVideoPlayerUri(videoUrl);
     };
 
     /**
      * Build a FormData object from the video uri.
      */
-    const buildVideoAsFormData = async () => {
-        const fileBlob = await (await fetch(videoUri)).blob();
-        const formData = new FormData();
-        formData.append("file", fileBlob);
+    const buildVideoAsFormData = async (courseId: string) => {
+        const response: Response = await fetch(videoUri);
+        const fileBlob: Blob = await response.blob();
+        const formData: FormData = new FormData();
+        formData.append(VideoFormDataParams.PARAM_VIDEO_FILE, fileBlob);
+        formData.append(VideoFormDataParams.PARAM_COURSE_ID, courseId);
         return formData;
     };
 
@@ -122,23 +134,25 @@ export const UploadVideoComponent: React.FC = () => {
 
     return (
         <ImageBackground source={require("../constants/images/Background2.png")} style={styles.image}>
-            <Header title={i18n.t("itrex.toUploadVideo")} />
             <View style={styles.container}>
-                <View style={styles.StyledInputContainer}>
+                <View style={styles.styledInputContainer}>
                     <Text style={{ color: "white" }}>{i18n.t("itrex.uploadVideoHere")}</Text>
                     <TextInput
-                        style={styles.StyledTextInput}
+                        style={styles.styledTextInput}
                         value={videoName}
                         editable={false}
                         testID="videoNameInput"></TextInput>
-                    <Pressable style={styles.StyledButton}>
+                    <Pressable style={styles.styledButton}>
                         <Button title={i18n.t("itrex.browseVideos")} onPress={pickVideo}></Button>
                     </Pressable>
                 </View>
-                <Pressable style={styles.StyledButton}>
+
+                <Pressable style={styles.styledButton}>
                     <Button title={i18n.t("itrex.toUploadVideo")} onPress={uploadVideo}></Button>
                 </Pressable>
-                <View style={styles.video}></View>
+
+                <View style={styles.video} />
+
                 <Video
                     source={{ uri: videoPlayerUri }}
                     rate={1.0}
@@ -162,12 +176,12 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
     },
-    StyledInputContainer: {
+    styledInputContainer: {
         flexDirection: "column",
         justifyContent: "center",
         tintColor: "white",
     },
-    StyledTextInput: {
+    styledTextInput: {
         tintColor: "white",
         width: "100%",
         marginLeft: 8,
@@ -175,7 +189,7 @@ const styles = StyleSheet.create({
         borderColor: "lightgray",
         borderWidth: 2,
     },
-    StyledButton: {
+    styledButton: {
         marginTop: 16,
     },
     video: {
