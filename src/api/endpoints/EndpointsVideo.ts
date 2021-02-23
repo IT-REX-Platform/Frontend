@@ -25,7 +25,7 @@ export class EndpointsVideo implements IEndpointsVideo {
      * @param getRequest GET request.
      * @param courseId Course ID to get all videos belonging to this course.
      */
-    public async getAllVideos(getRequest: RequestInit, courseId?: string): Promise<IVideo[]> {
+    public getAllVideos(getRequest: RequestInit, courseId?: string): Promise<IVideo[]> {
         this.loggerApi.trace("Checking for additional parameters for GET request URL.");
         let url: string = this.url;
         if (courseId !== undefined) {
@@ -33,7 +33,7 @@ export class EndpointsVideo implements IEndpointsVideo {
         }
 
         this.loggerApi.trace("Sending GET request to URL: " + url);
-        const response: Response = await sendRequest(url, getRequest);
+        const response: Promise<Response> = sendRequest(url, getRequest);
         return ResponseParser.parseVideos(response);
     }
 
@@ -43,11 +43,11 @@ export class EndpointsVideo implements IEndpointsVideo {
      * @param getRequest GET request.
      * @param id Video ID for URL parameter.
      */
-    public async downloadVideo(getRequest: RequestInit, id: string): Promise<IVideo> {
+    public downloadVideo(getRequest: RequestInit, id: string): Promise<IVideo> {
         const url: string = this.url + "/" + id;
 
         this.loggerApi.trace("Sending GET request to URL: " + url);
-        const response: Response = await sendRequest(url, getRequest);
+        const response: Promise<Response> = sendRequest(url, getRequest);
         return ResponseParser.parseVideo(response);
     }
 
@@ -56,9 +56,9 @@ export class EndpointsVideo implements IEndpointsVideo {
      *
      * @param postRequest POST request with video JSON body containing no video ID.
      */
-    public async uploadVideo(postRequest: RequestInit): Promise<IVideo> {
+    public uploadVideo(postRequest: RequestInit): Promise<IVideo> {
         this.loggerApi.trace("Sending POST request to URL: " + this.url);
-        const response: Response = await sendRequest(this.url, postRequest);
+        const response: Promise<Response> = sendRequest(this.url, postRequest);
         return ResponseParser.parseVideo(response);
     }
 
@@ -67,9 +67,9 @@ export class EndpointsVideo implements IEndpointsVideo {
      *
      * @param postRequest PATCH request with course JSON body containing a course ID and one or more course fields.
      */
-    public async patchVideo(patchRequest: RequestInit): Promise<IVideo> {
+    public patchVideo(patchRequest: RequestInit): Promise<IVideo> {
         this.loggerApi.trace("Sending POST request to URL: " + this.url);
-        const response: Response = await sendRequest(this.url, patchRequest);
+        const response: Promise<Response> = sendRequest(this.url, patchRequest);
         return ResponseParser.parseVideo(response);
     }
 
@@ -79,11 +79,11 @@ export class EndpointsVideo implements IEndpointsVideo {
      * @param deleteRequest DELETE request.
      * @param id Video ID for URL parameter.
      */
-    public async deleteVideo(deleteRequest: RequestInit, id: string): Promise<void> {
+    public deleteVideo(deleteRequest: RequestInit, id: string): void {
         const url: string = this.url + "/" + id;
 
         this.loggerApi.trace("Sending DELETE request to URL: " + url);
-        const response: Response = await sendRequest(url, deleteRequest);
+        const response: Promise<Response> = sendRequest(url, deleteRequest);
         console.log(response);
     }
 }

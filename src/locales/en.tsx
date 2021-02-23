@@ -45,5 +45,9 @@ export const en = {
         videoUpdated: "Video updated!",
         deleteVideo: "Delete video",
         videoDeleted: "Videp deleted!",
+        courseNotfound: "Course data not found.",
+        coursesNotfound: "Courses data not found.",
+        videoNotfound: "Video data not found.",
+        videosNotfound: "Videos data not found.",
     },
 };

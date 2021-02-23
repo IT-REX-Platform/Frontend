@@ -153,7 +153,7 @@ export const VideoComponent: React.FC<NavigationProps> = ({ route }) => {
         }
 
         const deleteRequest: RequestInit = RequestFactory.createDeleteRequest();
-        await endpointsVideo.deleteVideo(deleteRequest, video.id);
+        endpointsVideo.deleteVideo(deleteRequest, video.id);
 
         createAlert(i18n.t("itrex.videoDeleted"));
 

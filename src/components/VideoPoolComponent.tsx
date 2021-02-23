@@ -150,7 +150,7 @@ export const VideoPoolComponent: React.FC<NavigationProps> = ({ route }) => {
         await response
             .then((videosReceived: IVideo[]) => {
                 setVideos(videosReceived);
-                // loggerService.trace(JSON.stringify(videosReceived));
+                loggerService.trace("Received videos in next line:");
                 console.log(videosReceived);
             })
             .catch((error) => {
