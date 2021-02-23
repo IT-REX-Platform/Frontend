@@ -160,9 +160,6 @@ export const CreateCourseComponent: React.FC = () => {
 
     function deleteCourse(): void {
         const request: RequestInit = RequestFactory.createDeleteRequest();
-
-        loggerService.trace("Parsing ID string to ID number");
-
         endpointsCourse.deleteCourse(request, courseIdString);
     }
 };

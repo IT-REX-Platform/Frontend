@@ -1,6 +1,16 @@
 import React from "react";
 import { useState, useEffect, useRef } from "react";
-import { Button, FlatList, Pressable, StyleSheet, Text, TouchableHighlight, View, Animated } from "react-native";
+import {
+    ActivityIndicator,
+    Animated,
+    Button,
+    FlatList,
+    Pressable,
+    StyleSheet,
+    Text,
+    TouchableHighlight,
+    View,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { NavigationRoutes } from "../constants/NavigationRoutes";
 import { LocalizationContext } from "../App";
@@ -10,61 +20,68 @@ import { EndpointsVideo } from "../api/endpoints/EndpointsVideo";
 import { RequestFactory } from "../api/requests/RequestFactory";
 import { IVideo } from "../types/IVideo";
 import { NavigationProps } from "../types/NavigationProps";
+import { Separator } from "./Separator";
 
 const endpointsVideo = new EndpointsVideo();
 const loggerService = loggerFactory.getLogger("service.VideoPoolComponent");
 
-const dummyVideos: IVideo[] = [
-    {
-        id: 1,
-        title: "title_1_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        startDate: new Date(),
-        endDate: new Date(),
-        courseId: "course_ID",
-        chapterId: "chapter_ID",
-        uploaderId: "uploader_ID",
-        mimeType: "video/mp4",
-        length: 100,
-        width: 640,
-        height: 480,
-    },
-    {
-        id: 2,
-        title: "title_2_bbbbbbbbbbb",
-        startDate: new Date(),
-        endDate: new Date(),
-        courseId: "course_ID",
-        chapterId: "chapter_ID",
-        uploaderId: "uploader_ID",
-        mimeType: "video/mp4",
-        length: 100,
-        width: 640,
-        height: 480,
-    },
-    {
-        id: 3,
-        title: "title_3_cccccccccccccccccccccccccccccccc",
-        startDate: new Date(),
-        endDate: new Date(),
-        courseId: "course_ID",
-        chapterId: "chapter_ID",
-        uploaderId: "uploader_ID",
-        mimeType: "video/mp4",
-        length: 100,
-        width: 640,
-        height: 480,
-    },
-];
+// TODO: delete dummy;
+// const dummyVideos: IVideo[] = [
+//     {
+//         id: "video_ID_1",
+//         title: "title_1_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+//         startDate: new Date(),
+//         endDate: new Date(),
+//         courseId: "course_ID_1",
+//         chapterId: "chapter_ID_1",
+//         uploaderId: "uploader_ID_1",
+//         mimeType: "video/mp4",
+//         length: 100,
+//         width: 640,
+//         height: 480,
+//     },
+//     {
+//         id: "video_ID_2",
+//         title: "title_2_bbbbbbbbbbb",
+//         startDate: new Date(),
+//         endDate: new Date(),
+//         courseId: "course_ID_2",
+//         chapterId: "chapter_ID_2",
+//         uploaderId: "uploader_ID_2",
+//         mimeType: "video/mp4",
+//         length: 100,
+//         width: 640,
+//         height: 480,
+//     },
+//     {
+//         id: "video_ID_3",
+//         title: "title_3_cccccccccccccccccccccccccccccccc",
+//         startDate: new Date(),
+//         endDate: new Date(),
+//         courseId: "course_ID_3",
+//         chapterId: "chapter_ID_3",
+//         uploaderId: "uploader_ID_3",
+//         mimeType: "video/mp4",
+//         length: 100,
+//         width: 640,
+//         height: 480,
+//     },
+// ];
 
 export const VideoPoolComponent: React.FC<NavigationProps> = ({ route }) => {
     loggerService.trace("Started VideoPoolComponent.");
-
     const navigation = useNavigation();
-
     React.useContext(LocalizationContext);
+
+    const [isLoading, setLoading] = useState(true);
 
     const courseId: string = route.params.courseId;
     loggerService.trace("Course ID: " + courseId);
+
+    React.useEffect(() => {
+        loggerService.trace("Getting all videos of course: " + courseId);
+        getAllVideos();
+    }, []);
 
     // Display all videos
     const initialVideoState: IVideo[] = [];
@@ -88,7 +105,7 @@ export const VideoPoolComponent: React.FC<NavigationProps> = ({ route }) => {
     const listItem = ({ item }: { item: IVideo }) => (
         // <Animated.View style={{ transform: [{ translateX: translateY }] }}>
         <Animated.View style={{ transform: [{ translateY }] }}>
-            <View style={[styles.separator]} />
+            <Separator />
             <TouchableHighlight onPress={() => navigation.navigate(NavigationRoutes.ROUTE_VIDEO, { video: item })}>
                 <View style={styles.listItem}>
                     <Text>{item.title}</Text>
@@ -97,31 +114,48 @@ export const VideoPoolComponent: React.FC<NavigationProps> = ({ route }) => {
         </Animated.View>
     );
 
+    if (isLoading) {
+        return (
+            <View style={styles.container}>
+                <ActivityIndicator size="large" color="#481380" />
+            </View>
+        );
+    }
+
     return (
         <View style={styles.container}>
-            <Pressable style={styles.styledButton}>
-                <Button title={i18n.t("itrex.getAllVideos")} onPress={getAllVideos}></Button>
-            </Pressable>
-            <Button
-                title={i18n.t("itrex.toUploadVideo")}
-                onPress={() => navigation.navigate(NavigationRoutes.ROUTE_UPLOAD_VIDEO, { courseId })}
-            />
+            {/* <Pressable style={styles.styledButton}>
+                <Button title={i18n.t("itrex.getAllVideos")} onPress={getAllVideos} />
+            </Pressable> */}
 
-            <FlatList data={dummyVideos} renderItem={listItem} keyExtractor={(item, index) => index.toString()} />
+            <Pressable style={styles.styledButton}>
+                <Button
+                    title={i18n.t("itrex.toUploadVideo")}
+                    onPress={() => navigation.navigate(NavigationRoutes.ROUTE_UPLOAD_VIDEO, { courseId })}
+                />
+            </Pressable>
+
+            <FlatList data={videos} renderItem={listItem} keyExtractor={(item, index) => index.toString()} />
+            {/* <FlatList data={dummyVideos} renderItem={listItem} keyExtractor={(item, index) => index.toString()} /> */}
         </View>
     );
 
     async function getAllVideos(): Promise<void> {
-        loggerService.trace("Getting all videos of this course.");
         const request: RequestInit = RequestFactory.createGetRequest();
         const response: Promise<IVideo[]> = endpointsVideo.getAllVideos(request, courseId);
 
-        await response.then((videosReceived: IVideo[]) => {
-            setVideos(videosReceived);
-            // videos = videosReceived;
-            // loggerService.trace(JSON.stringify(videos));
-            // console.log(videos);
-        });
+        await response
+            .then((videosReceived: IVideo[]) => {
+                setVideos(videosReceived);
+                // loggerService.trace(JSON.stringify(videosReceived));
+                console.log(videosReceived);
+            })
+            .catch((error) => {
+                loggerService.error("An error has occured while getting videos.", error);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
     }
 };
 
@@ -141,10 +175,5 @@ const styles = StyleSheet.create({
         paddingBottom: 10,
         paddingStart: 20,
         paddingEnd: 20,
-    },
-    separator: {
-        width: "100%",
-        backgroundColor: "#eeeeee",
-        padding: 1,
     },
 });

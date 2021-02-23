@@ -8,6 +8,6 @@ export interface IEndpointsCourse {
     getCourse(getRequest: RequestInit, id: string): Promise<ICourse>;
     createCourse(postRequest: RequestInit): Promise<ICourse>;
     updateCourse(putRequest: RequestInit): Promise<ICourse>;
-    patchCourse(putRequest: RequestInit): Promise<ICourse>;
+    patchCourse(patchRequest: RequestInit): Promise<ICourse>;
     deleteCourse(deleteRequest: RequestInit, id: string): void;
 }

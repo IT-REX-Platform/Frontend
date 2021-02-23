@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Button, Platform, Pressable, TextInput, Text, View } from "react-native";
+import { Button, Platform, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { LocalizationContext } from "../App";
 import i18n from "../locales";
 import * as DocumentPicker from "expo-document-picker";
@@ -12,9 +12,10 @@ import { IVideo } from "../types/IVideo";
 import { VideoFormDataParams } from "../constants/VideoFormDataParams";
 import { NavigationProps } from "../types/NavigationProps";
 import { loggerFactory } from "../../logger/LoggerConfig";
+import { createVideoUrl } from "../services/createVideoUrl";
 
-const endpointsVideo = new EndpointsVideo();
 const loggerService = loggerFactory.getLogger("service.UploadVideoComponent");
+const endpointsVideo = new EndpointsVideo();
 
 export const UploadVideoComponent: React.FC<NavigationProps> = ({ route }) => {
     React.useContext(LocalizationContext);
@@ -106,7 +107,7 @@ export const UploadVideoComponent: React.FC<NavigationProps> = ({ route }) => {
         if (response.id == null) {
             return;
         }
-        const videoUrl: string = endpointsVideo.getVideoUrl(response.id);
+        const videoUrl: string = createVideoUrl(response.id);
         console.log(videoUrl);
         setVideoPlayerUri(videoUrl);
     };
@@ -130,35 +131,29 @@ export const UploadVideoComponent: React.FC<NavigationProps> = ({ route }) => {
     };
 
     return (
-        <>
-            <View style={styles.container}>
-                <View style={styles.StyledInputContainer}>
-                    <Text>{i18n.t("itrex.uploadVideoHere")}</Text>
-                    <TextInput
-                        style={styles.StyledTextInput}
-                        value={videoName}
-                        editable={false}
-                        testID="videoNameInput"></TextInput>
-                    <Pressable style={styles.StyledButton}>
-                        <Button title={i18n.t("itrex.browseVideos")} onPress={pickVideo}></Button>
-                    </Pressable>
-                </View>
-                <Pressable style={styles.StyledButton}>
-                    <Button title={i18n.t("itrex.toUploadVideo")} onPress={uploadVideo}></Button>
+        <View style={styles.container}>
+            <View style={styles.styledInputContainer}>
+                <Text>{i18n.t("itrex.uploadVideoHere")}</Text>
+                <TextInput style={styles.styledTextInput} value={videoName} editable={false} testID="videoNameInput" />
+                <Pressable style={styles.styledButton}>
+                    <Button title={i18n.t("itrex.browseVideos")} onPress={pickVideo} />
                 </Pressable>
-                <View style={styles.video}></View>
-                <Video
-                    source={{ uri: videoPlayerUri }}
-                    rate={1.0}
-                    volume={1.0}
-                    isMuted={false}
-                    resizeMode="cover"
-                    shouldPlay={true}
-                    useNativeControls={true}
-                    style={{ width: 640, height: 360 }}
-                />
             </View>
-        </>
+            <Pressable style={styles.styledButton}>
+                <Button title={i18n.t("itrex.toUploadVideo")} onPress={uploadVideo} />
+            </Pressable>
+            <View style={styles.video} />
+            <Video
+                source={{ uri: videoPlayerUri }}
+                rate={1.0}
+                volume={1.0}
+                isMuted={false}
+                resizeMode="cover"
+                shouldPlay={true}
+                useNativeControls={true}
+                style={{ width: 640, height: 360 }}
+            />
+        </View>
     );
 };
 
@@ -171,18 +166,18 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
     },
-    StyledInputContainer: {
+    styledInputContainer: {
         flexDirection: "column",
         justifyContent: "center",
     },
-    StyledTextInput: {
+    styledTextInput: {
         width: "100%",
         marginLeft: 8,
         marginRight: 8,
         borderColor: "lightgray",
         borderWidth: 2,
     },
-    StyledButton: {
+    styledButton: {
         marginTop: 16,
     },
     video: {

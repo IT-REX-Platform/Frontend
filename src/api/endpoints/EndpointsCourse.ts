@@ -8,7 +8,7 @@ import { CourseUrlParams } from "../../constants/CourseUrlParams";
 import { ResponseParser } from "./ResponseParser";
 
 /**
- * Endpoints for /api/courses/.
+ * Endpoints for courseservice/api/courses/.
  * Look in backend course-service CourseResource.java.
  */
 export class EndpointsCourse implements IEndpointsCourse {
@@ -68,6 +68,7 @@ export class EndpointsCourse implements IEndpointsCourse {
      */
     public getCourse(getRequest: RequestInit, id: string): Promise<ICourse> {
         const urlUpdated = this.url + "/" + id;
+
         this.loggerApi.trace("Sending GET request to URL: " + urlUpdated);
         const response: Promise<Response> = sendRequest(urlUpdated, getRequest);
         return ResponseParser.parseCourse(response);
@@ -98,7 +99,7 @@ export class EndpointsCourse implements IEndpointsCourse {
     /**
      * Update one or more course fields.
      *
-     * @param postRequest PUT request with course JSON body containing a course ID and one or more course fields.
+     * @param postRequest PATCH request with course JSON body containing a course ID and one or more course fields.
      */
     public patchCourse(patchRequest: RequestInit): Promise<ICourse> {
         this.loggerApi.trace("Sending PATCH request to URL: " + this.url);
@@ -114,6 +115,7 @@ export class EndpointsCourse implements IEndpointsCourse {
      */
     public deleteCourse(deleteRequest: RequestInit, id: string): void {
         const urlUpdated = this.url + "/" + id;
+
         this.loggerApi.trace("Sending DELETE request to URL: " + urlUpdated);
         const response: Promise<Response> = sendRequest(urlUpdated, deleteRequest);
         response.then((data) => console.log(data));

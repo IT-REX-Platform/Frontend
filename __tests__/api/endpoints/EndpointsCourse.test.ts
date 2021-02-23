@@ -51,7 +51,7 @@ describe("EndpointsCourse", () => {
     };
 
     const courseExpected: ICourse = {
-        id: 12345,
+        id: "12345",
         name: "TheoInf3",
         publishState: CoursePublishState.PUBLISHED,
     };
@@ -92,7 +92,7 @@ describe("EndpointsCourse", () => {
 
     it("getCourse() should return one course.", async () => {
         try {
-            let id: number = 12345;
+            let id: string = "12345";
             const response: ICourse = await instance.getCourse(request, id);
             expect(response).resolves.toBe(courseExpected);
         } catch (error) {
@@ -133,9 +133,9 @@ describe("EndpointsCourse", () => {
 
     it("delete() should delete a course.", async () => {
         try {
-            let id: number = 12345;
-            const response: void = await instance.deleteCourse(request, id);
-            expect(response).resolves.toBe(courseExpected);
+            let id: string = "12345";
+            instance.deleteCourse(request, id);
+            expect(instance.deleteCourse).toHaveBeenCalled();
         } catch (error) {
             // Enable once fetch has been mocked.
             // console.log("An error has occurred.", error);

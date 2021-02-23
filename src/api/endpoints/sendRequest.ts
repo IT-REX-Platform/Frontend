@@ -16,7 +16,7 @@ export function sendRequest(url: string, request: RequestInit): Promise<Response
             // This does not catch HTTP error responses, e.g. 404, 500, etc.
             .catch((error) => {
                 reject(error);
-                createAlert("An error occured while accessing IT-REX service.");
+                createAlert("An error has occured while accessing IT-REX service.");
             });
     });
 }

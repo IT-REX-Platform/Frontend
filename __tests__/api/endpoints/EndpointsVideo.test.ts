@@ -44,7 +44,7 @@ describe("EndpointsVideo", () => {
     const videoId: string = "24";
 
     const videoExpected: IVideo = {
-        id: 24,
+        id: "24",
         title: "24 SMILEY - HABEN WIR NOCH PEPPS?.mp4",
         mimeType: "video/mp4",
         width: 1280,
@@ -72,10 +72,10 @@ describe("EndpointsVideo", () => {
         }
     });
 
-    it("deleteVideoById() should return a video with the given id.", async () => {
+    it("deleteVideoById() should delete a video.", async () => {
         try {
-            const response: IVideo = await instance.deleteVideo(request, videoId);
-            expect(response).resolves.toBe(videoExpected);
+            await instance.deleteVideo(request, videoId);
+            expect(instance.deleteVideo).toHaveBeenCalled();
         } catch (error) {
             // Enable once fetch has been mocked.
             // console.log("An error has occurred.", error);
