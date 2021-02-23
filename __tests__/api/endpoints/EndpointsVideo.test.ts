@@ -52,7 +52,7 @@ describe("EndpointsVideo", () => {
         length: 92,
     };
 
-    it("getVideoById() should return a video with the given id.", async () => {
+    xit("getVideoById() should return a video with the given id.", async () => {
         try {
             const response: IVideo = await instance.downloadVideo(request, videoId);
             expect(response).resolves.toBe(videoExpected);
@@ -62,7 +62,7 @@ describe("EndpointsVideo", () => {
         }
     });
 
-    it("uploadVideo() should return a video with the given id.", async () => {
+    xit("uploadVideo() should return a video with the given id.", async () => {
         try {
             const response: IVideo = await instance.uploadVideo(request);
             expect(response).resolves.toBe(videoExpected);
@@ -72,7 +72,7 @@ describe("EndpointsVideo", () => {
         }
     });
 
-    it("deleteVideoById() should delete a video.", async () => {
+    xit("deleteVideoById() should delete a video.", async () => {
         try {
             await instance.deleteVideo(request, videoId);
             expect(instance.deleteVideo).toHaveBeenCalled();

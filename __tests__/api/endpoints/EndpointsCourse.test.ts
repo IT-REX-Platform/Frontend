@@ -56,7 +56,7 @@ describe("EndpointsCourse", () => {
         publishState: CoursePublishState.PUBLISHED,
     };
 
-    it("getFilteredCourses() should return an array of all courses.", async () => {
+    xit("getFilteredCourses() should return an array of all courses.", async () => {
         try {
             const response: ICourse[] = await instance.getAllCourses(request);
             expect(response).resolves.toBe(courseExpected);
@@ -66,7 +66,7 @@ describe("EndpointsCourse", () => {
         }
     });
 
-    it("getFilteredCourses() should return an array of published courses.", async () => {
+    xit("getFilteredCourses() should return an array of published courses.", async () => {
         const params: ICourse = { publishState: CoursePublishState.PUBLISHED };
 
         try {
@@ -78,7 +78,7 @@ describe("EndpointsCourse", () => {
         }
     });
 
-    it("getFilteredCourses() should return an array of all courses with name TheoInf2.", async () => {
+    xit("getFilteredCourses() should return an array of all courses with name TheoInf2.", async () => {
         const params: ICourse = { name: "TheoInf3" };
 
         try {
@@ -90,7 +90,7 @@ describe("EndpointsCourse", () => {
         }
     });
 
-    it("getCourse() should return one course.", async () => {
+    xit("getCourse() should return one course.", async () => {
         try {
             let id: string = "12345";
             const response: ICourse = await instance.getCourse(request, id);
@@ -101,7 +101,7 @@ describe("EndpointsCourse", () => {
         }
     });
 
-    it("createCourse() should create a course.", async () => {
+    xit("createCourse() should create a course.", async () => {
         try {
             const response: ICourse = await instance.createCourse(request);
             expect(response).resolves.toBe(courseExpected);
@@ -111,7 +111,7 @@ describe("EndpointsCourse", () => {
         }
     });
 
-    it("updateCourse() should update a course.", async () => {
+    xit("updateCourse() should update a course.", async () => {
         try {
             const response: ICourse = await instance.updateCourse(request);
             expect(response).resolves.toBe(courseExpected);
@@ -121,7 +121,7 @@ describe("EndpointsCourse", () => {
         }
     });
 
-    it("patchCourse() should update a course.", async () => {
+    xit("patchCourse() should update a course.", async () => {
         try {
             const response: ICourse = await instance.patchCourse(request);
             expect(response).resolves.toBe(courseExpected);
@@ -131,7 +131,7 @@ describe("EndpointsCourse", () => {
         }
     });
 
-    it("delete() should delete a course.", async () => {
+    xit("delete() should delete a course.", async () => {
         try {
             let id: string = "12345";
             instance.deleteCourse(request, id);
