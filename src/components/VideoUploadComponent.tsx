@@ -161,7 +161,7 @@ export const VideoUploadComponent: React.FC = () => {
                     resizeMode="cover"
                     shouldPlay={true}
                     useNativeControls={true}
-                    style={{ width: 640, height: 360 }}
+                    style={{ width: 640, height: 480 }}
                 />
             </View>
         </ImageBackground>
