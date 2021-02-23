@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import i18n from "../locales";
 import { Header } from "../constants/navigators/Header";
-import { LocalizationContext } from "./Context";
+import { CourseContext, LocalizationContext } from "./Context";
 import { Button, ImageBackground, Platform, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import * as DocumentPicker from "expo-document-picker";
 import * as ImagePicker from "expo-image-picker";
@@ -11,18 +11,19 @@ import { createAlert } from "../helperScripts/createAlert";
 import { Video } from "expo-av";
 import { IVideo } from "../types/IVideo";
 import { VideoFormDataParams } from "../constants/VideoFormDataParams";
-import { NavigationProps } from "../types/NavigationProps";
 import { loggerFactory } from "../../logger/LoggerConfig";
 import { createVideoUrl } from "../services/createVideoUrl";
+import { ICourse } from "../types/ICourse";
 
 const loggerService = loggerFactory.getLogger("service.UploadVideoComponent");
 const endpointsVideo = new EndpointsVideo();
 
-export const UploadVideoComponent: React.FC<NavigationProps> = ({ route }) => {
+export const VideoUploadComponent: React.FC = () => {
     React.useContext(LocalizationContext);
 
-    const courseId: string = route.params.courseId;
-    loggerService.trace("Course ID: " + courseId);
+    const course: ICourse = React.useContext(CourseContext);
+
+    loggerService.trace("Course ID: " + course.id);
 
     const [videoUri, setVideoUri] = useState("");
     const [videoName, setVideoName] = useState("");
@@ -93,11 +94,11 @@ export const UploadVideoComponent: React.FC<NavigationProps> = ({ route }) => {
      * If no video was selected previously do nothing.
      */
     const uploadVideo = async (): Promise<void> => {
-        if (videoUri === "") {
+        if (videoUri === "" || course.id === undefined) {
             return;
         }
 
-        const video = await buildVideoAsFormData();
+        const video = await buildVideoAsFormData(course.id);
         const postRequest: RequestInit = RequestFactory.createPostRequestWithFormData(video);
         const response: IVideo = await endpointsVideo.uploadVideo(postRequest);
         console.log(response);
@@ -116,7 +117,7 @@ export const UploadVideoComponent: React.FC<NavigationProps> = ({ route }) => {
     /**
      * Build a FormData object from the video uri.
      */
-    const buildVideoAsFormData = async () => {
+    const buildVideoAsFormData = async (courseId: string) => {
         const response: Response = await fetch(videoUri);
         const fileBlob: Blob = await response.blob();
         const formData: FormData = new FormData();
@@ -133,8 +134,6 @@ export const UploadVideoComponent: React.FC<NavigationProps> = ({ route }) => {
 
     return (
         <ImageBackground source={require("../constants/images/Background2.png")} style={styles.image}>
-            <Header title={i18n.t("itrex.toUploadVideo")} />
-
             <View style={styles.container}>
                 <View style={styles.styledInputContainer}>
                     <Text style={{ color: "white" }}>{i18n.t("itrex.uploadVideoHere")}</Text>

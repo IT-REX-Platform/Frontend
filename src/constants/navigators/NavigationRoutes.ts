@@ -22,6 +22,7 @@ export const config = {
                 },
                 VIDEO_POOL: "VIDEO_POOL",
                 VIDEO: "VIDEO",
+                VIDEO_UPLOAD: "VIDEO_UPLOAD",
             },
         },
     },
@@ -31,7 +32,6 @@ export type RootDrawerParamList = {
     ROUTE_HOME: undefined;
     ROUTE_CREATE_COURSE: undefined;
     ROUTE_COURSE_DETAILS: { courseId: string; screen?: string };
-    ROUTE_UPLOAD_VIDEO: undefined;
 };
 
 export type CourseStackParamList = {
@@ -40,6 +40,7 @@ export type CourseStackParamList = {
     VIDEO: {
         video: IVideo;
     };
+    VIDEO_UPLOAD: undefined;
 };
 
 export type CourseTabParamList = {
@@ -51,7 +52,7 @@ export class NavigationRoutes {
     static ROUTE_HOME = "ROUTE_HOME";
     static ROUTE_LOGIN = "ROUTE_LOGIN";
     static ROUTE_CREATE_COURSE = "ROUTE_CREATE_COURSE";
-    static ROUTE_UPLOAD_VIDEO = "ROUTE_UPLOAD_VIDEO";
+    static ROUTE_VIDEO_UPLOAD = "VIDEO_UPLOAD";
     static ROUTE_COURSE_DETAILS = "ROUTE_COURSE_DETAILS";
     static ROUTE_COURSE_DETAILS_TABS = "ROUTE_COURSE_DETAILS_TABS";
     static ROUTE_COURSE_DETAILS_OVERVIEW = "ROUTE_COURSE_DETAILS_OVERVIEW";

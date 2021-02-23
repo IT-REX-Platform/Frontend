@@ -80,7 +80,7 @@ export const VideoPoolComponent: React.FC = () => {
             <Pressable style={styles.styledButton}>
                 <Button
                     title={i18n.t("itrex.toUploadVideo")}
-                    onPress={() => navigation.navigate(NavigationRoutes.ROUTE_UPLOAD_VIDEO, { courseId: course.id })}
+                    onPress={() => navigation.navigate(NavigationRoutes.ROUTE_VIDEO_UPLOAD)}
                 />
             </Pressable>
 

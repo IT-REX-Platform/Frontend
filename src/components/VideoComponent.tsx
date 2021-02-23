@@ -9,19 +9,29 @@ import i18n from "../locales";
 import { Separator } from "./Separator";
 import { RequestFactory } from "../api/requests/RequestFactory";
 import { EndpointsVideo } from "../api/endpoints/EndpointsVideo";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { CompositeNavigationProp, RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { LocalizationContext } from "./Context";
-import { NavigationRoutes } from "../constants/navigators/NavigationRoutes";
+import { CourseStackParamList, RootDrawerParamList } from "../constants/navigators/NavigationRoutes";
+import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
+import { DrawerNavigationProp } from "@react-navigation/drawer";
 
 const loggerService = loggerFactory.getLogger("service.VideoComponent");
 const endpointsVideo = new EndpointsVideo();
 
+type ScreenCourseTabsNavigationProp = CompositeNavigationProp<
+    StackNavigationProp<CourseStackParamList, "VIDEO">,
+    DrawerNavigationProp<RootDrawerParamList>
+>;
+
+type ScreenCourseTabsRouteProp = RouteProp<CourseStackParamList, "VIDEO">;
+type ScreenCourseTabsProps = StackScreenProps<CourseStackParamList, "VIDEO">;
+
 export const VideoComponent: React.FC = () => {
     loggerService.trace("Started VideoComponent.");
     React.useContext(LocalizationContext);
-    const navigation = useNavigation();
+    const navigation = useNavigation<ScreenCourseTabsNavigationProp>();
 
-    const route = useRoute();
+    const route = useRoute<ScreenCourseTabsRouteProp>();
     const video: IVideo = route.params.video;
     console.log(video);
 

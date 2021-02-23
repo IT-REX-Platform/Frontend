@@ -15,6 +15,10 @@ import { DrawerNavigationProp, DrawerScreenProps } from "@react-navigation/drawe
 import { CourseStackParamList, RootDrawerParamList } from "../../constants/navigators/NavigationRoutes";
 import { VideoPoolComponent } from "../VideoPoolComponent";
 import { VideoComponent } from "../VideoComponent";
+import AuthenticationService from "../../services/AuthenticationService";
+import { ITREXRoles } from "../../constants/ITREXRoles";
+import i18n from "../../locales";
+import { VideoUploadComponent } from "../VideoUploadComponent";
 
 export type ScreenCourseNavigationProp = DrawerNavigationProp<RootDrawerParamList, "ROUTE_COURSE_DETAILS">;
 export type ScreenCourseRouteProp = RouteProp<RootDrawerParamList, "ROUTE_COURSE_DETAILS">;
@@ -78,11 +82,32 @@ export const ScreenCourse: React.FC = () => {
                     // ),
                 }}>
                 <CourseStack.Screen name="INFO" component={ScreenCourseTabs}></CourseStack.Screen>
-                <CourseStack.Screen name="VIDEO_POOL" component={VideoPoolComponent}></CourseStack.Screen>
-                <CourseStack.Screen name="VIDEO" component={VideoComponent}></CourseStack.Screen>
+
+                {getUploadVideoScreen()}
             </CourseStack.Navigator>
         </CourseContext.Provider>
     );
+
+    function getUploadVideoScreen() {
+        if (
+            AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_LECTURER) ||
+            AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_ADMIN)
+        ) {
+            return (
+                <>
+                    <CourseStack.Screen
+                        name="VIDEO_UPLOAD"
+                        component={VideoUploadComponent}
+                        options={{
+                            title: i18n.t("itrex.toUploadVideo"),
+                        }}
+                    />
+                    <CourseStack.Screen name="VIDEO_POOL" component={VideoPoolComponent}></CourseStack.Screen>
+                    <CourseStack.Screen name="VIDEO" component={VideoComponent}></CourseStack.Screen>
+                </>
+            );
+        }
+    }
 };
 
 const styles = StyleSheet.create({
