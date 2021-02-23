@@ -81,7 +81,7 @@ export const VideoComponent: React.FC<NavigationProps> = ({ route }) => {
     );
 
     function getVideoUrl(): string {
-        if (video.id === undefined) {
+        if (video.id == undefined || null) {
             createAlert(i18n.t("itrex.videoNotFound"));
             return "";
         }
@@ -90,36 +90,36 @@ export const VideoComponent: React.FC<NavigationProps> = ({ route }) => {
     }
 
     function getWidth(): number {
-        if (video.width === undefined) {
+        if (video.width == undefined || null) {
             return 640;
         }
         return video.width;
     }
 
     function getHeight(): number {
-        if (video.height === undefined) {
+        if (video.height == undefined || null) {
             return 480;
         }
         return video.height;
     }
 
     function getTitle(): string {
-        if (video.title === undefined) {
-            return "";
+        if (video.title == undefined || null) {
+            return "-";
         }
         return video.title;
     }
 
     function getStartDate(): string {
-        if (video.startDate === undefined) {
-            return "";
+        if (video.startDate == undefined || null) {
+            return "-";
         }
         return video.startDate.toString();
     }
 
     function getEndDate(): string {
-        if (video.endDate === undefined) {
-            return "";
+        if (video.endDate == undefined || null) {
+            return "-";
         }
         return video.endDate.toString();
     }

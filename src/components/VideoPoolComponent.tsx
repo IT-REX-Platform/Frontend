@@ -21,6 +21,7 @@ import { RequestFactory } from "../api/requests/RequestFactory";
 import { IVideo } from "../types/IVideo";
 import { NavigationProps } from "../types/NavigationProps";
 import { Separator } from "./Separator";
+import { useFocusEffect } from "@react-navigation/native";
 
 const endpointsVideo = new EndpointsVideo();
 const loggerService = loggerFactory.getLogger("service.VideoPoolComponent");
@@ -78,10 +79,12 @@ export const VideoPoolComponent: React.FC<NavigationProps> = ({ route }) => {
     const courseId: string = route.params.courseId;
     loggerService.trace("Course ID: " + courseId);
 
-    React.useEffect(() => {
-        loggerService.trace("Getting all videos of course: " + courseId);
-        getAllVideos();
-    }, []);
+    useFocusEffect(
+        React.useCallback(() => {
+            loggerService.trace("Getting all videos of course: " + courseId);
+            getAllVideos();
+        }, [])
+    );
 
     // Display all videos
     const initialVideoState: IVideo[] = [];
