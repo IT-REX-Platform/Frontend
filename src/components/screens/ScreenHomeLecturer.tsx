@@ -1,19 +1,18 @@
-import { Button, Text, View } from "react-native";
+import { ImageBackground, StyleSheet, Text, View } from "react-native";
 
 import React, { useEffect, useState } from "react";
-import { CreateCourseComponent } from "../CreateCourseComponent";
 import { useNavigation } from "@react-navigation/native";
-import { NavigationRoutes } from "../../constants/NavigationRoutes";
-import { LocalizationContext } from "../../App";
 import { CourseList } from "../CourseList";
 import { courseList } from "../../constants/fixtures/courseList.fixture";
 import i18n from "../../locales";
 import Select from "react-select";
 import { ICourse } from "../../types/ICourse";
+import { Header } from "../../constants/navigators/Header";
+import { LocalizationContext } from "../Context";
 
 export const ScreenHomeLecturer: React.FC = () => {
+    React.useContext(LocalizationContext);
     const navigation = useNavigation();
-    const { t } = React.useContext(LocalizationContext);
 
     const [filteredCourses, setFilteredCourses] = useState<ICourse[]>([]);
 
@@ -31,37 +30,45 @@ export const ScreenHomeLecturer: React.FC = () => {
         setFilteredCourses(courseList);
     }, [selectedPublishStateFilter, selectedActiveState]);
 
+    function filter() {
+        if (filteredCourses === undefined) {
+            return;
+        } else if (filteredCourses.length > 0) {
+            return (
+                <View style={{ flexDirection: "row", zIndex: 1 }}>
+                    <View style={{ width: 300, zIndex: 3 }}>
+                        <Text style={{ color: "white" }}>Filter for published/unpublished courses</Text>
+                        <Select
+                            options={publishStateFilterOptions}
+                            defaultValue={publishStateFilterOptions[0]}
+                            onChange={(option) => {
+                                setPublishStateFilter(option?.value);
+                            }}
+                        />
+                    </View>
+                    <View style={{ width: 300, zIndex: 3 }}>
+                        <Text style={{ color: "white" }}>Filter for active/inactive courses</Text>
+                        <Select
+                            options={activeStateFilterOptions}
+                            defaultValue={activeStateFilterOptions[0]}
+                            onChange={(option) => {
+                                setSelectedActiveState(option?.value);
+                            }}
+                        />
+                    </View>
+                </View>
+            );
+        }
+    }
+
     return (
-        <View>
-            <Text>{i18n.t("itrex.homeLecturerText")}</Text>
-            <View style={{ flexDirection: "row", zIndex: 1 }}>
-                <View style={{ width: 300, zIndex: 3 }}>
-                    <Text>Filter for published/unpublished courses</Text>
-                    <Select
-                        options={publishStateFilterOptions}
-                        defaultValue={publishStateFilterOptions[0]}
-                        onChange={(option) => {
-                            setPublishStateFilter(option?.value);
-                        }}
-                    />
-                </View>
-                <View style={{ width: 300, zIndex: 3 }}>
-                    <Text>Filter for active/inactive courses</Text>
-                    <Select
-                        options={activeStateFilterOptions}
-                        defaultValue={activeStateFilterOptions[0]}
-                        onChange={(option) => {
-                            setSelectedActiveState(option?.value);
-                        }}
-                    />
-                </View>
-            </View>
-            <CourseList courses={filteredCourses} />
-            <CreateCourseComponent />
-            <Button
-                title="Go to Upload Video"
-                onPress={() => navigation.navigate(NavigationRoutes.ROUTE_UPLOAD_VIDEO)}
-            />
+        <View style={styles.container}>
+            <Header title={i18n.t("itrex.home")} />
+            <ImageBackground source={require("../../constants/images/Background2.png")} style={styles.image}>
+                <Text style={{ color: "white" }}>{i18n.t("itrex.homeLecturerText")}</Text>
+                {filter()}
+                <CourseList courses={filteredCourses} />
+            </ImageBackground>
         </View>
     );
 };
@@ -124,3 +131,29 @@ function getMatchingActivityStateCourses(activeState: string, inputCourseList: I
 
     return activeState === "ACTIVE" ? activeCourses : inactiveCourses;
 }
+
+const styles = StyleSheet.create({
+    textContainer: {
+        marginTop: 20,
+        marginBottom: 20,
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    container: {
+        flex: 1,
+        flexDirection: "column",
+    },
+    image: {
+        flex: 1,
+        resizeMode: "stretch",
+        justifyContent: "center",
+    },
+    icon: {
+        width: 100,
+        height: 100,
+    },
+    textSytle: {
+        color: "white",
+    },
+});

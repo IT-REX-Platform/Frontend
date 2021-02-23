@@ -70,7 +70,7 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
 
     return (
         <TouchableOpacity style={styles.card} onPress={getAlert} activeOpacity={0.7}>
-            <ImageBackground source={require("../constants/images/Background1-4.png")} style={styles.image}>
+            <ImageBackground source={require("../constants/images/Background1-1.png")} style={styles.image}>
                 {getPublishedSate(course.publishState)}
                 <Text style={styles.cardHeader}>{course.name}</Text>
                 <View style={styles.break} />
@@ -88,7 +88,7 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
 
 const styles = StyleSheet.create({
     card: {
-        backgroundColor: dark.theme.darkBlue3,
+        backgroundColor: dark.theme.lightBlue,
         shadowRadius: 10,
         shadowColor: dark.theme.darkBlue1,
         shadowOffset: { width: -1, height: 1 },
@@ -97,6 +97,7 @@ const styles = StyleSheet.create({
         minWidth: 400,
     },
     cardHeader: {
+        flex: 1,
         margin: 5,
         fontSize: 20,
         fontWeight: "bold",
