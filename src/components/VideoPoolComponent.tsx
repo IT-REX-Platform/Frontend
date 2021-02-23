@@ -19,70 +19,27 @@ import { loggerFactory } from "../../logger/LoggerConfig";
 import { EndpointsVideo } from "../api/endpoints/EndpointsVideo";
 import { RequestFactory } from "../api/requests/RequestFactory";
 import { IVideo } from "../types/IVideo";
-import { NavigationProps } from "../types/NavigationProps";
 import { Separator } from "./Separator";
 import { useFocusEffect } from "@react-navigation/native";
+import { ICourse } from "../types/ICourse";
+import { CourseContext } from "./Context";
 
 const endpointsVideo = new EndpointsVideo();
 const loggerService = loggerFactory.getLogger("service.VideoPoolComponent");
 
-// TODO: delete dummy;
-// const dummyVideos: IVideo[] = [
-//     {
-//         id: "video_ID_1",
-//         title: "title_1_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-//         startDate: new Date(),
-//         endDate: new Date(),
-//         courseId: "course_ID_1",
-//         chapterId: "chapter_ID_1",
-//         uploaderId: "uploader_ID_1",
-//         mimeType: "video/mp4",
-//         length: 100,
-//         width: 640,
-//         height: 480,
-//     },
-//     {
-//         id: "video_ID_2",
-//         title: "title_2_bbbbbbbbbbb",
-//         startDate: new Date(),
-//         endDate: new Date(),
-//         courseId: "course_ID_2",
-//         chapterId: "chapter_ID_2",
-//         uploaderId: "uploader_ID_2",
-//         mimeType: "video/mp4",
-//         length: 100,
-//         width: 640,
-//         height: 480,
-//     },
-//     {
-//         id: "video_ID_3",
-//         title: "title_3_cccccccccccccccccccccccccccccccc",
-//         startDate: new Date(),
-//         endDate: new Date(),
-//         courseId: "course_ID_3",
-//         chapterId: "chapter_ID_3",
-//         uploaderId: "uploader_ID_3",
-//         mimeType: "video/mp4",
-//         length: 100,
-//         width: 640,
-//         height: 480,
-//     },
-// ];
-
-export const VideoPoolComponent: React.FC<NavigationProps> = ({ route }) => {
+export const VideoPoolComponent: React.FC = () => {
     loggerService.trace("Started VideoPoolComponent.");
     const navigation = useNavigation();
     React.useContext(LocalizationContext);
 
-    const [isLoading, setLoading] = useState(true);
+    const course: ICourse = React.useContext(CourseContext);
 
-    const courseId: string = route.params.courseId;
-    loggerService.trace("Course ID: " + courseId);
+    const [isLoading, setLoading] = useState(true);
 
     useFocusEffect(
         React.useCallback(() => {
-            loggerService.trace("Getting all videos of course: " + courseId);
-            getAllVideos();
+            loggerService.trace("Getting all videos of course: " + course.id);
+            getAllVideos(course.id);
         }, [])
     );
 
@@ -90,26 +47,20 @@ export const VideoPoolComponent: React.FC<NavigationProps> = ({ route }) => {
     const initialVideoState: IVideo[] = [];
     const [videos, setVideos] = useState(initialVideoState);
 
-    // const translateY = useRef(new Animated.Value(Dimensions.get("window").height)).current;
     const translateY = useRef(new Animated.Value(100)).current;
     useEffect(() => {
         Animated.timing(translateY, { toValue: 1, duration: 500, useNativeDriver: false }).start();
     });
 
-    // const translateX = useRef(new Animated.Value(100)).current;
-    // const fadeOut = () => {
-    //     // Will change fadeAnim value to 0 in 5 seconds
-    //     Animated.timing(translateX, {
-    //         toValue: 0,
-    //         duration: 2000,
-    //     }).start();
-    // };
-
     const listItem = ({ item }: { item: IVideo }) => (
-        // <Animated.View style={{ transform: [{ translateX: translateY }] }}>
         <Animated.View style={{ transform: [{ translateY }] }}>
             <Separator />
-            <TouchableHighlight onPress={() => navigation.navigate(NavigationRoutes.ROUTE_VIDEO, { video: item })}>
+            <TouchableHighlight
+                onPress={() => {
+                    navigation.navigate(NavigationRoutes.ROUTE_VIDEO, {
+                        params: { video: item },
+                    });
+                }}>
                 <View style={styles.listItem}>
                     <Text>{item.title}</Text>
                 </View>
@@ -127,23 +78,18 @@ export const VideoPoolComponent: React.FC<NavigationProps> = ({ route }) => {
 
     return (
         <View style={styles.container}>
-            {/* <Pressable style={styles.styledButton}>
-                <Button title={i18n.t("itrex.getAllVideos")} onPress={getAllVideos} />
-            </Pressable> */}
-
             <Pressable style={styles.styledButton}>
                 <Button
                     title={i18n.t("itrex.toUploadVideo")}
-                    onPress={() => navigation.navigate(NavigationRoutes.ROUTE_UPLOAD_VIDEO, { courseId })}
+                    onPress={() => navigation.navigate(NavigationRoutes.ROUTE_UPLOAD_VIDEO, { courseId: course.id })}
                 />
             </Pressable>
 
             <FlatList data={videos} renderItem={listItem} keyExtractor={(item, index) => index.toString()} />
-            {/* <FlatList data={dummyVideos} renderItem={listItem} keyExtractor={(item, index) => index.toString()} /> */}
         </View>
     );
 
-    async function getAllVideos(): Promise<void> {
+    async function getAllVideos(courseId?: string): Promise<void> {
         const request: RequestInit = RequestFactory.createGetRequest();
         const response: Promise<IVideo[]> = endpointsVideo.getAllVideos(request, courseId);
 

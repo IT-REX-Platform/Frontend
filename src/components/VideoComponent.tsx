@@ -12,16 +12,17 @@ import { Separator } from "./Separator";
 import { RequestFactory } from "../api/requests/RequestFactory";
 import { EndpointsVideo } from "../api/endpoints/EndpointsVideo";
 import { NavigationRoutes } from "../constants/NavigationRoutes";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 const loggerService = loggerFactory.getLogger("service.VideoComponent");
 const endpointsVideo = new EndpointsVideo();
 
-export const VideoComponent: React.FC<NavigationProps> = ({ route }) => {
+export const VideoComponent: React.FC = () => {
     loggerService.trace("Started VideoComponent.");
     React.useContext(LocalizationContext);
     const navigation = useNavigation();
 
+    const route = useRoute();
     const video: IVideo = route.params.video;
     console.log(video);
 

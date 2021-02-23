@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Button, Platform, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
-import { LocalizationContext } from "../App";
 import i18n from "../locales";
+import { Header } from "../constants/navigators/Header";
+import { LocalizationContext } from "./Context";
+import { Button, ImageBackground, Platform, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import * as DocumentPicker from "expo-document-picker";
 import * as ImagePicker from "expo-image-picker";
 import { RequestFactory } from "../api/requests/RequestFactory";
@@ -131,29 +132,40 @@ export const UploadVideoComponent: React.FC<NavigationProps> = ({ route }) => {
     };
 
     return (
-        <View style={styles.container}>
-            <View style={styles.styledInputContainer}>
-                <Text>{i18n.t("itrex.uploadVideoHere")}</Text>
-                <TextInput style={styles.styledTextInput} value={videoName} editable={false} testID="videoNameInput" />
+        <ImageBackground source={require("../constants/images/Background2.png")} style={styles.image}>
+            <Header title={i18n.t("itrex.toUploadVideo")} />
+
+            <View style={styles.container}>
+                <View style={styles.styledInputContainer}>
+                    <Text style={{ color: "white" }}>{i18n.t("itrex.uploadVideoHere")}</Text>
+                    <TextInput
+                        style={styles.styledTextInput}
+                        value={videoName}
+                        editable={false}
+                        testID="videoNameInput"></TextInput>
+                    <Pressable style={styles.styledButton}>
+                        <Button title={i18n.t("itrex.browseVideos")} onPress={pickVideo}></Button>
+                    </Pressable>
+                </View>
+
                 <Pressable style={styles.styledButton}>
-                    <Button title={i18n.t("itrex.browseVideos")} onPress={pickVideo} />
+                    <Button title={i18n.t("itrex.toUploadVideo")} onPress={uploadVideo}></Button>
                 </Pressable>
+
+                <View style={styles.video} />
+
+                <Video
+                    source={{ uri: videoPlayerUri }}
+                    rate={1.0}
+                    volume={1.0}
+                    isMuted={false}
+                    resizeMode="cover"
+                    shouldPlay={true}
+                    useNativeControls={true}
+                    style={{ width: 640, height: 360 }}
+                />
             </View>
-            <Pressable style={styles.styledButton}>
-                <Button title={i18n.t("itrex.toUploadVideo")} onPress={uploadVideo} />
-            </Pressable>
-            <View style={styles.video} />
-            <Video
-                source={{ uri: videoPlayerUri }}
-                rate={1.0}
-                volume={1.0}
-                isMuted={false}
-                resizeMode="cover"
-                shouldPlay={true}
-                useNativeControls={true}
-                style={{ width: 640, height: 360 }}
-            />
-        </View>
+        </ImageBackground>
     );
 };
 
@@ -162,15 +174,16 @@ const styles = StyleSheet.create({
         flex: 1,
         marginTop: 20,
         marginBottom: 20,
-        backgroundColor: "#fff",
         alignItems: "center",
         justifyContent: "center",
     },
     styledInputContainer: {
         flexDirection: "column",
         justifyContent: "center",
+        tintColor: "white",
     },
     styledTextInput: {
+        tintColor: "white",
         width: "100%",
         marginLeft: 8,
         marginRight: 8,
@@ -184,5 +197,10 @@ const styles = StyleSheet.create({
         marginTop: 20,
         marginBottom: 20,
         alignItems: "center",
+    },
+    image: {
+        flex: 1,
+        resizeMode: "stretch",
+        justifyContent: "center",
     },
 });

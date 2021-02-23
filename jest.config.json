@@ -16,7 +16,10 @@
         "!**/constants/**",
         "!**.config.*",
         "!**/src/components/CreateCourseComponent.tsx",
+        "!**/src/components/screens/**",
+        "!**/src/components/UploadVideoComponent.tsx",
         "!**/src/types/**",
+        "!**/src/navigation/**",
         "!**/src/api/endpoints_interfaces/**",
         "!**eslintrc.js"
     ],
