@@ -39,7 +39,7 @@ export const VideoPoolComponent: React.FC = () => {
         React.useCallback(() => {
             loggerService.trace("Getting all videos of course: " + course.id);
             getAllVideos(course.id);
-        }, [])
+        }, [course])
     );
 
     // Display all videos
