@@ -44,10 +44,7 @@ export const ScreenCourseOverview: React.FC = () => {
 
     function goToVideoPool() {
         if (course.id !== undefined) {
-            navigation.navigate("ROUTE_COURSE_DETAILS", {
-                courseId: course.id,
-                screen: "VIDEO_POOL",
-            });
+            navigation.navigate("VIDEO_POOL");
         }
     }
 };

@@ -56,8 +56,8 @@ export const VideoPoolComponent: React.FC = () => {
             <Separator />
             <TouchableHighlight
                 onPress={() => {
-                    navigation.navigate(NavigationRoutes.ROUTE_VIDEO, {
-                        params: { video: item },
+                    navigation.navigate("VIDEO", {
+                        video: item,
                     });
                 }}>
                 <View style={styles.listItem}>

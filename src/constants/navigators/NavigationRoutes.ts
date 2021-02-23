@@ -1,8 +1,5 @@
 import * as Linking from "expo-linking";
-import { CompositeNavigationProp, LinkingOptions, NavigatorScreenParams, RouteProp } from "@react-navigation/native";
-import { DrawerNavigationProp, DrawerScreenProps } from "@react-navigation/drawer";
-import { MaterialTopTabNavigationProp } from "@react-navigation/material-top-tabs";
-import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
+import { LinkingOptions, NavigatorScreenParams } from "@react-navigation/native";
 import { IVideo } from "../../types/IVideo";
 
 const prefix = Linking.makeUrl("it-rex://");

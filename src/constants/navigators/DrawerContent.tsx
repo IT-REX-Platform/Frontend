@@ -93,7 +93,6 @@ export const DrawerContent: React.FC<DrawerContentComponentProps> = (props: Draw
 
     return (
         <View style={{ flex: 1 }}>
-            {/* https://stackoverflow.com/questions/65773696/react-native-paper-drawer-section-not-working-as-intended*/}
             <Drawer.Section
                 style={{
                     backgroundColor: dark.theme.darkBlue1,

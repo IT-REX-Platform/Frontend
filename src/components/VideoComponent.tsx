@@ -142,8 +142,7 @@ export const VideoComponent: React.FC = () => {
         createAlert(i18n.t("itrex.videoUpdated"));
 
         if (video.courseId !== undefined) {
-            const courseId: string = video.courseId;
-            navigation.navigate(NavigationRoutes.ROUTE_VIDEO_POOL, { courseId });
+            navigation.navigate("VIDEO_POOL");
         }
     }
 
@@ -158,8 +157,7 @@ export const VideoComponent: React.FC = () => {
         createAlert(i18n.t("itrex.videoDeleted"));
 
         if (video.courseId !== undefined) {
-            const courseId: string = video.courseId;
-            navigation.navigate(NavigationRoutes.ROUTE_VIDEO_POOL, { courseId });
+            navigation.navigate("VIDEO_POOL");
         }
     }
 };

@@ -44,46 +44,44 @@ export const ScreenCourse: React.FC = () => {
     }, [courseId]);
 
     return (
-        <>
-            <CourseContext.Provider value={course}>
-                <CourseStack.Navigator
-                    initialRouteName="INFO"
-                    screenOptions={{
-                        headerTitle: () => <Text style={styles.headerTitle}>{course.name}</Text>,
-                        headerTitleAlign: "center",
-                        headerStyle: {
-                            backgroundColor: dark.theme.darkBlue1,
-                            borderBottomWidth: 3,
-                            borderBottomColor: dark.theme.darkBlue2,
-                            borderLeftColor: dark.theme.darkBlue2,
-                        },
-                        headerTintColor: "white",
-                        headerBackTitle: "Back",
-                        headerRight: () => (
-                            <MaterialCommunityIcons
-                                name="home-outline"
-                                size={28}
-                                color="white"
-                                style={styles.icon}
-                                onPress={() => navigation.navigate("ROUTE_HOME")}
-                            />
-                        ),
-                        headerLeft: () => (
-                            <MaterialCommunityIcons
-                                name="menu"
-                                color="white"
-                                size={28}
-                                onPress={() => navigation.openDrawer()}
-                                style={styles.icon}
-                            />
-                        ),
-                    }}>
-                    <CourseStack.Screen name="INFO" component={ScreenCourseTabs}></CourseStack.Screen>
-                    <CourseStack.Screen name="VIDEO_POOL" component={VideoPoolComponent}></CourseStack.Screen>
-                    <CourseStack.Screen name="VIDEO" component={VideoComponent}></CourseStack.Screen>
-                </CourseStack.Navigator>
-            </CourseContext.Provider>
-        </>
+        <CourseContext.Provider value={course}>
+            <CourseStack.Navigator
+                initialRouteName="INFO"
+                screenOptions={{
+                    headerTitle: () => <Text style={styles.headerTitle}>{course.name}</Text>,
+                    headerTitleAlign: "center",
+                    headerStyle: {
+                        backgroundColor: dark.theme.darkBlue1,
+                        borderBottomWidth: 3,
+                        borderBottomColor: dark.theme.darkBlue2,
+                        borderLeftColor: dark.theme.darkBlue2,
+                    },
+                    headerTintColor: "white",
+                    headerBackTitle: "Back",
+                    headerRight: () => (
+                        <MaterialCommunityIcons
+                            name="home-outline"
+                            size={28}
+                            color="white"
+                            style={styles.icon}
+                            onPress={() => navigation.navigate("ROUTE_HOME")}
+                        />
+                    ),
+                    // headerLeft: () => (
+                    //     <MaterialCommunityIcons
+                    //         name="menu"
+                    //         color="white"
+                    //         size={28}
+                    //         onPress={() => navigation.openDrawer()}
+                    //         style={styles.icon}
+                    //     />
+                    // ),
+                }}>
+                <CourseStack.Screen name="INFO" component={ScreenCourseTabs}></CourseStack.Screen>
+                <CourseStack.Screen name="VIDEO_POOL" component={VideoPoolComponent}></CourseStack.Screen>
+                <CourseStack.Screen name="VIDEO" component={VideoComponent}></CourseStack.Screen>
+            </CourseStack.Navigator>
+        </CourseContext.Provider>
     );
 };
 

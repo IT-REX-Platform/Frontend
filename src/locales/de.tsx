@@ -58,7 +58,7 @@ export const de = {
         startDateColumn: "Startdatum:",
         endDateColumn: "Enddatum:",
         updateVideo: "Video aktualisieren",
-        videoUpdated: "Video gelöscht!",
+        videoUpdated: "Video aktualisiert!",
         deleteVideo: "Video löschen",
         videoDeleted: "Video gelöscht!",
         courseNotfound: "Kurs nicht gefunden.",
