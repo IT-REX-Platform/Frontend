@@ -12,8 +12,6 @@ import {
     View,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { NavigationRoutes } from "../constants/NavigationRoutes";
-import { LocalizationContext } from "../App";
 import i18n from "../locales";
 import { loggerFactory } from "../../logger/LoggerConfig";
 import { EndpointsVideo } from "../api/endpoints/EndpointsVideo";
@@ -22,7 +20,8 @@ import { IVideo } from "../types/IVideo";
 import { Separator } from "./Separator";
 import { useFocusEffect } from "@react-navigation/native";
 import { ICourse } from "../types/ICourse";
-import { CourseContext } from "./Context";
+import { CourseContext, LocalizationContext } from "./Context";
+import { NavigationRoutes } from "../constants/navigators/NavigationRoutes";
 
 const endpointsVideo = new EndpointsVideo();
 const loggerService = loggerFactory.getLogger("service.VideoPoolComponent");

@@ -49,7 +49,7 @@ export const DrawerContent: React.FC<DrawerContentComponentProps> = (props: Draw
     function getAllCourses(): void {
         loggerService.trace("Getting all courses.");
         const request: RequestInit = RequestFactory.createGetRequest();
-        endpointsCourse.getFilteredCourses(request).then((receivedCourses) => {
+        endpointsCourse.getAllCourses(request).then((receivedCourses) => {
             setCourses(receivedCourses);
         });
     }

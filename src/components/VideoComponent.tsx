@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import { Button, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
-import { LocalizationContext } from "../App";
 import { loggerFactory } from "../../logger/LoggerConfig";
 import { IVideo } from "../types/IVideo";
-import { NavigationProps } from "../types/NavigationProps";
 import { Video } from "expo-av";
 import { createVideoUrl } from "../services/createVideoUrl";
 import { createAlert } from "../helperScripts/createAlert";
@@ -11,8 +9,9 @@ import i18n from "../locales";
 import { Separator } from "./Separator";
 import { RequestFactory } from "../api/requests/RequestFactory";
 import { EndpointsVideo } from "../api/endpoints/EndpointsVideo";
-import { NavigationRoutes } from "../constants/NavigationRoutes";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import { LocalizationContext } from "./Context";
+import { NavigationRoutes } from "../constants/navigators/NavigationRoutes";
 
 const loggerService = loggerFactory.getLogger("service.VideoComponent");
 const endpointsVideo = new EndpointsVideo();
