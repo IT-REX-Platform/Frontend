@@ -13,6 +13,8 @@ import { ScreenCourseTabs } from "./course/ScreenCourseTabs";
 import { CourseContext, LocalizationContext } from "../Context";
 import { DrawerNavigationProp, DrawerScreenProps } from "@react-navigation/drawer";
 import { CourseStackParamList, RootDrawerParamList } from "../../constants/navigators/NavigationRoutes";
+import { VideoPoolComponent } from "../VideoPoolComponent";
+import { VideoComponent } from "../VideoComponent";
 
 export type ScreenCourseNavigationProp = DrawerNavigationProp<RootDrawerParamList, "ROUTE_COURSE_DETAILS">;
 export type ScreenCourseRouteProp = RouteProp<RootDrawerParamList, "ROUTE_COURSE_DETAILS">;
@@ -77,6 +79,8 @@ export const ScreenCourse: React.FC = () => {
                         ),
                     }}>
                     <CourseStack.Screen name="INFO" component={ScreenCourseTabs}></CourseStack.Screen>
+                    <CourseStack.Screen name="VIDEO_POOL" component={VideoPoolComponent}></CourseStack.Screen>
+                    <CourseStack.Screen name="VIDEO" component={VideoComponent}></CourseStack.Screen>
                 </CourseStack.Navigator>
             </CourseContext.Provider>
         </>
