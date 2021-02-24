@@ -26,7 +26,7 @@ function getList(courses: ICourse[]) {
     } else if (courses.length > 0) {
         return (
             <View style={styles.cardView}>
-                {courses.map((course) => {
+                {courses.map((course: ICourse) => {
                     return <CourseCard course={course} />;
                 })}
             </View>

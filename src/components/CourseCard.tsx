@@ -3,8 +3,6 @@ import { View, StyleSheet, Text, ImageBackground, TouchableOpacity } from "react
 import { ICourse } from "../types/ICourse";
 import { dark } from "../constants/themes/dark";
 import { dateConverter } from "../helperScripts/validateCourseDates";
-import { Alert } from "react-native";
-import { createAlert } from "../helperScripts/createAlert";
 
 interface CourseCardProps {
     course: ICourse;
@@ -75,7 +73,7 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
                 <Text style={styles.cardHeader}>{course.name}</Text>
                 <View style={styles.break} />
                 <Text style={styles.cardContent}>
-                    <Text style={{ fontWeight: "bold" }}>Lecturer:</Text> {getCourseOwner(course.ownership)}
+                    {/* <Text style={{ fontWeight: "bold" }}>Lecturer:</Text> {getCourseOwner(course.ownership)} */}
                 </Text>
 
                 {dateConverter(course.startDate) === "" ? "" : getDate(course.startDate, "Start Date: ")}
