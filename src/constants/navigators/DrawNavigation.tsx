@@ -7,7 +7,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { RootDrawerParamList } from "./NavigationRoutes";
 import i18n from "../../locales";
 
-import { UploadVideoComponent } from "../../components/UploadVideoComponent";
+import { VideoUploadComponent } from "../../components/VideoUploadComponent";
 import AuthenticationService from "../../services/AuthenticationService";
 import { ITREXRoles } from "../ITREXRoles";
 import { ScreenHomeLecturer } from "../../components/screens/ScreenHomeLecturer";
@@ -36,7 +36,6 @@ export const DrawerNavigator: React.FC = () => {
             drawerContent={(props) => <DrawerContent {...props}></DrawerContent>}>
             {getHomeScreen()}
             {getCreateCourseScreen()}
-            {getUploadVideoScreen()}
             <Drawer.Screen
                 name="ROUTE_COURSE_DETAILS"
                 component={ScreenCourse}
@@ -45,26 +44,6 @@ export const DrawerNavigator: React.FC = () => {
         </Drawer.Navigator>
     );
 };
-
-function getUploadVideoScreen() {
-    if (
-        AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_LECTURER) ||
-        AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_ADMIN)
-    ) {
-        return (
-            <Drawer.Screen
-                name="ROUTE_UPLOAD_VIDEO"
-                component={UploadVideoComponent}
-                options={{
-                    title: i18n.t("itrex.toUploadVideo"),
-                    drawerIcon: () => (
-                        <MaterialCommunityIcons name="upload-outline" size={28} color="white" style={styles.icon} />
-                    ),
-                }}
-            />
-        );
-    }
-}
 
 function getCreateCourseScreen() {
     if (

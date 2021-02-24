@@ -13,6 +13,12 @@ import { ScreenCourseTabs } from "./course/ScreenCourseTabs";
 import { CourseContext, LocalizationContext } from "../Context";
 import { DrawerNavigationProp, DrawerScreenProps } from "@react-navigation/drawer";
 import { CourseStackParamList, RootDrawerParamList } from "../../constants/navigators/NavigationRoutes";
+import { VideoPoolComponent } from "../VideoPoolComponent";
+import { VideoComponent } from "../VideoComponent";
+import AuthenticationService from "../../services/AuthenticationService";
+import { ITREXRoles } from "../../constants/ITREXRoles";
+import i18n from "../../locales";
+import { VideoUploadComponent } from "../VideoUploadComponent";
 
 export type ScreenCourseNavigationProp = DrawerNavigationProp<RootDrawerParamList, "ROUTE_COURSE_DETAILS">;
 export type ScreenCourseRouteProp = RouteProp<RootDrawerParamList, "ROUTE_COURSE_DETAILS">;
@@ -42,45 +48,66 @@ export const ScreenCourse: React.FC = () => {
     }, [courseId]);
 
     return (
-        <>
-            <CourseContext.Provider value={course}>
-                <CourseStack.Navigator
-                    initialRouteName="INFO"
-                    screenOptions={{
-                        headerTitle: () => <Text style={styles.headerTitle}>{course.name}</Text>,
-                        headerTitleAlign: "center",
-                        headerStyle: {
-                            backgroundColor: dark.theme.darkBlue1,
-                            borderBottomWidth: 3,
-                            borderBottomColor: dark.theme.darkBlue2,
-                            borderLeftColor: dark.theme.darkBlue2,
-                        },
-                        headerTintColor: "white",
-                        headerBackTitle: "Back",
-                        headerRight: () => (
-                            <MaterialCommunityIcons
-                                name="home-outline"
-                                size={28}
-                                color="white"
-                                style={styles.icon}
-                                onPress={() => navigation.navigate("ROUTE_HOME")}
-                            />
-                        ),
-                        headerLeft: () => (
-                            <MaterialCommunityIcons
-                                name="menu"
-                                color="white"
-                                size={28}
-                                onPress={() => navigation.openDrawer()}
-                                style={styles.icon}
-                            />
-                        ),
-                    }}>
-                    <CourseStack.Screen name="INFO" component={ScreenCourseTabs}></CourseStack.Screen>
-                </CourseStack.Navigator>
-            </CourseContext.Provider>
-        </>
+        <CourseContext.Provider value={course}>
+            <CourseStack.Navigator
+                initialRouteName="INFO"
+                screenOptions={{
+                    headerTitle: () => <Text style={styles.headerTitle}>{course.name}</Text>,
+                    headerTitleAlign: "center",
+                    headerStyle: {
+                        backgroundColor: dark.theme.darkBlue1,
+                        borderBottomWidth: 3,
+                        borderBottomColor: dark.theme.darkBlue2,
+                        borderLeftColor: dark.theme.darkBlue2,
+                    },
+                    headerTintColor: "white",
+                    headerBackTitle: "Back",
+                    headerRight: () => (
+                        <MaterialCommunityIcons
+                            name="home-outline"
+                            size={28}
+                            color="white"
+                            style={styles.icon}
+                            onPress={() => navigation.navigate("ROUTE_HOME")}
+                        />
+                    ),
+                    // headerLeft: () => (
+                    //     <MaterialCommunityIcons
+                    //         name="menu"
+                    //         color="white"
+                    //         size={28}
+                    //         onPress={() => navigation.openDrawer()}
+                    //         style={styles.icon}
+                    //     />
+                    // ),
+                }}>
+                <CourseStack.Screen name="INFO" component={ScreenCourseTabs}></CourseStack.Screen>
+
+                {getUploadVideoScreen()}
+            </CourseStack.Navigator>
+        </CourseContext.Provider>
     );
+
+    function getUploadVideoScreen() {
+        if (
+            AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_LECTURER) ||
+            AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_ADMIN)
+        ) {
+            return (
+                <>
+                    <CourseStack.Screen
+                        name="VIDEO_UPLOAD"
+                        component={VideoUploadComponent}
+                        options={{
+                            title: i18n.t("itrex.toUploadVideo"),
+                        }}
+                    />
+                    <CourseStack.Screen name="VIDEO_POOL" component={VideoPoolComponent}></CourseStack.Screen>
+                    <CourseStack.Screen name="VIDEO" component={VideoComponent}></CourseStack.Screen>
+                </>
+            );
+        }
+    }
 };
 
 const styles = StyleSheet.create({
