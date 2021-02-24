@@ -7,6 +7,7 @@ import * as WebBrowser from "expo-web-browser";
 import * as AuthSession from "expo-auth-session";
 import { itRexVars } from "../../constants/Constants";
 import i18n from "../../locales";
+import AuthenticationService, { discovery } from "../../services/AuthenticationService";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -15,14 +16,9 @@ export const ScreenLogin: React.FC = () => {
 
     const { locale, setLocale } = React.useContext(LocalizationContext);
 
-    const discovery = {
-        authorizationEndpoint: itRexVars().authEndpoint,
-        tokenEndpoint: itRexVars().authTokenEndpoint,
-    };
-
     const [, authResponse, promptAuthentication] = AuthSession.useAuthRequest(
         {
-            responseType: AuthSession.ResponseType.Token,
+            responseType: AuthSession.ResponseType.Code,
             clientId: "web_app",
             scopes: [],
             // In order to follow the "Authorization Code Flow" to fetch token after authorizationEndpoint
@@ -39,8 +35,36 @@ export const ScreenLogin: React.FC = () => {
     );
 
     React.useEffect(() => {
-        if (authResponse?.type === "success" && authResponse.authentication != null) {
-            signIn(authResponse.authentication);
+        console.log("resp ist gekommen");
+        if (authResponse?.type === "success") {
+            const { code } = authResponse.params;
+            console.log(code);
+            console.log(authResponse.params);
+
+            // we have received our session_state and code, now we can request our token
+            AuthSession.exchangeCodeAsync(
+                {
+                    clientId: "web_app",
+                    redirectUri: AuthSession.makeRedirectUri({
+                        // For usage in bare and standalone
+                        native: "it-rex://login",
+                    }),
+                    code: authResponse?.params.code,
+                    extraParams: {
+                        // You must use the extraParams variation of clientSecret.
+                        // Never store your client secret on the client.
+                        client_secret: "",
+                    },
+                },
+                { tokenEndpoint: discovery.tokenEndpoint }
+            ).then((tResponse) => {
+                console.log(tResponse);
+                AuthenticationService.getInstance().setTokenResponse(tResponse);
+                //setTokenResponse(tResponse);
+                //tokenResponse = tResponse;
+                AuthenticationService.getInstance().refreshToken();
+                signIn(tResponse);
+            });
         }
     }, [authResponse]);
 
@@ -54,7 +78,7 @@ export const ScreenLogin: React.FC = () => {
                 <Text style={styles.buttonText}>{i18n.t("itrex.login")}</Text>
             </TouchableOpacity>
             {locale == "en" || locale == "en-GB" || locale == "en-US" ? (
-                <Button title={i18n.t("itrex.switchLangDE")} onPress={() => setLocale("de-DE")} />
+                <Button title={i18n.t("itrex.switchLangDEE")} onPress={() => setLocale("de-DE")} />
             ) : (
                 <Button title={i18n.t("itrex.switchLangEN")} onPress={() => setLocale("en")} />
             )}

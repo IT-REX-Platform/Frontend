@@ -1,12 +1,12 @@
-import { TokenResponse } from "expo-auth-session";
+import { TokenResponseConfig } from "expo-auth-session";
 
 export interface ILoginReducerState {
     isLoading?: boolean;
-    userInfo?: TokenResponse | null;
+    userInfo?: TokenResponseConfig | null;
 }
 
 export interface ILoginReducerAction {
     type: string;
-    userInfo: TokenResponse;
+    userInfo: TokenResponseConfig;
     token?: string;
 }
