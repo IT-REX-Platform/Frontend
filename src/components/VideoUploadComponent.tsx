@@ -70,7 +70,7 @@ export const VideoUploadComponent: React.FC = () => {
         }
 
         setVideoUri(video.uri);
-        setVideoName("video selected");
+        setVideoName("Unnamed video file");
     };
 
     /**
@@ -121,7 +121,7 @@ export const VideoUploadComponent: React.FC = () => {
         const response: Response = await fetch(videoUri);
         const fileBlob: Blob = await response.blob();
         const formData: FormData = new FormData();
-        formData.append(VideoFormDataParams.PARAM_VIDEO_FILE, fileBlob);
+        formData.append(VideoFormDataParams.PARAM_VIDEO_FILE, fileBlob, videoName);
         formData.append(VideoFormDataParams.PARAM_COURSE_ID, courseId);
         return formData;
     };
