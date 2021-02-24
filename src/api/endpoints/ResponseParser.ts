@@ -34,14 +34,29 @@ export class ResponseParser {
             response
                 .then((response) => {
                     if (response.ok) {
-                        const json: unknown = response.json();
-                        const courses: ICourse[] = json as ICourse[];
-                        resolve(courses);
+                        return response.json();
                     } else {
                         createAlert(i18n.t("itrex.coursesNotfound"));
                         ResponseParser.loggerApi.error("No courses data received.");
                         resolve([]);
                     }
+                })
+                .then((data) => {
+                    const mappedCourses: ICourse[] = [];
+                    data &&
+                        data.forEach((course: ICourse) => {
+                            const mappedCourse: ICourse = {
+                                id: course.id,
+                                courseDescription: course.courseDescription,
+                                startDate: course.startDate ? new Date(course.startDate) : undefined,
+                                endDate: course.endDate ? new Date(course.endDate) : undefined,
+                                maxFoodSum: course.maxFoodSum,
+                                publishState: course.publishState,
+                                name: course.name,
+                            };
+                            mappedCourses.push(mappedCourse);
+                        });
+                    resolve(mappedCourses);
                 })
                 .catch((error) => {
                     createAlert(i18n.t("itrex.coursesNotfound"));
