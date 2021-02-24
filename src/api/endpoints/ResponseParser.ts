@@ -12,14 +12,17 @@ export class ResponseParser {
             response
                 .then((response) => {
                     if (response.ok) {
-                        const json: unknown = response.json();
-                        const course: ICourse = json as ICourse;
-                        resolve(course);
+                        return response.json();
                     } else {
                         createAlert(i18n.t("itrex.courseNotfound"));
                         ResponseParser.loggerApi.error("No course data received.");
                         resolve({});
                     }
+                })
+                .then((course: ICourse) => {
+                    course.startDate = course.startDate ? new Date(course.startDate) : undefined;
+                    course.endDate = course.endDate ? new Date(course.endDate) : undefined;
+                    resolve(course);
                 })
                 .catch((error) => {
                     createAlert(i18n.t("itrex.courseNotfound"));
@@ -41,22 +44,12 @@ export class ResponseParser {
                         resolve([]);
                     }
                 })
-                .then((data) => {
-                    const mappedCourses: ICourse[] = [];
-                    data &&
-                        data.forEach((course: ICourse) => {
-                            const mappedCourse: ICourse = {
-                                id: course.id,
-                                courseDescription: course.courseDescription,
-                                startDate: course.startDate ? new Date(course.startDate) : undefined,
-                                endDate: course.endDate ? new Date(course.endDate) : undefined,
-                                maxFoodSum: course.maxFoodSum,
-                                publishState: course.publishState,
-                                name: course.name,
-                            };
-                            mappedCourses.push(mappedCourse);
-                        });
-                    resolve(mappedCourses);
+                .then((courses: ICourse[]) => {
+                    courses.forEach((course: ICourse) => {
+                        course.startDate = course.startDate ? new Date(course.startDate) : undefined;
+                        course.endDate = course.endDate ? new Date(course.endDate) : undefined;
+                    });
+                    resolve(courses);
                 })
                 .catch((error) => {
                     createAlert(i18n.t("itrex.coursesNotfound"));
@@ -71,14 +64,17 @@ export class ResponseParser {
             response
                 .then((response) => {
                     if (response.ok) {
-                        const json: unknown = response.json();
-                        const video: IVideo = json as IVideo;
-                        resolve(video);
+                        return response.json();
                     } else {
                         createAlert(i18n.t("itrex.videoNotfound"));
                         ResponseParser.loggerApi.error("No video data received.");
                         resolve({});
                     }
+                })
+                .then((video: IVideo) => {
+                    video.startDate = video.startDate ? new Date(video.startDate) : undefined;
+                    video.endDate = video.endDate ? new Date(video.endDate) : undefined;
+                    resolve(video);
                 })
                 .catch((error) => {
                     createAlert(i18n.t("itrex.videoNotfound"));
@@ -93,14 +89,19 @@ export class ResponseParser {
             response
                 .then((response) => {
                     if (response.ok) {
-                        const json: unknown = response.json();
-                        const videos: IVideo[] = json as IVideo[];
-                        resolve(videos);
+                        return response.json();
                     } else {
                         createAlert(i18n.t("itrex.videosNotfound"));
                         ResponseParser.loggerApi.error("No videos data received.");
                         resolve([]);
                     }
+                })
+                .then((videos: IVideo[]) => {
+                    videos.forEach((video: IVideo) => {
+                        video.startDate = video.startDate ? new Date(video.startDate) : undefined;
+                        video.endDate = video.endDate ? new Date(video.endDate) : undefined;
+                    });
+                    resolve(videos);
                 })
                 .catch((error) => {
                     createAlert(i18n.t("itrex.videosNotfound"));
