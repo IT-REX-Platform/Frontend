@@ -49,7 +49,7 @@ export const DrawerContent: React.FC<DrawerContentComponentProps> = (props: Draw
     function getAllCourses(): void {
         loggerService.trace("Getting all courses.");
         const request: RequestInit = RequestFactory.createGetRequest();
-        endpointsCourse.getFilteredCourses(request).then((receivedCourses) => {
+        endpointsCourse.getAllCourses(request).then((receivedCourses) => {
             setCourses(receivedCourses);
         });
     }
@@ -93,7 +93,6 @@ export const DrawerContent: React.FC<DrawerContentComponentProps> = (props: Draw
 
     return (
         <View style={{ flex: 1 }}>
-            {/* https://stackoverflow.com/questions/65773696/react-native-paper-drawer-section-not-working-as-intended*/}
             <Drawer.Section
                 style={{
                     backgroundColor: dark.theme.darkBlue1,

@@ -1,8 +1,6 @@
 import * as Linking from "expo-linking";
-import { CompositeNavigationProp, LinkingOptions, NavigatorScreenParams, RouteProp } from "@react-navigation/native";
-import { DrawerNavigationProp, DrawerScreenProps } from "@react-navigation/drawer";
-import { MaterialTopTabNavigationProp } from "@react-navigation/material-top-tabs";
-import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
+import { LinkingOptions, NavigatorScreenParams } from "@react-navigation/native";
+import { IVideo } from "../../types/IVideo";
 
 const prefix = Linking.makeUrl("it-rex://");
 
@@ -22,6 +20,9 @@ export const config = {
                         OVERVIEW: "OVERVIEW",
                     },
                 },
+                VIDEO_POOL: "VIDEO_POOL",
+                VIDEO: "VIDEO",
+                VIDEO_UPLOAD: "VIDEO_UPLOAD",
             },
         },
     },
@@ -30,13 +31,18 @@ export const config = {
 export type RootDrawerParamList = {
     ROUTE_HOME: undefined;
     ROUTE_CREATE_COURSE: undefined;
-    ROUTE_COURSE_DETAILS: { courseId: string };
-    ROUTE_UPLOAD_VIDEO: undefined;
+    ROUTE_COURSE_DETAILS: { courseId: string; screen?: string };
 };
 
 export type CourseStackParamList = {
     INFO: NavigatorScreenParams<CourseTabParamList>;
+    VIDEO_POOL: undefined;
+    VIDEO: {
+        video: IVideo;
+    };
+    VIDEO_UPLOAD: undefined;
 };
+
 export type CourseTabParamList = {
     OVERVIEW: undefined;
     TIMELINE: undefined;
@@ -46,11 +52,13 @@ export class NavigationRoutes {
     static ROUTE_HOME = "ROUTE_HOME";
     static ROUTE_LOGIN = "ROUTE_LOGIN";
     static ROUTE_CREATE_COURSE = "ROUTE_CREATE_COURSE";
-    static ROUTE_UPLOAD_VIDEO = "ROUTE_UPLOAD_VIDEO";
+    static ROUTE_VIDEO_UPLOAD = "VIDEO_UPLOAD";
     static ROUTE_COURSE_DETAILS = "ROUTE_COURSE_DETAILS";
     static ROUTE_COURSE_DETAILS_TABS = "ROUTE_COURSE_DETAILS_TABS";
     static ROUTE_COURSE_DETAILS_OVERVIEW = "ROUTE_COURSE_DETAILS_OVERVIEW";
     static ROUTE_COURSE_DETAILS_TIMELINE = "ROUTE_COURSE_DETAILS_TIMELINE";
+    static ROUTE_VIDEO_POOL = "ROUTE_VIDEO_POOL";
+    static ROUTE_VIDEO = "ROUTE_VIDEO";
 
     static linking: LinkingOptions = {
         prefixes: [prefix],

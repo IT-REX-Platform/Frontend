@@ -108,7 +108,7 @@ export const CreateCourseComponent: React.FC = () => {
 
                     <FlatList
                         data={courses}
-                        renderItem={({ item }) => (
+                        renderItem={({ item }: { item: ICourse }) => (
                             <>
                                 <TouchableOpacity key={item.id} onPress={() => onPress(item)}>
                                     <View style={{ backgroundColor: "white" }}>
@@ -143,7 +143,7 @@ export const CreateCourseComponent: React.FC = () => {
                     </Pressable>
                     <FlatList
                         data={coursesPublished}
-                        renderItem={({ item }) => (
+                        renderItem={({ item }: { item: ICourse }) => (
                             <Text style={{}}>{item.id + "\t" + item.publishState + "\t" + item.name}</Text>
                         )}
                         keyExtractor={(item, index) => String(index)}
@@ -203,7 +203,7 @@ export const CreateCourseComponent: React.FC = () => {
     function getAllCourses(): void {
         loggerService.trace("Getting all courses.");
         const request: RequestInit = RequestFactory.createGetRequest();
-        endpointsCourse.getFilteredCourses(request).then((receivedCourses) => {
+        endpointsCourse.getAllCourses(request).then((receivedCourses) => {
             setCourses(receivedCourses);
         });
     }
@@ -232,7 +232,7 @@ export const CreateCourseComponent: React.FC = () => {
     function getPublishedCourses(): void {
         const request: RequestInit = RequestFactory.createGetRequest();
         endpointsCourse
-            .getFilteredCourses(request, { publishState: CoursePublishState.PUBLISHED })
+            .getAllCourses(request, { publishState: CoursePublishState.PUBLISHED })
             .then((receivedCoursesPublished) => {
                 setCoursesPublished(receivedCoursesPublished);
             });
@@ -240,9 +240,6 @@ export const CreateCourseComponent: React.FC = () => {
 
     function deleteCourse(): void {
         const request: RequestInit = RequestFactory.createDeleteRequest();
-
-        loggerService.trace("Parsing ID string to ID number");
-
         endpointsCourse.deleteCourse(request, courseIdString);
     }
 };
