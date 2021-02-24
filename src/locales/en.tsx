@@ -56,7 +56,7 @@ export const en = {
         updateVideo: "Update video",
         videoUpdated: "Video updated!",
         deleteVideo: "Delete video",
-        videoDeleted: "Videp deleted!",
+        videoDeleted: "Video deleted!",
         courseNotfound: "Course data not found.",
         coursesNotfound: "Courses data not found.",
         videoNotfound: "Video data not found.",
