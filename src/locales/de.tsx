@@ -16,6 +16,7 @@ export const de = {
         enterCourseName: "Geben Sie einen Kursnamen ein:",
         enterCourseDescription: "Geben Sie einen Kursbeschreibung ein:",
         createCourse: "Neuen Kurs erstellen",
+        joinCourse: "Kurs beitreten",
         getAllCourses: "Alle Kurse holen",
         enterCouseId: "Geben Sie eine Kurs-ID ein:",
         publishCourse: "Kurs veröffentlichen",

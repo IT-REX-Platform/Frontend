@@ -16,6 +16,7 @@ export const en = {
         enterCourseName: "Enter Course name:",
         enterCourseDescription: "Enter Course description:",
         createCourse: "Create New Course",
+        joinCourse: "Join Course",
         getAllCourses: "Get All Courses",
         enterCouseId: "Enter Course ID:",
         publishCourse: "Publish Course",
