@@ -1,6 +1,6 @@
 import { CoursePublishState } from "../constants/CoursePublishState";
 
-export interface ICourse {
+export type ICourse = {
     id?: string;
     name?: string;
     courseDescription?: string;
@@ -9,4 +9,4 @@ export interface ICourse {
     maxFoodSum?: number;
     publishState?: CoursePublishState;
     // ownership?: string;
-}
+};

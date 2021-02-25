@@ -1,11 +1,10 @@
+/*
 import React from "react";
 import { StyleSheet } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 
-import { HomeComponent } from "../../components/HomeComponent";
 import { CreateCourseComponent } from "../../components/CreateCourseComponent";
-import { CourseDetailsComponent } from "../../components/screens/ScreenCourse";
-import { UploadVideoComponent } from "../../components/UploadVideoComponent";
+import { VideoUploadComponent } from "../../components/VideoUploadComponent";
 import { NavigationRoutes } from "../../constants/navigators/NavigationRoutes";
 import { dark } from "../themes/dark";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -118,7 +117,7 @@ const UploadVideoStackNavigator: React.FC = ({ navigation }) => {
             }}>
             <Stack.Screen
                 name="UploadVideo"
-                component={UploadVideoComponent}
+                component={VideoUploadComponent}
                 options={{ title: i18n.t("itrex.toUploadVideo") }}
             />
         </Stack.Navigator>
@@ -140,3 +139,4 @@ const styles = StyleSheet.create({
     },
 });
 export { MainStackNavigator, CourseStackNavigator, UploadVideoStackNavigator };
+*/

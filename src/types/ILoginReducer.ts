@@ -1,12 +1,12 @@
 import { TokenResponseConfig } from "expo-auth-session";
 
-export interface ILoginReducerState {
+export type ILoginReducerState = {
     isLoading?: boolean;
     userInfo?: TokenResponseConfig | null;
-}
+};
 
-export interface ILoginReducerAction {
+export type ILoginReducerAction = {
     type: string;
     userInfo: TokenResponseConfig;
     token?: string;
-}
+};

@@ -123,7 +123,7 @@ jest.mock("expo-image-picker", () => {
 });
 
 describe("test upload video component", () => {
-    it("see if stuff is rendered", async () => {
+    xit("see if stuff is rendered", async () => {
         const { getByText, toJSON } = render(<UploadVideoComponent></UploadVideoComponent>);
 
         expect(await waitFor(() => getByText(i18n.t("itrex.browseVideos")))).toBeDefined();
