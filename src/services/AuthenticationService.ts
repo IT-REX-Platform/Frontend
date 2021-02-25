@@ -1,4 +1,5 @@
 import * as AuthSession from "expo-auth-session";
+import { loggerFactory } from "../../logger/LoggerConfig";
 import { itRexVars } from "../constants/Constants";
 import { ITREXRoles } from "../constants/ITREXRoles";
 import { AsyncStorageService, StorageConstants } from "./StorageService";
@@ -11,23 +12,27 @@ export const discovery = {
 export default class AuthenticationService {
     static instance: AuthenticationService;
 
+    private AuthenticationService() {
+        //this.refreshTimeout = null;
+    }
+
     static getInstance(): AuthenticationService {
         if (AuthenticationService.instance == null) {
             AuthenticationService.instance = new AuthenticationService();
         }
         return AuthenticationService.instance;
     }
+    private loggerApi = loggerFactory.getLogger("AuthenticationService");
 
     // Request a new access token this many seconds prior to expiration
     private requestNewAccessTokenBuffer = 5 * 1000;
 
     // Default token lifetime, 5 minutes -> refresh after
     private accessTokenLifeTime = 1000 * 60 * 5;
-    private autoTokenRefresh = true;
-    private autoTokenRefreshRunning = false;
 
     private tokenResponse!: AuthSession.TokenResponseConfig;
     private roles: string[] = [];
+    private refreshTimeout: NodeJS.Timeout | undefined;
 
     public setTokenResponse(token: AuthSession.TokenResponseConfig): void {
         this.tokenResponse = token;
@@ -41,35 +46,58 @@ export default class AuthenticationService {
         return this.tokenResponse;
     }
 
-    public refreshToken(): void {
-        if (this.tokenResponse?.refreshToken != undefined) {
-            AuthSession.refreshAsync(
-                {
-                    clientId: "web_app",
-                    refreshToken: this.tokenResponse.refreshToken,
-                    extraParams: {
-                        // You must use the extraParams variation of clientSecret.
-                        // Never store your client secret on the client.
-                        client_secret: "",
+    public refreshToken(): Promise<AuthSession.TokenResponseConfig> {
+        return new Promise((resolve, reject) => {
+            if (this.tokenResponse?.refreshToken != undefined) {
+                AuthSession.refreshAsync(
+                    {
+                        clientId: itRexVars().authClientId,
+                        refreshToken: this.tokenResponse.refreshToken,
+                        extraParams: {
+                            // You must use the extraParams variation of clientSecret.
+                            // Never store your client secret on the client.
+                            client_secret: "",
+                        },
                     },
-                },
-                { tokenEndpoint: discovery.tokenEndpoint }
-            ).then((tResponse) => {
-                console.log(tResponse);
-
-                this.setTokenResponse(tResponse);
-                new AsyncStorageService().setItem(StorageConstants.OAUTH_REFRESH_TOKEN, JSON.stringify(tResponse));
-                if (this.autoTokenRefresh) {
-                    const expires = tResponse.expiresIn || this.accessTokenLifeTime;
-
-                    setTimeout(() => this.refreshToken(), expires * 1000 - this.requestNewAccessTokenBuffer);
-                }
-            });
-        }
+                    { tokenEndpoint: discovery.tokenEndpoint }
+                )
+                    .then((tResponse) => {
+                        this.setTokenResponse(tResponse);
+                        new AsyncStorageService().setItem(
+                            StorageConstants.OAUTH_REFRESH_TOKEN,
+                            JSON.stringify(tResponse)
+                        );
+                        resolve(tResponse);
+                    })
+                    .catch((reason) => {
+                        // Refresh does not work
+                        this.loggerApi.info("Could not refresh oauth2 token");
+                        new AsyncStorageService().deleteItem(StorageConstants.OAUTH_REFRESH_TOKEN);
+                        reject(false);
+                    });
+            } else {
+                reject(false);
+            }
+        });
+    }
+    /**
+     *
+     */
+    public autoRefresh(): void {
+        this.refreshToken().then((resp) => {
+            const expires = resp.expiresIn || this.accessTokenLifeTime;
+            const nextRefresh = expires * 1000 - this.requestNewAccessTokenBuffer;
+            this.loggerApi.debug("Next Token-Refresh in " + nextRefresh + " ms");
+            this.refreshTimeout = setTimeout(() => this.autoRefresh(), nextRefresh);
+        });
     }
 
     public clearAuthentication(): void {
-        new AsyncStorageService().setItem(StorageConstants.OAUTH_REFRESH_TOKEN, "");
+        if (this.refreshTimeout !== undefined) {
+            clearTimeout(this.refreshTimeout);
+        }
+        new AsyncStorageService().deleteItem(StorageConstants.OAUTH_REFRESH_TOKEN);
+        this.setTokenResponse({} as AuthSession.TokenResponseConfig);
     }
 
     public getRoles(): string[] {

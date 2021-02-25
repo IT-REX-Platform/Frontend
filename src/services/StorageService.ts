@@ -3,6 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export interface IStorageService {
     getItem(key: string): Promise<string | null>;
     setItem(key: string, value: string): void;
+    deleteItem(key: string): void;
 }
 
 export class StorageConstants {
@@ -16,5 +17,8 @@ export class AsyncStorageService implements IStorageService {
     }
     async setItem(key: string, value: string): Promise<void> {
         await AsyncStorage.setItem("@" + key, value);
+    }
+    async deleteItem(key: string): Promise<void> {
+        await AsyncStorage.removeItem("@" + key);
     }
 }

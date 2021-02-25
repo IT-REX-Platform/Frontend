@@ -19,7 +19,7 @@ export const ScreenLogin: React.FC = () => {
     const [, authResponse, promptAuthentication] = AuthSession.useAuthRequest(
         {
             responseType: AuthSession.ResponseType.Code,
-            clientId: "web_app",
+            clientId: itRexVars().authClientId,
             scopes: [],
             // In order to follow the "Authorization Code Flow" to fetch token after authorizationEndpoint
             // this must be set to false
@@ -27,7 +27,7 @@ export const ScreenLogin: React.FC = () => {
             // For usage in managed apps using the proxy
             redirectUri: AuthSession.makeRedirectUri({
                 // For usage in bare and standalone
-                native: "it-rex://login",
+                native: itRexVars().authRedirectUrl,
                 useProxy: false,
             }),
         },
@@ -35,19 +35,14 @@ export const ScreenLogin: React.FC = () => {
     );
 
     React.useEffect(() => {
-        console.log("resp ist gekommen");
         if (authResponse?.type === "success") {
-            const { code } = authResponse.params;
-            console.log(code);
-            console.log(authResponse.params);
-
             // we have received our session_state and code, now we can request our token
             AuthSession.exchangeCodeAsync(
                 {
-                    clientId: "web_app",
+                    clientId: itRexVars().authClientId,
                     redirectUri: AuthSession.makeRedirectUri({
                         // For usage in bare and standalone
-                        native: "it-rex://login",
+                        native: itRexVars().authRedirectUrl,
                     }),
                     code: authResponse?.params.code,
                     extraParams: {
@@ -58,11 +53,6 @@ export const ScreenLogin: React.FC = () => {
                 },
                 { tokenEndpoint: discovery.tokenEndpoint }
             ).then((tResponse) => {
-                console.log(tResponse);
-                AuthenticationService.getInstance().setTokenResponse(tResponse);
-                //setTokenResponse(tResponse);
-                //tokenResponse = tResponse;
-                AuthenticationService.getInstance().refreshToken();
                 signIn(tResponse);
             });
         }

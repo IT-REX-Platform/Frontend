@@ -24,7 +24,7 @@ function loginReducer(prevState: ILoginReducerState, action: ILoginReducerAction
     switch (action.type) {
         case "RESTORE_TOKEN":
             AuthenticationService.getInstance().setTokenResponse(action.userInfo);
-            AuthenticationService.getInstance().refreshToken();
+            AuthenticationService.getInstance().autoRefresh();
             return {
                 ...prevState,
                 userInfo: action.userInfo,
@@ -32,12 +32,14 @@ function loginReducer(prevState: ILoginReducerState, action: ILoginReducerAction
             } as ILoginReducerState;
         case "LOGIN":
             AuthenticationService.getInstance().setTokenResponse(action.userInfo);
+            AuthenticationService.getInstance().autoRefresh();
             return {
                 ...prevState,
                 userInfo: action.userInfo,
                 isLoading: false,
             } as ILoginReducerState;
         case "LOGOUT":
+            AuthenticationService.getInstance().clearAuthentication();
             return {
                 ...prevState,
                 userInfo: null,
@@ -76,8 +78,6 @@ function App(): ReactElement {
         () => ({
             signIn: (userInfo: AuthSession.TokenResponseConfig) => {
                 dispatch({ type: "LOGIN", userInfo: userInfo } as ILoginReducerAction);
-                // We call it doppelt gemoppelt
-                //TODO: Store in context ?
             },
             signOut: () => {
                 dispatch({ type: "LOGOUT" } as ILoginReducerAction);
@@ -93,8 +93,17 @@ function App(): ReactElement {
         new AsyncStorageService().getItem(StorageConstants.OAUTH_REFRESH_TOKEN).then((value) => {
             if (value !== null) {
                 const lastRefreshToken = JSON.parse(value) as AuthSession.TokenResponseConfig;
-                console.log(lastRefreshToken);
-                dispatch({ type: "RESTORE_TOKEN", userInfo: lastRefreshToken } as ILoginReducerAction);
+                AuthenticationService.getInstance().setTokenResponse(lastRefreshToken);
+                AuthenticationService.getInstance()
+                    .refreshToken()
+                    .then(() => {
+                        dispatch({ type: "RESTORE_TOKEN", userInfo: lastRefreshToken } as ILoginReducerAction);
+                    })
+                    .catch(() => {
+                        dispatch({ type: "LOGOUT" } as ILoginReducerAction);
+                    });
+            } else {
+                dispatch({ type: "LOGOUT" } as ILoginReducerAction);
             }
         });
     }, []);
