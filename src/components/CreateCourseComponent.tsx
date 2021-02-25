@@ -200,12 +200,12 @@ export const CreateCourseComponent: React.FC = () => {
         endpointsCourse.createCourse(postRequest).then((data) => console.log(data));
     }
 
-    function getAllCourses(): void {
+    async function getAllCourses(): Promise<void> {
         loggerService.trace("Getting all courses.");
         const request: RequestInit = RequestFactory.createGetRequest();
-        endpointsCourse.getAllCourses(request).then((receivedCourses) => {
-            setCourses(receivedCourses);
-        });
+
+        const test: ICourse[] = await endpointsCourse.getAllCourses(request);
+        setCourses(test);
     }
 
     function patchCourse(): void {

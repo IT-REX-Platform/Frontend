@@ -25,13 +25,15 @@ export class EndpointsCourse implements IEndpointsCourse {
      * @param getRequest GET request.
      * @param params Optional parameters for GET request URL to filter all existing courses.
      */
-    public getAllCourses(getRequest: RequestInit, params?: ICourse): Promise<ICourse[]> {
+    public async getAllCourses(getRequest: RequestInit, params?: ICourse): Promise<ICourse[]> {
         this.loggerApi.trace("Checking for additional parameters for GET request URL.");
         const url: string = this.appendCourseParams(params);
 
         this.loggerApi.trace("Sending GET request to URL: " + url);
         const response: Promise<Response> = sendRequest(url, getRequest);
-        return ResponseParser.parseCourses(response);
+        const parsedResponse: Promise<ICourse[]> = ResponseParser.parseCourses(response);
+        return parsedResponse;
+        // return ResponseParser.parseCourses(response);
     }
 
     /**
