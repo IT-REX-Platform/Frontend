@@ -1,8 +1,11 @@
 import React from "react";
-import { View, StyleSheet, Text, ImageBackground, TouchableOpacity } from "react-native";
+import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { ICourse } from "../types/ICourse";
 import { dark } from "../constants/themes/dark";
 import { dateConverter } from "../helperScripts/validateCourseDates";
+import { NavigationRoutes } from "../constants/navigators/NavigationRoutes";
+import { useNavigation } from "@react-navigation/native";
+import i18n from "./../locales";
 
 interface CourseCardProps {
     course: ICourse;
@@ -11,6 +14,7 @@ interface CourseCardProps {
 // eslint-disable-next-line complexity
 export const CourseCard: React.FC<CourseCardProps> = (props) => {
     const { course } = props;
+    const navigation = useNavigation();
 
     function getPublishedSate(isPublished: string | undefined) {
         console.log(isPublished);
@@ -18,14 +22,14 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
             return (
                 <View style={styles.unpublishedCard}>
                     <View style={styles.circleUnpublished} />
-                    <Text style={styles.textUnpublished}>unpublished</Text>
+                    <Text style={styles.textUnpublished}>{i18n.t("itrex.unpublished")}</Text>
                 </View>
             );
         } else if (isPublished === "PUBLISHED") {
             return (
                 <View style={styles.publishedCard}>
                     <View style={styles.circlePublished} />
-                    <Text style={styles.textPublished}>published</Text>
+                    <Text style={styles.textPublished}>{i18n.t("itrex.published")}</Text>
                 </View>
             );
         }
@@ -62,37 +66,32 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
         );
     }
 
-    function getAlert() {
-        console.log("open Details Page  ");
+    function onPress(course: ICourse) {
+        console.log(course);
+        navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, {
+            courseId: course.id,
+        });
     }
-
     return (
-        <TouchableOpacity style={styles.card} onPress={getAlert} activeOpacity={0.7}>
-            <ImageBackground source={require("../constants/images/Background1-1.png")} style={styles.image}>
-                {getPublishedSate(course.publishState)}
-                <Text style={styles.cardHeader}>{course.name}</Text>
-                <View style={styles.break} />
-                <Text style={styles.cardContent}>
-                    {/* <Text style={{ fontWeight: "bold" }}>Lecturer:</Text> {getCourseOwner(course.ownership)} */}
-                </Text>
-
-                {dateConverter(course.startDate) === "" ? "" : getDate(course.startDate, "Start Date: ")}
-
-                {dateConverter(course.endDate) === "" ? "" : getDate(course.startDate, "End Date: ")}
-            </ImageBackground>
+        <TouchableOpacity style={styles.card} onPress={() => onPress(course)} activeOpacity={0.7}>
+            {getPublishedSate(course.publishState)}
+            <Text style={styles.cardHeader}>{course.name}</Text>
+            <View style={styles.break} />
+            <Text style={styles.cardContent}>Lecturer:</Text> {getCourseOwner(course.ownership)}
+            {dateConverter(course.startDate) === "" ? "" : getDate(course.startDate, i18n.t("itrex.startDate"))}
+            {dateConverter(course.endDate) === "" ? "" : getDate(course.startDate, i18n.t("itrex.endDate"))}
         </TouchableOpacity>
     );
 };
 
 const styles = StyleSheet.create({
     card: {
-        backgroundColor: dark.theme.lightBlue,
         shadowRadius: 10,
-        shadowColor: dark.theme.darkBlue1,
         shadowOffset: { width: -1, height: 1 },
         margin: 5,
         maxWidth: 400,
         minWidth: 400,
+        backgroundColor: dark.Opacity.grey,
     },
     cardHeader: {
         flex: 1,
@@ -119,9 +118,9 @@ const styles = StyleSheet.create({
         textShadowColor: dark.theme.pink,
         textShadowOffset: { width: 1, height: 1 },
         textShadowRadius: 3,
-        width: 80,
+        width: 100,
         height: 15,
-        marginLeft: 315,
+        marginLeft: 295,
         marginTop: 5,
     },
     textUnpublished: {
@@ -148,9 +147,9 @@ const styles = StyleSheet.create({
         textShadowColor: dark.theme.lightGreen,
         textShadowOffset: { width: 1, height: 1 },
         textShadowRadius: 3,
-        width: 80,
+        width: 100,
         height: 15,
-        marginLeft: 315,
+        marginLeft: 295,
         marginTop: 5,
     },
     textPublished: {
@@ -168,7 +167,8 @@ const styles = StyleSheet.create({
         marginRight: 5,
     },
     break: {
-        backgroundColor: dark.theme.darkBlue4,
+        backgroundColor: "white",
+        opacity: 0.5,
         height: 1,
     },
     image: {
@@ -178,5 +178,16 @@ const styles = StyleSheet.create({
     },
     touchableStyle: {
         color: dark.theme.pink,
+    },
+    gradient: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        borderRadius: 5,
+    },
+    container: {
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
     },
 });

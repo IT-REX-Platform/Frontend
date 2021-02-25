@@ -15,7 +15,6 @@ const theoInf: ICourse = {
     name: "Theoretische Grundlagen der Informatik",
     maxFoodSum: 5,
     publishState: CoursePublishState.PUBLISHED,
-    ownership: ["Ulrich Hertrampf"],
 };
 
 const looseCoupling: ICourse = {
@@ -26,7 +25,6 @@ const looseCoupling: ICourse = {
     name: "Loose Coupling and message based systems",
     maxFoodSum: 10,
     publishState: CoursePublishState.PUBLISHED,
-    ownership: ["Frank Leymann", "Uwe Breitenbücher"],
 };
 
 const cloudComputing: ICourse = {
@@ -37,7 +35,6 @@ const cloudComputing: ICourse = {
     name: "Cloud Computing: Concepts & Technologies ",
     maxFoodSum: 20,
     publishState: CoursePublishState.PUBLISHED,
-    ownership: ["Frank Leymann", "Uwe Breitenbücher"],
 };
 
 const pse: ICourse = {
@@ -48,25 +45,12 @@ const pse: ICourse = {
     name: "Programmierung und Softwareentwicklung",
     maxFoodSum: 30,
     publishState: CoursePublishState.UNPUBLISHED,
-    ownership: ["Frank Leymann"],
 };
 
 const minimalCourse: ICourse = {
     id: "TestID4",
     name: "TestKurs",
-    ownership: ["Steffen Becker"],
     publishState: CoursePublishState.UNPUBLISHED,
-};
-
-const rsa: ICourse = {
-    courseDescription: "This is a description",
-    startDate: startDate,
-    endDate: endDate,
-    id: "TestID5",
-    name: "Programmierung und Softwareentwicklung 2",
-    maxFoodSum: 30,
-    publishState: CoursePublishState.UNPUBLISHED,
-    ownership: ["Frank Leymann"],
 };
 
 export const courseList: ICourse[] = [theoInf, looseCoupling, cloudComputing, pse, minimalCourse];
