@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { Button, ImageBackground, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { loggerFactory } from "../../logger/LoggerConfig";
 import { IVideo } from "../types/IVideo";
 import { Video } from "expo-av";
@@ -38,56 +38,55 @@ export const VideoComponent: React.FC = () => {
     const [newTitle, setTitle] = useState("");
 
     return (
-        <View style={styles.verticalContainer}>
-            <Video
-                source={{ uri: getVideoUrl() }}
-                // source={{
-                //     uri: "https://cdn.videvo.net/videvo_files/video/free/2012-10/small_watermarked/hd1967_preview.webm",
-                // }}
-                rate={1.0}
-                volume={1.0}
-                isMuted={false}
-                resizeMode="cover"
-                shouldPlay={true}
-                useNativeControls={true}
-                style={{ width: getWidth(), height: getHeight(), padding: 10, backgroundColor: "#481380" }}
-            />
-
-            <Separator />
-            <View style={styles.horizontalContainer}>
-                <Text style={styles.label}>{i18n.t("itrex.titleColon")}</Text>
-                <Text style={styles.text}>{getTitle()}</Text>
-                <TextInput
-                    style={styles.textInput}
-                    placeholder={i18n.t("itrex.inputNewTitle")}
-                    onChangeText={(text: string) => setTitle(text)}
+        <ImageBackground source={require("../constants/images/Background2.png")} style={styles.image}>
+            <View style={styles.verticalContainer}>
+                <Video
+                    source={{ uri: getVideoUrl() }}
+                    rate={1.0}
+                    volume={1.0}
+                    isMuted={false}
+                    resizeMode="cover"
+                    shouldPlay={true}
+                    useNativeControls={true}
+                    style={{ width: getWidth(), height: getHeight(), padding: 10, backgroundColor: "#481380" }}
                 />
-            </View>
 
-            <Separator />
-            <View style={styles.horizontalContainer}>
-                <Text style={styles.label}>{i18n.t("itrex.startDateColumn")}</Text>
-                <Text style={styles.text}>{getStartDate()}</Text>
-            </View>
-
-            <Separator />
-            <View style={styles.horizontalContainer}>
+                <Separator />
                 <View style={styles.horizontalContainer}>
-                    <Text style={styles.label}>{i18n.t("itrex.endDateColumn")}</Text>
-                    <Text style={styles.text}>{getEndDate()}</Text>
+                    <Text style={styles.label}>{i18n.t("itrex.titleColon")}</Text>
+                    <Text style={styles.text}>{getTitle()}</Text>
+                    <TextInput
+                        style={styles.textInput}
+                        placeholder={i18n.t("itrex.inputNewTitle")}
+                        onChangeText={(text: string) => setTitle(text)}
+                    />
+                </View>
+
+                <Separator />
+                <View style={styles.horizontalContainer}>
+                    <Text style={styles.label}>{i18n.t("itrex.startDateColumn")}</Text>
+                    <Text style={styles.text}>{getStartDate()}</Text>
+                </View>
+
+                <Separator />
+                <View style={styles.horizontalContainer}>
+                    <View style={styles.horizontalContainer}>
+                        <Text style={styles.label}>{i18n.t("itrex.endDateColumn")}</Text>
+                        <Text style={styles.text}>{getEndDate()}</Text>
+                    </View>
+                </View>
+
+                <Separator />
+                <View style={styles.horizontalContainer}>
+                    <Pressable style={styles.button}>
+                        <Button title={i18n.t("itrex.updateVideo")} onPress={updateVideo} />
+                    </Pressable>
+                    <Pressable style={styles.button}>
+                        <Button color="red" title={i18n.t("itrex.deleteVideo")} onPress={deleteVideo} />
+                    </Pressable>
                 </View>
             </View>
-
-            <Separator />
-            <View style={styles.horizontalContainer}>
-                <Pressable style={styles.button}>
-                    <Button title={i18n.t("itrex.updateVideo")} onPress={updateVideo} />
-                </Pressable>
-                <Pressable style={styles.button}>
-                    <Button color="red" title={i18n.t("itrex.deleteVideo")} onPress={deleteVideo} />
-                </Pressable>
-            </View>
-        </View>
+        </ImageBackground>
     );
 
     function getVideoUrl(): string {
@@ -175,7 +174,6 @@ export const VideoComponent: React.FC = () => {
 const styles = StyleSheet.create({
     verticalContainer: {
         flex: 1,
-        backgroundColor: "#fff",
         alignItems: "center",
         justifyContent: "center",
     },
@@ -184,18 +182,24 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "space-around",
     },
+    image: {
+        flex: 1,
+        resizeMode: "stretch",
+        justifyContent: "center",
+    },
     label: {
-        color: "black",
+        color: "white",
         fontSize: 20,
         padding: 5,
         fontWeight: "bold",
     },
     text: {
-        color: "black",
+        color: "white",
         fontSize: 20,
         padding: 5,
     },
     textInput: {
+        color: "white",
         fontSize: 20,
         marginLeft: 8,
         borderColor: "lightgray",

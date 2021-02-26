@@ -182,6 +182,7 @@ const styles = StyleSheet.create({
         tintColor: "white",
     },
     styledTextInput: {
+        color: "white",
         tintColor: "white",
         width: "100%",
         marginLeft: 8,
