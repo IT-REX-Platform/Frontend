@@ -263,6 +263,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
     },
     styledTextInput: {
+        color: "white",
         marginLeft: 8,
         borderColor: "lightgray",
         borderWidth: 2,

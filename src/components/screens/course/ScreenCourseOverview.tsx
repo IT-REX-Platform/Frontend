@@ -31,7 +31,7 @@ export const ScreenCourseOverview: React.FC = () => {
     return (
         <>
             <ImageBackground source={require("../../../constants/images/Background_forest.svg")} style={styles.image}>
-                <Text style={styles.container}>Course Overview</Text>
+                <Text style={styles.container}>{i18n.t("itrex.courseOverview")}</Text>
                 <Text>{course.courseDescription}</Text>
                 <Button title={i18n.t("itrex.videoPool")} onPress={() => goToVideoPool()} />
             </ImageBackground>
