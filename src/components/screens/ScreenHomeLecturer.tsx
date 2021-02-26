@@ -1,4 +1,4 @@
-import { ImageBackground, StyleSheet, Text, View } from "react-native";
+import { ImageBackground, StyleSheet, Text, View, Button } from "react-native";
 
 import React, { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
@@ -13,6 +13,12 @@ import { EndpointsCourse } from "../../api/endpoints/EndpointsCourse";
 import { CoursePublishState } from "../../constants/CoursePublishState";
 import { CourseActivityState } from "../../constants/CourseActivityState";
 import { dark } from "../../constants/themes/dark";
+import { courseList } from "../../constants/fixtures/courseList.fixture";
+import { red400 } from "react-native-paper/lib/typescript/styles/colors";
+import { createAlert } from "../../helperScripts/createAlert";
+import { NavigationRoutes } from "../../constants/navigators/NavigationRoutes";
+import AuthenticationService from "../../services/AuthenticationService";
+import { ITREXRoles } from "../../constants/ITREXRoles";
 
 export const ScreenHomeLecturer: React.FC = () => {
     React.useContext(LocalizationContext);
@@ -31,6 +37,8 @@ export const ScreenHomeLecturer: React.FC = () => {
         fetchCourses(selectedPublishStateFilter, selectedActiveState);
     }, [selectedPublishStateFilter, selectedActiveState]);
 
+    console.log(filteredCourses);
+    console.log(selectedPublishStateFilter);
     const endpointsCourse: EndpointsCourse = new EndpointsCourse();
 
     function fetchCourses(
@@ -42,6 +50,7 @@ export const ScreenHomeLecturer: React.FC = () => {
         const endDate = getEndDateBasedOnFilter(setSelectedActiveState);
 
         const filterParams: ICourse = { publishState: publishState };
+        console.log(filterParams);
 
         endpointsCourse.getAllCourses(request, filterParams).then((receivedCourses: ICourse[]) => {
             setFilteredCourses(receivedCourses);
@@ -102,6 +111,27 @@ export const ScreenHomeLecturer: React.FC = () => {
     }
 
     console.log("render new page");
+    function courseList() {
+        if (
+            selectedPublishStateFilter === undefined &&
+            selectedActiveState === undefined &&
+            filteredCourses.length === 0
+        ) {
+            return (
+                <View style={styles.cardView}>
+                    <View style={[{ width: "20%", marginTop: 15 }]}>
+                        <Button
+                            color={dark.Opacity.blueGreen}
+                            title={i18n.t("itrex.createCourse")}
+                            onPress={() => navigation.navigate(NavigationRoutes.ROUTE_CREATE_COURSE)}
+                        />
+                    </View>
+                </View>
+            );
+        } else {
+            return <CourseList courses={filteredCourses} />;
+        }
+    }
 
     return (
         <View style={styles.container}>
@@ -112,7 +142,8 @@ export const ScreenHomeLecturer: React.FC = () => {
                 {/* Use this for hardcoded courses */}
                 {/*<CourseList courses={courseList} />*/}
                 {/* Use this for courses from backend */}
-                <CourseList courses={filteredCourses} />
+
+                {courseList()}
             </ImageBackground>
         </View>
     );
@@ -176,6 +207,7 @@ const styles = StyleSheet.create({
         minWidth: 600,
         backgroundColor: dark.Opacity.grey,
         alignItems: "center",
+        justifyContent: "center",
     },
     cardHeader: {
         flex: 1,
@@ -196,5 +228,12 @@ const styles = StyleSheet.create({
         backgroundColor: "white",
         opacity: 0.5,
         height: 1,
+    },
+    cardView: {
+        flexDirection: "row",
+        flexWrap: "wrap",
+        alignContent: "space-around",
+        justifyContent: "center",
+        marginTop: 15,
     },
 });

@@ -1,6 +1,6 @@
 import { CompositeNavigationProp, useNavigation } from "@react-navigation/native";
 import React from "react";
-import { Text, ImageBackground, StyleSheet, Button } from "react-native";
+import { Text, ImageBackground, StyleSheet, Button, View } from "react-native";
 import { dark } from "../../../constants/themes/dark";
 import { ICourse } from "../../../types/ICourse";
 import {
@@ -32,8 +32,12 @@ export const ScreenCourseOverview: React.FC = () => {
         <>
             <ImageBackground source={require("../../../constants/images/Background_forest.svg")} style={styles.image}>
                 <Text style={styles.container}>Course Overview</Text>
-                <Text>{course.courseDescription}</Text>
-                <Button title={i18n.t("itrex.videoPool")} onPress={() => goToVideoPool()} />
+                <View style={styles.content}>
+                    <Text style={styles.textWhite}>{course.courseDescription}</Text>
+                    <View style={[{ width: "20%", marginTop: 15 }]}>
+                        <Button title={i18n.t("itrex.videoPool")} onPress={() => goToVideoPool()} />
+                    </View>
+                </View>
             </ImageBackground>
         </>
     );
@@ -50,7 +54,8 @@ const styles = StyleSheet.create({
         marginTop: 70,
         textDecorationColor: dark.theme.pink,
         fontSize: 50,
-        color: dark.theme.pink,
+        color: "white",
+        fontWeight: "bold",
         justifyContent: "center",
         textAlign: "center",
     },
@@ -63,5 +68,14 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         paddingRight: 10,
         marginTop: 20,
+    },
+    content: {
+        flex: 1,
+        margin: 15,
+        color: "white",
+        alignItems: "center",
+    },
+    textWhite: {
+        color: "white",
     },
 });
