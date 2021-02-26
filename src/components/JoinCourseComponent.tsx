@@ -1,18 +1,6 @@
-import React, { ChangeEvent } from "react";
+import React, { ChangeEvent, useEffect } from "react";
 import { useState } from "react";
-import {
-    Button,
-    FlatList,
-    ImageBackground,
-    Platform,
-    Pressable,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
-} from "react-native";
+import { Button, ImageBackground, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { ICourse } from "../types/ICourse";
 import i18n from "../locales";
 import { RequestFactory } from "../api/requests/RequestFactory";
@@ -22,6 +10,7 @@ import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { Header } from "../constants/navigators/Header";
 import { LocalizationContext } from "./Context";
 import { NavigationRoutes, RootDrawerParamList } from "../constants/navigators/NavigationRoutes";
+import { CoursePublishState } from "../constants/CoursePublishState";
 
 const loggerService = loggerFactory.getLogger("service.JoinCourseComponent");
 const endpointsCourse: EndpointsCourse = new EndpointsCourse();
@@ -35,6 +24,11 @@ export const JoinCourseComponent: React.FC = () => {
     // const route = useRoute<JoinCourseRouteProp>();
 
     const [courseIdString, setCourseId] = useState("");
+
+    const initialPublishedCourseState: ICourse[] = [];
+    const [coursesPublished, setCoursesPublished] = useState(initialPublishedCourseState);
+
+    useEffect(() => getPublishedCourses(), []);
 
     return (
         <ImageBackground source={require("../constants/images/Background2.png")} style={styles.image}>
@@ -56,10 +50,24 @@ export const JoinCourseComponent: React.FC = () => {
         </ImageBackground>
     );
 
+    function getPublishedCourses(): void {
+        const request: RequestInit = RequestFactory.createGetRequest();
+        endpointsCourse
+            .getAllCourses(request, { publishState: CoursePublishState.PUBLISHED })
+            .then((receivedCoursesPublished) => {
+                setCoursesPublished(receivedCoursesPublished);
+            });
+    }
+
     function joinCourse(): void {
         const course: ICourse = {
             id: courseIdString,
         };
+
+        if (coursesPublished.find((val) => val.id == courseIdString) === undefined) {
+            alert(i18n.t("itrex.joinCourseNoCourseError"));
+            return;
+        }
 
         const request: RequestInit = RequestFactory.createPostRequest(course);
         endpointsCourse.joinCourse(request, courseIdString);
@@ -92,6 +100,8 @@ const styles = StyleSheet.create({
         marginLeft: 8,
         borderColor: "lightgray",
         borderWidth: 2,
+        color: "white",
+        minWidth: 196,
     },
     styledButton: {
         margin: 5,

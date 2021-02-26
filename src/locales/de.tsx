@@ -17,6 +17,7 @@ export const de = {
         enterCourseDescription: "Geben Sie einen Kursbeschreibung ein:",
         createCourse: "Neuen Kurs erstellen",
         joinCourse: "Kurs beitreten",
+        joinCourseNoCourseError: "Kurs beitreten fehlgeschlagen! Kein veröffentlichter Kurs mit dieser ID gefunden.",
         getAllCourses: "Alle Kurse holen",
         enterCouseId: "Geben Sie eine Kurs-ID ein:",
         publishCourse: "Kurs veröffentlichen",
