@@ -108,7 +108,7 @@ export const VideoPoolComponent: React.FC = () => {
                     style={styles.list}
                     data={videos}
                     renderItem={listItem}
-                    keyExtractor={(index) => index.toString()}
+                    keyExtractor={(item, index) => index.toString()}
                 />
             </View>
         );
