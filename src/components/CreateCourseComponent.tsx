@@ -210,20 +210,37 @@ export const CreateCourseComponent: React.FC = () => {
 
     function patchCourse(): void {
         loggerService.trace("Parsing ID string to ID number");
+        let course: ICourse;
 
+        if (startDate == undefined) {
+            return;
+        }
         // Check if start and Enddate are set
         if (!validateCourseDates(startDate, endDate)) {
             return;
         }
 
+        //TODO: if startdate > current date -> Course is not publishd yet
         // ATTENTION: fields without values will be overwritten with null in DB. @s.pastuchov 27.01.21
-        const course: ICourse = {
-            id: courseIdString,
-            publishState: CoursePublishState.PUBLISHED,
-            startDate: startDate,
-            endDate: endDate,
-        };
+        const currdate = new Date();
 
+        if (startDate > currdate) {
+            course = {
+                id: courseIdString,
+                publishState: CoursePublishState.UNPUBLISHED,
+                startDate: startDate,
+                endDate: endDate,
+            };
+        } else {
+            course = {
+                id: courseIdString,
+                publishState: CoursePublishState.PUBLISHED,
+                startDate: startDate,
+                endDate: endDate,
+            };
+        }
+
+        console.log(course);
         loggerService.trace(`Updating course: name=${courseName}, publishedState=${CoursePublishState.PUBLISHED}.`);
         const putRequest: RequestInit = RequestFactory.createPatchRequest(course);
         endpointsCourse.patchCourse(putRequest).then((data) => console.log(data));

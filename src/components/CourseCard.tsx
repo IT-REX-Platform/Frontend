@@ -79,7 +79,7 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
             <View style={styles.break} />
             {/*<Text style={styles.cardContent}>Lecturer:</Text> {getCourseOwner(course.ownership)}*/}
             {dateConverter(course.startDate) === "" ? "" : getDate(course.startDate, i18n.t("itrex.startDate"))}
-            {dateConverter(course.endDate) === "" ? "" : getDate(course.startDate, i18n.t("itrex.endDate"))}
+            {dateConverter(course.endDate) === "" ? "" : getDate(course.endDate, i18n.t("itrex.endDate"))}
         </TouchableOpacity>
     );
 };
