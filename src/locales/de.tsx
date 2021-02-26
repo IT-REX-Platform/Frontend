@@ -18,6 +18,7 @@ export const de = {
         createCourse: "Neuen Kurs erstellen",
         joinCourse: "Kurs beitreten",
         joinCourseNoCourseError: "Kurs beitreten fehlgeschlagen! Kein veröffentlichter Kurs mit dieser ID gefunden.",
+        leaveCourse: "Kurs verlassen",
         getAllCourses: "Alle Kurse holen",
         enterCouseId: "Geben Sie eine Kurs-ID ein:",
         publishCourse: "Kurs veröffentlichen",
