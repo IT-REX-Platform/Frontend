@@ -78,8 +78,16 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
             <Text style={styles.cardHeader}>{course.name}</Text>
             <View style={styles.break} />
             {/*<Text style={styles.cardContent}>Lecturer:</Text> {getCourseOwner(course.ownership)}*/}
-            {dateConverter(course.startDate) === "" ? "" : getDate(course.startDate, i18n.t("itrex.startDate"))}
-            {dateConverter(course.endDate) === "" ? "" : getDate(course.endDate, i18n.t("itrex.endDate"))}
+            {dateConverter(course.startDate) === "" ? (
+                <View style={styles.cardContent} />
+            ) : (
+                getDate(course.startDate, i18n.t("itrex.startDate"))
+            )}
+            {dateConverter(course.endDate) === "" ? (
+                <View style={styles.cardContent} />
+            ) : (
+                getDate(course.endDate, i18n.t("itrex.endDate"))
+            )}
         </TouchableOpacity>
     );
 };
@@ -107,6 +115,7 @@ const styles = StyleSheet.create({
         textAlignVertical: "center",
         marginLeft: 5,
         marginBottom: 5,
+        minHeight: 20,
     },
     unpublishedCard: {
         flexDirection: "row",
@@ -170,6 +179,7 @@ const styles = StyleSheet.create({
         backgroundColor: "white",
         opacity: 0.5,
         height: 1,
+        marginTop: 1,
     },
     image: {
         flex: 1,
