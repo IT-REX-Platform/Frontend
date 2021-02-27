@@ -30,7 +30,10 @@ export const ScreenCourseOverview: React.FC = () => {
     const course: ICourse = React.useContext(CourseContext);
     return (
         <>
-            <ImageBackground source={require("../../../constants/images/Background_forest.svg")} style={styles.image}>
+            <ImageBackground
+                source={require("../../constants/images/Background3.png")}
+                style={styles.image}
+                imageStyle={{ opacity: 0.5, position: "absolute", resizeMode: "center" }}>
                 <Text style={styles.container}>Course Overview</Text>
                 <Text>{course.courseDescription}</Text>
                 <Button title={i18n.t("itrex.videoPool")} onPress={() => goToVideoPool()} />

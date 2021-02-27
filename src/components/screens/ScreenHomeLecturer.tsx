@@ -35,10 +35,11 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         flexDirection: "column",
+        backgroundColor: "",
     },
     image: {
         flex: 1,
-        resizeMode: "stretch",
+        resizeMode: "contain",
         justifyContent: "center",
     },
     icon: {

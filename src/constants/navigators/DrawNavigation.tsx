@@ -31,7 +31,7 @@ export const DrawerNavigator: React.FC = () => {
                 inactiveBackgroundColor: dark.theme.darkBlue2,
                 inactiveTintColor: "white",
             }}
-            drawerType={dimensions.width >= 1400 ? "permanent" : "front"}
+            drawerType={dimensions.width >= 140 ? "permanent" : "front"}
             drawerStyle={{ backgroundColor: dark.theme.darkBlue1 }}
             drawerContent={(props) => <DrawerContent {...props}></DrawerContent>}>
             {getHomeScreen()}
