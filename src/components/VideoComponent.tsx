@@ -48,7 +48,6 @@ export const VideoComponent: React.FC = () => {
                     resizeMode="cover"
                     shouldPlay={true}
                     useNativeControls={true}
-                    style={{ width: getWidth(), height: getHeight(), padding: 10, backgroundColor: "#481380" }}
                 />
 
                 <Separator />

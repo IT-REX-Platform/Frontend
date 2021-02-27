@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from "react";
 import i18n from "../locales";
-import { Header } from "../constants/navigators/Header";
 import { CourseContext, LocalizationContext } from "./Context";
 import { Button, ImageBackground, Platform, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
-import * as DocumentPicker from "expo-document-picker";
-import * as ImagePicker from "expo-image-picker";
+import { DocumentResult, getDocumentAsync } from "expo-document-picker";
+import {
+    ImagePickerResult,
+    launchImageLibraryAsync,
+    MediaTypeOptions,
+    requestMediaLibraryPermissionsAsync,
+} from "expo-image-picker";
 import { RequestFactory } from "../api/requests/RequestFactory";
 import { EndpointsVideo } from "../api/endpoints/EndpointsVideo";
 import { createAlert } from "../helperScripts/createAlert";
@@ -35,7 +39,7 @@ export const VideoUploadComponent: React.FC = () => {
     useEffect(() => {
         (async () => {
             if (Platform.OS === "ios") {
-                const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+                const { status } = await requestMediaLibraryPermissionsAsync();
                 if (status !== "granted") {
                     alert(i18n.t("itrex.imagePickerPermAlert"));
                 }
@@ -60,8 +64,8 @@ export const VideoUploadComponent: React.FC = () => {
      * Expo image picker that only allows picking of video files.
      */
     const imagePicker = async () => {
-        const video: ImagePicker.ImagePickerResult = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Videos,
+        const video: ImagePickerResult = await launchImageLibraryAsync({
+            mediaTypes: MediaTypeOptions.Videos,
             allowsEditing: true,
         });
 
@@ -77,7 +81,7 @@ export const VideoUploadComponent: React.FC = () => {
      * Expo document picker that only allows picking of video files in mp4 format.
      */
     const documentPicker = async () => {
-        const document: DocumentPicker.DocumentResult = await DocumentPicker.getDocumentAsync({
+        const document: DocumentResult = await getDocumentAsync({
             type: "video/mp4",
         });
 
@@ -98,7 +102,7 @@ export const VideoUploadComponent: React.FC = () => {
             return;
         }
 
-        const video = await buildVideoAsFormData(course.id);
+        const video: FormData = await buildVideoAsFormData(course.id);
         const postRequest: RequestInit = RequestFactory.createPostRequestWithFormData(video);
         const response: IVideo = await endpointsVideo.uploadVideo(postRequest);
         console.log(response);
@@ -117,7 +121,7 @@ export const VideoUploadComponent: React.FC = () => {
     /**
      * Build a FormData object from the video uri.
      */
-    const buildVideoAsFormData = async (courseId: string) => {
+    const buildVideoAsFormData = async (courseId: string): Promise<FormData> => {
         const response: Response = await fetch(videoUri);
         const fileBlob: Blob = await response.blob();
         const formData: FormData = new FormData();
@@ -161,7 +165,6 @@ export const VideoUploadComponent: React.FC = () => {
                     resizeMode="cover"
                     shouldPlay={true}
                     useNativeControls={true}
-                    style={{ width: 640, height: 480 }}
                 />
             </View>
         </ImageBackground>

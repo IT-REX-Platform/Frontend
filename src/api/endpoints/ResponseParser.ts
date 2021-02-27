@@ -25,7 +25,6 @@ export class ResponseParser {
                     resolve(course);
                 })
                 .catch((error) => {
-                    createAlert(i18n.t("itrex.courseNotfound"));
                     ResponseParser.loggerApi.error("An error occurred while parsing course data.", error);
                     resolve({});
                 });
@@ -52,7 +51,6 @@ export class ResponseParser {
                     resolve(courses);
                 })
                 .catch((error) => {
-                    createAlert(i18n.t("itrex.coursesNotfound"));
                     ResponseParser.loggerApi.error("An error occurred while parsing courses data.", error);
                     resolve([]);
                 });
@@ -66,7 +64,7 @@ export class ResponseParser {
                     if (response.ok) {
                         return response.json();
                     } else {
-                        createAlert(i18n.t("itrex.videoNotfound"));
+                        createAlert(i18n.t("itrex.videoNotFound"));
                         ResponseParser.loggerApi.error("No video data received.");
                         resolve({});
                     }
@@ -77,7 +75,6 @@ export class ResponseParser {
                     resolve(video);
                 })
                 .catch((error) => {
-                    createAlert(i18n.t("itrex.videoNotfound"));
                     ResponseParser.loggerApi.error("An error occurred while parsing video data.", error);
                     resolve({});
                 });
@@ -104,7 +101,6 @@ export class ResponseParser {
                     resolve(videos);
                 })
                 .catch((error) => {
-                    createAlert(i18n.t("itrex.videosNotfound"));
                     ResponseParser.loggerApi.error("An error occurred while parsing videos data.", error);
                     resolve([]);
                 });

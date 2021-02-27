@@ -54,7 +54,8 @@ export const de = {
         videoPool: "Video Pool",
         getAllVideos: "Alle Videos holen",
         video: "Video",
-        videoNotFound: "Kein Video gefunden!",
+        videoNotFound: "Kein Video gefunden.",
+        videosNotfound: "Keine Videos gefunden.",
         titleColon: "Titel:",
         inputNewTitle: "Neuen Titel eingeben",
         startDateColumn: "Startdatum:",
@@ -65,7 +66,5 @@ export const de = {
         videoDeleted: "Video gelöscht!",
         courseNotfound: "Kurs nicht gefunden.",
         coursesNotfound: "Kurse nicht gefunden.",
-        videoNotfound: "Video nicht gefunden.",
-        videosNotfound: "Videos nicht gefunden.",
     },
 };
