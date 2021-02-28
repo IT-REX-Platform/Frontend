@@ -61,6 +61,8 @@ export const en = {
         coursesNotfound: "Courses data not found.",
         videoNotfound: "Video data not found.",
         videosNotfound: "Videos data not found.",
+        chapterNotfound: "Chapter data not found.",
+        chaptersNotfound: "Chapters data not found.",
         noCoursesLecturer: "No courses have been created yet!",
         noCoursesStudent: "No courses have been joined so far!",
         startDate: "Start Date",

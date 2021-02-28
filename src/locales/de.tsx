@@ -65,5 +65,7 @@ export const de = {
         coursesNotfound: "Kurse nicht gefunden.",
         videoNotfound: "Video nicht gefunden.",
         videosNotfound: "Videos nicht gefunden.",
+        chapterNotfound: "Kapitel nicht gefunden.",
+        chaptersNotfound: "Kapitel nicht gefunden.",
     },
 };

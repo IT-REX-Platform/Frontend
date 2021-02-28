@@ -19,6 +19,7 @@ import AuthenticationService from "../../services/AuthenticationService";
 import { ITREXRoles } from "../../constants/ITREXRoles";
 import i18n from "../../locales";
 import { VideoUploadComponent } from "../VideoUploadComponent";
+import CourseService from "../../services/CourseService";
 
 export type ScreenCourseNavigationProp = DrawerNavigationProp<RootDrawerParamList, "ROUTE_COURSE_DETAILS">;
 export type ScreenCourseRouteProp = RouteProp<RootDrawerParamList, "ROUTE_COURSE_DETAILS">;
@@ -39,10 +40,10 @@ export const ScreenCourse: React.FC = () => {
     const [course, setCourse] = useState(courseInitial);
 
     const endpointsCourse: EndpointsCourse = new EndpointsCourse();
+    const courseService: CourseService = new CourseService();
 
     useEffect(() => {
-        const request: RequestInit = RequestFactory.createGetRequest();
-        endpointsCourse.getCourse(request, courseId).then((receivedCourse) => {
+        courseService.getCourse(courseId).then((receivedCourse) => {
             setCourse(receivedCourse);
         });
     }, [courseId]);
