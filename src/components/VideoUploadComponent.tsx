@@ -18,6 +18,7 @@ import { VideoFormDataParams } from "../constants/VideoFormDataParams";
 import { loggerFactory } from "../../logger/LoggerConfig";
 import { createVideoUrl } from "../services/createVideoUrl";
 import { ICourse } from "../types/ICourse";
+import { dark } from "../constants/themes/dark";
 
 const loggerService = loggerFactory.getLogger("service.UploadVideoComponent");
 const endpointsVideo = new EndpointsVideo();
@@ -139,26 +140,28 @@ export const VideoUploadComponent: React.FC = () => {
     return (
         <ImageBackground source={require("../constants/images/Background2.png")} style={styles.image}>
             <View style={styles.container}>
-                <View style={styles.styledInputContainer}>
-                    <Text style={{ color: "white" }}>{i18n.t("itrex.uploadVideoHere")}</Text>
-                    <TextInput
-                        style={styles.styledTextInput}
-                        value={videoName}
-                        editable={false}
-                        testID="videoNameInput"
-                    />
-                    <Pressable style={styles.styledButton}>
-                        <Button title={i18n.t("itrex.browseVideos")} onPress={pickVideo} />
-                    </Pressable>
-                </View>
+                <Text numberOfLines={1} lineBreakMode="tail" style={styles.header}>
+                    {i18n.t("itrex.toUploadVideo")}
+                </Text>
+
+                <TextInput
+                    style={styles.textInput}
+                    value={videoName}
+                    editable={false}
+                    placeholder={i18n.t("itrex.uploadVideoHere")}
+                    testID="videoNameInput"
+                />
+
+                <Pressable style={styles.styledButton}>
+                    <Button title={i18n.t("itrex.browseVideos")} onPress={pickVideo} />
+                </Pressable>
 
                 <Pressable style={styles.styledButton}>
                     <Button title={i18n.t("itrex.toUploadVideo")} onPress={uploadVideo} />
                 </Pressable>
 
-                <View style={styles.video} />
-
                 <Video
+                    style={styles.video}
                     source={{ uri: videoPlayerUri }}
                     rate={1.0}
                     volume={1.0}
@@ -178,33 +181,32 @@ const styles = StyleSheet.create({
         marginTop: 20,
         marginBottom: 20,
         alignItems: "center",
-        justifyContent: "center",
-    },
-    styledInputContainer: {
-        flexDirection: "column",
-        justifyContent: "center",
-        tintColor: "white",
-    },
-    styledTextInput: {
-        color: "white",
-        tintColor: "white",
-        width: "100%",
-        marginLeft: 8,
-        marginRight: 8,
-        borderColor: "lightgray",
-        borderWidth: 2,
-    },
-    styledButton: {
-        marginTop: 16,
-    },
-    video: {
-        marginTop: 20,
-        marginBottom: 20,
-        alignItems: "center",
     },
     image: {
         flex: 1,
         resizeMode: "stretch",
         justifyContent: "center",
+    },
+    header: {
+        fontSize: 50,
+        color: dark.theme.pink,
+        textAlign: "center",
+        maxWidth: "90%",
+    },
+    textInput: {
+        color: "white",
+        fontSize: 24,
+        borderColor: "lightgray",
+        borderWidth: 1,
+        width: "50%",
+        textAlign: "center",
+        margin: 10,
+    },
+    styledButton: {
+        margin: 10,
+    },
+    video: {
+        maxWidth: "90%",
+        margin: 10,
     },
 });
