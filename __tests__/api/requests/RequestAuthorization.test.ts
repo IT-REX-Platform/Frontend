@@ -5,6 +5,21 @@ import { RequestAuthorization } from "../../../src/api/requests/RequestAuthoriza
 
 console.log = jest.fn();
 
+jest.mock("../../../src/constants/Constants", () => {
+    const mockFunctionOutput = {
+        apiUrl: "http://localhost:8080/",
+        authEndpoint: "http://keycloak:9080/auth/realms/jhipster/protocol/openid-connect/auth",
+        authTokenEndpoint: "http://keycloak:9080/auth/realms/jhipster/protocol/openid-connect/token",
+        channel: "dev",
+    };
+
+    return {
+        itRexVars: jest.fn(() => {
+            return mockFunctionOutput;
+        }),
+    };
+});
+
 describe("RequestAuthorization", () => {
     /**
      * Must be async to prevent warning:

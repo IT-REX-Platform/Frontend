@@ -24,6 +24,10 @@ export default (config: ExpoConfig): ExpoConfig => {
             authTokenEndpoint: "",
         },
     };
+    const general_variables = {
+        authClientId: "web_app",
+        authRedirectUrl: "it-rex://login",
+    };
 
     const channel: string = process.env.ITREX_CHANNEL || "dev";
 
@@ -31,6 +35,7 @@ export default (config: ExpoConfig): ExpoConfig => {
         ...config,
         extra: {
             channel: channel,
+            ...general_variables,
             ...env_variables[channel],
         },
     };
