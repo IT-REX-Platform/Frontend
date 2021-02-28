@@ -5,6 +5,7 @@ import {
     Animated,
     Button,
     FlatList,
+    ImageBackground,
     Pressable,
     StyleSheet,
     Text,
@@ -22,6 +23,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { ICourse } from "../types/ICourse";
 import { CourseContext, LocalizationContext } from "./Context";
 import { NavigationRoutes } from "../constants/navigators/NavigationRoutes";
+import { dark } from "../constants/themes/dark";
 
 const endpointsVideo = new EndpointsVideo();
 const loggerService = loggerFactory.getLogger("service.VideoPoolComponent");
@@ -67,25 +69,57 @@ export const VideoPoolComponent: React.FC = () => {
         </Animated.View>
     );
 
-    if (isLoading) {
+    const renderUi = () => {
+        if (isLoading) {
+            return (
+                <View style={styles.containerCentered}>
+                    <ActivityIndicator size="large" color="white" />
+                </View>
+            );
+        }
+
+        if (videos.length < 1) {
+            return (
+                <View style={styles.containerTop}>
+                    <Pressable style={styles.styledButton}>
+                        <Button
+                            title={i18n.t("itrex.toUploadVideo")}
+                            onPress={() => navigation.navigate(NavigationRoutes.ROUTE_VIDEO_UPLOAD)}
+                        />
+                    </Pressable>
+
+                    <View style={styles.textBox}>
+                        <Text style={styles.text}>{i18n.t("itrex.noVideosAvailable")}</Text>
+                    </View>
+                </View>
+            );
+        }
+
         return (
-            <View style={styles.container}>
-                <ActivityIndicator size="large" color="#481380" />
+            <View style={styles.containerTop}>
+                <Pressable style={styles.styledButton}>
+                    <Button
+                        title={i18n.t("itrex.toUploadVideo")}
+                        onPress={() => navigation.navigate(NavigationRoutes.ROUTE_VIDEO_UPLOAD)}
+                    />
+                </Pressable>
+
+                <FlatList
+                    style={styles.list}
+                    data={videos}
+                    renderItem={listItem}
+                    keyExtractor={(item, index) => index.toString()}
+                />
             </View>
         );
-    }
+    };
 
     return (
-        <View style={styles.container}>
-            <Pressable style={styles.styledButton}>
-                <Button
-                    title={i18n.t("itrex.toUploadVideo")}
-                    onPress={() => navigation.navigate(NavigationRoutes.ROUTE_VIDEO_UPLOAD)}
-                />
-            </Pressable>
+        <ImageBackground source={require("../constants/images/Background2.png")} style={styles.image}>
+            <Text style={styles.header}>{i18n.t("itrex.videoPool")}</Text>
 
-            <FlatList data={videos} renderItem={listItem} keyExtractor={(item, index) => index.toString()} />
-        </View>
+            {renderUi()}
+        </ImageBackground>
     );
 
     async function getAllVideos(courseId?: string): Promise<void> {
@@ -108,20 +142,46 @@ export const VideoPoolComponent: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-    container: {
+    containerCentered: {
         flex: 1,
-        backgroundColor: "#fff",
         alignItems: "center",
         justifyContent: "center",
+    },
+    containerTop: {
+        flex: 1,
+        alignItems: "center",
+    },
+    image: {
+        flex: 1,
+        resizeMode: "stretch",
+        justifyContent: "center",
+    },
+    header: {
+        fontSize: 50,
+        color: dark.theme.pink,
+        textAlign: "center",
+    },
+    textBox: {
+        width: "50%",
+        height: "50%",
+        backgroundColor: "#eeeeee",
+        textAlign: "center",
+        justifyContent: "center",
+    },
+    text: {
+        color: "black",
+        fontSize: 20,
+        margin: 10,
     },
     styledButton: {
         margin: 5,
     },
+    list: {
+        width: "50%",
+    },
     listItem: {
+        alignItems: "center",
         backgroundColor: "white",
-        paddingTop: 10,
-        paddingBottom: 10,
-        paddingStart: 20,
-        paddingEnd: 20,
+        padding: 10,
     },
 });
