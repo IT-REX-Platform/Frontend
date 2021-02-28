@@ -84,7 +84,6 @@ export class EndpointsVideo implements IEndpointsVideo {
 
         this.loggerApi.trace("Sending DELETE request to URL: " + url);
         const response: Promise<Response> = sendRequest(url, deleteRequest);
-        // console.log(response);
         return response;
     }
 }
