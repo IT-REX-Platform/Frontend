@@ -25,6 +25,7 @@ import { NavigationRoutes } from "../constants/navigators/NavigationRoutes";
 import { dark } from "../constants/themes/dark";
 import { ListItem } from "react-native-elements";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { calculateVideoSize } from "../services/calculateVideoSize";
 
 const endpointsVideo = new EndpointsVideo();
 const loggerService = loggerFactory.getLogger("service.VideoPoolComponent");
@@ -82,9 +83,9 @@ export const VideoPoolComponent: React.FC = () => {
                     <ListItem.Title style={styles.listItemTitle} numberOfLines={1} lineBreakMode="tail">
                         {item.title}
                     </ListItem.Title>
-                    {/* <ListItem.Subtitle style={styles.listItemSubtitle}>
-                        {calculateVideoLength(item.length)}
-                    </ListItem.Subtitle> */}
+                    <ListItem.Subtitle style={styles.listItemSubtitle}>
+                        {calculateVideoSize(item.length)}
+                    </ListItem.Subtitle>
                 </ListItem.Content>
 
                 <TouchableOpacity style={styles.deleteButton} onPress={() => deleteVideo(item.id)}>
@@ -192,11 +193,11 @@ export const VideoPoolComponent: React.FC = () => {
             });
     }
 
-    // function calculateVideoLength(videoLength?: number): string {
-    //     if (videoLength == undefined) {
+    // function calculateVideoDuration(videoDuration?: number): string {
+    //     if (videoDuration == undefined) {
     //         return "";
     //     }
-    //     return new Date(videoLength / 100).toISOString().substr(11, 8);
+    //     return new Date(videoDuration / 100).toISOString().substr(11, 8);
     // }
 
     async function deleteVideo(videoId?: string): Promise<void> {

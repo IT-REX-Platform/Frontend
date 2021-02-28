@@ -14,6 +14,7 @@ import { CourseStackParamList, RootDrawerParamList } from "../constants/navigato
 import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { dark } from "../constants/themes/dark";
+import { calculateVideoSize } from "../services/calculateVideoSize";
 
 const loggerService = loggerFactory.getLogger("service.VideoComponent");
 const endpointsVideo = new EndpointsVideo();
@@ -67,6 +68,7 @@ export const VideoComponent: React.FC = () => {
                         placeholder={i18n.t("itrex.inputNewTitle")}
                         onChangeText={(text: string) => setTitle(text)}
                     />
+                    <Text style={styles.text}>{calculateVideoSize(video.length)}</Text>
                 </View>
 
                 <View style={styles.horizontalContainer}>
@@ -186,7 +188,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         backgroundColor: dark.theme.darkBlue2,
         borderColor: dark.theme.darkBlue1,
-        padding: 10,
+        padding: 5,
         borderRadius: 2,
     },
     textInput: {
@@ -196,6 +198,14 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         width: "50%",
         textAlign: "center",
+        margin: 5,
+    },
+    text: {
+        color: "white",
+        fontSize: 24,
+        maxWidth: "85%",
+        textAlign: "center",
+        margin: 5,
     },
     horizontalContainer: {
         flexDirection: "row",
