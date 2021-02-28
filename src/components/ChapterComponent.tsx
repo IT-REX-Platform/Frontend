@@ -2,7 +2,17 @@ import React, { useState, useEffect } from "react";
 import i18n from "../locales";
 import { Header } from "../constants/navigators/Header";
 import { CourseContext, LocalizationContext } from "./Context";
-import { Button, ImageBackground, Platform, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+    Button,
+    ImageBackground,
+    Platform,
+    Pressable,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
+} from "react-native";
 import * as DocumentPicker from "expo-document-picker";
 import * as ImagePicker from "expo-image-picker";
 import { RequestFactory } from "../api/requests/RequestFactory";
@@ -19,6 +29,15 @@ import { IChapter } from "../types/IChapter";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import AuthenticationService from "../services/AuthenticationService";
 import { ITREXRoles } from "../constants/ITREXRoles";
+import { CompositeNavigationProp, RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import {
+    CourseStackParamList,
+    CourseTabParamList,
+    RootDrawerParamList,
+} from "../constants/navigators/NavigationRoutes";
+import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
+import { DrawerNavigationProp } from "@react-navigation/drawer";
+import { MaterialTopTabNavigationProp } from "@react-navigation/material-top-tabs";
 
 const loggerService = loggerFactory.getLogger("component.ChapterComponent");
 
@@ -30,6 +49,7 @@ interface ChapterComponentProps {
 
 export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
     React.useContext(LocalizationContext);
+    const navigation = useNavigation();
 
     const chapter = props.chapter;
     return (
@@ -54,7 +74,12 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
             {props.editMode && AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_LECTURER) && (
                 <View style={styles.chapterEditRow}>
                     <MaterialCommunityIcons name="trash-can" size={28} color="white" style={styles.icon} />
-                    <MaterialIcons name="edit" size={28} color="white" style={styles.icon} />
+                    <TouchableOpacity
+                        onPress={() => {
+                            navigation.navigate("CHAPTER", { chapterId: chapter?.id });
+                        }}>
+                        <MaterialIcons name="edit" size={28} color="white" style={styles.icon} />
+                    </TouchableOpacity>
                 </View>
             )}
         </View>

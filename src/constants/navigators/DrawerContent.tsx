@@ -18,6 +18,7 @@ import { dark } from "../themes/dark";
 import { EndpointsCourse } from "../../api/endpoints/EndpointsCourse";
 import AuthenticationService from "../../services/AuthenticationService";
 import { ITREXRoles } from "../ITREXRoles";
+import { CommonActions } from "@react-navigation/native";
 
 export const DrawerContent: React.FC<DrawerContentComponentProps> = (props: DrawerContentComponentProps) => {
     const { signOut } = React.useContext(AuthContext);
@@ -77,9 +78,20 @@ export const DrawerContent: React.FC<DrawerContentComponentProps> = (props: Draw
                     key={course.id}
                     onPress={() => {
                         console.log("Course Details");
+                        navigation.dispatch({
+                            ...CommonActions.reset({
+                                index: 0,
+                                routes: [
+                                    { name: NavigationRoutes.ROUTE_COURSE_DETAILS, params: { courseId: course.id } },
+                                ],
+                            }),
+                        });
+                        /*
                         navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, {
                             courseId: course.id,
+
                         });
+                        */
                     }}></DrawerItem>
             );
         }

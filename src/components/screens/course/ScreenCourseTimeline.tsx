@@ -1,5 +1,12 @@
-import { CompositeNavigationProp, RouteProp, useNavigation, useRoute } from "@react-navigation/native";
-import React, { useState } from "react";
+import {
+    CompositeNavigationProp,
+    RouteProp,
+    useFocusEffect,
+    useIsFocused,
+    useNavigation,
+    useRoute,
+} from "@react-navigation/native";
+import React, { useEffect, useState } from "react";
 import i18n from "../../../locales";
 import { Header } from "../../../constants/navigators/Header";
 import { Text, ImageBackground, StyleSheet, View, TouchableOpacity, Switch } from "react-native";
@@ -15,6 +22,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { ChapterComponent } from "../../ChapterComponent";
 import { ICourse } from "../../../types/ICourse";
+import CourseService from "../../../services/CourseService";
 
 export type ScreenCourseTimelineNavigationProp = CompositeNavigationProp<
     MaterialTopTabNavigationProp<CourseTabParamList, "TIMELINE">,
@@ -23,16 +31,28 @@ export type ScreenCourseTimelineNavigationProp = CompositeNavigationProp<
 
 export const ScreenCourseTimeline: React.FC = () => {
     const navigation = useNavigation<ScreenCourseTimelineNavigationProp>();
+    const courseService: CourseService = new CourseService();
 
     const [count, setCount] = useState(0);
 
     const [edit, setEdit] = useState(false);
 
-    const onPress = () => setCount((prevCount) => prevCount + 1);
-
     React.useContext(LocalizationContext);
 
     const course: ICourse = React.useContext(CourseContext);
+
+    const [myCourse, setMyCourse] = useState<ICourse>({});
+
+    // Only for demo !!!!
+    const isFocused = useIsFocused();
+    useEffect(() => {
+        if (isFocused && course.id !== undefined) {
+            courseService.getCourse(course.id).then((receivedCourse) => {
+                setMyCourse(receivedCourse);
+                console.log("Load course again");
+            });
+        }
+    }, [isFocused]);
 
     return (
         <View style={styles.container}>
@@ -49,15 +69,20 @@ export const ScreenCourseTimeline: React.FC = () => {
                         }}></Switch>
                 </View>
 
-                {course.chapterObjects?.map((chapter) => (
+                {myCourse.chapterObjects?.map((chapter) => (
                     <ChapterComponent key={chapter.id} chapter={chapter} editMode={edit}></ChapterComponent>
                 ))}
-
-                <View style={styles.addChapterContainer}>
-                    <TouchableOpacity style={styles.btnAdd} onPress={onPress}>
-                        <Text style={styles.txtAddChapter}>+ Add Chapter</Text>
-                    </TouchableOpacity>
-                </View>
+                {edit && (
+                    <View style={styles.addChapterContainer}>
+                        <TouchableOpacity
+                            style={styles.btnAdd}
+                            onPress={() => {
+                                navigation.navigate("CHAPTER", { chapterId: undefined });
+                            }}>
+                            <Text style={styles.txtAddChapter}>+ Add Chapter</Text>
+                        </TouchableOpacity>
+                    </View>
+                )}
             </ImageBackground>
         </View>
     );

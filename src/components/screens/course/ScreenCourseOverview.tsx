@@ -34,7 +34,6 @@ export const ScreenCourseOverview: React.FC = () => {
                 source={require("../../../constants/images/Background3.png")}
                 style={styles.image}
                 imageStyle={{ opacity: 0.5, position: "absolute", resizeMode: "contain" }}>
-                <Text style={styles.container}>Course Overview</Text>
                 <Text>{course.courseDescription}</Text>
                 <Button title={i18n.t("itrex.videoPool")} onPress={() => goToVideoPool()} />
             </ImageBackground>
@@ -58,6 +57,7 @@ const styles = StyleSheet.create({
         textAlign: "center",
     },
     rootContainer: {
+        paddingTop: "3%",
         flex: 4,
         flexDirection: "column",
         backgroundColor: dark.theme.darkBlue1,
