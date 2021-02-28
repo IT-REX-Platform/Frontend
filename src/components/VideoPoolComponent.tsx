@@ -87,11 +87,7 @@ export const VideoPoolComponent: React.FC = () => {
                     </ListItem.Subtitle>
                 </ListItem.Content>
 
-                <TouchableOpacity
-                    style={styles.deleteButton}
-                    onPress={() => {
-                        deleteVideo(item.id);
-                    }}>
+                <TouchableOpacity style={styles.deleteButton} onPress={() => deleteVideo(item.id)}>
                     <MaterialCommunityIcons style={styles.deleteIcon} name="delete" size={32} color="red" />
                 </TouchableOpacity>
 
@@ -130,10 +126,10 @@ export const VideoPoolComponent: React.FC = () => {
             loggerService.trace("Displaying info box.");
             return (
                 <View style={styles.containerTop}>
-                    {uploadButton()}
                     <View style={styles.infoTextBox}>
                         <Text style={styles.infoText}>{i18n.t("itrex.noVideosAvailable")}</Text>
                     </View>
+                    {uploadButton()}
                 </View>
             );
         }
@@ -142,6 +138,11 @@ export const VideoPoolComponent: React.FC = () => {
         return (
             <View style={styles.containerTop}>
                 {uploadButton()}
+
+                <TouchableOpacity style={styles.deleteButton} onPress={() => refreshList()}>
+                    <MaterialCommunityIcons style={styles.deleteIcon} name="refresh" size={32} color="white" />
+                </TouchableOpacity>
+
                 <Animated.View style={{ transform: [{ translateY }], flex: 1, maxWidth: "90%" }}>
                     <FlatList
                         style={styles.list}
@@ -208,6 +209,10 @@ export const VideoPoolComponent: React.FC = () => {
         setLoading(true);
         setVideos([]);
     }
+
+    function refreshList(): void {
+        // TODO
+    }
 };
 
 const styles = StyleSheet.create({
@@ -238,6 +243,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         textAlign: "center",
         justifyContent: "center",
+        marginBottom: 50,
     },
     infoText: {
         color: "white",
