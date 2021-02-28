@@ -1,4 +1,4 @@
-import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import { RouteProp, useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { Text, StyleSheet } from "react-native";
 import { dark } from "../../constants/themes/dark";
@@ -42,11 +42,13 @@ export const ScreenCourse: React.FC = () => {
     const endpointsCourse: EndpointsCourse = new EndpointsCourse();
     const courseService: CourseService = new CourseService();
 
-    useEffect(() => {
-        courseService.getCourse(courseId).then((receivedCourse) => {
-            setCourse(receivedCourse);
-        });
-    }, [courseId]);
+    useFocusEffect(
+        React.useCallback(() => {
+            courseService.getCourse(courseId).then((receivedCourse) => {
+                setCourse(receivedCourse);
+            });
+        }, [courseId])
+    );
 
     return (
         <CourseContext.Provider value={course}>

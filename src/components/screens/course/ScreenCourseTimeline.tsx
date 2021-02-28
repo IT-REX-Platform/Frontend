@@ -74,6 +74,7 @@ const styles = StyleSheet.create({
         alignSelf: "flex-end",
         flexDirection: "row",
         paddingRight: "20px",
+        paddingTop: "20px",
     },
     editModeText: {
         color: "white",
