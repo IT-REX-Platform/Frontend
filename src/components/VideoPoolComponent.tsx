@@ -109,6 +109,13 @@ export const VideoPoolComponent: React.FC = () => {
         </Pressable>
     );
 
+    // Button to refresh video list.
+    const refreshButton = () => (
+        <TouchableOpacity style={styles.refreshButton} onPress={() => getAllVideos(course.id)}>
+            <MaterialCommunityIcons name="refresh" size={32} color="white" />
+        </TouchableOpacity>
+    );
+
     // Render UI according to un-/available videos data.
     const renderUi = () => {
         // Display loading icon if getAllVideos() request is still processing.
@@ -126,10 +133,12 @@ export const VideoPoolComponent: React.FC = () => {
             loggerService.trace("Displaying info box.");
             return (
                 <View style={styles.containerTop}>
+                    {uploadButton()}
+                    {refreshButton()}
+
                     <View style={styles.infoTextBox}>
                         <Text style={styles.infoText}>{i18n.t("itrex.noVideosAvailable")}</Text>
                     </View>
-                    {uploadButton()}
                 </View>
             );
         }
@@ -138,10 +147,7 @@ export const VideoPoolComponent: React.FC = () => {
         return (
             <View style={styles.containerTop}>
                 {uploadButton()}
-
-                <TouchableOpacity style={styles.deleteButton} onPress={() => refreshList()}>
-                    <MaterialCommunityIcons style={styles.deleteIcon} name="refresh" size={32} color="white" />
-                </TouchableOpacity>
+                {refreshButton()}
 
                 <Animated.View style={{ transform: [{ translateY }], flex: 1, maxWidth: "90%" }}>
                     <FlatList
@@ -209,10 +215,6 @@ export const VideoPoolComponent: React.FC = () => {
         setLoading(true);
         setVideos([]);
     }
-
-    function refreshList(): void {
-        // TODO
-    }
 };
 
 const styles = StyleSheet.create({
@@ -243,7 +245,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         textAlign: "center",
         justifyContent: "center",
-        marginBottom: 50,
+        marginTop: 50,
     },
     infoText: {
         color: "white",
@@ -252,6 +254,9 @@ const styles = StyleSheet.create({
     },
     styledButton: {
         margin: 5,
+    },
+    refreshButton: {
+        padding: 20,
     },
     list: {
         flex: 1,
@@ -268,7 +273,6 @@ const styles = StyleSheet.create({
         borderWidth: 1,
     },
     deleteIcon: {
-        borderColor: "red",
         paddingTop: 5,
         paddingBottom: 5,
         paddingStart: 20,
