@@ -145,14 +145,15 @@ export const VideoUploadComponent: React.FC = () => {
                         style={styles.styledTextInput}
                         value={videoName}
                         editable={false}
-                        testID="videoNameInput"></TextInput>
+                        testID="videoNameInput"
+                    />
                     <Pressable style={styles.styledButton}>
-                        <Button title={i18n.t("itrex.browseVideos")} onPress={pickVideo}></Button>
+                        <Button title={i18n.t("itrex.browseVideos")} onPress={pickVideo} />
                     </Pressable>
                 </View>
 
                 <Pressable style={styles.styledButton}>
-                    <Button title={i18n.t("itrex.toUploadVideo")} onPress={uploadVideo}></Button>
+                    <Button title={i18n.t("itrex.toUploadVideo")} onPress={uploadVideo} />
                 </Pressable>
 
                 <View style={styles.video} />

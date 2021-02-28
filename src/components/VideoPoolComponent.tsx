@@ -1,5 +1,5 @@
 import React from "react";
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import {
     ActivityIndicator,
     Animated,
@@ -9,7 +9,7 @@ import {
     Pressable,
     StyleSheet,
     Text,
-    TouchableHighlight,
+    TouchableOpacity,
     View,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
@@ -23,7 +23,8 @@ import { ICourse } from "../types/ICourse";
 import { CourseContext, LocalizationContext } from "./Context";
 import { NavigationRoutes } from "../constants/navigators/NavigationRoutes";
 import { dark } from "../constants/themes/dark";
-import { Avatar, ListItem } from "react-native-elements";
+import { ListItem } from "react-native-elements";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const endpointsVideo = new EndpointsVideo();
 const loggerService = loggerFactory.getLogger("service.VideoPoolComponent");
@@ -56,10 +57,60 @@ export const VideoPoolComponent: React.FC = () => {
     const [videos, setVideos] = useState(initialVideoState);
 
     // Vertical slide animation for FlatList.
-    const translateY = useRef(new Animated.Value(100)).current;
-    useEffect(() => {
-        Animated.timing(translateY, { toValue: 1, duration: 500, useNativeDriver: false }).start();
-    });
+    const translateY = new Animated.Value(100);
+    Animated.timing(translateY, { toValue: 1, duration: 500, useNativeDriver: false }).start();
+
+    // Creation of each item of video list.
+    const listItem = ({ item }: { item: IVideo }) => (
+        <TouchableOpacity
+            activeOpacity={0.3}
+            onPress={() => {
+                resetStates();
+                navigation.navigate("VIDEO", { video: item });
+            }}>
+            <ListItem
+                containerStyle={{
+                    marginBottom: 5,
+                    borderRadius: 2,
+                    backgroundColor: dark.theme.darkBlue2,
+                    borderColor: dark.theme.darkBlue4,
+                    borderWidth: 1,
+                }}>
+                <MaterialCommunityIcons name="video-vintage" size={28} color="white" />
+
+                <ListItem.Content>
+                    <ListItem.Title style={styles.listItemTitle} numberOfLines={1}>
+                        {item.title}
+                    </ListItem.Title>
+                    <ListItem.Subtitle style={styles.listItemSubtitle}>
+                        {calculateVideoLength(item.length)}
+                    </ListItem.Subtitle>
+                </ListItem.Content>
+
+                <TouchableOpacity
+                    onPress={() => {
+                        deleteVideo();
+                    }}>
+                    <MaterialCommunityIcons style={styles.icon} name="delete" size={40} color="red" />
+                </TouchableOpacity>
+
+                <ListItem.Chevron color="white" />
+            </ListItem>
+        </TouchableOpacity>
+    );
+
+    // Button to access video upload.
+    const uploadButton = () => (
+        <Pressable style={styles.styledButton}>
+            <Button
+                title={i18n.t("itrex.toUploadVideo")}
+                onPress={() => {
+                    resetStates();
+                    navigation.navigate(NavigationRoutes.ROUTE_VIDEO_UPLOAD);
+                }}
+            />
+        </Pressable>
+    );
 
     // Render UI according to un-/available videos data.
     const renderUi = () => {
@@ -78,15 +129,9 @@ export const VideoPoolComponent: React.FC = () => {
             loggerService.trace("Displaying info box.");
             return (
                 <View style={styles.containerTop}>
-                    <Pressable style={styles.styledButton}>
-                        <Button
-                            title={i18n.t("itrex.toUploadVideo")}
-                            onPress={() => navigation.navigate(NavigationRoutes.ROUTE_VIDEO_UPLOAD)}
-                        />
-                    </Pressable>
-
-                    <View style={styles.textBox}>
-                        <Text style={styles.text}>{i18n.t("itrex.noVideosAvailable")}</Text>
+                    {uploadButton()}
+                    <View style={styles.infoTextBox}>
+                        <Text style={styles.infoText}>{i18n.t("itrex.noVideosAvailable")}</Text>
                     </View>
                 </View>
             );
@@ -95,50 +140,19 @@ export const VideoPoolComponent: React.FC = () => {
         loggerService.trace("Displaying video list.");
         return (
             <View style={styles.containerTop}>
-                <Pressable style={styles.styledButton}>
-                    <Button
-                        title={i18n.t("itrex.toUploadVideo")}
-                        onPress={() => navigation.navigate(NavigationRoutes.ROUTE_VIDEO_UPLOAD)}
+                {uploadButton()}
+                <Animated.View style={{ transform: [{ translateY }], flex: 1, maxWidth: "90%" }}>
+                    <FlatList
+                        style={styles.list}
+                        showsVerticalScrollIndicator={false}
+                        data={videos}
+                        renderItem={listItem}
+                        keyExtractor={(item, index) => index.toString()}
                     />
-                </Pressable>
-
-                <FlatList
-                    style={styles.list}
-                    showsVerticalScrollIndicator={false}
-                    data={videos}
-                    renderItem={listItem}
-                    keyExtractor={(item, index) => index.toString()}
-                />
+                </Animated.View>
             </View>
         );
     };
-
-    // Creation of each list item.
-    const listItem = ({ item }: { item: IVideo }) => (
-        <Animated.View style={{ transform: [{ translateY }] }}>
-            <TouchableHighlight
-                onPress={() => {
-                    navigation.navigate("VIDEO", {
-                        video: item,
-                    });
-                }}>
-                <ListItem bottomDivider>
-                    <Avatar
-                        source={{
-                            uri:
-                                "https://www.pngitem.com/pimgs/m/319-3192070_transparent-video-play-icon-png-png-download.png",
-                        }}
-                    />
-                    <ListItem.Content>
-                        <ListItem.Title>{item.title}</ListItem.Title>
-                        {/* <ListItem.Subtitle>{item.length}</ListItem.Subtitle> */}
-                        {/* <ListItem.Subtitle>{getVideoLength(item.length)}</ListItem.Subtitle> */}
-                    </ListItem.Content>
-                    <ListItem.Chevron />
-                </ListItem>
-            </TouchableHighlight>
-        </Animated.View>
-    );
 
     return (
         <ImageBackground source={require("../constants/images/Background2.png")} style={styles.image}>
@@ -170,11 +184,20 @@ export const VideoPoolComponent: React.FC = () => {
             });
     }
 
-    function getVideoLength(videoLength?: number): string {
+    function calculateVideoLength(videoLength?: number): string {
         if (videoLength == undefined) {
             return "";
         }
         return new Date(videoLength / 100).toISOString().substr(11, 8);
+    }
+
+    function deleteVideo(): void {
+        console.log("DELETE VIDEO");
+    }
+
+    function resetStates(): void {
+        setLoading(true);
+        setVideos([]);
     }
 };
 
@@ -198,15 +221,17 @@ const styles = StyleSheet.create({
         color: dark.theme.pink,
         textAlign: "center",
     },
-    textBox: {
+    infoTextBox: {
         width: "50%",
         height: "50%",
-        backgroundColor: "#eeeeee",
+        backgroundColor: dark.theme.darkBlue2,
+        borderColor: dark.theme.darkBlue4,
+        borderWidth: 1,
         textAlign: "center",
         justifyContent: "center",
     },
-    text: {
-        color: "black",
+    infoText: {
+        color: "white",
         fontSize: 20,
         margin: 10,
     },
@@ -214,11 +239,19 @@ const styles = StyleSheet.create({
         margin: 5,
     },
     list: {
-        flexWrap: "wrap",
+        flex: 1,
     },
-    listItem: {
-        alignItems: "center",
-        backgroundColor: "white",
-        padding: 10,
+    listItemTitle: {
+        color: "white",
+        fontWeight: "bold",
+    },
+    listItemSubtitle: {
+        color: "white",
+    },
+    icon: {
+        paddingTop: 5,
+        paddingBottom: 5,
+        paddingStart: 20,
+        paddingEnd: 10,
     },
 });

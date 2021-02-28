@@ -78,10 +78,10 @@ export const VideoComponent: React.FC = () => {
                 <Separator />
                 <View style={styles.horizontalContainer}>
                     <Pressable style={styles.button}>
-                        <Button title={i18n.t("itrex.updateVideo")} onPress={updateVideo} />
+                        <Button title={i18n.t("itrex.update")} onPress={updateVideo} />
                     </Pressable>
                     <Pressable style={styles.button}>
-                        <Button color="red" title={i18n.t("itrex.deleteVideo")} onPress={deleteVideo} />
+                        <Button color="red" title={i18n.t("itrex.delete")} onPress={deleteVideo} />
                     </Pressable>
                 </View>
             </View>
