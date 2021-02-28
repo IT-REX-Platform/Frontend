@@ -88,10 +88,11 @@ export const VideoPoolComponent: React.FC = () => {
                 </ListItem.Content>
 
                 <TouchableOpacity
+                    style={styles.deleteButton}
                     onPress={() => {
-                        deleteVideo();
+                        deleteVideo(item.id);
                     }}>
-                    <MaterialCommunityIcons style={styles.icon} name="delete" size={40} color="red" />
+                    <MaterialCommunityIcons style={styles.deleteIcon} name="delete" size={32} color="red" />
                 </TouchableOpacity>
 
                 <ListItem.Chevron color="white" />
@@ -191,8 +192,16 @@ export const VideoPoolComponent: React.FC = () => {
         return new Date(videoLength / 100).toISOString().substr(11, 8);
     }
 
-    function deleteVideo(): void {
-        console.log("DELETE VIDEO");
+    async function deleteVideo(videoId?: string): Promise<void> {
+        if (videoId === undefined) {
+            return;
+        }
+
+        const deleteRequest: RequestInit = RequestFactory.createDeleteRequest();
+        const response: Promise<Response> = endpointsVideo.deleteVideo(deleteRequest, videoId);
+        response.then(() => {
+            getAllVideos(course.id);
+        });
     }
 
     function resetStates(): void {
@@ -248,10 +257,15 @@ const styles = StyleSheet.create({
     listItemSubtitle: {
         color: "white",
     },
-    icon: {
+    deleteButton: {
+        borderColor: "red",
+        borderWidth: 1,
+    },
+    deleteIcon: {
+        borderColor: "red",
         paddingTop: 5,
         paddingBottom: 5,
         paddingStart: 20,
-        paddingEnd: 10,
+        paddingEnd: 20,
     },
 });

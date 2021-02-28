@@ -160,13 +160,11 @@ export const VideoComponent: React.FC = () => {
         }
 
         const deleteRequest: RequestInit = RequestFactory.createDeleteRequest();
-        endpointsVideo.deleteVideo(deleteRequest, video.id);
-
-        createAlert(i18n.t("itrex.videoDeleted"));
-
-        if (video.courseId !== undefined) {
+        const response: Promise<Response> = endpointsVideo.deleteVideo(deleteRequest, video.id);
+        response.then(() => {
+            createAlert(i18n.t("itrex.videoDeleted"));
             navigation.navigate("VIDEO_POOL");
-        }
+        });
     }
 };
 

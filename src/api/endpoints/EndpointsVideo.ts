@@ -79,11 +79,12 @@ export class EndpointsVideo implements IEndpointsVideo {
      * @param deleteRequest DELETE request.
      * @param id Video ID for URL parameter.
      */
-    public deleteVideo(deleteRequest: RequestInit, id: string): void {
+    public deleteVideo(deleteRequest: RequestInit, id: string): Promise<Response> {
         const url: string = this.url + "/" + id;
 
         this.loggerApi.trace("Sending DELETE request to URL: " + url);
         const response: Promise<Response> = sendRequest(url, deleteRequest);
-        console.log(response);
+        // console.log(response);
+        return response;
     }
 }
