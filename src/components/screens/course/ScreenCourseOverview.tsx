@@ -1,6 +1,6 @@
 import { CompositeNavigationProp, useNavigation } from "@react-navigation/native";
 import React from "react";
-import { Text, ImageBackground, StyleSheet, Button } from "react-native";
+import { Text, ImageBackground, StyleSheet, Button, View } from "react-native";
 import { dark } from "../../../constants/themes/dark";
 import { ICourse } from "../../../types/ICourse";
 import {
@@ -29,16 +29,16 @@ export const ScreenCourseOverview: React.FC = () => {
 
     const course: ICourse = React.useContext(CourseContext);
     return (
-        <>
+        <View style={styles.rootContainer}>
             <ImageBackground
                 source={require("../../../constants/images/Background3.png")}
                 style={styles.image}
-                imageStyle={{ opacity: 0.5, position: "absolute", resizeMode: "center" }}>
+                imageStyle={{ opacity: 0.5, position: "absolute", resizeMode: "contain" }}>
                 <Text style={styles.container}>Course Overview</Text>
                 <Text>{course.courseDescription}</Text>
                 <Button title={i18n.t("itrex.videoPool")} onPress={() => goToVideoPool()} />
             </ImageBackground>
-        </>
+        </View>
     );
 
     function goToVideoPool() {
@@ -56,6 +56,11 @@ const styles = StyleSheet.create({
         color: dark.theme.pink,
         justifyContent: "center",
         textAlign: "center",
+    },
+    rootContainer: {
+        flex: 4,
+        flexDirection: "column",
+        backgroundColor: dark.theme.darkBlue1,
     },
     image: {
         flex: 1,
