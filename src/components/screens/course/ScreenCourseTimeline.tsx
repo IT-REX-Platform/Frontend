@@ -36,7 +36,7 @@ export const ScreenCourseTimeline: React.FC = () => {
                     <Text style={styles.chapterHeader}>Placeholder for Menu</Text>
                 </View>
                 <ImageBackground
-                    source={require("../../constants/images/Background3.png")}
+                    source={require("../../../constants/images/Background3.png")}
                     style={styles.image}
                     imageStyle={{ opacity: 0.5, position: "absolute", resizeMode: "center" }}>
                     <View style={styles.chapterContainer}>
