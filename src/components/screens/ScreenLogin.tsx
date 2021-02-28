@@ -7,6 +7,7 @@ import * as WebBrowser from "expo-web-browser";
 import * as AuthSession from "expo-auth-session";
 import { itRexVars } from "../../constants/Constants";
 import i18n from "../../locales";
+import { InteractionButton } from "../UIElements/InteractionButton";
 import AuthenticationService, { discovery } from "../../services/AuthenticationService";
 
 WebBrowser.maybeCompleteAuthSession();
@@ -67,11 +68,14 @@ export const ScreenLogin: React.FC = () => {
                 }}>
                 <Text style={styles.buttonText}>{i18n.t("itrex.login")}</Text>
             </TouchableOpacity>
-            <TextInput type="flat" value={"Hallo"} />
             {locale == "en" || locale == "en-GB" || locale == "en-US" ? (
-                <Button title={i18n.t("itrex.switchLangDE")} onPress={() => setLocale("de-DE")} />
+                <InteractionButton
+                    title={i18n.t("itrex.switchLangDE")}
+                    onPress={() => setLocale("de-DE")}></InteractionButton>
             ) : (
-                <Button title={i18n.t("itrex.switchLangEN")} onPress={() => setLocale("en")} />
+                <InteractionButton
+                    title={i18n.t("itrex.switchLangEN")}
+                    onPress={() => setLocale("en")}></InteractionButton>
             )}
         </View>
     );

@@ -13,6 +13,7 @@ import { CourseContext, LocalizationContext } from "../../Context";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import i18n from "../../../locales";
+import { InteractionButton } from "../../UIElements/InteractionButton";
 
 export type ScreenCourseOverviewNavigationProp = CompositeNavigationProp<
     MaterialTopTabNavigationProp<CourseTabParamList, "OVERVIEW">,
@@ -33,7 +34,7 @@ export const ScreenCourseOverview: React.FC = () => {
             <ImageBackground source={require("../../../constants/images/Background_forest.svg")} style={styles.image}>
                 <Text style={styles.container}>{i18n.t("itrex.courseOverview")}</Text>
                 <Text>{course.courseDescription}</Text>
-                <Button title={i18n.t("itrex.videoPool")} onPress={() => goToVideoPool()} />
+                <InteractionButton title={i18n.t("itrex.videoPool")} onPress={() => goToVideoPool()} />
             </ImageBackground>
         </>
     );
