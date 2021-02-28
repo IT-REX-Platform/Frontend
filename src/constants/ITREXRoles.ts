@@ -1,5 +1,5 @@
 export class ITREXRoles {
-    static ROLE_STUDENT = "ITREX_STUDENT";
-    static ROLE_LECTURER = "ITREX_LECTURER";
-    static ROLE_ADMIN = "ITREX_ADMIN";
+    static ROLE_STUDENT = "ROLE_ITREX_STUDENT";
+    static ROLE_LECTURER = "ROLE_ITREX_LECTURER";
+    static ROLE_ADMIN = "ROLE_ITREX_ADMIN";
 }
