@@ -1,4 +1,4 @@
-import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Button, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 import React from "react";
 import { AuthContext, LocalizationContext } from "../Context";
@@ -53,6 +53,7 @@ export const ScreenLogin: React.FC = () => {
                 }}>
                 <Text style={styles.buttonText}>{i18n.t("itrex.login")}</Text>
             </TouchableOpacity>
+            <TextInput type="flat" value={"Hallo"} />
             {locale == "en" || locale == "en-GB" || locale == "en-US" ? (
                 <Button title={i18n.t("itrex.switchLangDE")} onPress={() => setLocale("de-DE")} />
             ) : (

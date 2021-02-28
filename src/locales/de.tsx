@@ -39,7 +39,7 @@ export const de = {
         switchLangEN: "Zu Englisch wechseln",
         switchLang: "Zu Englisch wechseln",
         courseDetails: "Kurs-Details",
-        darkTheme: "Dark-Theme",
+        darkTheme: "Dunkelmodus",
         courseOverview: "Kursübersicht",
         courseTabOverview: "Übersicht",
         courseTabTimeline: "Zeitachse",
