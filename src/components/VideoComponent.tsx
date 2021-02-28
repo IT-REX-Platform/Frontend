@@ -6,7 +6,6 @@ import { Video } from "expo-av";
 import { createVideoUrl } from "../services/createVideoUrl";
 import { createAlert } from "../helperScripts/createAlert";
 import i18n from "../locales";
-import { Separator } from "./Separator";
 import { RequestFactory } from "../api/requests/RequestFactory";
 import { EndpointsVideo } from "../api/endpoints/EndpointsVideo";
 import { CompositeNavigationProp, RouteProp, useNavigation, useRoute } from "@react-navigation/native";
