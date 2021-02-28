@@ -14,6 +14,7 @@ import { LocalizationContext } from "./Context";
 import { CourseStackParamList, RootDrawerParamList } from "../constants/navigators/NavigationRoutes";
 import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
+import { dark } from "../constants/themes/dark";
 
 const loggerService = loggerFactory.getLogger("service.VideoComponent");
 const endpointsVideo = new EndpointsVideo();
@@ -37,23 +38,30 @@ export const VideoComponent: React.FC = () => {
 
     const [newTitle, setTitle] = useState("");
 
+    // Video.
+    const videoView = () => (
+        <Video
+            source={{ uri: getVideoUrl() }}
+            rate={1.0}
+            volume={1.0}
+            isMuted={false}
+            resizeMode="contain"
+            shouldPlay={false}
+            useNativeControls={true}
+            style={styles.video}
+        />
+    );
+
     return (
         <ImageBackground source={require("../constants/images/Background2.png")} style={styles.image}>
-            <View style={styles.verticalContainer}>
-                <Video
-                    source={{ uri: getVideoUrl() }}
-                    rate={1.0}
-                    volume={1.0}
-                    isMuted={false}
-                    resizeMode="cover"
-                    shouldPlay={true}
-                    useNativeControls={true}
-                />
+            <View style={styles.mainContainer}>
+                <Text numberOfLines={1} lineBreakMode="tail" style={styles.header}>
+                    {video.title}
+                </Text>
 
-                <Separator />
-                <View style={styles.horizontalContainer}>
-                    <Text style={styles.label}>{i18n.t("itrex.titleColon")}</Text>
-                    <Text style={styles.text}>{getTitle()}</Text>
+                {videoView()}
+
+                <View style={styles.infoxContainer}>
                     <TextInput
                         style={styles.textInput}
                         placeholder={i18n.t("itrex.inputNewTitle")}
@@ -61,21 +69,6 @@ export const VideoComponent: React.FC = () => {
                     />
                 </View>
 
-                <Separator />
-                <View style={styles.horizontalContainer}>
-                    <Text style={styles.label}>{i18n.t("itrex.startDateColumn")}</Text>
-                    <Text style={styles.text}>{getStartDate()}</Text>
-                </View>
-
-                <Separator />
-                <View style={styles.horizontalContainer}>
-                    <View style={styles.horizontalContainer}>
-                        <Text style={styles.label}>{i18n.t("itrex.endDateColumn")}</Text>
-                        <Text style={styles.text}>{getEndDate()}</Text>
-                    </View>
-                </View>
-
-                <Separator />
                 <View style={styles.horizontalContainer}>
                     <Pressable style={styles.button}>
                         <Button title={i18n.t("itrex.update")} onPress={updateVideo} />
@@ -97,40 +90,40 @@ export const VideoComponent: React.FC = () => {
         return createVideoUrl(video.id);
     }
 
-    function getWidth(): number {
-        if (video.width == undefined || null) {
-            return 640;
-        }
-        return video.width;
-    }
+    // function getWidth(): number {
+    //     if (video.width == undefined || null) {
+    //         return 640;
+    //     }
+    //     return video.width;
+    // }
 
-    function getHeight(): number {
-        if (video.height == undefined || null) {
-            return 480;
-        }
-        return video.height;
-    }
+    // function getHeight(): number {
+    //     if (video.height == undefined || null) {
+    //         return 480;
+    //     }
+    //     return video.height;
+    // }
 
-    function getTitle(): string {
-        if (video.title == undefined || null) {
-            return "-";
-        }
-        return video.title;
-    }
+    // function getTitle(): string {
+    //     if (video.title == undefined || null) {
+    //         return "-";
+    //     }
+    //     return video.title;
+    // }
 
-    function getStartDate(): string {
-        if (video.startDate == undefined || null) {
-            return "-";
-        }
-        return video.startDate.toString();
-    }
+    // function getStartDate(): string {
+    //     if (video.startDate == undefined || null) {
+    //         return "-";
+    //     }
+    //     return video.startDate.toString();
+    // }
 
-    function getEndDate(): string {
-        if (video.endDate == undefined || null) {
-            return "-";
-        }
-        return video.endDate.toString();
-    }
+    // function getEndDate(): string {
+    //     if (video.endDate == undefined || null) {
+    //         return "-";
+    //     }
+    //     return video.endDate.toString();
+    // }
 
     async function updateVideo(): Promise<void> {
         const videoUpdate: IVideo = {
@@ -169,38 +162,43 @@ export const VideoComponent: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-    verticalContainer: {
+    mainContainer: {
         flex: 1,
         alignItems: "center",
-        justifyContent: "center",
-    },
-    horizontalContainer: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-around",
     },
     image: {
         flex: 1,
         resizeMode: "stretch",
         justifyContent: "center",
     },
-    label: {
-        color: "white",
-        fontSize: 20,
-        padding: 5,
-        fontWeight: "bold",
+    header: {
+        fontSize: 50,
+        color: dark.theme.pink,
+        textAlign: "center",
+        maxWidth: "90%",
     },
-    text: {
-        color: "white",
-        fontSize: 20,
-        padding: 5,
+    video: {
+        maxWidth: "90%",
+        margin: 10,
+    },
+    infoxContainer: {
+        width: "90%",
+        alignItems: "center",
+        backgroundColor: dark.theme.darkBlue1,
+        padding: 10,
+        borderRadius: 2,
     },
     textInput: {
         color: "white",
-        fontSize: 20,
-        marginLeft: 8,
+        fontSize: 24,
         borderColor: "lightgray",
-        borderWidth: 2,
+        borderWidth: 1,
+        width: "50%",
+    },
+    horizontalContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-around",
     },
     button: {
         margin: 10,

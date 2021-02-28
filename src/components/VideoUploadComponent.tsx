@@ -163,8 +163,8 @@ export const VideoUploadComponent: React.FC = () => {
                     rate={1.0}
                     volume={1.0}
                     isMuted={false}
-                    resizeMode="cover"
-                    shouldPlay={true}
+                    resizeMode="contain"
+                    shouldPlay={false}
                     useNativeControls={true}
                 />
             </View>

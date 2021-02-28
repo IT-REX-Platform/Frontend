@@ -73,13 +73,13 @@ export const VideoPoolComponent: React.FC = () => {
                     marginBottom: 5,
                     borderRadius: 2,
                     backgroundColor: dark.theme.darkBlue2,
-                    borderColor: dark.theme.darkBlue4,
+                    borderColor: dark.theme.darkBlue1,
                     borderWidth: 1,
                 }}>
                 <MaterialCommunityIcons name="video-vintage" size={28} color="white" />
 
                 <ListItem.Content>
-                    <ListItem.Title style={styles.listItemTitle} numberOfLines={1}>
+                    <ListItem.Title style={styles.listItemTitle} numberOfLines={1} lineBreakMode="tail">
                         {item.title}
                     </ListItem.Title>
                     <ListItem.Subtitle style={styles.listItemSubtitle}>
@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
         width: "50%",
         height: "50%",
         backgroundColor: dark.theme.darkBlue2,
-        borderColor: dark.theme.darkBlue4,
+        borderColor: dark.theme.darkBlue1,
         borderWidth: 1,
         textAlign: "center",
         justifyContent: "center",
