@@ -6,7 +6,6 @@ import { Video } from "expo-av";
 import { createVideoUrl } from "../services/createVideoUrl";
 import { createAlert } from "../helperScripts/createAlert";
 import i18n from "../locales";
-import { Separator } from "./Separator";
 import { RequestFactory } from "../api/requests/RequestFactory";
 import { EndpointsVideo } from "../api/endpoints/EndpointsVideo";
 import { CompositeNavigationProp, RouteProp, useNavigation, useRoute } from "@react-navigation/native";
@@ -41,6 +40,7 @@ export const VideoComponent: React.FC = () => {
     // Video.
     const videoView = () => (
         <Video
+            style={styles.video}
             source={{ uri: getVideoUrl() }}
             rate={1.0}
             volume={1.0}
@@ -48,7 +48,6 @@ export const VideoComponent: React.FC = () => {
             resizeMode="contain"
             shouldPlay={false}
             useNativeControls={true}
-            style={styles.video}
         />
     );
 
@@ -64,6 +63,7 @@ export const VideoComponent: React.FC = () => {
                 <View style={styles.infoxContainer}>
                     <TextInput
                         style={styles.textInput}
+                        textAlign="center"
                         placeholder={i18n.t("itrex.inputNewTitle")}
                         onChangeText={(text: string) => setTitle(text)}
                     />
@@ -184,7 +184,8 @@ const styles = StyleSheet.create({
     infoxContainer: {
         width: "90%",
         alignItems: "center",
-        backgroundColor: dark.theme.darkBlue1,
+        backgroundColor: dark.theme.darkBlue2,
+        borderColor: dark.theme.darkBlue1,
         padding: 10,
         borderRadius: 2,
     },
@@ -194,6 +195,7 @@ const styles = StyleSheet.create({
         borderColor: "lightgray",
         borderWidth: 1,
         width: "50%",
+        textAlign: "center",
     },
     horizontalContainer: {
         flexDirection: "row",

@@ -82,9 +82,9 @@ export const VideoPoolComponent: React.FC = () => {
                     <ListItem.Title style={styles.listItemTitle} numberOfLines={1} lineBreakMode="tail">
                         {item.title}
                     </ListItem.Title>
-                    <ListItem.Subtitle style={styles.listItemSubtitle}>
+                    {/* <ListItem.Subtitle style={styles.listItemSubtitle}>
                         {calculateVideoLength(item.length)}
-                    </ListItem.Subtitle>
+                    </ListItem.Subtitle> */}
                 </ListItem.Content>
 
                 <TouchableOpacity style={styles.deleteButton} onPress={() => deleteVideo(item.id)}>
@@ -192,12 +192,12 @@ export const VideoPoolComponent: React.FC = () => {
             });
     }
 
-    function calculateVideoLength(videoLength?: number): string {
-        if (videoLength == undefined) {
-            return "";
-        }
-        return new Date(videoLength / 100).toISOString().substr(11, 8);
-    }
+    // function calculateVideoLength(videoLength?: number): string {
+    //     if (videoLength == undefined) {
+    //         return "";
+    //     }
+    //     return new Date(videoLength / 100).toISOString().substr(11, 8);
+    // }
 
     async function deleteVideo(videoId?: string): Promise<void> {
         if (videoId === undefined) {

@@ -31,7 +31,7 @@ export const en = {
         devVariables_2: "variables !",
         toCourse: "Create Course",
         toUploadVideo: "Upload Video",
-        uploadVideoHere: "Upload Video here:",
+        uploadVideoHere: "Upload Video here",
         uploadVideoSuccessMsg: "Video uploaded successfully!",
         noVideosAvailable: "There are currently no videos in the video pool of this course.",
         toUploadDocument: "Upload Document",
