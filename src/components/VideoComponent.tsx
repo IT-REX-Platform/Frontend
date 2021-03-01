@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, ImageBackground, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { ImageBackground, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { loggerFactory } from "../../logger/LoggerConfig";
 import { IVideo } from "../types/IVideo";
 import { Video } from "expo-av";
@@ -54,14 +54,14 @@ export const VideoComponent: React.FC = () => {
 
     return (
         <ImageBackground source={require("../constants/images/Background2.png")} style={styles.image}>
-            <View style={styles.mainContainer}>
+            <View style={styles.container}>
                 <Text numberOfLines={1} lineBreakMode="tail" style={styles.header}>
                     {video.title}
                 </Text>
 
                 {videoView()}
 
-                <View style={styles.infoxContainer}>
+                <View style={styles.infoContainer}>
                     <TextInput
                         style={styles.textInput}
                         textAlign="center"
@@ -72,12 +72,13 @@ export const VideoComponent: React.FC = () => {
                 </View>
 
                 <View style={styles.horizontalContainer}>
-                    <Pressable style={styles.button}>
-                        <Button title={i18n.t("itrex.update")} onPress={updateVideo} />
-                    </Pressable>
-                    <Pressable style={styles.button}>
-                        <Button color="red" title={i18n.t("itrex.delete")} onPress={deleteVideo} />
-                    </Pressable>
+                    <TouchableOpacity style={styles.button} onPress={updateVideo}>
+                        <Text style={styles.buttonText}>{i18n.t("itrex.update")}</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={styles.buttonDelete} onPress={deleteVideo}>
+                        <Text style={styles.buttonText}>{i18n.t("itrex.delete")}</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
         </ImageBackground>
@@ -164,7 +165,7 @@ export const VideoComponent: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-    mainContainer: {
+    container: {
         flex: 1,
         alignItems: "center",
     },
@@ -183,17 +184,18 @@ const styles = StyleSheet.create({
         maxWidth: "90%",
         margin: 10,
     },
-    infoxContainer: {
+    infoContainer: {
         width: "90%",
         alignItems: "center",
         backgroundColor: dark.theme.darkBlue2,
-        borderColor: dark.theme.darkBlue1,
+        borderColor: dark.theme.darkBlue4,
+        borderWidth: 2,
         padding: 5,
         borderRadius: 2,
     },
     textInput: {
         color: "white",
-        fontSize: 24,
+        fontSize: 20,
         borderColor: "lightgray",
         borderWidth: 1,
         width: "50%",
@@ -202,7 +204,7 @@ const styles = StyleSheet.create({
     },
     text: {
         color: "white",
-        fontSize: 24,
+        fontSize: 20,
         maxWidth: "85%",
         textAlign: "center",
         margin: 5,
@@ -213,6 +215,26 @@ const styles = StyleSheet.create({
         justifyContent: "space-around",
     },
     button: {
-        margin: 10,
+        backgroundColor: dark.theme.darkBlue2,
+        borderColor: dark.theme.pink,
+        borderWidth: 1,
+        margin: 5,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    buttonDelete: {
+        backgroundColor: dark.theme.pink,
+        borderColor: dark.theme.darkBlue3,
+        borderWidth: 1,
+        margin: 5,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    buttonText: {
+        color: "white",
+        fontSize: 20,
+        padding: 10,
+        alignItems: "center",
+        justifyContent: "center",
     },
 });

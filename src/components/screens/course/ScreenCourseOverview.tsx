@@ -1,6 +1,6 @@
 import { CompositeNavigationProp, useNavigation } from "@react-navigation/native";
 import React from "react";
-import { Text, ImageBackground, StyleSheet, Button } from "react-native";
+import { Text, ImageBackground, StyleSheet, TouchableOpacity, View } from "react-native";
 import { dark } from "../../../constants/themes/dark";
 import { ICourse } from "../../../types/ICourse";
 import {
@@ -29,14 +29,18 @@ export const ScreenCourseOverview: React.FC = () => {
     React.useContext(LocalizationContext);
 
     const course: ICourse = React.useContext(CourseContext);
+
     return (
-        <>
-            <ImageBackground source={require("../../../constants/images/Background_forest.svg")} style={styles.image}>
-                <Text style={styles.container}>{i18n.t("itrex.courseOverview")}</Text>
-                <Text>{course.courseDescription}</Text>
-                <InteractionButton title={i18n.t("itrex.videoPool")} onPress={() => goToVideoPool()} />
-            </ImageBackground>
-        </>
+        <ImageBackground source={require("../../../constants/images/Background_forest.svg")} style={styles.image}>
+            <View style={styles.container}>
+                <Text style={styles.header}>{course.name}</Text>
+                <Text style={styles.description}>{course.courseDescription}</Text>
+
+                <TouchableOpacity style={styles.button} onPress={() => goToVideoPool()}>
+                    <Text style={styles.buttonText}>{i18n.t("itrex.videoPool")}</Text>
+                </TouchableOpacity>
+            </View>
+        </ImageBackground>
     );
 
     function goToVideoPool() {
@@ -48,6 +52,10 @@ export const ScreenCourseOverview: React.FC = () => {
 
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
+        alignItems: "center",
+    },
+    header: {
         marginTop: 70,
         textDecorationColor: dark.theme.pink,
         fontSize: 50,
@@ -59,10 +67,26 @@ const styles = StyleSheet.create({
         flex: 1,
         resizeMode: "stretch",
     },
-    icon: {
+    description: {
+        color: "white",
+        fontSize: 20,
+        padding: 10,
         alignItems: "center",
-        paddingLeft: 10,
-        paddingRight: 10,
-        marginTop: 20,
+        justifyContent: "center",
+    },
+    button: {
+        backgroundColor: dark.theme.darkBlue2,
+        borderColor: dark.theme.pink,
+        borderWidth: 1,
+        margin: 5,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    buttonText: {
+        color: "white",
+        fontSize: 20,
+        padding: 10,
+        alignItems: "center",
+        justifyContent: "center",
     },
 });
