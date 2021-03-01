@@ -1,6 +1,6 @@
 import { CompositeNavigationProp, useNavigation } from "@react-navigation/native";
 import React from "react";
-import { Text, ImageBackground, StyleSheet, Button, View, Pressable, TextInput as Input } from "react-native";
+import { Text, ImageBackground, StyleSheet, Button, View, Pressable } from "react-native";
 import { dark } from "../../../constants/themes/dark";
 import { ICourse } from "../../../types/ICourse";
 import {
@@ -13,11 +13,13 @@ import { CourseContext, LocalizationContext } from "../../Context";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import i18n from "../../../locales";
-import { validateCourseDates } from "../../../helperScripts/validateCourseDates";
+import { dateConverter } from "../../../helperScripts/validateCourseDates";
 import { CoursePublishState } from "../../../constants/CoursePublishState";
 import { RequestFactory } from "../../../api/requests/RequestFactory";
 import { EndpointsCourse } from "../../../api/endpoints/EndpointsCourse";
 import { loggerFactory } from "../../../../logger/LoggerConfig";
+import AuthenticationService from "../../../services/AuthenticationService";
+import { ITREXRoles } from "../../../constants/ITREXRoles";
 
 export type ScreenCourseOverviewNavigationProp = CompositeNavigationProp<
     MaterialTopTabNavigationProp<CourseTabParamList, "OVERVIEW">,
@@ -36,59 +38,98 @@ export const ScreenCourseOverview: React.FC = () => {
     const course: ICourse = React.useContext(CourseContext);
 
     console.log(course);
+    console.log(AuthenticationService.getInstance().getRoles().includes("ROLE_ITREX_LECTURER"));
 
     return (
         <>
             <ImageBackground source={require("../../../constants/images/Background_forest.svg")} style={styles.image}>
                 <View style={styles.container}>
                     <View style={styles.content}>
-                        <View style={styles.container}>
-                            <Input autoFocus multiline editable style={styles.input} value={course.courseDescription} />
-                        </View>
+                        <View style={styles.content}>{getPublishedSate(course.publishState)} </View>
 
                         <Text style={styles.textWhite}>{course.courseDescription}</Text>
-                        <View>{getPublishedSate(course.publishState)} </View>
 
-                        <Pressable style={styles.styledButton}>
-                            <Button
-                                color={dark.Opacity.blueGreen}
-                                title={i18n.t("itrex.publishCourse")}
-                                onPress={() => patchCourse(course)}></Button>
-                        </Pressable>
-                        <Pressable style={styles.styledButton}>
-                            <Button
-                                color={dark.Opacity.pink}
-                                title={i18n.t("itrex.deleteCourse")}
-                                onPress={() => deleteCourse(course)}></Button>
-                        </Pressable>
-                        <View style={[{ width: "20%", marginTop: 15 }]}>
-                            <Button
-                                color={dark.Opacity.blueGreen}
-                                title={i18n.t("itrex.videoPool")}
-                                onPress={() => goToVideoPool()}
-                            />
-                        </View>
+                        {uploadViedeoAsOwner()}
                     </View>
                 </View>
             </ImageBackground>
         </>
     );
 
+    function getDate(showDate: Date | undefined, title: string) {
+        return (
+            <Text style={{ color: "white" }}>
+                <Text style={{ fontWeight: "bold" }}>{title}</Text> {dateConverter(showDate)}
+            </Text>
+        );
+    }
+
+    function uploadViedeoAsOwner() {
+        if (
+            AuthenticationService.getInstance().getRoles().includes("ROLE_ITREX_LECTURER") ||
+            AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_ADMIN)
+        ) {
+            return (
+                <View style={[{ width: "20%", marginTop: 15 }]}>
+                    <Button
+                        color={dark.Opacity.blueGreen}
+                        title={i18n.t("itrex.videoPool")}
+                        onPress={() => goToVideoPool()}
+                    />
+                </View>
+            );
+        }
+    }
+
+    //TODO: Check if user is owner, when the course/role list is available
+    function checkOwnerSettings() {
+        if (
+            AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_LECTURER) ||
+            AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_ADMIN)
+        ) {
+            return (
+                <View style={{ flexDirection: "row" }}>
+                    <Pressable style={styles.styledButton}>
+                        <Button
+                            color={dark.Opacity.blueGreen}
+                            title={i18n.t("itrex.publishCourse")}
+                            onPress={() => patchCourse(course)}></Button>
+                    </Pressable>
+                    <Pressable style={styles.styledButton}>
+                        <Button
+                            color={dark.Opacity.pink}
+                            title={i18n.t("itrex.deleteCourse")}
+                            onPress={() => deleteCourse(course)}></Button>
+                    </Pressable>
+                </View>
+            );
+        }
+    }
+
     function getPublishedSate(isPublished: string | undefined) {
         console.log(isPublished);
         if (isPublished === "UNPUBLISHED") {
             return (
-                <View style={styles.unpublishedCard}>
-                    <View style={styles.circleUnpublished} />
-                    <Text style={styles.textUnpublished}>{i18n.t("itrex.unpublished")}</Text>
-                </View>
+                <>
+                    <View style={styles.unpublishedCard}>
+                        <View style={styles.circleUnpublished} />
+                        <Text style={styles.textUnpublished}>{i18n.t("itrex.unpublished")}</Text>
+                    </View>
+                    {getDate(course.startDate, i18n.t("itrex.startDate"))}
+                    {getDate(course.endDate, i18n.t("itrex.endDate"))}
+                    {checkOwnerSettings()}
+                </>
             );
         } else if (isPublished === "PUBLISHED") {
             return (
-                <View style={styles.publishedCard}>
-                    <View style={styles.circlePublished} />
-                    <Text style={styles.textPublished}>{i18n.t("itrex.published")}</Text>
-                </View>
+                <>
+                    <View style={styles.publishedCard}>
+                        <View style={styles.circlePublished} />
+                        <Text style={styles.textPublished}>{i18n.t("itrex.published")}</Text>
+                    </View>
+                    {getDate(course.startDate, i18n.t("itrex.startDate") + ": ")}
+                    {getDate(course.endDate, i18n.t("itrex.endDate") + ": ")}
+                </>
             );
         }
 
