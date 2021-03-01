@@ -52,6 +52,17 @@ export const ScreenAddChapter: React.FC = () => {
         }
     };
 
+    const endDateChanged = (event: ChangeEvent | Event, selectedDate?: Date) => {
+        if (Platform.OS === ("android" || "ios")) {
+            const currentDate = selectedDate || endDate;
+            setEndDate(currentDate);
+        } else {
+            const target: HTMLInputElement = event.target as HTMLInputElement;
+            const currdate: Date = new Date(target.value);
+            setEndDate(currdate);
+        }
+    };
+
     const course: ICourse = React.useContext(CourseContext);
 
     const initialCourseName = chapterId == undefined ? "Mein neues Kapitel" : "";
@@ -127,7 +138,7 @@ export const ScreenAddChapter: React.FC = () => {
                     <DatePickerComponent
                         title={i18n.t("itrex.endDate")}
                         date={endDate}
-                        onDateChanged={startDateChanged}></DatePickerComponent>
+                        onDateChanged={endDateChanged}></DatePickerComponent>
                 </View>
             </View>
 
@@ -214,6 +225,7 @@ const styles = StyleSheet.create({
         color: "white",
         fontSize: 24,
         fontWeight: "bold",
+        width: "100%",
     },
     image: {
         flex: 1,

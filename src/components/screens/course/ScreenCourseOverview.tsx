@@ -34,8 +34,10 @@ export const ScreenCourseOverview: React.FC = () => {
                 source={require("../../../constants/images/Background3.png")}
                 style={styles.image}
                 imageStyle={{ opacity: 0.5, position: "absolute", resizeMode: "contain" }}>
-                <Text>{course.courseDescription}</Text>
-                <Button title={i18n.t("itrex.videoPool")} onPress={() => goToVideoPool()} />
+                <View style={styles.editMode}>
+                    <Text>{course.courseDescription}</Text>
+                    <Button title={i18n.t("itrex.videoPool")} onPress={() => goToVideoPool()} />
+                </View>
             </ImageBackground>
         </View>
     );
@@ -61,6 +63,9 @@ const styles = StyleSheet.create({
         flex: 4,
         flexDirection: "column",
         backgroundColor: dark.theme.darkBlue1,
+    },
+    editMode: {
+        paddingTop: "20px",
     },
     image: {
         flex: 1,

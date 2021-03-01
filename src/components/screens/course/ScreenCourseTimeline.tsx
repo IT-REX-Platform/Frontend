@@ -43,7 +43,6 @@ export const ScreenCourseTimeline: React.FC = () => {
 
     const [myCourse, setMyCourse] = useState<ICourse>({});
 
-    // Only for demo !!!!
     const isFocused = useIsFocused();
     useEffect(() => {
         if (isFocused && course.id !== undefined) {
