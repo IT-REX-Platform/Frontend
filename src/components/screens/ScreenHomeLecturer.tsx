@@ -14,7 +14,6 @@ import { CoursePublishState } from "../../constants/CoursePublishState";
 import { CourseActivityState } from "../../constants/CourseActivityState";
 import { dark } from "../../constants/themes/dark";
 import { NavigationRoutes } from "../../constants/navigators/NavigationRoutes";
-import { act } from "react-test-renderer";
 
 export const ScreenHomeLecturer: React.FC = () => {
     React.useContext(LocalizationContext);
