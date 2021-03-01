@@ -9,5 +9,5 @@ export interface IEndpointsCourse {
     createCourse(postRequest: RequestInit): Promise<ICourse>;
     updateCourse(putRequest: RequestInit): Promise<ICourse>;
     patchCourse(patchRequest: RequestInit): Promise<ICourse>;
-    deleteCourse(deleteRequest: RequestInit, id: string): void;
+    deleteCourse(deleteRequest: RequestInit, id: string): Promise<Response>;
 }

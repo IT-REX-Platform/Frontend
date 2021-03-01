@@ -31,7 +31,7 @@ export const ScreenCourseOverview: React.FC = () => {
     return (
         <>
             <ImageBackground source={require("../../../constants/images/Background_forest.svg")} style={styles.image}>
-                <Text style={styles.container}>Course Overview</Text>
+                <Text style={styles.container}>{i18n.t("itrex.courseOverview")}</Text>
                 <View style={styles.content}>
                     <Text style={styles.textWhite}>{course.courseDescription}</Text>
                     <View style={[{ width: "20%", marginTop: 15 }]}>

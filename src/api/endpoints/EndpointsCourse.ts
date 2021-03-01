@@ -115,11 +115,11 @@ export class EndpointsCourse implements IEndpointsCourse {
      * @param deleteRequest DELETE request.
      * @param id Course ID for URL parameter.
      */
-    public deleteCourse(deleteRequest: RequestInit, id: string): void {
+    public deleteCourse(deleteRequest: RequestInit, id: string): Promise<Response> {
         const urlUpdated = this.url + "/" + id;
 
         this.loggerApi.trace("Sending DELETE request to URL: " + urlUpdated);
         const response: Promise<Response> = sendRequest(urlUpdated, deleteRequest);
-        response.then((data) => console.log(data));
+        return response;
     }
 }
