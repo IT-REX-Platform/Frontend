@@ -43,7 +43,7 @@ export const ScreenCourseTabs: React.FC = () => {
                 },
                 tabStyle: {},
                 labelStyle: {
-                    color: dark.theme.lightGreen,
+                    color: "white",
                 },
             }}>
             <CourseTab.Screen name="OVERVIEW" component={ScreenCourseOverview}></CourseTab.Screen>
