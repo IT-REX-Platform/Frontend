@@ -42,32 +42,28 @@ export class EndpointsCourse implements IEndpointsCourse {
      * @param params Optional parameters for GET request URL.
      */
     private appendCourseParams(params?: ICourse): string {
-        let urlUpdated = this.url;
+        const urlBase = this.url;
 
         if (params === undefined) {
-            return urlUpdated;
+            return urlBase;
         }
-        urlUpdated = urlUpdated + "?";
+
+        const urlParams = new URLSearchParams();
 
         this.loggerApi.trace("Checking for publishState.");
         if (params.publishState !== undefined) {
-            urlUpdated = urlUpdated + CourseUrlParams.PUBLISH_STATE + "=" + params.publishState;
-            this.loggerApi.trace(
-                `Appended ${CourseUrlParams.PUBLISH_STATE} parameter to GET request URL: ${urlUpdated}`
-            );
+            urlParams.append(CourseUrlParams.PUBLISH_STATE, params.publishState);
+            this.loggerApi.trace(`Appended ${CourseUrlParams.PUBLISH_STATE} parameter to GET request URL: ${urlBase}`);
         }
 
         // TODO: insert checks for more ICourse params here once implemented. @s.pastuchov 29.01.21.
         this.loggerApi.trace("Checking for activeState.");
         if (params.activeOnly !== undefined) {
-            urlUpdated = urlUpdated + "&";
-            urlUpdated = urlUpdated + CourseUrlParams.ACTIVITY_STATE + "=" + params.activeOnly;
-            this.loggerApi.trace(
-                `Appended ${CourseUrlParams.ACTIVITY_STATE} parameter to GET request URL: ${urlUpdated}`
-            );
+            urlParams.append(CourseUrlParams.ACTIVITY_STATE, params.activeOnly.toString());
+            this.loggerApi.trace(`Appended ${CourseUrlParams.ACTIVITY_STATE} parameter to GET request URL: ${urlBase}`);
         }
 
-        return urlUpdated;
+        return urlBase + "?" + urlParams;
     }
 
     /**

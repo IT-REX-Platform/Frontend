@@ -63,7 +63,7 @@ export const ScreenHomeLecturer: React.FC = () => {
             return undefined;
         }
         return (
-            <View style={{ flexDirection: "row", zIndex: 1, justifyContent: "flex-end" }}>
+            <View style={{ flexDirection: "row", zIndex: 1, justifyContent: "flex-start" }}>
                 <View style={styles.card}>
                     <Text style={styles.cardHeader}>{i18n.t("itrex.filterLabel")}</Text>
                     <View style={{ width: 250, margin: 5, justifyContent: "center" }}>
