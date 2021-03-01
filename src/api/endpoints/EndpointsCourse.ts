@@ -58,6 +58,14 @@ export class EndpointsCourse implements IEndpointsCourse {
         }
 
         // TODO: insert checks for more ICourse params here once implemented. @s.pastuchov 29.01.21.
+        this.loggerApi.trace("Checking for activeState.");
+        if (params.activeOnly !== undefined) {
+            urlUpdated = urlUpdated + "&";
+            urlUpdated = urlUpdated + CourseUrlParams.ACTIVITY_STATE + "=" + params.activeOnly;
+            this.loggerApi.trace(
+                `Appended ${CourseUrlParams.ACTIVITY_STATE} parameter to GET request URL: ${urlUpdated}`
+            );
+        }
 
         return urlUpdated;
     }

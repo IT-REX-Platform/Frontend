@@ -14,6 +14,7 @@ import { CoursePublishState } from "../../constants/CoursePublishState";
 import { CourseActivityState } from "../../constants/CourseActivityState";
 import { dark } from "../../constants/themes/dark";
 import { NavigationRoutes } from "../../constants/navigators/NavigationRoutes";
+import { act } from "react-test-renderer";
 
 export const ScreenHomeLecturer: React.FC = () => {
     React.useContext(LocalizationContext);
@@ -51,7 +52,7 @@ export const ScreenHomeLecturer: React.FC = () => {
         const request: RequestInit = RequestFactory.createGetRequest();
         const activeOnly = getEndDateBasedOnFilter(setSelectedActiveState);
 
-        const filterParams: ICourse = { publishState };
+        const filterParams: ICourse = { publishState, activeOnly };
 
         endpointsCourse.getAllCourses(request, filterParams).then((receivedCourses: ICourse[]) => {
             setFilteredCourses(receivedCourses);
@@ -151,7 +152,7 @@ const publishStateFilterOptions = [
 
 const activeStateFilterOptions = [
     { value: CourseActivityState.ACTIVE, label: i18n.t("itrex.active") },
-    { value: CourseActivityState.INACTIVE, label: i18n.t("itrex.inactive") },
+    // { value: CourseActivityState.INACTIVE, label: i18n.t("itrex.inactive") },
     { value: undefined, label: i18n.t("itrex.all") },
 ];
 
@@ -160,9 +161,9 @@ function getEndDateBasedOnFilter(setSelectedActiveState: CourseActivityState | u
     if (setSelectedActiveState === CourseActivityState.ACTIVE) {
         return true;
     }
-    if (setSelectedActiveState === CourseActivityState.INACTIVE) {
-        return false;
-    }
+    // if (setSelectedActiveState === CourseActivityState.INACTIVE) {
+    //     return false;
+    // }
 
     return undefined;
 }
