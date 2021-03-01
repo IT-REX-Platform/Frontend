@@ -39,7 +39,6 @@ export function getDateIsoString(dateToTest: Date | undefined): string {
 
 export function dateConverter(dateToConvert: Date | undefined): string {
     if (isValidDate(dateToConvert) && dateToConvert) {
-        console.log(dateToConvert.getDate());
         const date = dateToConvert.getDate() + "." + dateToConvert.getMonth() + "." + dateToConvert.getFullYear();
         return date;
     }

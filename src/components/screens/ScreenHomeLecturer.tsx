@@ -1,7 +1,7 @@
 import { ImageBackground, StyleSheet, Text, View, Button } from "react-native";
 
 import React, { useEffect, useState } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { CourseList } from "../CourseList";
 import i18n from "../../locales";
 import Select from "react-select";
@@ -13,32 +13,35 @@ import { EndpointsCourse } from "../../api/endpoints/EndpointsCourse";
 import { CoursePublishState } from "../../constants/CoursePublishState";
 import { CourseActivityState } from "../../constants/CourseActivityState";
 import { dark } from "../../constants/themes/dark";
-import { courseList } from "../../constants/fixtures/courseList.fixture";
-import { red400 } from "react-native-paper/lib/typescript/styles/colors";
-import { createAlert } from "../../helperScripts/createAlert";
 import { NavigationRoutes } from "../../constants/navigators/NavigationRoutes";
-import AuthenticationService from "../../services/AuthenticationService";
-import { ITREXRoles } from "../../constants/ITREXRoles";
 
 export const ScreenHomeLecturer: React.FC = () => {
     React.useContext(LocalizationContext);
     const navigation = useNavigation();
 
+    const isFocused = useIsFocused();
+
+    const [allCourses, setAllCourses] = useState<ICourse[]>([]);
     const [filteredCourses, setFilteredCourses] = useState<ICourse[]>([]);
 
-    const [selectedPublishStateFilter, setPublishStateFilter] = useState<CoursePublishState | undefined>(
-        CoursePublishState.PUBLISHED
-    );
+    const [selectedPublishStateFilter, setPublishStateFilter] = useState<CoursePublishState | undefined>(undefined);
     const [selectedActiveState, setSelectedActiveState] = useState<CourseActivityState | undefined>(
         CourseActivityState.ACTIVE
     );
 
     useEffect(() => {
         fetchCourses(selectedPublishStateFilter, selectedActiveState);
-    }, [selectedPublishStateFilter, selectedActiveState]);
+    }, [selectedPublishStateFilter, selectedActiveState, allCourses]);
 
-    console.log(filteredCourses);
-    console.log(selectedPublishStateFilter);
+    useEffect(() => {
+        if (isFocused) {
+            const request: RequestInit = RequestFactory.createGetRequest();
+            endpointsCourse.getAllCourses(request).then((receivedCourses: ICourse[]) => {
+                setAllCourses(receivedCourses);
+            });
+        }
+    }, [isFocused]);
+
     const endpointsCourse: EndpointsCourse = new EndpointsCourse();
 
     function fetchCourses(
@@ -46,11 +49,9 @@ export const ScreenHomeLecturer: React.FC = () => {
         setSelectedActiveState: CourseActivityState | undefined
     ): void {
         const request: RequestInit = RequestFactory.createGetRequest();
-        // Set stuff here
-        const endDate = getEndDateBasedOnFilter(setSelectedActiveState);
+        const activeOnly = getEndDateBasedOnFilter(setSelectedActiveState);
 
-        const filterParams: ICourse = { publishState: publishState };
-        console.log(filterParams);
+        const filterParams: ICourse = { publishState };
 
         endpointsCourse.getAllCourses(request, filterParams).then((receivedCourses: ICourse[]) => {
             setFilteredCourses(receivedCourses);
@@ -58,8 +59,9 @@ export const ScreenHomeLecturer: React.FC = () => {
     }
 
     function renderFilters() {
-        // TODO: Check if courseList > 0 before showing
-        // Don't know how to do that. Page is not rendered when accessing it via navbar. This is problematic
+        if (allCourses.length < 1) {
+            return undefined;
+        }
         return (
             <View style={{ flexDirection: "row", zIndex: 1, justifyContent: "flex-end" }}>
                 <View style={styles.card}>
@@ -110,13 +112,8 @@ export const ScreenHomeLecturer: React.FC = () => {
         );
     }
 
-    console.log("render new page");
     function courseList() {
-        if (
-            selectedPublishStateFilter === undefined &&
-            selectedActiveState === undefined &&
-            filteredCourses.length === 0
-        ) {
+        if (allCourses.length < 1) {
             return (
                 <View style={styles.cardView}>
                     <View style={[{ width: "20%", marginTop: 15 }]}>
@@ -139,9 +136,6 @@ export const ScreenHomeLecturer: React.FC = () => {
             <ImageBackground source={require("../../constants/images/Background2.png")} style={styles.image}>
                 <Text style={{ color: "white" }}>{i18n.t("itrex.homeLecturerText")}</Text>
                 {renderFilters()}
-                {/* Use this for hardcoded courses */}
-                {/*<CourseList courses={courseList} />*/}
-                {/* Use this for courses from backend */}
 
                 {courseList()}
             </ImageBackground>
@@ -161,14 +155,13 @@ const activeStateFilterOptions = [
     { value: undefined, label: i18n.t("itrex.all") },
 ];
 
-function getEndDateBasedOnFilter(setSelectedActiveState: CourseActivityState | undefined): Date | undefined {
+function getEndDateBasedOnFilter(setSelectedActiveState: CourseActivityState | undefined): boolean | undefined {
     // Curr date
-    const offset = new Date();
-    // Offset = Curr date + 8 weeks
-    offset.setDate(offset.getDate() + 8 * 7);
-
     if (setSelectedActiveState === CourseActivityState.ACTIVE) {
-        return offset;
+        return true;
+    }
+    if (setSelectedActiveState === CourseActivityState.INACTIVE) {
+        return false;
     }
 
     return undefined;

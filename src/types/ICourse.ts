@@ -8,5 +8,4 @@ export type ICourse = {
     endDate?: Date;
     maxFoodSum?: number;
     publishState?: CoursePublishState;
-    // ownership?: string;
 };
