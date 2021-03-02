@@ -7,9 +7,8 @@ import * as WebBrowser from "expo-web-browser";
 import * as AuthSession from "expo-auth-session";
 import { itRexVars } from "../../constants/Constants";
 import i18n from "../../locales";
+import { discovery } from "../../services/AuthenticationService";
 import { InteractionButton } from "../UIElements/InteractionButton";
-import AuthenticationService, { discovery } from "../../services/AuthenticationService";
-import { light } from "../../constants/themes/light";
 
 WebBrowser.maybeCompleteAuthSession();
 
