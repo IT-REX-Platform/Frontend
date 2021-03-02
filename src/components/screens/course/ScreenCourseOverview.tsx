@@ -164,13 +164,8 @@ export const ScreenCourseOverview: React.FC = () => {
         }
     }
 };
-
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        alignItems: "center",
-    },
-    header: {
         marginTop: 70,
         textDecorationColor: dark.theme.pink,
         fontSize: 50,
@@ -183,27 +178,11 @@ const styles = StyleSheet.create({
         flex: 1,
         resizeMode: "stretch",
     },
-    description: {
-        color: "white",
-        fontSize: 20,
-        padding: 10,
+    icon: {
         alignItems: "center",
-        justifyContent: "center",
-    },
-    button: {
-        backgroundColor: dark.theme.darkBlue2,
-        borderColor: dark.theme.pink,
-        borderWidth: 1,
-        margin: 5,
-        alignItems: "center",
-        justifyContent: "center",
-    },
-    buttonText: {
-        color: "white",
-        fontSize: 20,
-        padding: 10,
-        alignItems: "center",
-        justifyContent: "center",
+        paddingLeft: 10,
+        paddingRight: 10,
+        marginTop: 20,
     },
     content: {
         flex: 1,
