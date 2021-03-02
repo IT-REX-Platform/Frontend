@@ -11,7 +11,6 @@ import { CoursePublishState } from "../constants/CoursePublishState";
 import { DatePickerComponent } from "./DatePickerComponent";
 import { validateCourseDates } from "../helperScripts/validateCourseDates";
 import { EndpointsCourse } from "../api/endpoints/EndpointsCourse";
-import { useNavigation } from "@react-navigation/native";
 import { Header } from "../constants/navigators/Header";
 import { LocalizationContext } from "./Context";
 import { Event } from "@react-native-community/datetimepicker";
@@ -22,7 +21,6 @@ const endpointsCourse: EndpointsCourse = new EndpointsCourse();
 
 export const CreateCourseComponent: React.FC = () => {
     React.useContext(LocalizationContext);
-    const navigation = useNavigation();
 
     // Enter course name to create course
     const [courseName, setCourseName] = useState("");
@@ -105,6 +103,7 @@ export const CreateCourseComponent: React.FC = () => {
         </ImageBackground>
     );
 
+    // eslint-disable-next-line complexity
     function createCourse(): void {
         loggerService.trace(`Validating course name: ${courseName}.`);
 

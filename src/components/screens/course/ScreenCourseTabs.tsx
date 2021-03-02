@@ -1,5 +1,4 @@
 import React from "react";
-import { dark } from "../../../constants/themes/dark";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { ScreenCourseOverview } from "./ScreenCourseOverview";
 import { ScreenCourseTimeline } from "./ScreenCourseTimeline";
