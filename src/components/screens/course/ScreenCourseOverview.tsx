@@ -37,6 +37,8 @@ export const ScreenCourseOverview: React.FC = () => {
     const endpointsCourse: EndpointsCourse = new EndpointsCourse();
     const course: ICourse = React.useContext(CourseContext);
 
+    console.log(course);
+
     return (
         <View style={styles.rootContainer}>
             <ImageBackground source={require("../../../constants/images/Background_forest.svg")} style={styles.image}>

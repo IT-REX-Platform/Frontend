@@ -42,13 +42,15 @@ export const ScreenCourse: React.FC = () => {
     const endpointsCourse: EndpointsCourse = new EndpointsCourse();
     const courseService: CourseService = new CourseService();
 
-    useFocusEffect(
-        React.useCallback(() => {
-            courseService.getCourse(courseId).then((receivedCourse) => {
-                setCourse(receivedCourse);
-            });
-        }, [courseId])
-    );
+    useEffect(() => {
+        const request: RequestInit = RequestFactory.createGetRequest();
+        endpointsCourse.getCourse(request, courseId).then((receivedCourse) => {
+            console.log(receivedCourse);
+            setCourse(receivedCourse);
+        });
+    }, [courseId]);
+
+    console.log(course);
 
     return (
         <CourseContext.Provider value={course}>
