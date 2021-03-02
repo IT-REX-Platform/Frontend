@@ -1,13 +1,12 @@
 import React from "react";
 
 import { createDrawerNavigator } from "@react-navigation/drawer";
-import { Image, StyleSheet, useWindowDimensions } from "react-native";
+import { StyleSheet, useWindowDimensions } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { RootDrawerParamList } from "./NavigationRoutes";
 import i18n from "../../locales";
 
-import { VideoUploadComponent } from "../../components/VideoUploadComponent";
 import AuthenticationService from "../../services/AuthenticationService";
 import { ITREXRoles } from "../ITREXRoles";
 import { ScreenHomeLecturer } from "../../components/screens/ScreenHomeLecturer";
@@ -87,7 +86,7 @@ function getHomeScreen() {
                 options={{
                     title: i18n.t("itrex.home"),
                     drawerIcon: () => (
-                        <Image source={require("../images/ITRex-Logo-ob_750x750.png")} style={[styles.icon]}></Image>
+                        <MaterialCommunityIcons name="home" size={28} color="white" style={styles.icon} />
                     ),
                 }}
             />
@@ -101,7 +100,7 @@ function getHomeScreen() {
                 options={{
                     title: i18n.t("itrex.home"),
                     drawerIcon: () => (
-                        <Image source={require("../images/ITRex-Logo-ob_750x750.png")} style={[styles.icon]}></Image>
+                        <MaterialCommunityIcons name="home" size={28} color="white" style={styles.icon} />
                     ),
                 }}
             />

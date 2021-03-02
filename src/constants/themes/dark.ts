@@ -11,4 +11,10 @@ export const dark = {
         grey: "#464A5B", //                  rgb(70,74,91)
         pink: "#FA1772", //                  rgb(250,23,114)
     },
+    Opacity: {
+        grey: "rgba(70, 74, 91, 0.3)",
+        pink: "rgba(250, 23, 114, 0.5)",
+        darkBlue1: "rgba(1, 27, 69, 0.7)",
+        blueGreen: "rgba(79, 175, 167, 0.6)",
+    },
 };

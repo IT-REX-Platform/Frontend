@@ -1,10 +1,23 @@
 import React, { useState, useEffect } from "react";
 import i18n from "../locales";
-import { Header } from "../constants/navigators/Header";
 import { CourseContext, LocalizationContext } from "./Context";
-import { Button, ImageBackground, Platform, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
-import * as DocumentPicker from "expo-document-picker";
-import * as ImagePicker from "expo-image-picker";
+import {
+    ActivityIndicator,
+    ImageBackground,
+    Platform,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
+} from "react-native";
+import { DocumentResult, getDocumentAsync } from "expo-document-picker";
+import {
+    ImagePickerResult,
+    launchImageLibraryAsync,
+    MediaTypeOptions,
+    requestMediaLibraryPermissionsAsync,
+} from "expo-image-picker";
 import { RequestFactory } from "../api/requests/RequestFactory";
 import { EndpointsVideo } from "../api/endpoints/EndpointsVideo";
 import { createAlert } from "../helperScripts/createAlert";
@@ -14,6 +27,7 @@ import { VideoFormDataParams } from "../constants/VideoFormDataParams";
 import { loggerFactory } from "../../logger/LoggerConfig";
 import { createVideoUrl } from "../services/createVideoUrl";
 import { ICourse } from "../types/ICourse";
+import { dark } from "../constants/themes/dark";
 
 const loggerService = loggerFactory.getLogger("service.UploadVideoComponent");
 const endpointsVideo = new EndpointsVideo();
@@ -28,6 +42,7 @@ export const VideoUploadComponent: React.FC = () => {
     const [videoUri, setVideoUri] = useState("");
     const [videoName, setVideoName] = useState("");
     const [videoPlayerUri, setVideoPlayerUri] = useState("");
+    const [isLoading, setLoading] = useState(false);
 
     /**
      * Make sure that the necessary permissions are given for the image picker.
@@ -35,7 +50,7 @@ export const VideoUploadComponent: React.FC = () => {
     useEffect(() => {
         (async () => {
             if (Platform.OS === "ios") {
-                const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+                const { status } = await requestMediaLibraryPermissionsAsync();
                 if (status !== "granted") {
                     alert(i18n.t("itrex.imagePickerPermAlert"));
                 }
@@ -60,8 +75,8 @@ export const VideoUploadComponent: React.FC = () => {
      * Expo image picker that only allows picking of video files.
      */
     const imagePicker = async () => {
-        const video: ImagePicker.ImagePickerResult = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Videos,
+        const video: ImagePickerResult = await launchImageLibraryAsync({
+            mediaTypes: MediaTypeOptions.Videos,
             allowsEditing: true,
         });
 
@@ -77,7 +92,7 @@ export const VideoUploadComponent: React.FC = () => {
      * Expo document picker that only allows picking of video files in mp4 format.
      */
     const documentPicker = async () => {
-        const document: DocumentPicker.DocumentResult = await DocumentPicker.getDocumentAsync({
+        const document: DocumentResult = await getDocumentAsync({
             type: "video/mp4",
         });
 
@@ -97,8 +112,9 @@ export const VideoUploadComponent: React.FC = () => {
         if (videoUri === "" || course.id === undefined) {
             return;
         }
+        setLoading(true);
 
-        const video = await buildVideoAsFormData(course.id);
+        const video: FormData = await buildVideoAsFormData(course.id);
         const postRequest: RequestInit = RequestFactory.createPostRequestWithFormData(video);
         const response: IVideo = await endpointsVideo.uploadVideo(postRequest);
         console.log(response);
@@ -117,7 +133,7 @@ export const VideoUploadComponent: React.FC = () => {
     /**
      * Build a FormData object from the video uri.
      */
-    const buildVideoAsFormData = async (courseId: string) => {
+    const buildVideoAsFormData = async (courseId: string): Promise<FormData> => {
         const response: Response = await fetch(videoUri);
         const fileBlob: Blob = await response.blob();
         const formData: FormData = new FormData();
@@ -130,38 +146,49 @@ export const VideoUploadComponent: React.FC = () => {
         setVideoUri("");
         setVideoName("");
         setVideoPlayerUri("");
+        setLoading(false);
     };
+
+    if (isLoading) {
+        return (
+            <ImageBackground source={require("../constants/images/Background2.png")} style={styles.image}>
+                <ActivityIndicator size="large" color="white" />
+            </ImageBackground>
+        );
+    }
 
     return (
         <ImageBackground source={require("../constants/images/Background2.png")} style={styles.image}>
             <View style={styles.container}>
-                <View style={styles.styledInputContainer}>
-                    <Text style={{ color: "white" }}>{i18n.t("itrex.uploadVideoHere")}</Text>
-                    <TextInput
-                        style={styles.styledTextInput}
-                        value={videoName}
-                        editable={false}
-                        testID="videoNameInput"></TextInput>
-                    <Pressable style={styles.styledButton}>
-                        <Button title={i18n.t("itrex.browseVideos")} onPress={pickVideo}></Button>
-                    </Pressable>
-                </View>
+                <Text numberOfLines={1} lineBreakMode="tail" style={styles.header}>
+                    {i18n.t("itrex.toUploadVideo")}
+                </Text>
 
-                <Pressable style={styles.styledButton}>
-                    <Button title={i18n.t("itrex.toUploadVideo")} onPress={uploadVideo}></Button>
-                </Pressable>
+                <TextInput
+                    style={styles.textInput}
+                    value={videoName}
+                    editable={false}
+                    placeholder={i18n.t("itrex.uploadVideoHere")}
+                    testID="videoNameInput"
+                />
 
-                <View style={styles.video} />
+                <TouchableOpacity style={styles.button} onPress={pickVideo}>
+                    <Text style={styles.buttonText}>{i18n.t("itrex.browseVideos")}</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.button} onPress={uploadVideo}>
+                    <Text style={styles.buttonText}>{i18n.t("itrex.toUploadVideo")}</Text>
+                </TouchableOpacity>
 
                 <Video
+                    style={styles.video}
                     source={{ uri: videoPlayerUri }}
                     rate={1.0}
                     volume={1.0}
                     isMuted={false}
-                    resizeMode="cover"
-                    shouldPlay={true}
+                    resizeMode="contain"
+                    shouldPlay={false}
                     useNativeControls={true}
-                    style={{ width: 640, height: 480 }}
                 />
             </View>
         </ImageBackground>
@@ -174,33 +201,44 @@ const styles = StyleSheet.create({
         marginTop: 20,
         marginBottom: 20,
         alignItems: "center",
-        justifyContent: "center",
-    },
-    styledInputContainer: {
-        flexDirection: "column",
-        justifyContent: "center",
-        tintColor: "white",
-    },
-    styledTextInput: {
-        color: "white",
-        tintColor: "white",
-        width: "100%",
-        marginLeft: 8,
-        marginRight: 8,
-        borderColor: "lightgray",
-        borderWidth: 2,
-    },
-    styledButton: {
-        marginTop: 16,
-    },
-    video: {
-        marginTop: 20,
-        marginBottom: 20,
-        alignItems: "center",
     },
     image: {
         flex: 1,
         resizeMode: "stretch",
         justifyContent: "center",
+    },
+    header: {
+        fontSize: 50,
+        color: dark.theme.pink,
+        textAlign: "center",
+        maxWidth: "90%",
+    },
+    textInput: {
+        color: "white",
+        fontSize: 20,
+        borderColor: "lightgray",
+        borderWidth: 1,
+        width: "50%",
+        textAlign: "center",
+        margin: 10,
+    },
+    button: {
+        backgroundColor: dark.theme.darkBlue2,
+        borderColor: dark.theme.pink,
+        borderWidth: 1,
+        margin: 5,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    buttonText: {
+        color: "white",
+        fontSize: 20,
+        padding: 10,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    video: {
+        maxWidth: "90%",
+        margin: 10,
     },
 });

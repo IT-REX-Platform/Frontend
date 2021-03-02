@@ -1,15 +1,7 @@
-import {
-    CompositeNavigationProp,
-    RouteProp,
-    useFocusEffect,
-    useIsFocused,
-    useNavigation,
-    useRoute,
-} from "@react-navigation/native";
+import { CompositeNavigationProp, useIsFocused, useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import i18n from "../../../locales";
-import { Header } from "../../../constants/navigators/Header";
 import { Text, ImageBackground, StyleSheet, View, TouchableOpacity, Switch } from "react-native";
+
 import { dark } from "../../../constants/themes/dark";
 import {
     CourseStackParamList,

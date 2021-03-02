@@ -1,18 +1,5 @@
-import React, { ChangeEvent } from "react";
-import { useState } from "react";
-import {
-    Button,
-    FlatList,
-    ImageBackground,
-    Platform,
-    Pressable,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
-} from "react-native";
+import React, { ChangeEvent, useState } from "react";
+import { Button, ImageBackground, Platform, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { ICourse } from "../types/ICourse";
 import { validateCourseName } from "../helperScripts/validateCourseEntry";
 import { validateCourseDescription } from "../helperScripts/validateCourseEntry";
@@ -23,35 +10,22 @@ import { CoursePublishState } from "../constants/CoursePublishState";
 import { DatePickerComponent } from "./DatePickerComponent";
 import { validateCourseDates } from "../helperScripts/validateCourseDates";
 import { EndpointsCourse } from "../api/endpoints/EndpointsCourse";
-import { useNavigation } from "@react-navigation/native";
-import { NavigationRoutes } from "../constants/navigators/NavigationRoutes";
 import { Header } from "../constants/navigators/Header";
 import { LocalizationContext } from "./Context";
 import { Event } from "@react-native-community/datetimepicker";
+import { dark } from "../constants/themes/dark";
 
 const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");
 const endpointsCourse: EndpointsCourse = new EndpointsCourse();
 
 export const CreateCourseComponent: React.FC = () => {
     React.useContext(LocalizationContext);
-    const navigation = useNavigation();
 
     // Enter course name to create course
     const [courseName, setCourseName] = useState("");
 
     // Enter course description to create course
     const [courseDescription, setCourseDescription] = useState("");
-
-    // Display all courses
-    const initialCourseState: ICourse[] = [];
-    const [courses, setCourses] = useState(initialCourseState);
-
-    // Enter course ID to publish course
-    const [courseIdString, setCourseId] = useState("");
-
-    // Display all published courses
-    const initialPublishedCourseState: ICourse[] = [];
-    const [coursesPublished, setCoursesPublished] = useState(initialPublishedCourseState);
 
     // Start- and Enddate for a published course
     const [startDate, setStartDate] = useState<Date | undefined>(undefined);
@@ -99,59 +73,6 @@ export const CreateCourseComponent: React.FC = () => {
                             onChangeText={(text: string) => setCourseDescription(text)}
                             testID="courseDescriptionInput"></TextInput>
                     </View>
-                    <Pressable style={styles.styledButton}>
-                        <Button title={i18n.t("itrex.createCourse")} onPress={createCourse}></Button>
-                    </Pressable>
-                    <Pressable style={styles.styledButton}>
-                        <Button title={i18n.t("itrex.getAllCourses")} onPress={getAllCourses}></Button>
-                    </Pressable>
-
-                    <FlatList
-                        data={courses}
-                        renderItem={({ item }: { item: ICourse }) => (
-                            <>
-                                <TouchableOpacity key={item.id} onPress={() => onPress(item)}>
-                                    <View style={{ backgroundColor: "white" }}>
-                                        <Text style={styles.item}>
-                                            {item.id +
-                                                "\t" +
-                                                item.publishState +
-                                                "\t" +
-                                                item.name +
-                                                "\t" +
-                                                (item.courseDescription ? item.courseDescription : "")}
-                                        </Text>
-                                    </View>
-                                </TouchableOpacity>
-                            </>
-                        )}
-                        keyExtractor={(item, index) => String(index)}
-                    />
-                    <View style={styles.styledInputContainer}>
-                        <Text style={styles.textSytle}>{i18n.t("itrex.enterCouseId")}</Text>
-                        <TextInput
-                            style={styles.styledTextInput}
-                            keyboardType="numeric"
-                            onChangeText={(id: string) => setCourseId(id)}
-                            testID="courseIdInput"></TextInput>
-                    </View>
-                    <Pressable style={styles.styledButton}>
-                        <Button title={i18n.t("itrex.publishCourse")} onPress={patchCourse}></Button>
-                    </Pressable>
-                    <Pressable style={styles.styledButton}>
-                        <Button title={i18n.t("itrex.getPublishedCourses")} onPress={getPublishedCourses}></Button>
-                    </Pressable>
-                    <FlatList
-                        data={coursesPublished}
-                        renderItem={({ item }: { item: ICourse }) => (
-                            <Text style={{}}>{item.id + "\t" + item.publishState + "\t" + item.name}</Text>
-                        )}
-                        keyExtractor={(item, index) => String(index)}
-                    />
-                    <Pressable style={styles.styledButton}>
-                        <Button title={i18n.t("itrex.deleteCourse")} onPress={deleteCourse}></Button>
-                    </Pressable>
-
                     <View style={styles.styledInputContainer}>
                         <DatePickerComponent
                             title={i18n.t("itrex.startDate")}
@@ -167,15 +88,21 @@ export const CreateCourseComponent: React.FC = () => {
                             onDateChanged={endDateChanged}
                             minDate={startDate}></DatePickerComponent>
                     </View>
+                    <View style={styles.styledInputContainer}>
+                        <View style={[{ width: "20%", margin: 5 }]}>
+                            <Button
+                                color={dark.Opacity.blueGreen}
+                                title={i18n.t("itrex.createCourse")}
+                                onPress={createCourse}
+                            />
+                        </View>
+                    </View>
                 </View>
             </ScrollView>
         </ImageBackground>
     );
 
-    function onPress(item: ICourse) {
-        navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, { item: item, name: item.name });
-    }
-
+    // eslint-disable-next-line complexity
     function createCourse(): void {
         loggerService.trace(`Validating course name: ${courseName}.`);
 
@@ -188,9 +115,16 @@ export const CreateCourseComponent: React.FC = () => {
             loggerService.warn("Course description invalid.");
         }
 
+        // Validate start/end Date
+        // Check if start and Enddate are set
+        if (!validateCourseDates(startDate, endDate)) {
+            return;
+        }
+
         const course: ICourse = {
             name: courseName,
             startDate: startDate,
+            endDate: endDate,
             courseDescription: courseDescription ? courseDescription : undefined,
             publishState: CoursePublishState.UNPUBLISHED,
         };
@@ -198,49 +132,6 @@ export const CreateCourseComponent: React.FC = () => {
         loggerService.trace(`Creating course: name=${courseName}.`);
         const postRequest: RequestInit = RequestFactory.createPostRequest(course);
         endpointsCourse.createCourse(postRequest).then((data) => console.log(data));
-    }
-
-    function getAllCourses(): void {
-        loggerService.trace("Getting all courses.");
-        const request: RequestInit = RequestFactory.createGetRequest();
-        endpointsCourse.getAllCourses(request).then((receivedCourses) => {
-            setCourses(receivedCourses);
-        });
-    }
-
-    function patchCourse(): void {
-        loggerService.trace("Parsing ID string to ID number");
-
-        // Check if start and Enddate are set
-        if (!validateCourseDates(startDate, endDate)) {
-            return;
-        }
-
-        // ATTENTION: fields without values will be overwritten with null in DB. @s.pastuchov 27.01.21
-        const course: ICourse = {
-            id: courseIdString,
-            publishState: CoursePublishState.PUBLISHED,
-            startDate: startDate,
-            endDate: endDate,
-        };
-
-        loggerService.trace(`Updating course: name=${courseName}, publishedState=${CoursePublishState.PUBLISHED}.`);
-        const putRequest: RequestInit = RequestFactory.createPatchRequest(course);
-        endpointsCourse.patchCourse(putRequest).then((data) => console.log(data));
-    }
-
-    function getPublishedCourses(): void {
-        const request: RequestInit = RequestFactory.createGetRequest();
-        endpointsCourse
-            .getAllCourses(request, { publishState: CoursePublishState.PUBLISHED })
-            .then((receivedCoursesPublished) => {
-                setCoursesPublished(receivedCoursesPublished);
-            });
-    }
-
-    function deleteCourse(): void {
-        const request: RequestInit = RequestFactory.createDeleteRequest();
-        endpointsCourse.deleteCourse(request, courseIdString);
     }
 };
 

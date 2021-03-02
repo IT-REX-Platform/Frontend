@@ -1,19 +1,20 @@
 import React, { useState } from "react";
-import { Button, ImageBackground, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { ImageBackground, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { loggerFactory } from "../../logger/LoggerConfig";
 import { IVideo } from "../types/IVideo";
 import { Video } from "expo-av";
 import { createVideoUrl } from "../services/createVideoUrl";
 import { createAlert } from "../helperScripts/createAlert";
 import i18n from "../locales";
-import { Separator } from "./Separator";
 import { RequestFactory } from "../api/requests/RequestFactory";
 import { EndpointsVideo } from "../api/endpoints/EndpointsVideo";
 import { CompositeNavigationProp, RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { LocalizationContext } from "./Context";
 import { CourseStackParamList, RootDrawerParamList } from "../constants/navigators/NavigationRoutes";
-import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
+import { StackNavigationProp } from "@react-navigation/stack";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
+import { dark } from "../constants/themes/dark";
+import { calculateVideoSize } from "../services/calculateVideoSize";
 
 const loggerService = loggerFactory.getLogger("service.VideoComponent");
 const endpointsVideo = new EndpointsVideo();
@@ -24,7 +25,6 @@ type ScreenCourseTabsNavigationProp = CompositeNavigationProp<
 >;
 
 type ScreenCourseTabsRouteProp = RouteProp<CourseStackParamList, "VIDEO">;
-type ScreenCourseTabsProps = StackScreenProps<CourseStackParamList, "VIDEO">;
 
 export const VideoComponent: React.FC = () => {
     loggerService.trace("Started VideoComponent.");
@@ -37,53 +37,47 @@ export const VideoComponent: React.FC = () => {
 
     const [newTitle, setTitle] = useState("");
 
+    // Video.
+    const videoView = () => (
+        <Video
+            style={styles.video}
+            source={{ uri: getVideoUrl() }}
+            rate={1.0}
+            volume={1.0}
+            isMuted={false}
+            resizeMode="contain"
+            shouldPlay={false}
+            useNativeControls={true}
+        />
+    );
+
     return (
         <ImageBackground source={require("../constants/images/Background2.png")} style={styles.image}>
-            <View style={styles.verticalContainer}>
-                <Video
-                    source={{ uri: getVideoUrl() }}
-                    rate={1.0}
-                    volume={1.0}
-                    isMuted={false}
-                    resizeMode="cover"
-                    shouldPlay={true}
-                    useNativeControls={true}
-                    style={{ width: getWidth(), height: getHeight(), padding: 10, backgroundColor: "#481380" }}
-                />
+            <View style={styles.container}>
+                <Text numberOfLines={1} lineBreakMode="tail" style={styles.header}>
+                    {video.title}
+                </Text>
 
-                <Separator />
-                <View style={styles.horizontalContainer}>
-                    <Text style={styles.label}>{i18n.t("itrex.titleColon")}</Text>
-                    <Text style={styles.text}>{getTitle()}</Text>
+                {videoView()}
+
+                <View style={styles.infoContainer}>
                     <TextInput
                         style={styles.textInput}
+                        textAlign="center"
                         placeholder={i18n.t("itrex.inputNewTitle")}
                         onChangeText={(text: string) => setTitle(text)}
                     />
+                    <Text style={styles.text}>{calculateVideoSize(video.length)}</Text>
                 </View>
 
-                <Separator />
                 <View style={styles.horizontalContainer}>
-                    <Text style={styles.label}>{i18n.t("itrex.startDateColumn")}</Text>
-                    <Text style={styles.text}>{getStartDate()}</Text>
-                </View>
+                    <TouchableOpacity style={styles.button} onPress={updateVideo}>
+                        <Text style={styles.buttonText}>{i18n.t("itrex.update")}</Text>
+                    </TouchableOpacity>
 
-                <Separator />
-                <View style={styles.horizontalContainer}>
-                    <View style={styles.horizontalContainer}>
-                        <Text style={styles.label}>{i18n.t("itrex.endDateColumn")}</Text>
-                        <Text style={styles.text}>{getEndDate()}</Text>
-                    </View>
-                </View>
-
-                <Separator />
-                <View style={styles.horizontalContainer}>
-                    <Pressable style={styles.button}>
-                        <Button title={i18n.t("itrex.updateVideo")} onPress={updateVideo} />
-                    </Pressable>
-                    <Pressable style={styles.button}>
-                        <Button color="red" title={i18n.t("itrex.deleteVideo")} onPress={deleteVideo} />
-                    </Pressable>
+                    <TouchableOpacity style={styles.buttonDelete} onPress={deleteVideo}>
+                        <Text style={styles.buttonText}>{i18n.t("itrex.delete")}</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
         </ImageBackground>
@@ -98,40 +92,40 @@ export const VideoComponent: React.FC = () => {
         return createVideoUrl(video.id);
     }
 
-    function getWidth(): number {
-        if (video.width == undefined || null) {
-            return 640;
-        }
-        return video.width;
-    }
+    // function getWidth(): number {
+    //     if (video.width == undefined || null) {
+    //         return 640;
+    //     }
+    //     return video.width;
+    // }
 
-    function getHeight(): number {
-        if (video.height == undefined || null) {
-            return 480;
-        }
-        return video.height;
-    }
+    // function getHeight(): number {
+    //     if (video.height == undefined || null) {
+    //         return 480;
+    //     }
+    //     return video.height;
+    // }
 
-    function getTitle(): string {
-        if (video.title == undefined || null) {
-            return "-";
-        }
-        return video.title;
-    }
+    // function getTitle(): string {
+    //     if (video.title == undefined || null) {
+    //         return "-";
+    //     }
+    //     return video.title;
+    // }
 
-    function getStartDate(): string {
-        if (video.startDate == undefined || null) {
-            return "-";
-        }
-        return video.startDate.toString();
-    }
+    // function getStartDate(): string {
+    //     if (video.startDate == undefined || null) {
+    //         return "-";
+    //     }
+    //     return video.startDate.toString();
+    // }
 
-    function getEndDate(): string {
-        if (video.endDate == undefined || null) {
-            return "-";
-        }
-        return video.endDate.toString();
-    }
+    // function getEndDate(): string {
+    //     if (video.endDate == undefined || null) {
+    //         return "-";
+    //     }
+    //     return video.endDate.toString();
+    // }
 
     async function updateVideo(): Promise<void> {
         const videoUpdate: IVideo = {
@@ -161,51 +155,85 @@ export const VideoComponent: React.FC = () => {
         }
 
         const deleteRequest: RequestInit = RequestFactory.createDeleteRequest();
-        endpointsVideo.deleteVideo(deleteRequest, video.id);
-
-        createAlert(i18n.t("itrex.videoDeleted"));
-
-        if (video.courseId !== undefined) {
+        const response: Promise<Response> = endpointsVideo.deleteVideo(deleteRequest, video.id);
+        response.then(() => {
+            createAlert(i18n.t("itrex.videoDeleted"));
             navigation.navigate("VIDEO_POOL");
-        }
+        });
     }
 };
 
 const styles = StyleSheet.create({
-    verticalContainer: {
+    container: {
         flex: 1,
         alignItems: "center",
-        justifyContent: "center",
-    },
-    horizontalContainer: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-around",
     },
     image: {
         flex: 1,
         resizeMode: "stretch",
         justifyContent: "center",
     },
-    label: {
-        color: "white",
-        fontSize: 20,
-        padding: 5,
-        fontWeight: "bold",
+    header: {
+        fontSize: 50,
+        color: dark.theme.pink,
+        textAlign: "center",
+        maxWidth: "90%",
     },
-    text: {
-        color: "white",
-        fontSize: 20,
+    video: {
+        maxWidth: "90%",
+        margin: 10,
+    },
+    infoContainer: {
+        width: "90%",
+        alignItems: "center",
+        backgroundColor: dark.theme.darkBlue2,
+        borderColor: dark.theme.darkBlue4,
+        borderWidth: 2,
         padding: 5,
+        borderRadius: 2,
     },
     textInput: {
         color: "white",
         fontSize: 20,
-        marginLeft: 8,
         borderColor: "lightgray",
-        borderWidth: 2,
+        borderWidth: 1,
+        width: "50%",
+        textAlign: "center",
+        margin: 5,
+    },
+    text: {
+        color: "white",
+        fontSize: 20,
+        maxWidth: "85%",
+        textAlign: "center",
+        margin: 5,
+    },
+    horizontalContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-around",
     },
     button: {
-        margin: 10,
+        backgroundColor: dark.theme.darkBlue2,
+        borderColor: dark.theme.pink,
+        borderWidth: 1,
+        margin: 5,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    buttonDelete: {
+        backgroundColor: dark.theme.pink,
+        borderColor: dark.theme.darkBlue3,
+        borderWidth: 1,
+        margin: 5,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    buttonText: {
+        color: "white",
+        fontSize: 20,
+        padding: 10,
+        alignItems: "center",
+        justifyContent: "center",
     },
 });
