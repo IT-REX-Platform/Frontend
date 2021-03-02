@@ -1,12 +1,9 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import {
     ActivityIndicator,
     Animated,
-    Button,
     FlatList,
     ImageBackground,
-    Pressable,
     StyleSheet,
     Text,
     TouchableOpacity,
@@ -74,8 +71,8 @@ export const VideoPoolComponent: React.FC = () => {
                     marginBottom: 5,
                     borderRadius: 2,
                     backgroundColor: dark.theme.darkBlue2,
-                    borderColor: dark.theme.darkBlue1,
-                    borderWidth: 1,
+                    borderColor: dark.theme.darkBlue4,
+                    borderWidth: 2,
                 }}>
                 <MaterialCommunityIcons name="video-vintage" size={28} color="white" />
 
@@ -99,15 +96,14 @@ export const VideoPoolComponent: React.FC = () => {
 
     // Button to access video upload.
     const uploadButton = () => (
-        <Pressable style={styles.styledButton}>
-            <Button
-                title={i18n.t("itrex.toUploadVideo")}
-                onPress={() => {
-                    resetStates();
-                    navigation.navigate(NavigationRoutes.ROUTE_VIDEO_UPLOAD);
-                }}
-            />
-        </Pressable>
+        <TouchableOpacity
+            style={styles.button}
+            onPress={() => {
+                resetStates();
+                navigation.navigate(NavigationRoutes.ROUTE_VIDEO_UPLOAD);
+            }}>
+            <Text style={styles.buttonText}>{i18n.t("itrex.toUploadVideo")}</Text>
+        </TouchableOpacity>
     );
 
     // Button to refresh video list.
@@ -242,8 +238,8 @@ const styles = StyleSheet.create({
         width: "50%",
         height: "50%",
         backgroundColor: dark.theme.darkBlue2,
-        borderColor: dark.theme.darkBlue1,
-        borderWidth: 1,
+        borderColor: dark.theme.darkBlue4,
+        borderWidth: 2,
         textAlign: "center",
         justifyContent: "center",
         marginTop: 50,
@@ -253,8 +249,20 @@ const styles = StyleSheet.create({
         fontSize: 20,
         margin: 10,
     },
-    styledButton: {
+    button: {
+        backgroundColor: dark.theme.darkBlue2,
+        borderColor: dark.theme.pink,
+        borderWidth: 1,
         margin: 5,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    buttonText: {
+        color: "white",
+        fontSize: 20,
+        padding: 10,
+        alignItems: "center",
+        justifyContent: "center",
     },
     refreshButton: {
         padding: 20,

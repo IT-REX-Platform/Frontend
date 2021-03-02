@@ -1,5 +1,4 @@
-import React, { ChangeEvent } from "react";
-import { useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 import { Button, ImageBackground, Platform, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { ICourse } from "../types/ICourse";
 import { validateCourseName } from "../helperScripts/validateCourseEntry";

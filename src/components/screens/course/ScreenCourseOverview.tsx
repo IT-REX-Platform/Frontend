@@ -37,9 +37,6 @@ export const ScreenCourseOverview: React.FC = () => {
     const endpointsCourse: EndpointsCourse = new EndpointsCourse();
     const course: ICourse = React.useContext(CourseContext);
 
-    console.log(course);
-    console.log(AuthenticationService.getInstance().getRoles().includes("ROLE_ITREX_LECTURER"));
-
     return (
         <>
             <ImageBackground source={require("../../../constants/images/Background_forest.svg")} style={styles.image}>
@@ -170,6 +167,10 @@ export const ScreenCourseOverview: React.FC = () => {
 
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
+        alignItems: "center",
+    },
+    header: {
         marginTop: 70,
         textDecorationColor: dark.theme.pink,
         fontSize: 50,
@@ -182,11 +183,27 @@ const styles = StyleSheet.create({
         flex: 1,
         resizeMode: "stretch",
     },
-    icon: {
+    description: {
+        color: "white",
+        fontSize: 20,
+        padding: 10,
         alignItems: "center",
-        paddingLeft: 10,
-        paddingRight: 10,
-        marginTop: 20,
+        justifyContent: "center",
+    },
+    button: {
+        backgroundColor: dark.theme.darkBlue2,
+        borderColor: dark.theme.pink,
+        borderWidth: 1,
+        margin: 5,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    buttonText: {
+        color: "white",
+        fontSize: 20,
+        padding: 10,
+        alignItems: "center",
+        justifyContent: "center",
     },
     content: {
         flex: 1,
