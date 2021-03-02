@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import {
     ActivityIndicator,
     Animated,
@@ -19,7 +20,14 @@ import { dark } from "../../../constants/themes/dark";
 import { CourseContext, LocalizationContext } from "../../Context";
 import { DatePickerComponent } from "../../DatePickerComponent";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
-import { CompositeNavigationProp, RouteProp, useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
+import {
+    CompositeNavigationProp,
+    RouteProp,
+    useFocusEffect,
+    useIsFocused,
+    useNavigation,
+    useRoute,
+} from "@react-navigation/native";
 import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { CourseStackParamList, RootDrawerParamList } from "../../../constants/navigators/NavigationRoutes";
@@ -42,7 +50,6 @@ type ScreenCourseTabsNavigationProp = CompositeNavigationProp<
 
 type ScreenCourseTabsRouteProp = RouteProp<CourseStackParamList, "CHAPTER">;
 
-let addContentList: IVideo[] = [];
 const endpointsVideo = new EndpointsVideo();
 export const ScreenAddChapter: React.FC = () => {
     React.useContext(LocalizationContext);
@@ -64,7 +71,6 @@ export const ScreenAddChapter: React.FC = () => {
 
     // All videos state.
     const initialVideoState: IVideo[] = [];
-    const [videos, setVideos] = useState(initialVideoState);
 
     // Vertical slide animation for FlatList.
     const translateY = new Animated.Value(100);
@@ -79,9 +85,16 @@ export const ScreenAddChapter: React.FC = () => {
 
     const [chapterName, setChapterName] = useState<string | undefined>(initialCourseName);
 
-    const [contentAdd, setContent] = useState<IVideo[]>([]);
+    const [contentList, setContentList] = useState<IVideo[]>([]);
 
-    const [displayList, setDisplayList] = useState<IVideo[]>([]);
+    const [videoPoolList, setVideoPoolList] = useState<IVideo[]>([]);
+
+    const isFocused = useIsFocused();
+    useEffect(() => {
+        if (isFocused && course.id !== undefined) {
+            console.log("chapter focused");
+        }
+    }, [isFocused]);
 
     const startDateChanged = (event: ChangeEvent | Event, selectedDate?: Date) => {
         if (Platform.OS === ("android" || "ios")) {
@@ -118,7 +131,7 @@ export const ScreenAddChapter: React.FC = () => {
         }
 
         // Display info box if there are no videos.
-        if (displayList.length < 1) {
+        if (videoPoolList.length < 1) {
             loggerService.trace("Displaying info box.");
             return (
                 <View style={styles.containerTop}>
@@ -137,7 +150,7 @@ export const ScreenAddChapter: React.FC = () => {
                     <FlatList
                         style={styles.list}
                         showsVerticalScrollIndicator={false}
-                        data={displayList}
+                        data={videoPoolList}
                         renderItem={listItem}
                         keyExtractor={(item, index) => index.toString()}
                     />
@@ -203,13 +216,11 @@ export const ScreenAddChapter: React.FC = () => {
      * @param video
      */
     function addContent(video: IVideo) {
-        addContentList.push(video);
-        setContent(addContentList);
-        const index = displayList.indexOf(video);
+        const index = videoPoolList.indexOf(video);
         if (index > -1) {
-            displayList.splice(index, 1);
+            videoPoolList.splice(index, 1);
         }
-        setContent(addContentList);
+        setContentList([...contentList, video]);
     }
 
     /**
@@ -217,17 +228,17 @@ export const ScreenAddChapter: React.FC = () => {
      * @param video
      */
     function removeContent(video: IVideo) {
-        displayList.push(video);
-        const index = addContentList.indexOf(video);
+        const index = contentList.indexOf(video);
         if (index > -1) {
-            addContentList.splice(index, 1);
+            contentList.splice(index, 1);
         }
-        setContent(addContentList);
+        setContentList([...contentList]);
+        setVideoPoolList([...videoPoolList, video]);
     }
 
     useEffect(() => {
-        console.log(contentAdd);
-    }, [contentAdd, setContent, listRemoveItem, listItem, renderUi]);
+        console.log(contentList);
+    }, [contentList, setContentList, listRemoveItem, listItem, renderUi]);
 
     // Use the whole structure from the context ??
     useFocusEffect(
@@ -314,7 +325,7 @@ export const ScreenAddChapter: React.FC = () => {
                                 <FlatList
                                     style={styles.list}
                                     showsVerticalScrollIndicator={false}
-                                    data={contentAdd}
+                                    data={contentList}
                                     renderItem={listRemoveItem}
                                     keyExtractor={(item, index) => index.toString()}
                                 />
@@ -338,8 +349,7 @@ export const ScreenAddChapter: React.FC = () => {
 
         await response
             .then((videosReceived: IVideo[]) => {
-                setVideos(videosReceived);
-                setDisplayList(videosReceived);
+                setVideoPoolList(videosReceived);
                 loggerService.trace("Received videos in next line:");
                 console.log(videosReceived);
             })
