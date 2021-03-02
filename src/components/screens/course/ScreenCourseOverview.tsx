@@ -44,7 +44,7 @@ export const ScreenCourseOverview: React.FC = () => {
             <ImageBackground source={require("../../../constants/images/Background2.png")} style={styles.image}>
                 <View style={styles.container}>
                     <View style={styles.content}>
-                        <View style={styles.content}>{getPublishedSate(course.publishState)} </View>
+                        <View style={styles.content}>{getPublishedSate(course.publishState)}</View>
                         <Text style={styles.textWhite}>{course.courseDescription}</Text>
                         {uploadViedeoAsOwner()}
                     </View>
@@ -56,7 +56,8 @@ export const ScreenCourseOverview: React.FC = () => {
     function getDate(showDate: Date | undefined, title: string) {
         return (
             <Text style={{ color: "white" }}>
-                <Text style={{ fontWeight: "bold" }}>{title}</Text> {dateConverter(showDate)}
+                <Text style={{ fontWeight: "bold" }}>{title}</Text>
+                <Text>{dateConverter(showDate)}</Text>
             </Text>
         );
     }
@@ -112,8 +113,8 @@ export const ScreenCourseOverview: React.FC = () => {
                         <View style={styles.circleUnpublished} />
                         <Text style={styles.textUnpublished}>{i18n.t("itrex.unpublished")}</Text>
                     </View>
-                    {getDate(course.startDate, i18n.t("itrex.startDate"))}
-                    {getDate(course.endDate, i18n.t("itrex.endDate"))}
+                    <Text>{getDate(course.startDate, i18n.t("itrex.startDate"))}</Text>
+                    <Text>{getDate(course.endDate, i18n.t("itrex.endDate"))}</Text>
                     {checkOwnerSettings()}
                 </>
             );
@@ -124,8 +125,8 @@ export const ScreenCourseOverview: React.FC = () => {
                         <View style={styles.circlePublished} />
                         <Text style={styles.textPublished}>{i18n.t("itrex.published")}</Text>
                     </View>
-                    {getDate(course.startDate, i18n.t("itrex.startDate") + ": ")}
-                    {getDate(course.endDate, i18n.t("itrex.endDate") + ": ")}
+                    <Text>{getDate(course.startDate, i18n.t("itrex.startDate") + ": ")}</Text>
+                    <Text>{getDate(course.endDate, i18n.t("itrex.endDate") + ": ")}</Text>
                 </>
             );
         }

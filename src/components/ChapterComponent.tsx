@@ -57,7 +57,9 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
         <View style={styles.chapterContainer}>
             <View style={styles.chapterTopRow}>
                 <Text style={styles.chapterHeader}>{chapter?.title}</Text>
-                <View style={styles.chapterStatus}>{getPublishedSate("PUBLISHED")} </View>
+                <View style={styles.chapterStatus}>
+                    <Text>{getPublishedSate("PUBLISHED")}</Text>
+                </View>
             </View>
             <View style={styles.chapterBottomRow}>
                 <Text style={styles.chapterMaterialHeader}>Material</Text>

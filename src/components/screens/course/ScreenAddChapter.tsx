@@ -176,30 +176,26 @@ export const ScreenAddChapter: React.FC = () => {
 
     // Creates a list for the right side, so that videos can be added to a chapter
     const listItem = ({ item }: { item: IVideo }) => (
-        <View>
-            <ListItem
-                containerStyle={{
-                    marginBottom: 5,
-                    borderRadius: 2,
-                    backgroundColor: dark.theme.darkBlue2,
-                    borderColor: dark.theme.darkBlue4,
-                    borderWidth: 2,
-                }}>
-                <TouchableOpacity onPress={() => addContent(item)}>
-                    <MaterialIcons name="add" size={28} color="white" style={styles.icon} />
-                </TouchableOpacity>
-                <MaterialCommunityIcons name="video-vintage" size={28} color="white" />
+        <ListItem
+            containerStyle={{
+                marginBottom: 5,
+                borderRadius: 2,
+                backgroundColor: dark.theme.darkBlue2,
+                borderColor: dark.theme.darkBlue4,
+                borderWidth: 2,
+            }}>
+            <TouchableOpacity onPress={() => addContent(item)}>
+                <MaterialIcons name="add" size={28} color="white" style={styles.icon} />
+            </TouchableOpacity>
+            <MaterialCommunityIcons name="video-vintage" size={28} color="white" />
 
-                <ListItem.Content>
-                    <ListItem.Title style={styles.listItemTitle} numberOfLines={1} lineBreakMode="tail">
-                        {item.title}
-                    </ListItem.Title>
-                    <ListItem.Subtitle style={styles.listItemSubtitle}>
-                        {calculateVideoSize(item.length)}
-                    </ListItem.Subtitle>
-                </ListItem.Content>
-            </ListItem>
-        </View>
+            <ListItem.Content>
+                <ListItem.Title style={styles.listItemTitle} numberOfLines={1} lineBreakMode="tail">
+                    {item.title}
+                </ListItem.Title>
+                <ListItem.Subtitle style={styles.listItemSubtitle}>{calculateVideoSize(item.length)}</ListItem.Subtitle>
+            </ListItem.Content>
+        </ListItem>
     );
 
     /**
