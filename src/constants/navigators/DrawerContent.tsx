@@ -18,6 +18,7 @@ import { dark } from "../themes/dark";
 import { EndpointsCourse } from "../../api/endpoints/EndpointsCourse";
 import AuthenticationService from "../../services/AuthenticationService";
 import { ITREXRoles } from "../ITREXRoles";
+import { CommonActions } from "@react-navigation/native";
 
 export const DrawerContent: React.FC<DrawerContentComponentProps> = (props: DrawerContentComponentProps) => {
     const { signOut } = React.useContext(AuthContext);
@@ -70,16 +71,25 @@ export const DrawerContent: React.FC<DrawerContentComponentProps> = (props: Draw
             drawerItems.push(
                 <DrawerItem
                     {...props}
-                    icon={() => (
-                        <MaterialCommunityIcons name="notebook-outline" size={28} color="white" style={styles.icon} />
-                    )}
+                    icon={() => <MaterialCommunityIcons name="notebook-outline" size={28} style={styles.icon} />}
                     label={"" + course.name}
                     key={course.id}
                     onPress={() => {
                         console.log("Course Details");
+                        navigation.dispatch({
+                            ...CommonActions.reset({
+                                index: 0,
+                                routes: [
+                                    { name: NavigationRoutes.ROUTE_COURSE_DETAILS, params: { courseId: course.id } },
+                                ],
+                            }),
+                        });
+                        /*
                         navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, {
                             courseId: course.id,
+
                         });
+                        */
                     }}></DrawerItem>
             );
         }
@@ -100,7 +110,7 @@ export const DrawerContent: React.FC<DrawerContentComponentProps> = (props: Draw
                     borderBottomColor: dark.theme.darkBlue2,
                 }}>
                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", height: 56 }}>
-                    <Image source={require("../images/Logo_white.png")} style={[styles.icon]}></Image>
+                    <Image source={require("../images/Logo_white.png")} style={[styles.icon]} />
                     <Text style={styles.textWithShadow}>IT-REX</Text>
                 </View>
             </Drawer.Section>
@@ -138,7 +148,7 @@ export const DrawerContent: React.FC<DrawerContentComponentProps> = (props: Draw
                         paddingHorizontal: 16,
                     }}>
                     <Text style={{ color: "white" }}>{i18n.t("itrex.darkTheme")}</Text>
-                    <Switch value={isDarkTheme} onValueChange={toggleIsDarkTheme}></Switch>
+                    <Switch value={isDarkTheme} onValueChange={toggleIsDarkTheme} />
                 </View>
                 <View
                     style={{
@@ -148,15 +158,16 @@ export const DrawerContent: React.FC<DrawerContentComponentProps> = (props: Draw
                         paddingHorizontal: 16,
                     }}>
                     <Text style={{ color: "white" }}>{i18n.t("itrex.switchLang")}</Text>
-                    <Switch value={locale == "de-DE"} onValueChange={toggleIsGerman}></Switch>
+                    <Switch value={locale == "de-DE"} onValueChange={toggleIsGerman} />
                 </View>
                 <DrawerItem
                     {...props}
-                    icon={() => <MaterialCommunityIcons name="logout" size={28} color="white" style={styles.icon} />}
+                    icon={() => <MaterialCommunityIcons name="logout" size={28} style={styles.icon} />}
                     label={i18n.t("itrex.logout")}
                     onPress={() => {
                         signOut();
-                    }}></DrawerItem>
+                    }}
+                />
             </Drawer.Section>
         </View>
     );
@@ -164,6 +175,7 @@ export const DrawerContent: React.FC<DrawerContentComponentProps> = (props: Draw
 
 const styles = StyleSheet.create({
     icon: {
+        color: "white",
         marginTop: 10,
         width: 36,
         height: 36,

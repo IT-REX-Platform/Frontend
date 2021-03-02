@@ -1,18 +1,20 @@
-import { CompositeNavigationProp, RouteProp, useNavigation, useRoute } from "@react-navigation/native";
-import React, { useState } from "react";
-import i18n from "../../../locales";
-import { Header } from "../../../constants/navigators/Header";
-import { Text, ImageBackground, StyleSheet, View, TouchableOpacity } from "react-native";
+import { CompositeNavigationProp, useIsFocused, useNavigation } from "@react-navigation/native";
+import React, { useEffect, useState } from "react";
+import { Text, ImageBackground, StyleSheet, View, TouchableOpacity, Switch } from "react-native";
+
 import { dark } from "../../../constants/themes/dark";
 import {
     CourseStackParamList,
     CourseTabParamList,
     RootDrawerParamList,
 } from "../../../constants/navigators/NavigationRoutes";
-import { LocalizationContext } from "../../Context";
+import { CourseContext, LocalizationContext } from "../../Context";
 import { MaterialTopTabNavigationProp } from "@react-navigation/material-top-tabs";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
+import { ChapterComponent } from "../../ChapterComponent";
+import { ICourse } from "../../../types/ICourse";
+import CourseService from "../../../services/CourseService";
 
 export type ScreenCourseTimelineNavigationProp = CompositeNavigationProp<
     MaterialTopTabNavigationProp<CourseTabParamList, "TIMELINE">,
@@ -21,50 +23,80 @@ export type ScreenCourseTimelineNavigationProp = CompositeNavigationProp<
 
 export const ScreenCourseTimeline: React.FC = () => {
     const navigation = useNavigation<ScreenCourseTimelineNavigationProp>();
+    const courseService: CourseService = new CourseService();
 
     const [count, setCount] = useState(0);
-    const onPress = () => setCount((prevCount) => prevCount + 1);
+
+    const [edit, setEdit] = useState(false);
 
     React.useContext(LocalizationContext);
 
-    return (
-        <>
-            <View style={styles.container}>
-                <Header title={i18n.t("itrex.home")} />
-                <View style={styles.headConatiner}>
-                    <Text style={styles.courseHeader}>Theoretische Informatik II</Text>
-                    <Text style={styles.chapterHeader}>Placeholder for Menu</Text>
-                </View>
-                <ImageBackground
-                    source={require("../../../constants/images/Background3.png")}
-                    style={styles.image}
-                    imageStyle={{ opacity: 0.5, position: "absolute", resizeMode: "center" }}>
-                    <View style={styles.chapterContainer}>
-                        <View style={styles.chapterTopRow}>
-                            <Text style={styles.chapterHeader}>Ch. 1: Automata and Turing-Machines </Text>
-                            <Text style={styles.chapterStatus}>Published </Text>
-                        </View>
-                        <View style={styles.chapterBottomRow}>
-                            <Text style={styles.chapterMaterial}>Preview Chapter Material</Text>
-                        </View>
-                    </View>
+    const course: ICourse = React.useContext(CourseContext);
 
+    const [myCourse, setMyCourse] = useState<ICourse>({});
+
+    const isFocused = useIsFocused();
+    useEffect(() => {
+        if (isFocused && course.id !== undefined) {
+            courseService.getCourse(course.id).then((receivedCourse) => {
+                setMyCourse(receivedCourse);
+                console.log("Load course again");
+            });
+        }
+    }, [isFocused]);
+
+    return (
+        <View style={styles.container}>
+            <ImageBackground
+                source={require("../../../constants/images/Background3.png")}
+                style={styles.image}
+                imageStyle={{ opacity: 0.5, position: "absolute", resizeMode: "contain" }}>
+                <View style={styles.editMode}>
+                    <Text style={styles.editModeText}>Toggle Edit-mode</Text>
+                    <Switch
+                        value={edit}
+                        onValueChange={() => {
+                            setEdit(!edit);
+                        }}></Switch>
+                </View>
+
+                {myCourse.chapterObjects?.map((chapter) => (
+                    <ChapterComponent key={chapter.id} chapter={chapter} editMode={edit}></ChapterComponent>
+                ))}
+                {edit && (
                     <View style={styles.addChapterContainer}>
-                        <TouchableOpacity style={styles.btnAdd} onPress={onPress}>
+                        <TouchableOpacity
+                            style={styles.btnAdd}
+                            onPress={() => {
+                                navigation.navigate("CHAPTER", { chapterId: undefined });
+                            }}>
                             <Text style={styles.txtAddChapter}>+ Add Chapter</Text>
                         </TouchableOpacity>
                     </View>
-                </ImageBackground>
-            </View>
-        </>
+                )}
+            </ImageBackground>
+        </View>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-        flex: 4,
+        paddingTop: "3%",
+        flex: 1,
         flexDirection: "column",
         backgroundColor: dark.theme.darkBlue1,
+    },
+    editMode: {
+        alignSelf: "flex-end",
+        flexDirection: "row",
+        paddingRight: "20px",
+        paddingTop: "20px",
+    },
+    editModeText: {
+        color: "white",
+        fontSize: 18,
+        fontWeight: "bold",
+        paddingRight: "20px",
     },
     headConatiner: {
         flex: 1,
@@ -79,10 +111,10 @@ const styles = StyleSheet.create({
     },
     addChapterContainer: {
         backgroundColor: "rgba(0,0,0,0.3)",
-        height: "20%",
+        height: "100px",
         width: "80%",
         marginTop: "1%",
-        padding: "1.5%",
+        padding: "0.5%",
         borderWidth: 3,
         borderColor: dark.theme.lightBlue,
     },
@@ -131,7 +163,7 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
     },
     image: {
-        flex: 4,
+        flex: 1,
         width: "screenWidth",
         backgroundColor: dark.theme.darkBlue1,
         alignItems: "center",

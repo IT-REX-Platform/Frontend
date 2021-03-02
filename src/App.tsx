@@ -16,25 +16,30 @@ import * as AuthSession from "expo-auth-session";
 import { IAuthContext } from "./components/Context";
 import { ILoginReducerAction, ILoginReducerState } from "./types/ILoginReducer";
 import { Provider as PaperProvider } from "react-native-paper";
+import { AsyncStorageService, StorageConstants } from "./services/StorageService";
 
 const loggerService = loggerFactory.getLogger("service.App");
 
 function loginReducer(prevState: ILoginReducerState, action: ILoginReducerAction): ILoginReducerState {
     switch (action.type) {
         case "RESTORE_TOKEN":
+            AuthenticationService.getInstance().setTokenResponse(action.userInfo);
+            AuthenticationService.getInstance().autoRefresh();
             return {
                 ...prevState,
-                userInfo: null,
+                userInfo: action.userInfo,
                 isLoading: false,
             } as ILoginReducerState;
         case "LOGIN":
             AuthenticationService.getInstance().setTokenResponse(action.userInfo);
+            AuthenticationService.getInstance().autoRefresh();
             return {
                 ...prevState,
                 userInfo: action.userInfo,
                 isLoading: false,
             } as ILoginReducerState;
         case "LOGOUT":
+            AuthenticationService.getInstance().clearAuthentication();
             return {
                 ...prevState,
                 userInfo: null,
@@ -71,10 +76,8 @@ function App(): ReactElement {
 
     const authContext = React.useMemo<IAuthContext>(
         () => ({
-            signIn: (userInfo: AuthSession.TokenResponse) => {
+            signIn: (userInfo: AuthSession.TokenResponseConfig) => {
                 dispatch({ type: "LOGIN", userInfo: userInfo } as ILoginReducerAction);
-                // We call it doppelt gemoppelt
-                //TODO: Store in context ?
             },
             signOut: () => {
                 dispatch({ type: "LOGOUT" } as ILoginReducerAction);
@@ -87,10 +90,22 @@ function App(): ReactElement {
     );
 
     React.useEffect(() => {
-        setTimeout(() => {
-            //TODO: Load Token from local-Storage
-            dispatch({ type: "RESTORE_TOKEN", token: "myCoolToken" } as ILoginReducerAction);
-        }, 1000);
+        new AsyncStorageService().getItem(StorageConstants.OAUTH_REFRESH_TOKEN).then((value) => {
+            if (value !== null) {
+                const lastRefreshToken = JSON.parse(value) as AuthSession.TokenResponseConfig;
+                AuthenticationService.getInstance().setTokenResponse(lastRefreshToken);
+                AuthenticationService.getInstance()
+                    .refreshToken()
+                    .then(() => {
+                        dispatch({ type: "RESTORE_TOKEN", userInfo: lastRefreshToken } as ILoginReducerAction);
+                    })
+                    .catch(() => {
+                        dispatch({ type: "LOGOUT" } as ILoginReducerAction);
+                    });
+            } else {
+                dispatch({ type: "LOGOUT" } as ILoginReducerAction);
+            }
+        });
     }, []);
 
     if (loginState.isLoading) {

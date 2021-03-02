@@ -1,4 +1,4 @@
-import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import { RouteProp, useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { Text, StyleSheet } from "react-native";
 import { dark } from "../../constants/themes/dark";
@@ -19,6 +19,8 @@ import AuthenticationService from "../../services/AuthenticationService";
 import { ITREXRoles } from "../../constants/ITREXRoles";
 import i18n from "../../locales";
 import { VideoUploadComponent } from "../VideoUploadComponent";
+import CourseService from "../../services/CourseService";
+import { ScreenAddChapter } from "./course/ScreenAddChapter";
 
 export type ScreenCourseNavigationProp = DrawerNavigationProp<RootDrawerParamList, "ROUTE_COURSE_DETAILS">;
 export type ScreenCourseRouteProp = RouteProp<RootDrawerParamList, "ROUTE_COURSE_DETAILS">;
@@ -30,7 +32,6 @@ export const ScreenCourse: React.FC = () => {
     const navigation = useNavigation<ScreenCourseNavigationProp>();
     const route = useRoute<ScreenCourseRouteProp>();
 
-    //const courseId: number = route.params.courseId;
     const courseId = route.params.courseId;
 
     React.useContext(LocalizationContext);
@@ -39,13 +40,17 @@ export const ScreenCourse: React.FC = () => {
     const [course, setCourse] = useState(courseInitial);
 
     const endpointsCourse: EndpointsCourse = new EndpointsCourse();
+    const courseService: CourseService = new CourseService();
 
     useEffect(() => {
         const request: RequestInit = RequestFactory.createGetRequest();
         endpointsCourse.getCourse(request, courseId).then((receivedCourse) => {
+            console.log(receivedCourse);
             setCourse(receivedCourse);
         });
     }, [courseId]);
+
+    console.log(course);
 
     return (
         <CourseContext.Provider value={course}>
@@ -84,15 +89,13 @@ export const ScreenCourse: React.FC = () => {
                 <CourseStack.Screen name="INFO" component={ScreenCourseTabs}></CourseStack.Screen>
 
                 {getUploadVideoScreen()}
+                {getCreateChapterScreen()}
             </CourseStack.Navigator>
         </CourseContext.Provider>
     );
 
     function getUploadVideoScreen() {
-        if (
-            AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_LECTURER) ||
-            AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_ADMIN)
-        ) {
+        if (AuthenticationService.getInstance().isLecturerOrAdmin()) {
             return (
                 <>
                     <CourseStack.Screen
@@ -105,6 +108,20 @@ export const ScreenCourse: React.FC = () => {
                     <CourseStack.Screen name="VIDEO_POOL" component={VideoPoolComponent}></CourseStack.Screen>
                     <CourseStack.Screen name="VIDEO" component={VideoComponent}></CourseStack.Screen>
                 </>
+            );
+        }
+    }
+
+    function getCreateChapterScreen() {
+        if (AuthenticationService.getInstance().isLecturerOrAdmin()) {
+            return (
+                <CourseStack.Screen
+                    name="CHAPTER"
+                    component={ScreenAddChapter}
+                    options={{
+                        title: i18n.t("itrex.toUploadVideo"),
+                    }}
+                />
             );
         }
     }

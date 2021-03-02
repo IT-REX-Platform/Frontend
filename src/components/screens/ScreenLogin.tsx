@@ -7,6 +7,7 @@ import * as WebBrowser from "expo-web-browser";
 import * as AuthSession from "expo-auth-session";
 import { itRexVars } from "../../constants/Constants";
 import i18n from "../../locales";
+import { discovery } from "../../services/AuthenticationService";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -15,15 +16,10 @@ export const ScreenLogin: React.FC = () => {
 
     const { locale, setLocale } = React.useContext(LocalizationContext);
 
-    const discovery = {
-        authorizationEndpoint: itRexVars().authEndpoint,
-        tokenEndpoint: itRexVars().authTokenEndpoint,
-    };
-
     const [, authResponse, promptAuthentication] = AuthSession.useAuthRequest(
         {
-            responseType: AuthSession.ResponseType.Token,
-            clientId: "web_app",
+            responseType: AuthSession.ResponseType.Code,
+            clientId: itRexVars().authClientId,
             scopes: [],
             // In order to follow the "Authorization Code Flow" to fetch token after authorizationEndpoint
             // this must be set to false
@@ -31,7 +27,7 @@ export const ScreenLogin: React.FC = () => {
             // For usage in managed apps using the proxy
             redirectUri: AuthSession.makeRedirectUri({
                 // For usage in bare and standalone
-                native: "it-rex://login",
+                native: itRexVars().authRedirectUrl,
                 useProxy: false,
             }),
         },
@@ -39,8 +35,26 @@ export const ScreenLogin: React.FC = () => {
     );
 
     React.useEffect(() => {
-        if (authResponse?.type === "success" && authResponse.authentication != null) {
-            signIn(authResponse.authentication);
+        if (authResponse?.type === "success") {
+            // we have received our session_state and code, now we can request our token
+            AuthSession.exchangeCodeAsync(
+                {
+                    clientId: itRexVars().authClientId,
+                    redirectUri: AuthSession.makeRedirectUri({
+                        // For usage in bare and standalone
+                        native: itRexVars().authRedirectUrl,
+                    }),
+                    code: authResponse?.params.code,
+                    extraParams: {
+                        // You must use the extraParams variation of clientSecret.
+                        // Never store your client secret on the client.
+                        client_secret: "",
+                    },
+                },
+                { tokenEndpoint: discovery.tokenEndpoint }
+            ).then((tResponse) => {
+                signIn(tResponse);
+            });
         }
     }, [authResponse]);
 

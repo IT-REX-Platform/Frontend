@@ -8,5 +8,5 @@ export interface IEndpointsVideo {
     downloadVideo(getRequest: RequestInit, id: string): Promise<IVideo>;
     uploadVideo(postRequest: RequestInit): Promise<IVideo>;
     patchVideo(patchRequest: RequestInit): Promise<IVideo>;
-    deleteVideo(deleteRequest: RequestInit, id: string): void;
+    deleteVideo(deleteRequest: RequestInit, id: string): Promise<Response>;
 }
