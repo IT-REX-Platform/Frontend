@@ -10,6 +10,7 @@ import i18n from "../../locales";
 import { VideoUploadComponent } from "../../components/VideoUploadComponent";
 import AuthenticationService from "../../services/AuthenticationService";
 import { ITREXRoles } from "../ITREXRoles";
+import { ScreenAddChapter } from "../../components/screens/ScreenAddChapter";
 import { ScreenHomeLecturer } from "../../components/screens/ScreenHomeLecturer";
 import { ScreenHomeAdmin } from "../../components/screens/ScreenHomeAdmin";
 import { ScreenHomeStudent } from "../../components/screens/ScreenHomeStudent";
