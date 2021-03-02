@@ -14,6 +14,7 @@ import { Header } from "../constants/navigators/Header";
 import { LocalizationContext } from "./Context";
 import { Event } from "@react-native-community/datetimepicker";
 import { dark } from "../constants/themes/dark";
+import { InteractionButton } from "./UIElements/InteractionButton";
 
 const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");
 const endpointsCourse: EndpointsCourse = new EndpointsCourse();
@@ -90,11 +91,11 @@ export const CreateCourseComponent: React.FC = () => {
                     </View>
                     <View style={styles.styledInputContainer}>
                         <View style={[{ width: "20%", margin: 5 }]}>
-                            <Button
-                                color={dark.Opacity.blueGreen}
+                            <InteractionButton
+                                color={"light"}
                                 title={i18n.t("itrex.createCourse")}
                                 onPress={createCourse}
-                            />
+                                size={"small"}></InteractionButton>
                         </View>
                     </View>
                 </View>

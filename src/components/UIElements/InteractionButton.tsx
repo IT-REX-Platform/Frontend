@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as React from "react";
 import { StyleSheet, TouchableOpacity, Text } from "react-native";
+import { dark } from "../../constants/themes/dark";
 import i18n from "../../locales";
 import { LocalizationContext } from "../Context";
 
@@ -10,6 +11,7 @@ interface ButtonProps {
     type?: string;
     size?: string;
     color?: string;
+    fontsize?: string;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onPress?: any;
 }
@@ -30,11 +32,18 @@ export const InteractionButton: React.FC<ButtonProps> = (props) => {
     const TextType =
         props.type === "red" ? styles.warningText : props.type === "green" ? styles.approveText : styles.normalText;
 
-    const ButtonColor = props.color === "light" ? styles.lightBlue : styles.darkBlue;
+    const FontSize =
+        props.fontsize === "small"
+            ? styles.smallText
+            : props.fontsize === "large"
+            ? styles.largeText
+            : styles.mediumText;
+
+    const ButtonColor = props.color === "dark" ? styles.darkBlue : styles.lightBlue;
 
     return (
         <TouchableOpacity style={[styles.button, ButtonSize, ButtonType, ButtonColor]} onPress={props.onPress}>
-            <Text style={[styles.buttonText, TextType]}>{props.title}</Text>
+            <Text style={[TextType, FontSize]}>{props.title}</Text>
         </TouchableOpacity>
     );
 };
@@ -48,28 +57,34 @@ const styles = StyleSheet.create({
         padding: 20,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "#003B66",
+        backgroundColor: dark.theme.darkBlue3,
         shadowRadius: 10,
-        shadowColor: "#003B66",
+        shadowColor: dark.theme.darkBlue3,
         shadowOpacity: 0.5,
         borderWidth: 3,
     },
-    buttonText: {
-        fontSize: 20,
-        marginRight: 5,
-    },
 
     darkBlue: {
-        backgroundColor: "#003B66",
+        backgroundColor: dark.theme.darkBlue3,
         shadowRadius: 10,
-        shadowColor: "#003B66",
+        shadowColor: dark.theme.darkBlue3,
         shadowOpacity: 0.5,
     },
     lightBlue: {
-        backgroundColor: "#3D96F3",
+        backgroundColor: dark.Opacity.blueGreen,
         shadowRadius: 10,
-        shadowColor: "#3D96F3",
+        shadowColor: dark.Opacity.blueGreen,
         shadowOpacity: 0.5,
+    },
+    smallText: {
+        fontSize: 15,
+    },
+    mediumText: {
+        fontSize: 20,
+    },
+    largeText: {
+        fontSize: 26,
+        marginBottom: 5,
     },
     normalButton: {
         borderColor: "#FFFFFF",
