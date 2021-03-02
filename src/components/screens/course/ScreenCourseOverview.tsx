@@ -41,7 +41,7 @@ export const ScreenCourseOverview: React.FC = () => {
 
     return (
         <View style={styles.rootContainer}>
-            <ImageBackground source={require("../../../constants/images/Background_forest.svg")} style={styles.image}>
+            <ImageBackground source={require("../../../constants/images/Background2.png")} style={styles.image}>
                 <View style={styles.container}>
                     <View style={styles.content}>
                         <View style={styles.content}>{getPublishedSate(course.publishState)} </View>

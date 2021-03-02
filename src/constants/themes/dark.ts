@@ -16,5 +16,7 @@ export const dark = {
         pink: "rgba(250, 23, 114, 0.5)",
         darkBlue1: "rgba(1, 27, 69, 0.7)",
         blueGreen: "rgba(79, 175, 167, 0.6)",
+        lightGreen: "rgba(181,239,138, 0.8)",
+        darkGreen: "rgba(127,194,155, 0.8)",
     },
 };

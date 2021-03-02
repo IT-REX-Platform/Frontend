@@ -1,14 +1,24 @@
-import { Platform, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+    ActivityIndicator,
+    Animated,
+    FlatList,
+    ImageBackground,
+    Platform,
+    Pressable,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
+    Button,
+} from "react-native";
 
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import i18n from "../../../locales";
-import { Header } from "../../../constants/navigators/Header";
 import { dark } from "../../../constants/themes/dark";
 import { CourseContext, LocalizationContext } from "../../Context";
 import { DatePickerComponent } from "../../DatePickerComponent";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
-import Draggable from "react-native-draggable";
-import * as VideoThumbnails from "expo-video-thumbnails";
 import { CompositeNavigationProp, RouteProp, useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
 import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
@@ -17,8 +27,13 @@ import { IChapter } from "../../../types/IChapter";
 import { RequestFactory } from "../../../api/requests/RequestFactory";
 import { EndpointsChapter } from "../../../api/endpoints/EndpointsChapter";
 import { ICourse } from "../../../types/ICourse";
-import { Button } from "react-native-elements";
+import { ListItem } from "react-native-elements";
 import CourseService from "../../../services/CourseService";
+import { IVideo } from "../../../types/IVideo";
+import { EndpointsVideo } from "../../../api/endpoints/EndpointsVideo";
+import { loggerFactory } from "../../../../logger/LoggerConfig";
+import { calculateVideoSize } from "../../../services/calculateVideoSize";
+import { createAlert } from "../../../helperScripts/createAlert";
 
 type ScreenCourseTabsNavigationProp = CompositeNavigationProp<
     StackNavigationProp<CourseStackParamList, "CHAPTER">,
@@ -26,13 +41,16 @@ type ScreenCourseTabsNavigationProp = CompositeNavigationProp<
 >;
 
 type ScreenCourseTabsRouteProp = RouteProp<CourseStackParamList, "CHAPTER">;
-type ScreenCourseTabsProps = StackScreenProps<CourseStackParamList, "CHAPTER">;
 
+let addContentList: IVideo[] = [];
+const endpointsVideo = new EndpointsVideo();
 export const ScreenAddChapter: React.FC = () => {
     React.useContext(LocalizationContext);
     const route = useRoute<ScreenCourseTabsRouteProp>();
     const navigation = useNavigation<ScreenCourseTabsNavigationProp>();
+    const loggerService = loggerFactory.getLogger("service.VideoPoolComponent");
     let chapterId = route.params.chapterId;
+
     if (chapterId == "undefined") {
         chapterId = undefined;
     }
@@ -40,6 +58,30 @@ export const ScreenAddChapter: React.FC = () => {
     const [startDate, setStartDate] = useState<Date | undefined>(undefined);
     const [endDate, setEndDate] = useState<Date | undefined>(undefined);
     //const [image, setImage] = useState(null);
+
+    // Loading icon state.
+    const [isLoading, setLoading] = useState(true);
+
+    // All videos state.
+    const initialVideoState: IVideo[] = [];
+    const [videos, setVideos] = useState(initialVideoState);
+
+    // Vertical slide animation for FlatList.
+    const translateY = new Animated.Value(100);
+    Animated.timing(translateY, { toValue: 1, duration: 500, useNativeDriver: false }).start();
+
+    const course: ICourse = React.useContext(CourseContext);
+
+    const initialCourseName = chapterId == undefined ? "Mein neues Kapitel" : "";
+    const chapterEndpoint = new EndpointsChapter();
+    const courseService = new CourseService();
+    const [chapter, setChapter] = useState<IChapter>({} as IChapter);
+
+    const [chapterName, setChapterName] = useState<string | undefined>(initialCourseName);
+
+    const [contentAdd, setContent] = useState<IVideo[]>([]);
+
+    const [displayList, setDisplayList] = useState<IVideo[]>([]);
 
     const startDateChanged = (event: ChangeEvent | Event, selectedDate?: Date) => {
         if (Platform.OS === ("android" || "ios")) {
@@ -63,19 +105,140 @@ export const ScreenAddChapter: React.FC = () => {
         }
     };
 
-    const course: ICourse = React.useContext(CourseContext);
+    // Render UI according to un-/available videos data.
+    const renderUi = () => {
+        // Display loading icon if getAllVideos() request is still processing.
+        if (isLoading) {
+            loggerService.trace("Displaying loading icon.");
+            return (
+                <View style={styles.containerCentered}>
+                    <ActivityIndicator size="large" color="white" />
+                </View>
+            );
+        }
 
-    const initialCourseName = chapterId == undefined ? "Mein neues Kapitel" : "";
-    const chapterEndpoint = new EndpointsChapter();
-    const courseService = new CourseService();
-    const [chapter, setChapter] = useState<IChapter>({} as IChapter);
+        // Display info box if there are no videos.
+        if (displayList.length < 1) {
+            loggerService.trace("Displaying info box.");
+            return (
+                <View style={styles.containerTop}>
+                    <View style={styles.infoTextBox}>
+                        <Text style={styles.infoText}>{i18n.t("itrex.noVideosAvailable")}</Text>
+                    </View>
+                </View>
+            );
+        }
 
-    const [chapterName, setChapterName] = useState<string | undefined>(initialCourseName);
+        loggerService.trace("Displaying video list.");
+        return (
+            <View style={styles.containerTop}>
+                <Text style={styles.courseHeader}>Available Videos</Text>
+                <Animated.View style={{ transform: [{ translateY }], flex: 1, maxWidth: "90%" }}>
+                    <FlatList
+                        style={styles.list}
+                        showsVerticalScrollIndicator={false}
+                        data={displayList}
+                        renderItem={listItem}
+                        keyExtractor={(item, index) => index.toString()}
+                    />
+                </Animated.View>
+            </View>
+        );
+    };
+
+    // Creates a list for the left side, so that videos can be removed
+    const listRemoveItem = ({ item }: { item: IVideo }) => (
+        <View>
+            <ListItem
+                containerStyle={{
+                    marginBottom: 5,
+                    borderRadius: 2,
+                    backgroundColor: dark.theme.darkBlue2,
+                    borderColor: dark.theme.darkBlue4,
+                    borderWidth: 2,
+                }}>
+                <TouchableOpacity onPress={() => removeContent(item)}>
+                    <MaterialIcons name="remove" size={28} color="white" style={styles.icon} />
+                </TouchableOpacity>
+                <MaterialCommunityIcons name="video-vintage" size={28} color="white" />
+
+                <ListItem.Content>
+                    <ListItem.Title style={styles.listItemTitle} numberOfLines={1} lineBreakMode="tail">
+                        {item.title}
+                    </ListItem.Title>
+                    <ListItem.Subtitle style={styles.listItemSubtitle}>
+                        {calculateVideoSize(item.length)}
+                    </ListItem.Subtitle>
+                </ListItem.Content>
+            </ListItem>
+        </View>
+    );
+
+    // Creates a list for the right side, so that videos can be added to a chapter
+    const listItem = ({ item }: { item: IVideo }) => (
+        <View>
+            <ListItem
+                containerStyle={{
+                    marginBottom: 5,
+                    borderRadius: 2,
+                    backgroundColor: dark.theme.darkBlue2,
+                    borderColor: dark.theme.darkBlue4,
+                    borderWidth: 2,
+                }}>
+                <TouchableOpacity onPress={() => addContent(item)}>
+                    <MaterialIcons name="add" size={28} color="white" style={styles.icon} />
+                </TouchableOpacity>
+                <MaterialCommunityIcons name="video-vintage" size={28} color="white" />
+
+                <ListItem.Content>
+                    <ListItem.Title style={styles.listItemTitle} numberOfLines={1} lineBreakMode="tail">
+                        {item.title}
+                    </ListItem.Title>
+                    <ListItem.Subtitle style={styles.listItemSubtitle}>
+                        {calculateVideoSize(item.length)}
+                    </ListItem.Subtitle>
+                </ListItem.Content>
+            </ListItem>
+        </View>
+    );
+
+    /**
+     * Add Video to Chapter List
+     * @param video
+     */
+    function addContent(video: IVideo) {
+        addContentList.push(video);
+        setContent(addContentList);
+        const index = displayList.indexOf(video);
+        if (index > -1) {
+            displayList.splice(index, 1);
+        }
+        setContent(addContentList);
+    }
+
+    /**
+     * Remove Video from Chapter List
+     * @param video
+     */
+    function removeContent(video: IVideo) {
+        displayList.push(video);
+        const index = addContentList.indexOf(video);
+        if (index > -1) {
+            addContentList.splice(index, 1);
+        }
+        setContent(addContentList);
+    }
+
+    useEffect(() => {
+        console.log(contentAdd);
+    }, [contentAdd, setContent, listRemoveItem, listItem, renderUi]);
 
     // Use the whole structure from the context ??
     useFocusEffect(
         React.useCallback(() => {
             if (chapterId != undefined) {
+                loggerService.trace("Getting all videos of course: " + course.id);
+                getAllVideos(course.id);
                 const request: RequestInit = RequestFactory.createGetRequest();
                 chapterEndpoint.getChapter(request, chapterId).then((chapter) => {
                     setChapter(chapter);
@@ -89,86 +252,113 @@ export const ScreenAddChapter: React.FC = () => {
 
     return (
         <View style={styles.container}>
-            <View style={[styles.headContainer]}>
-                <View style={styles.borderContainer}>
-                    {/*<TextInput label="name" value={courseName} onChangeText={(text) => setCourseName(text)}></TextInput>*/}
-                    <TextInput
-                        style={styles.courseHeader}
-                        value={chapterName}
-                        onChangeText={(text) => setChapterName(text)}></TextInput>
-                    <MaterialCommunityIcons name="pen" size={24} color={dark.theme.lightGreen} style={styles.icon} />
-                </View>
-                <View style={styles.publishContainer}>
-                    <Text>Here Publish Button</Text>
-                </View>
-            </View>
-            <Button
-                icon={<MaterialIcons name="save-alt" size={28} color="white" style={styles.icon} />}
-                title="Save"
-                onPress={() => {
-                    // Create new Chapter
-                    if (chapterId == undefined) {
-                        const myNewChapter: IChapter = {
-                            title: chapterName,
-                            startDate: startDate,
-                            endDate: endDate,
-                            courseId: course.id,
-                        };
-                        courseService.createNewChapter(myNewChapter, course).then((chapter) => {
-                            navigation.navigate("CHAPTER", { chapterId: chapter.id });
-                        });
-                    } else {
-                        // Update an existing chapter
-                        chapter.title = chapterName;
-                        chapter.startDate = startDate;
-                        chapter.endDate = endDate;
+            <ImageBackground source={require("../../../constants/images/Background2.png")} style={styles.image}>
+                <View style={[styles.headContainer]}>
+                    <View style={styles.borderContainer}>
+                        {/*<TextInput label="name" value={courseName} onChangeText={(text) => setCourseName(text)}></TextInput>*/}
+                        <TextInput
+                            style={styles.courseHeader}
+                            value={chapterName}
+                            onChangeText={(text) => setChapterName(text)}></TextInput>
+                        <MaterialCommunityIcons name="pen" size={24} color={dark.theme.darkGreen} style={styles.icon} />
+                    </View>
+                    <View>
+                        <Pressable style={{ margin: 5, width: 80 }}>
+                            <Button
+                                color={dark.Opacity.darkGreen}
+                                title="Save"
+                                onPress={() => {
+                                    // Create new Chapter
+                                    if (chapterId == undefined) {
+                                        const myNewChapter: IChapter = {
+                                            title: chapterName,
+                                            startDate: startDate,
+                                            endDate: endDate,
+                                            courseId: course.id,
+                                            // TODO: add the contentAdd List as Content
+                                        };
+                                        console.log("create");
+                                        courseService.createNewChapter(myNewChapter, course).then((chapter) => {
+                                            navigation.navigate("CHAPTER", { chapterId: chapter.id });
+                                        });
+                                    } else {
+                                        // Update an existing chapter
+                                        chapter.title = chapterName;
+                                        chapter.startDate = startDate;
+                                        chapter.endDate = endDate;
 
-                        const patchRequest: RequestInit = RequestFactory.createPatchRequest(chapter);
-                        chapterEndpoint.patchChapter(patchRequest);
-                    }
-                }}></Button>
-            <View style={styles.headContainer}>
-                <View style={styles.datePicker}>
-                    <DatePickerComponent
-                        title={i18n.t("itrex.startDate")}
-                        date={startDate}
-                        onDateChanged={startDateChanged}></DatePickerComponent>
+                                        const patchRequest: RequestInit = RequestFactory.createPatchRequest(chapter);
+                                        chapterEndpoint.patchChapter(patchRequest);
+                                    }
+                                }}
+                            />
+                        </Pressable>
+                    </View>
                 </View>
-                <View style={styles.datePicker}>
-                    <DatePickerComponent
-                        title={i18n.t("itrex.endDate")}
-                        date={endDate}
-                        onDateChanged={endDateChanged}></DatePickerComponent>
-                </View>
-            </View>
 
-            <View style={styles.videoContainer}>
-                <View style={styles.sequenceArea}>
-                    <Text style={styles.videoPool}>Drag Items Here</Text>
-                </View>
-                <View style={styles.videoPool}>
-                    <Text style={styles.courseHeader}>Choose from Video Pool:</Text>
-                    <View style={styles.videoItem}>
-                        <View style={styles.thumbnail}></View>
-                        <Text>Automata and TM</Text>
+                <View style={styles.headContainer}>
+                    <View style={styles.datePicker}>
+                        <DatePickerComponent
+                            title={i18n.t("itrex.startDate")}
+                            date={startDate}
+                            onDateChanged={startDateChanged}></DatePickerComponent>
                     </View>
-                    <View style={styles.videoItem}>
-                        <View style={styles.thumbnail}></View>
-                        <Text>Automata and TM</Text>
-                    </View>
-                    <View style={styles.videoItem}>
-                        <View style={styles.thumbnail}></View>
-                        <Text>Automata and TM</Text>
+                    <View style={styles.datePicker}>
+                        <DatePickerComponent
+                            title={i18n.t("itrex.endDate")}
+                            date={endDate}
+                            onDateChanged={endDateChanged}></DatePickerComponent>
                     </View>
                 </View>
-            </View>
+
+                <View style={styles.videoContainer}>
+                    <View style={styles.sequenceArea}>
+                        <View style={styles.containerTop}>
+                            <Animated.View style={{ transform: [{ translateY }], flex: 1, maxWidth: "200%" }}>
+                                <FlatList
+                                    style={styles.list}
+                                    showsVerticalScrollIndicator={false}
+                                    data={contentAdd}
+                                    renderItem={listRemoveItem}
+                                    keyExtractor={(item, index) => index.toString()}
+                                />
+                            </Animated.View>
+                        </View>
+                    </View>
+                    {renderUi()}
+                </View>
+            </ImageBackground>
         </View>
     );
+
+    /**
+     * Method gets all videos belonging to specified course ID.
+     *
+     * @param courseId ID of the course to which the videos belong.
+     */
+    async function getAllVideos(courseId?: string): Promise<void> {
+        const request: RequestInit = RequestFactory.createGetRequest();
+        const response: Promise<IVideo[]> = endpointsVideo.getAllVideos(request, courseId);
+
+        await response
+            .then((videosReceived: IVideo[]) => {
+                setVideos(videosReceived);
+                setDisplayList(videosReceived);
+                loggerService.trace("Received videos in next line:");
+                console.log(videosReceived);
+            })
+            .catch((error) => {
+                loggerService.error("An error has occured while getting videos.", error);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    }
 };
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        flex: 4,
         flexDirection: "column",
         backgroundColor: dark.theme.darkBlue1,
     },
@@ -184,7 +374,6 @@ const styles = StyleSheet.create({
         borderBottomColor: "rgba(70,74,91,0.5)",
         borderBottomWidth: 3,
     },
-    publishContainer: {},
     datePicker: {
         marginRight: "3%",
         position: "relative",
@@ -204,39 +393,53 @@ const styles = StyleSheet.create({
         marginRight: "3%",
         alignItems: "center",
     },
-    videoPool: {
-        flex: 2,
-        alignItems: "flex-start",
-        color: "white",
-        fontSize: 24,
-    },
-    videoItem: {
-        borderBottomColor: "rgba(1,43,86,0.5)",
-        borderBottomWidth: 2,
-        marginBottom: "3%",
-    },
-    thumbnail: {
-        backgroundColor: "white",
-        height: 120,
-        width: 200,
-        marginBottom: "3%",
-    },
     courseHeader: {
         color: "white",
         fontSize: 24,
         fontWeight: "bold",
         width: "100%",
+        // eslint-disable-next-line max-lines
     },
     image: {
         flex: 1,
-        resizeMode: "contain",
-        justifyContent: "center",
+        resizeMode: "stretch",
     },
     icon: {
         position: "relative",
         alignItems: "flex-start",
     },
-    textSytle: {
+    containerCentered: {
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    containerTop: {
+        flex: 1,
+        alignItems: "center",
+    },
+    infoTextBox: {
+        width: "50%",
+        height: "50%",
+        backgroundColor: dark.theme.darkBlue2,
+        borderColor: dark.theme.darkBlue4,
+        borderWidth: 2,
+        textAlign: "center",
+        justifyContent: "center",
+        marginTop: 50,
+    },
+    infoText: {
+        color: "white",
+        fontSize: 20,
+        margin: 10,
+    },
+    list: {
+        flex: 1,
+    },
+    listItemTitle: {
+        color: "white",
+        fontWeight: "bold",
+    },
+    listItemSubtitle: {
         color: "white",
     },
 });
