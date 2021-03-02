@@ -6,5 +6,6 @@ export type IChapter = {
     startDate?: Date;
     endDate?: Date;
     courseId?: string;
-    contents?: IContent[];
+    contents?: string[];
+    contentObjects?: IContent[];
 };

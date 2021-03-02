@@ -69,9 +69,6 @@ export const ScreenAddChapter: React.FC = () => {
     // Loading icon state.
     const [isLoading, setLoading] = useState(true);
 
-    // All videos state.
-    const initialVideoState: IVideo[] = [];
-
     const course: ICourse = React.useContext(CourseContext);
 
     const initialCourseName = chapterId == undefined ? "Mein neues Kapitel" : "";
@@ -84,13 +81,6 @@ export const ScreenAddChapter: React.FC = () => {
     const [contentList, setContentList] = useState<IVideo[]>([]);
 
     const [videoPoolList, setVideoPoolList] = useState<IVideo[]>([]);
-
-    const isFocused = useIsFocused();
-    useEffect(() => {
-        if (isFocused && course.id !== undefined) {
-            console.log("chapter focused");
-        }
-    }, [isFocused]);
 
     const startDateChanged = (event: ChangeEvent | Event, selectedDate?: Date) => {
         if (Platform.OS === ("android" || "ios")) {
@@ -230,23 +220,41 @@ export const ScreenAddChapter: React.FC = () => {
         setVideoPoolList([...videoPoolList, video]);
     }
 
-    useEffect(() => {
-        console.log(contentList);
-    }, [contentList, setContentList, listRemoveItem, listItem, renderUi]);
-
     // Use the whole structure from the context ??
     useFocusEffect(
         React.useCallback(() => {
             if (chapterId != undefined) {
                 loggerService.trace("Getting all videos of course: " + course.id);
-                getAllVideos(course.id);
+
                 const request: RequestInit = RequestFactory.createGetRequest();
                 chapterEndpoint.getChapter(request, chapterId).then((chapter) => {
                     setChapter(chapter);
                     setChapterName(chapter.title);
                     setStartDate(chapter.startDate);
                     setEndDate(chapter.endDate);
+
+                    getAllVideos(course.id).then((videos) => {
+                        // Are there already contents in this chapter ?
+                        if (chapter.contents !== undefined) {
+                            const newContentList: IVideo[] = [];
+                            // Remove assigned contents from the pool, and add those to the "contentList"
+                            for (const contentId of chapter.contents) {
+                                const videoInPool = videos.findIndex((content) => content.id === contentId);
+
+                                if (videoInPool !== -1) {
+                                    // Add To Content-List
+                                    newContentList.push(videos[videoInPool]);
+                                    // Remove from Pool-List
+                                    videos.splice(videoInPool, 1);
+                                }
+                            }
+                            setContentList(newContentList);
+                            setVideoPoolList([...videos]);
+                        }
+                    });
                 });
+            } else {
+                getAllVideos(course.id);
             }
         }, [chapterId])
     );
@@ -269,6 +277,13 @@ export const ScreenAddChapter: React.FC = () => {
                                 color={dark.Opacity.darkGreen}
                                 title="Save"
                                 onPress={() => {
+                                    const currContentList = [];
+                                    for (const content of contentList) {
+                                        if (content.id !== undefined) {
+                                            currContentList.push(content.id);
+                                        }
+                                    }
+
                                     // Create new Chapter
                                     if (chapterId == undefined) {
                                         const myNewChapter: IChapter = {
@@ -276,9 +291,8 @@ export const ScreenAddChapter: React.FC = () => {
                                             startDate: startDate,
                                             endDate: endDate,
                                             courseId: course.id,
-                                            // TODO: add the contentAdd List as Content
+                                            contents: currContentList,
                                         };
-                                        console.log("create");
                                         courseService.createNewChapter(myNewChapter, course).then((chapter) => {
                                             navigation.navigate("CHAPTER", { chapterId: chapter.id });
                                         });
@@ -287,6 +301,13 @@ export const ScreenAddChapter: React.FC = () => {
                                         chapter.title = chapterName;
                                         chapter.startDate = startDate;
                                         chapter.endDate = endDate;
+
+                                        /* Kann mir mal bitte jemand erklären was das Problem von dem Linter da ist ???????
+                                        const currContentList: string[] | undefined = contentList
+                                            .filter((content) => content.id !== undefined)
+                                            .map((item) => item.id);
+                                        */
+                                        chapter.contents = currContentList;
 
                                         const patchRequest: RequestInit = RequestFactory.createPatchRequest(chapter);
                                         chapterEndpoint.patchChapter(patchRequest);
@@ -335,22 +356,23 @@ export const ScreenAddChapter: React.FC = () => {
      *
      * @param courseId ID of the course to which the videos belong.
      */
-    async function getAllVideos(courseId?: string): Promise<void> {
+    async function getAllVideos(courseId?: string): Promise<IVideo[]> {
         const request: RequestInit = RequestFactory.createGetRequest();
         const response: Promise<IVideo[]> = endpointsVideo.getAllVideos(request, courseId);
 
-        await response
-            .then((videosReceived: IVideo[]) => {
-                setVideoPoolList(videosReceived);
-                loggerService.trace("Received videos in next line:");
-                console.log(videosReceived);
-            })
-            .catch((error) => {
-                loggerService.error("An error has occured while getting videos.", error);
-            })
-            .finally(() => {
-                setLoading(false);
-            });
+        return new Promise((resolve) => {
+            response
+                .then((videosReceived: IVideo[]) => {
+                    setVideoPoolList(videosReceived);
+                    resolve(videosReceived);
+                })
+                .catch((error) => {
+                    loggerService.error("An error has occured while getting videos.", error);
+                })
+                .finally(() => {
+                    setLoading(false);
+                });
+        });
     }
 };
 
