@@ -72,10 +72,6 @@ export const ScreenAddChapter: React.FC = () => {
     // All videos state.
     const initialVideoState: IVideo[] = [];
 
-    // Vertical slide animation for FlatList.
-    const translateY = new Animated.Value(100);
-    Animated.timing(translateY, { toValue: 1, duration: 500, useNativeDriver: false }).start();
-
     const course: ICourse = React.useContext(CourseContext);
 
     const initialCourseName = chapterId == undefined ? "Mein neues Kapitel" : "";
@@ -146,15 +142,13 @@ export const ScreenAddChapter: React.FC = () => {
         return (
             <View style={styles.containerTop}>
                 <Text style={styles.courseHeader}>Available Videos</Text>
-                <Animated.View style={{ transform: [{ translateY }], flex: 1, maxWidth: "90%" }}>
-                    <FlatList
-                        style={styles.list}
-                        showsVerticalScrollIndicator={false}
-                        data={videoPoolList}
-                        renderItem={listItem}
-                        keyExtractor={(item, index) => index.toString()}
-                    />
-                </Animated.View>
+                <FlatList
+                    style={styles.list}
+                    showsVerticalScrollIndicator={false}
+                    data={videoPoolList}
+                    renderItem={listItem}
+                    keyExtractor={(item, index) => index.toString()}
+                />
             </View>
         );
     };
@@ -321,15 +315,13 @@ export const ScreenAddChapter: React.FC = () => {
                 <View style={styles.videoContainer}>
                     <View style={styles.sequenceArea}>
                         <View style={styles.containerTop}>
-                            <Animated.View style={{ transform: [{ translateY }], flex: 1, maxWidth: "200%" }}>
-                                <FlatList
-                                    style={styles.list}
-                                    showsVerticalScrollIndicator={false}
-                                    data={contentList}
-                                    renderItem={listRemoveItem}
-                                    keyExtractor={(item, index) => index.toString()}
-                                />
-                            </Animated.View>
+                            <FlatList
+                                style={styles.list}
+                                showsVerticalScrollIndicator={false}
+                                data={contentList}
+                                renderItem={listRemoveItem}
+                                keyExtractor={(item, index) => index.toString()}
+                            />
                         </View>
                     </View>
                     {renderUi()}
@@ -440,6 +432,7 @@ const styles = StyleSheet.create({
     },
     list: {
         flex: 1,
+        maxWidth: "100%",
     },
     listItemTitle: {
         color: "white",
