@@ -74,7 +74,7 @@ export const VideoPoolComponent: React.FC = () => {
         loggerUI.trace("Ready to upload videos: displaying video upload UI.");
         return (
             <View style={styles.videoUploadContainer}>
-                <Text style={styles.infoText}>Choose an MP4 video file of size up to 100MB.</Text>
+                <Text style={styles.infoText}>{i18n.t("itrex.videoProperties")}</Text>
                 <TouchableOpacity style={styles.button} onPress={uploadVideo}>
                     <Text style={styles.buttonText}>{i18n.t("itrex.toUploadVideo")}</Text>
                 </TouchableOpacity>

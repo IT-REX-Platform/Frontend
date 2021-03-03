@@ -52,6 +52,7 @@ export const de = {
         startDate: "Startdatum",
         endDate: "Enddatum",
         videoPool: "Video Pool",
+        videoProperties: "Wählen Sie ein MP4 Video von der Größe bis zu 100MB aus.",
         getAllVideos: "Alle Videos holen",
         video: "Video",
         videoNotFound: "Kein Video gefunden.",
