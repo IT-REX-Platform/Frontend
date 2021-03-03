@@ -42,6 +42,7 @@ import { EndpointsVideo } from "../../../api/endpoints/EndpointsVideo";
 import { loggerFactory } from "../../../../logger/LoggerConfig";
 import { calculateVideoSize } from "../../../services/calculateVideoSize";
 import { createAlert } from "../../../helperScripts/createAlert";
+import { Event } from "@react-native-community/datetimepicker";
 
 type ScreenCourseTabsNavigationProp = CompositeNavigationProp<
     StackNavigationProp<CourseStackParamList, "CHAPTER">,
