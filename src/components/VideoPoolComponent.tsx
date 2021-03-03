@@ -4,6 +4,7 @@ import {
     Animated,
     FlatList,
     ImageBackground,
+    Platform,
     StyleSheet,
     Text,
     TouchableOpacity,
@@ -18,18 +19,26 @@ import { IVideo } from "../types/IVideo";
 import { useFocusEffect } from "@react-navigation/native";
 import { ICourse } from "../types/ICourse";
 import { CourseContext, LocalizationContext } from "./Context";
-import { NavigationRoutes } from "../constants/navigators/NavigationRoutes";
 import { dark } from "../constants/themes/dark";
 import { ListItem } from "react-native-elements";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { calculateVideoSize } from "../services/calculateVideoSize";
+import { DocumentResult, getDocumentAsync } from "expo-document-picker";
+import {
+    ImagePickerResult,
+    launchImageLibraryAsync,
+    MediaLibraryPermissionResponse,
+    MediaTypeOptions,
+    requestMediaLibraryPermissionsAsync,
+} from "expo-image-picker";
+import { createAlert } from "../helperScripts/createAlert";
+import { VideoFormDataParams } from "../constants/VideoFormDataParams";
 
 const endpointsVideo = new EndpointsVideo();
 const loggerService = loggerFactory.getLogger("service.VideoPoolComponent");
+const loggerUI = loggerFactory.getLogger("UI.VideoPoolComponent");
 
 export const VideoPoolComponent: React.FC = () => {
-    loggerService.trace("Started VideoPoolComponent.");
-
     // Navigation hook.
     const navigation = useNavigation();
 
@@ -39,40 +48,117 @@ export const VideoPoolComponent: React.FC = () => {
     // Get course infos from context.
     const course: ICourse = React.useContext(CourseContext);
 
-    // Call getAllVideos() only once when this screen is shown.
+    // States.
+    const [isVideoUploading, setVideoUploading] = useState(false);
+    const [isVideoListLoading, setVideoListLoading] = useState(true);
+    const initialVideoState: IVideo[] = [];
+    const [videos, setVideos] = useState(initialVideoState);
+
+    // Call following function/s only once when this screen is shown.
     useFocusEffect(
         React.useCallback(() => {
+            loggerService.trace("EXECUTING THIS ONLY ONCE ON SCREEN FOCUS!");
+            if (Platform.OS === "ios") {
+                loggerService.trace("Asking for iOS camera permission.");
+                const response: Promise<MediaLibraryPermissionResponse> = requestMediaLibraryPermissionsAsync();
+                response.then(() => {
+                    if (status !== "granted") {
+                        loggerService.trace("iOS camera permission denied.");
+                        alert(i18n.t("itrex.imagePickerPermAlert"));
+                    }
+                    loggerService.trace("iOS camera permission granted.");
+                });
+            }
+
             loggerService.trace("Getting all videos of course: " + course.id);
             getAllVideos(course.id);
         }, [course])
     );
 
-    // Loading icon state.
-    const [isLoading, setLoading] = useState(true);
+    // Render UI for video upload.
+    const renderVideoUpload = () => {
+        if (isVideoUploading) {
+            loggerUI.trace("Uploading videos: displaying loading icon.");
+            return (
+                <View style={styles.videoUploadingContainer}>
+                    <ActivityIndicator size="large" color="white" />
+                </View>
+            );
+        }
 
-    // All videos state.
-    const initialVideoState: IVideo[] = [];
-    const [videos, setVideos] = useState(initialVideoState);
+        loggerUI.trace("Ready to upload videos: displaying video upload UI.");
+        return (
+            <View style={styles.videoUploadContainer}>
+                <Text style={styles.infoText}>Choose an MP4 video file of size up to 100MB.</Text>
+                <TouchableOpacity style={styles.button} onPress={uploadVideo}>
+                    <Text style={styles.buttonText}>{i18n.t("itrex.toUploadVideo")}</Text>
+                </TouchableOpacity>
+            </View>
+        );
+    };
 
-    // Vertical slide animation for FlatList.
-    const translateY = new Animated.Value(100);
-    Animated.timing(translateY, { toValue: 1, duration: 500, useNativeDriver: false }).start();
+    // Render UI for video list according to un-/available video data.
+    const renderVideoList = () => {
+        if (isVideoListLoading) {
+            loggerUI.trace("Receiving videos: displaying loading icon.");
+            return (
+                <View style={styles.videoListDownloadingContainer}>
+                    <ActivityIndicator size="large" color="white" />
+                </View>
+            );
+        }
+
+        if (videos.length < 1) {
+            loggerUI.trace("No video data received: displaying info box.");
+            return (
+                <View style={styles.videoListContainer}>
+                    {renderRefreshButton()}
+
+                    <View style={styles.infoTextBox}>
+                        <Text style={styles.infoText}>{i18n.t("itrex.noVideosAvailable")}</Text>
+                    </View>
+                </View>
+            );
+        }
+
+        loggerUI.trace("Video data received: displaying video list.");
+        return (
+            <View style={styles.videoListContainer}>
+                {renderRefreshButton()}
+
+                <FlatList
+                    style={styles.videoList}
+                    showsVerticalScrollIndicator={false}
+                    data={videos}
+                    renderItem={renderListItem}
+                    keyExtractor={(item, index) => index.toString()}
+                />
+            </View>
+        );
+    };
+
+    // Button to refresh video list.
+    const renderRefreshButton = () => (
+        <TouchableOpacity style={styles.refreshButton} onPress={() => getAllVideos(course.id)}>
+            <MaterialCommunityIcons name="refresh" size={32} color="white" />
+        </TouchableOpacity>
+    );
 
     // Creation of each item of video list.
-    const listItem = ({ item }: { item: IVideo }) => (
+    const renderListItem = ({ item }: { item: IVideo }) => (
         <TouchableOpacity
             activeOpacity={0.3}
             onPress={() => {
-                resetStates();
+                resetAllStates();
                 navigation.navigate("VIDEO", { video: item });
             }}>
             <ListItem
                 containerStyle={{
                     marginBottom: 5,
-                    borderRadius: 2,
                     backgroundColor: dark.theme.darkBlue2,
                     borderColor: dark.theme.darkBlue4,
                     borderWidth: 2,
+                    borderRadius: 2,
                 }}>
                 <MaterialCommunityIcons name="video-vintage" size={28} color="white" />
 
@@ -94,84 +180,87 @@ export const VideoPoolComponent: React.FC = () => {
         </TouchableOpacity>
     );
 
-    // Button to access video upload.
-    const uploadButton = () => (
-        <TouchableOpacity
-            style={styles.button}
-            onPress={() => {
-                resetStates();
-                navigation.navigate(NavigationRoutes.ROUTE_VIDEO_UPLOAD);
-            }}>
-            <Text style={styles.buttonText}>{i18n.t("itrex.toUploadVideo")}</Text>
-        </TouchableOpacity>
-    );
-
-    // Button to refresh video list.
-    const refreshButton = () => (
-        <TouchableOpacity style={styles.refreshButton} onPress={() => getAllVideos(course.id)}>
-            <MaterialCommunityIcons name="refresh" size={32} color="white" />
-        </TouchableOpacity>
-    );
-
-    // Render UI according to un-/available videos data.
-    const renderUi = () => {
-        // Display loading icon if getAllVideos() request is still processing.
-        if (isLoading) {
-            loggerService.trace("Displaying loading icon.");
-            return (
-                <View style={styles.containerCentered}>
-                    <ActivityIndicator size="large" color="white" />
-                </View>
-            );
-        }
-
-        // Display info box if there are no videos.
-        if (videos.length < 1) {
-            loggerService.trace("Displaying info box.");
-            return (
-                <View style={styles.containerTop}>
-                    {uploadButton()}
-                    {refreshButton()}
-
-                    <View style={styles.infoTextBox}>
-                        <Text style={styles.infoText}>{i18n.t("itrex.noVideosAvailable")}</Text>
-                    </View>
-                </View>
-            );
-        }
-
-        loggerService.trace("Displaying video list.");
-        return (
-            <View style={styles.containerTop}>
-                {uploadButton()}
-                {refreshButton()}
-
-                <Animated.View style={{ transform: [{ translateY }], flex: 1, maxWidth: "90%" }}>
-                    <FlatList
-                        style={styles.list}
-                        showsVerticalScrollIndicator={false}
-                        data={videos}
-                        renderItem={listItem}
-                        keyExtractor={(item, index) => index.toString()}
-                    />
-                </Animated.View>
-            </View>
-        );
-    };
-
     return (
-        <ImageBackground source={require("../constants/images/Background2.png")} style={styles.image}>
+        <ImageBackground source={require("../constants/images/Background2.png")} style={styles.imageContainer}>
             <Text style={styles.header}>{i18n.t("itrex.videoPool")}</Text>
-            {renderUi()}
+            {renderVideoUpload()}
+            {renderVideoList()}
         </ImageBackground>
     );
 
-    /**
-     * Method gets all videos belonging to specified course ID.
-     *
-     * @param courseId ID of the course to which the videos belong.
-     */
+    async function uploadVideo() {
+        // resetAllStates();
+        // navigation.navigate(NavigationRoutes.ROUTE_VIDEO_UPLOAD);
+
+        const pickedVideo: { uri: string; name: string } = await chooseFilePicker();
+        await initVideoUpload(pickedVideo);
+        getAllVideos(course.id);
+    }
+
+    async function chooseFilePicker() {
+        if (Platform.OS !== "ios") {
+            return await pickDocument();
+        } else {
+            return await pickImage();
+        }
+    }
+
+    // Expo document picker that only allows picking of video files in mp4 format.
+    async function pickDocument(): Promise<{ uri: string; name: string }> {
+        const document: DocumentResult = await getDocumentAsync({
+            type: "video/mp4",
+        });
+
+        if (document.type === "cancel") {
+            return { uri: "", name: "" };
+        }
+
+        return { uri: document.uri, name: document.name };
+    }
+
+    // Expo image picker that only allows picking of video files.
+    async function pickImage(): Promise<{ uri: string; name: string }> {
+        const video: ImagePickerResult = await launchImageLibraryAsync({
+            mediaTypes: MediaTypeOptions.Videos,
+            allowsEditing: true,
+        });
+
+        if (video.cancelled === true) {
+            return { uri: "", name: "" };
+        }
+
+        return { uri: video.uri, name: "Unnamed video file" };
+    }
+
+    async function initVideoUpload(pickedVideo: { uri: string; name: string }): Promise<void> {
+        if (pickedVideo.uri === "" || course.id === undefined) {
+            return;
+        }
+        setVideoUploading(true);
+
+        const video: FormData = await buildVideoAsFormData(pickedVideo.uri, pickedVideo.name, course.id);
+        const postRequest: RequestInit = RequestFactory.createPostRequestWithFormData(video);
+        const response: IVideo = await endpointsVideo.uploadVideo(postRequest);
+        console.log(response);
+
+        setVideoUploading(false);
+        createAlert(i18n.t("itrex.uploadVideoSuccessMsg"));
+    }
+
+    // Build a FormData object from the video uri.
+    async function buildVideoAsFormData(videoUri: string, videoName: string, courseId: string): Promise<FormData> {
+        const response: Response = await fetch(videoUri);
+        const fileBlob: Blob = await response.blob();
+        const formData: FormData = new FormData();
+        formData.append(VideoFormDataParams.PARAM_VIDEO_FILE, fileBlob, videoName);
+        formData.append(VideoFormDataParams.PARAM_COURSE_ID, courseId);
+        return formData;
+    }
+
     async function getAllVideos(courseId?: string): Promise<void> {
+        setVideoListLoading(true);
+        setVideos(initialVideoState);
+
         const request: RequestInit = RequestFactory.createGetRequest();
         const response: Promise<IVideo[]> = endpointsVideo.getAllVideos(request, courseId);
 
@@ -185,16 +274,9 @@ export const VideoPoolComponent: React.FC = () => {
                 loggerService.error("An error has occured while getting videos.", error);
             })
             .finally(() => {
-                setLoading(false);
+                setVideoListLoading(false);
             });
     }
-
-    // function calculateVideoDuration(videoDuration?: number): string {
-    //     if (videoDuration == undefined) {
-    //         return "";
-    //     }
-    //     return new Date(videoDuration / 100).toISOString().substr(11, 8);
-    // }
 
     async function deleteVideo(videoId?: string): Promise<void> {
         if (videoId === undefined) {
@@ -208,41 +290,42 @@ export const VideoPoolComponent: React.FC = () => {
         });
     }
 
-    function resetStates(): void {
-        setLoading(true);
-        setVideos([]);
+    function resetAllStates(): void {
+        setVideoUploading(false);
+        setVideoListLoading(true);
+        setVideos(initialVideoState);
     }
 };
 
 const styles = StyleSheet.create({
-    containerCentered: {
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
-    },
-    containerTop: {
-        flex: 1,
-        alignItems: "center",
-    },
-    image: {
+    imageContainer: {
         flex: 1,
         resizeMode: "stretch",
-        justifyContent: "center",
+        alignItems: "center",
     },
     header: {
-        fontSize: 50,
-        color: dark.theme.pink,
         textAlign: "center",
+        color: dark.theme.pink,
+        fontSize: 50,
     },
-    infoTextBox: {
-        width: "50%",
-        height: "50%",
+    videoUploadingContainer: {
+        width: "95%",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 5,
         backgroundColor: dark.theme.darkBlue2,
         borderColor: dark.theme.darkBlue4,
         borderWidth: 2,
-        textAlign: "center",
-        justifyContent: "center",
-        marginTop: 50,
+        borderRadius: 2,
+    },
+    videoUploadContainer: {
+        width: "95%",
+        alignItems: "center",
+        padding: 5,
+        backgroundColor: dark.theme.darkBlue2,
+        borderColor: dark.theme.darkBlue4,
+        borderWidth: 2,
+        borderRadius: 2,
     },
     infoText: {
         color: "white",
@@ -250,25 +333,46 @@ const styles = StyleSheet.create({
         margin: 10,
     },
     button: {
-        backgroundColor: dark.theme.darkBlue2,
-        borderColor: dark.theme.pink,
-        borderWidth: 1,
+        alignItems: "center",
+        justifyContent: "center",
         margin: 5,
+        backgroundColor: dark.theme.darkBlue4,
+        borderRadius: 2,
+    },
+    buttonText: {
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 10,
+        color: "white",
+        fontSize: 20,
+    },
+    videoListDownloadingContainer: {
+        flex: 1,
         alignItems: "center",
         justifyContent: "center",
     },
-    buttonText: {
-        color: "white",
-        fontSize: 20,
-        padding: 10,
+    videoListContainer: {
+        flex: 1,
+        maxWidth: "100%",
         alignItems: "center",
-        justifyContent: "center",
     },
     refreshButton: {
         padding: 20,
     },
-    list: {
-        flex: 1,
+    infoTextBox: {
+        maxWidth: "95%",
+        textAlign: "center",
+        justifyContent: "center",
+        marginTop: 50,
+        padding: 50,
+        backgroundColor: dark.theme.darkBlue2,
+        borderColor: dark.theme.darkBlue4,
+        borderWidth: 2,
+        borderRadius: 2,
+    },
+    videoList: {
+        maxWidth: "95%",
+        marginBottom: 20,
     },
     listItemTitle: {
         color: "white",
