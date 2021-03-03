@@ -4,7 +4,6 @@ import {
     Animated,
     FlatList,
     ImageBackground,
-    Platform,
     StyleSheet,
     Text,
     TouchableOpacity,
@@ -23,16 +22,10 @@ import { dark } from "../constants/themes/dark";
 import { ListItem } from "react-native-elements";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { calculateVideoSize } from "../services/calculateVideoSize";
-import { DocumentResult, getDocumentAsync } from "expo-document-picker";
-import {
-    ImagePickerResult,
-    launchImageLibraryAsync,
-    MediaLibraryPermissionResponse,
-    MediaTypeOptions,
-    requestMediaLibraryPermissionsAsync,
-} from "expo-image-picker";
 import { createAlert } from "../helperScripts/createAlert";
-import { VideoFormDataParams } from "../constants/VideoFormDataParams";
+import { FilePickerService } from "../services/FilePickerService";
+import { IPickedFile } from "../types/IPickedFile";
+import { buildVideoAsFormData } from "../services/VideoFormDataService";
 
 const endpointsVideo = new EndpointsVideo();
 const loggerService = loggerFactory.getLogger("service.VideoPoolComponent");
@@ -62,18 +55,6 @@ export const VideoPoolComponent: React.FC = () => {
     useFocusEffect(
         React.useCallback(() => {
             loggerService.trace("EXECUTING THIS ONLY ONCE ON SCREEN FOCUS!");
-            if (Platform.OS === "ios") {
-                loggerService.trace("Asking for iOS camera permission.");
-                const response: Promise<MediaLibraryPermissionResponse> = requestMediaLibraryPermissionsAsync();
-                response.then(() => {
-                    if (status !== "granted") {
-                        loggerService.trace("iOS camera permission denied.");
-                        alert(i18n.t("itrex.imagePickerPermAlert"));
-                    }
-                    loggerService.trace("iOS camera permission granted.");
-                });
-            }
-
             loggerService.trace("Getting all videos of course: " + course.id);
             getAllVideos(course.id);
         }, [course])
@@ -195,50 +176,15 @@ export const VideoPoolComponent: React.FC = () => {
     );
 
     async function uploadVideo() {
-        // resetAllStates();
-        // navigation.navigate(NavigationRoutes.ROUTE_VIDEO_UPLOAD);
+        const filePicker: FilePickerService = new FilePickerService();
+        const pickedVideo: IPickedFile = await filePicker.pickFile();
 
-        const pickedVideo: { uri: string; name: string } = await chooseFilePicker();
         await initVideoUpload(pickedVideo);
+
         getAllVideos(course.id);
     }
 
-    async function chooseFilePicker() {
-        if (Platform.OS !== "ios") {
-            return await pickDocument();
-        } else {
-            return await pickImage();
-        }
-    }
-
-    // Expo document picker that only allows picking of video files in mp4 format.
-    async function pickDocument(): Promise<{ uri: string; name: string }> {
-        const document: DocumentResult = await getDocumentAsync({
-            type: "video/mp4",
-        });
-
-        if (document.type === "cancel") {
-            return { uri: "", name: "" };
-        }
-
-        return { uri: document.uri, name: document.name };
-    }
-
-    // Expo image picker that only allows picking of video files.
-    async function pickImage(): Promise<{ uri: string; name: string }> {
-        const video: ImagePickerResult = await launchImageLibraryAsync({
-            mediaTypes: MediaTypeOptions.Videos,
-            allowsEditing: true,
-        });
-
-        if (video.cancelled === true) {
-            return { uri: "", name: "" };
-        }
-
-        return { uri: video.uri, name: "Unnamed video file" };
-    }
-
-    async function initVideoUpload(pickedVideo: { uri: string; name: string }): Promise<void> {
+    async function initVideoUpload(pickedVideo: IPickedFile): Promise<void> {
         if (pickedVideo.uri === "" || course.id === undefined) {
             return;
         }
@@ -251,16 +197,6 @@ export const VideoPoolComponent: React.FC = () => {
 
         setVideoUploading(false);
         createAlert(i18n.t("itrex.uploadVideoSuccessMsg"));
-    }
-
-    // Build a FormData object from the video uri.
-    async function buildVideoAsFormData(videoUri: string, videoName: string, courseId: string): Promise<FormData> {
-        const response: Response = await fetch(videoUri);
-        const fileBlob: Blob = await response.blob();
-        const formData: FormData = new FormData();
-        formData.append(VideoFormDataParams.PARAM_VIDEO_FILE, fileBlob, videoName);
-        formData.append(VideoFormDataParams.PARAM_COURSE_ID, courseId);
-        return formData;
     }
 
     async function getAllVideos(courseId?: string): Promise<void> {
