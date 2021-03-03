@@ -32,7 +32,7 @@ export const de = {
         toCourse: "Kurserstellung",
         toUploadVideo: "Video hochladen",
         uploadVideoHere: "Video hier einfügen",
-        uploadVideoSuccessMsg: "Video wurde erfolgreich hochgeladen!",
+        videoUploadDone: "Video-Upload beendet.",
         noVideosAvailable: "Es gibt gegenwärtig keine Videos in dem Video-Pool von diesem Kurs.",
         toUploadDocument: "Dokumenten hochladen",
         uploadDocumentHere: "Dokument hier einfügen:",

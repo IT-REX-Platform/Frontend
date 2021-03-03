@@ -38,10 +38,14 @@ export class ResponseParser {
                     return response.json();
                 })
                 .then((courses: ICourse[]) => {
-                    courses.forEach((course: ICourse) => {
+                    for (const course of courses) {
                         course.startDate = course.startDate ? new Date(course.startDate) : undefined;
                         course.endDate = course.endDate ? new Date(course.endDate) : undefined;
-                    });
+                    }
+                    // courses.forEach((course: ICourse) => {
+                    //     course.startDate = course.startDate ? new Date(course.startDate) : undefined;
+                    //     course.endDate = course.endDate ? new Date(course.endDate) : undefined;
+                    // });
                     resolve(courses);
                 })
                 .catch((error) => {
@@ -82,10 +86,14 @@ export class ResponseParser {
                     return response.json();
                 })
                 .then((videos: IVideo[]) => {
-                    videos.forEach((video: IVideo) => {
+                    for (const video of videos) {
                         video.startDate = video.startDate ? new Date(video.startDate) : undefined;
                         video.endDate = video.endDate ? new Date(video.endDate) : undefined;
-                    });
+                    }
+                    // videos.forEach((video: IVideo) => {
+                    //     video.startDate = video.startDate ? new Date(video.startDate) : undefined;
+                    //     video.endDate = video.endDate ? new Date(video.endDate) : undefined;
+                    // });
                     resolve(videos);
                 })
                 .catch((error) => {
@@ -108,7 +116,7 @@ export class ResponseParser {
                 createAlert(i18n.t("itrex.internalServerError"));
                 throw new Error("Internal server error: " + response.status);
             case 504:
-                createAlert(i18n.t("itrex.timeoutRequest"));
+                // createAlert(i18n.t("itrex.timeoutRequest"));
                 throw new Error("Request timeout error: " + response.status);
             default:
                 createAlert(i18n.t("itrex.errorOccured"));

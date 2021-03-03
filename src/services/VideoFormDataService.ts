@@ -1,17 +1,14 @@
 import { VideoFormDataParams } from "../constants/VideoFormDataParams";
 
 /**
- * Builds a FormData object from video URI.
+ * Builds a FormData object.
  *
- * @param videoUri Video URI.
- * @param videoName Video name.
+ * @param videoFile Video file.
  * @param courseId Course ID.
  */
-export async function buildVideoAsFormData(videoUri: string, videoName: string, courseId: string): Promise<FormData> {
-    const response: Response = await fetch(videoUri);
-    const fileBlob: Blob = await response.blob();
+export async function buildVideoAsFormData(videoFile: File, courseId: string): Promise<FormData> {
     const formData: FormData = new FormData();
-    formData.append(VideoFormDataParams.PARAM_VIDEO_FILE, fileBlob, videoName);
+    formData.append(VideoFormDataParams.PARAM_VIDEO_FILE, videoFile, videoFile.name);
     formData.append(VideoFormDataParams.PARAM_COURSE_ID, courseId);
     return formData;
 }

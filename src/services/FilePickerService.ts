@@ -1,15 +1,14 @@
 import { Platform } from "react-native";
 import {
-    ImagePickerResult,
     launchImageLibraryAsync,
     MediaLibraryPermissionResponse,
     MediaTypeOptions,
     requestMediaLibraryPermissionsAsync,
 } from "expo-image-picker";
 import { DocumentResult, getDocumentAsync } from "expo-document-picker";
-import { IPickedFile } from "../types/IPickedFile";
 import i18n from "../locales";
 import { loggerFactory } from "../../logger/LoggerConfig";
+import { ImageInfo, ImagePickerMultipleResult } from "expo-image-picker/build/ImagePicker.types";
 
 const loggerService = loggerFactory.getLogger("service.FilePickerService");
 
@@ -39,7 +38,7 @@ export class FilePickerService {
     /**
      * Open a file picker, so the user can choose a file.
      */
-    public async pickFile(): Promise<IPickedFile> {
+    public async pickFile(): Promise<File[]> {
         if (Platform.OS !== "ios") {
             return await this._pickDocument();
         } else {
@@ -48,33 +47,53 @@ export class FilePickerService {
     }
 
     /**
-     * Expo image picker that only allows picking of video files.
+     * Expo document picker that only allows picking of video files in mp4 format.
      */
-    private async _pickImage(): Promise<IPickedFile> {
-        const video: ImagePickerResult = await launchImageLibraryAsync({
-            mediaTypes: MediaTypeOptions.Videos,
-            allowsEditing: true,
+    private async _pickDocument(): Promise<File[]> {
+        const videos: DocumentResult = await getDocumentAsync({
+            type: "video/mp4",
+            multiple: true,
         });
 
-        if (video.cancelled === true) {
-            return { uri: "", name: "" };
+        if (videos.type === "cancel") {
+            return [new File([], "")];
         }
 
-        return { uri: video.uri, name: "Unnamed video file" };
+        if (videos.output == undefined) {
+            return [new File([], "")];
+        }
+
+        return Array.from(videos.output);
     }
 
     /**
-     * Expo document picker that only allows picking of video files in mp4 format.
+     * Expo image picker that only allows picking of video files.
      */
-    private async _pickDocument(): Promise<IPickedFile> {
-        const document: DocumentResult = await getDocumentAsync({
-            type: "video/mp4",
+    private async _pickImage(): Promise<File[]> {
+        const videos: ImagePickerMultipleResult = await launchImageLibraryAsync({
+            mediaTypes: MediaTypeOptions.Videos,
+            allowsEditing: true,
+            allowsMultipleSelection: true,
         });
 
-        if (document.type === "cancel") {
-            return { uri: "", name: "" };
+        if (videos.cancelled === true) {
+            return [new File([], "")];
         }
 
-        return { uri: document.uri, name: document.name };
+        const selectedFiles: File[] = [];
+        videos.selected.forEach((video: ImageInfo) => {
+            if (video.type !== "video") {
+                return;
+            }
+
+            if (video.base64 == undefined) {
+                return;
+            }
+
+            const file: File = new File([video.base64], "unnamed_file");
+            selectedFiles.push(file);
+        });
+
+        return selectedFiles;
     }
 }

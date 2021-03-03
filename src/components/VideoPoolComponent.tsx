@@ -24,7 +24,6 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { calculateVideoSize } from "../services/calculateVideoSize";
 import { createAlert } from "../helperScripts/createAlert";
 import { FilePickerService } from "../services/FilePickerService";
-import { IPickedFile } from "../types/IPickedFile";
 import { buildVideoAsFormData } from "../services/VideoFormDataService";
 
 const endpointsVideo = new EndpointsVideo();
@@ -56,7 +55,7 @@ export const VideoPoolComponent: React.FC = () => {
         React.useCallback(() => {
             loggerService.trace("EXECUTING THIS ONLY ONCE ON SCREEN FOCUS!");
             loggerService.trace("Getting all videos of course: " + course.id);
-            getAllVideos(course.id);
+            _getAllVideos(course.id);
         }, [course])
     );
 
@@ -75,7 +74,7 @@ export const VideoPoolComponent: React.FC = () => {
         return (
             <View style={styles.videoUploadContainer}>
                 <Text style={styles.infoText}>{i18n.t("itrex.videoProperties")}</Text>
-                <TouchableOpacity style={styles.button} onPress={uploadVideo}>
+                <TouchableOpacity style={styles.button} onPress={_initVideoUpload}>
                     <Text style={styles.buttonText}>{i18n.t("itrex.toUploadVideo")}</Text>
                 </TouchableOpacity>
             </View>
@@ -126,7 +125,7 @@ export const VideoPoolComponent: React.FC = () => {
 
     // Button to refresh video list.
     const renderRefreshButton = () => (
-        <TouchableOpacity style={styles.refreshButton} onPress={() => getAllVideos(course.id)}>
+        <TouchableOpacity style={styles.refreshButton} onPress={() => _getAllVideos(course.id)}>
             <MaterialCommunityIcons name="refresh" size={32} color="white" />
         </TouchableOpacity>
     );
@@ -136,7 +135,7 @@ export const VideoPoolComponent: React.FC = () => {
         <TouchableOpacity
             activeOpacity={0.3}
             onPress={() => {
-                resetAllStates();
+                _resetAllStates();
                 navigation.navigate("VIDEO", { video: item });
             }}>
             <ListItem
@@ -158,7 +157,7 @@ export const VideoPoolComponent: React.FC = () => {
                     </ListItem.Subtitle>
                 </ListItem.Content>
 
-                <TouchableOpacity style={styles.deleteButton} onPress={() => deleteVideo(item.id)}>
+                <TouchableOpacity style={styles.deleteButton} onPress={() => _deleteVideo(item.id)}>
                     <MaterialCommunityIcons style={styles.deleteIcon} name="delete" size={32} color="red" />
                 </TouchableOpacity>
 
@@ -175,31 +174,53 @@ export const VideoPoolComponent: React.FC = () => {
         </ImageBackground>
     );
 
-    async function uploadVideo() {
+    async function _initVideoUpload() {
+        loggerService.trace("Initialising video picker.");
         const filePicker: FilePickerService = new FilePickerService();
-        const pickedVideo: IPickedFile = await filePicker.pickFile();
+        const pickedVideos: File[] = await filePicker.pickFile();
 
-        await initVideoUpload(pickedVideo);
-
-        getAllVideos(course.id);
+        loggerService.trace("Initialising video upload.");
+        // const response: Promise<void> = _uploadVideos(pickedVideos);
+        // response.then(() => _getAllVideos(course.id));
+        await _uploadVideos(pickedVideos);
+        _getAllVideos(course.id);
     }
 
-    async function initVideoUpload(pickedVideo: IPickedFile): Promise<void> {
-        if (pickedVideo.uri === "" || course.id === undefined) {
-            return;
-        }
+    async function _uploadVideos(selectedVideos: File[]): Promise<void> {
         setVideoUploading(true);
 
-        const video: FormData = await buildVideoAsFormData(pickedVideo.uri, pickedVideo.name, course.id);
-        const postRequest: RequestInit = RequestFactory.createPostRequestWithFormData(video);
-        const response: IVideo = await endpointsVideo.uploadVideo(postRequest);
-        console.log(response);
+        for (const selectedVideo of selectedVideos) {
+            await _uploadVideo(selectedVideo);
+        }
 
         setVideoUploading(false);
-        createAlert(i18n.t("itrex.uploadVideoSuccessMsg"));
+        createAlert(i18n.t("itrex.videoUploadDone"));
     }
 
-    async function getAllVideos(courseId?: string): Promise<void> {
+    // eslint-disable-next-line complexity
+    async function _uploadVideo(selectedVideo: File): Promise<void> {
+        if (selectedVideo == undefined || course.id == undefined) {
+            return;
+        }
+        loggerService.trace("Selected video: " + selectedVideo.name);
+
+        const videoFormData: FormData = await buildVideoAsFormData(selectedVideo, course.id);
+        const postRequest: RequestInit = RequestFactory.createPostRequestWithFormData(videoFormData);
+        const response: IVideo = await endpointsVideo.uploadVideo(postRequest);
+
+        if (response.id == undefined) {
+            console.warn("Upload failed of video: " + selectedVideo.name);
+            return;
+        }
+        console.warn("Upload finished of video: " + selectedVideo.name);
+        console.log(response);
+    }
+
+    async function _getAllVideos(courseId?: string): Promise<void> {
+        if (courseId == undefined) {
+            return;
+        }
+
         setVideoListLoading(true);
         setVideos(initialVideoState);
 
@@ -220,7 +241,7 @@ export const VideoPoolComponent: React.FC = () => {
             });
     }
 
-    async function deleteVideo(videoId?: string): Promise<void> {
+    async function _deleteVideo(videoId?: string): Promise<void> {
         if (videoId === undefined) {
             return;
         }
@@ -228,11 +249,11 @@ export const VideoPoolComponent: React.FC = () => {
         const deleteRequest: RequestInit = RequestFactory.createDeleteRequest();
         const response: Promise<Response> = endpointsVideo.deleteVideo(deleteRequest, videoId);
         response.then(() => {
-            getAllVideos(course.id);
+            _getAllVideos(course.id);
         });
     }
 
-    function resetAllStates(): void {
+    function _resetAllStates(): void {
         setVideoUploading(false);
         setVideoListLoading(true);
         setVideos(initialVideoState);
@@ -270,9 +291,11 @@ const styles = StyleSheet.create({
         borderRadius: 2,
     },
     infoText: {
-        color: "white",
-        fontSize: 20,
+        maxWidth: "90%",
+        textAlign: "center",
         margin: 10,
+        fontSize: 20,
+        color: "white",
     },
     button: {
         margin: 5,
