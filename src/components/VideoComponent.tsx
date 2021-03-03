@@ -11,7 +11,7 @@ import { EndpointsVideo } from "../api/endpoints/EndpointsVideo";
 import { CompositeNavigationProp, RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { LocalizationContext } from "./Context";
 import { CourseStackParamList, RootDrawerParamList } from "../constants/navigators/NavigationRoutes";
-import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
+import { StackNavigationProp } from "@react-navigation/stack";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { dark } from "../constants/themes/dark";
 import { calculateVideoSize } from "../services/calculateVideoSize";
@@ -25,7 +25,6 @@ type ScreenCourseTabsNavigationProp = CompositeNavigationProp<
 >;
 
 type ScreenCourseTabsRouteProp = RouteProp<CourseStackParamList, "VIDEO">;
-type ScreenCourseTabsProps = StackScreenProps<CourseStackParamList, "VIDEO">;
 
 export const VideoComponent: React.FC = () => {
     loggerService.trace("Started VideoComponent.");
