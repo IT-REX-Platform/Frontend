@@ -172,7 +172,7 @@ export const VideoPoolComponent: React.FC = () => {
                     <ListItem.Title style={styles.listItemTitle} numberOfLines={1} lineBreakMode="tail">
                         {item.title}
                     </ListItem.Title>
-                    <ListItem.Subtitle style={styles.listItemSubtitle}>
+                    <ListItem.Subtitle style={styles.listItemSubtitle} numberOfLines={1} lineBreakMode="tail">
                         {calculateVideoSize(item.length)}
                     </ListItem.Subtitle>
                 </ListItem.Content>

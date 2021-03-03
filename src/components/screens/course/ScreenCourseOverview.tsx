@@ -136,7 +136,6 @@ export const ScreenCourseOverview: React.FC = () => {
     function patchCourse(courses: ICourse) {
         loggerService.trace("Parsing ID string to ID number");
 
-        // ATTENTION: fields without values will be overwritten with null in DB. @s.pastuchov 27.01.21
         const course: ICourse = {
             id: courses.id,
             publishState: CoursePublishState.PUBLISHED,
