@@ -8,7 +8,6 @@ import { LocalizationContext } from "../Context";
 
 interface ButtonProps {
     title: string;
-    type?: string;
     size?: string;
     color?: string;
     fontsize?: string;
@@ -16,34 +15,25 @@ interface ButtonProps {
     onPress?: any;
 }
 
-export const InteractionButton: React.FC<ButtonProps> = (props) => {
+export const TextButton: React.FC<ButtonProps> = (props) => {
     const { locale, setLocale } = React.useContext(LocalizationContext);
 
     const ButtonSize =
         props.size === "small" ? styles.smallButton : props.size === "large" ? styles.largeButton : styles.mediumButton;
 
-    const ButtonType =
-        props.type === "red"
-            ? styles.warningButton
-            : props.type === "green"
-            ? styles.approveButton
-            : styles.normalButton;
-
-    const TextType =
-        props.type === "red" ? styles.warningText : props.type === "green" ? styles.approveText : styles.normalText;
-
     const FontSize =
-        props.fontsize === "small"
-            ? styles.smallText
+        props.fontsize === "medium"
+            ? styles.mediumText
             : props.fontsize === "large"
             ? styles.largeText
-            : styles.mediumText;
+            : styles.smallText;
 
-    const ButtonColor = props.color === "dark" ? styles.darkBlue : styles.lightBlue;
+    const ButtonColor =
+        props.color === "dark" ? styles.darkBlue : props.color === "pink" ? styles.red : styles.lightBlue;
 
     return (
-        <TouchableOpacity style={[styles.button, ButtonSize, ButtonType, ButtonColor]} onPress={props.onPress}>
-            <Text style={[TextType, FontSize]}>{props.title}</Text>
+        <TouchableOpacity style={[styles.button, ButtonSize, ButtonColor]} onPress={props.onPress}>
+            <Text style={[FontSize]}>{props.title}</Text>
         </TouchableOpacity>
     );
 };
@@ -57,52 +47,36 @@ const styles = StyleSheet.create({
         padding: 20,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: dark.theme.darkBlue3,
         shadowRadius: 10,
-        shadowColor: dark.theme.darkBlue3,
         shadowOpacity: 0.5,
-        borderWidth: 3,
+        borderWidth: 2,
+        borderColor: "#FFFFFF",
     },
 
     darkBlue: {
-        backgroundColor: dark.theme.darkBlue3,
-        shadowRadius: 10,
-        shadowColor: dark.theme.darkBlue3,
-        shadowOpacity: 0.5,
+        backgroundColor: dark.Opacity.darkBlue1,
+        shadowColor: dark.Opacity.darkBlue1,
     },
     lightBlue: {
         backgroundColor: dark.Opacity.blueGreen,
-        shadowRadius: 10,
         shadowColor: dark.Opacity.blueGreen,
-        shadowOpacity: 0.5,
+    },
+    red: {
+        backgroundColor: dark.Opacity.pink,
+        shadowColor: dark.Opacity.pink,
     },
     smallText: {
         fontSize: 15,
+        color: "#FFFFFF",
     },
     mediumText: {
         fontSize: 20,
+        color: "#FFFFFF",
     },
     largeText: {
         fontSize: 26,
-        marginBottom: 5,
-    },
-    normalButton: {
-        borderColor: "#FFFFFF",
-    },
-    approveButton: {
-        borderColor: "#32CD32",
-    },
-    warningButton: {
-        borderColor: "#FF0000",
-    },
-    normalText: {
         color: "#FFFFFF",
-    },
-    approveText: {
-        color: "#32CD32",
-    },
-    warningText: {
-        color: "#FF0000",
+        marginBottom: 5,
     },
     smallButton: {
         minWidth: 200,

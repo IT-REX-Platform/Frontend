@@ -8,7 +8,7 @@ import * as AuthSession from "expo-auth-session";
 import { itRexVars } from "../../constants/Constants";
 import i18n from "../../locales";
 import { discovery } from "../../services/AuthenticationService";
-import { InteractionButton } from "../UIElements/InteractionButton";
+import { TextButton } from "../UIElements/TextButton";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -68,26 +68,29 @@ export const ScreenLogin: React.FC = () => {
             <View style={styles.container}>
                 <View style={styles.login}>
                     <Text style={styles.welcome}>{i18n.t("itrex.welcome")}</Text>
-                    <InteractionButton
+                    <TextButton
                         title={i18n.t("itrex.login")}
                         size={"large"}
                         fontsize="large"
                         color="dark"
                         onPress={() => {
                             promptAuthentication();
-                        }}></InteractionButton>
+                        }}
+                    />
                     {locale == "en" || locale == "en-GB" || locale == "en-US" ? (
-                        <InteractionButton
+                        <TextButton
                             title={i18n.t("itrex.switchLangDE")}
                             size="small"
                             color="light"
-                            onPress={() => setLocale("de-DE")}></InteractionButton>
+                            onPress={() => setLocale("de-DE")}
+                        />
                     ) : (
-                        <InteractionButton
+                        <TextButton
                             title={i18n.t("itrex.switchLangEN")}
                             size="small"
                             color="light"
-                            onPress={() => setLocale("en")}></InteractionButton>
+                            onPress={() => setLocale("en")}
+                        />
                     )}
                 </View>
                 <Image source={require("../../constants/images/ITRex-Login.png")} style={[styles.itrex]}></Image>

@@ -5,6 +5,7 @@ import {
     ActivityIndicator,
     ImageBackground,
     Platform,
+    Pressable,
     StyleSheet,
     Text,
     TextInput,
@@ -28,6 +29,7 @@ import { loggerFactory } from "../../logger/LoggerConfig";
 import { createVideoUrl } from "../services/createVideoUrl";
 import { ICourse } from "../types/ICourse";
 import { dark } from "../constants/themes/dark";
+import { TextButton } from "./UIElements/TextButton";
 
 const loggerService = loggerFactory.getLogger("service.UploadVideoComponent");
 const endpointsVideo = new EndpointsVideo();
@@ -172,13 +174,19 @@ export const VideoUploadComponent: React.FC = () => {
                     testID="videoNameInput"
                 />
 
-                <TouchableOpacity style={styles.button} onPress={pickVideo}>
-                    <Text style={styles.buttonText}>{i18n.t("itrex.browseVideos")}</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity style={styles.button} onPress={uploadVideo}>
-                    <Text style={styles.buttonText}>{i18n.t("itrex.toUploadVideo")}</Text>
-                </TouchableOpacity>
+                <View style={{ flexDirection: "row" }}>
+                    <Pressable style={styles.styledButton}>
+                        <TextButton title={i18n.t("itrex.browseVideos")} size={"small"} onPress={pickVideo} />
+                    </Pressable>
+                    <Pressable style={styles.styledButton}>
+                        <TextButton
+                            title={i18n.t("itrex.toUploadVideo")}
+                            size="small"
+                            color="pink"
+                            onPress={uploadVideo}
+                        />
+                    </Pressable>
+                </View>
 
                 <Video
                     style={styles.video}
@@ -222,20 +230,8 @@ const styles = StyleSheet.create({
         textAlign: "center",
         margin: 10,
     },
-    button: {
-        backgroundColor: dark.theme.darkBlue2,
-        borderColor: dark.theme.pink,
-        borderWidth: 1,
+    styledButton: {
         margin: 5,
-        alignItems: "center",
-        justifyContent: "center",
-    },
-    buttonText: {
-        color: "white",
-        fontSize: 20,
-        padding: 10,
-        alignItems: "center",
-        justifyContent: "center",
     },
     video: {
         maxWidth: "90%",

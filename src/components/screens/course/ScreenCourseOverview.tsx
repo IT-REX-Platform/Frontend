@@ -20,6 +20,7 @@ import { EndpointsCourse } from "../../../api/endpoints/EndpointsCourse";
 import { loggerFactory } from "../../../../logger/LoggerConfig";
 import AuthenticationService from "../../../services/AuthenticationService";
 import { ITREXRoles } from "../../../constants/ITREXRoles";
+import { TextButton } from "../../UIElements/TextButton";
 
 export type ScreenCourseOverviewNavigationProp = CompositeNavigationProp<
     MaterialTopTabNavigationProp<CourseTabParamList, "OVERVIEW">,
@@ -68,9 +69,11 @@ export const ScreenCourseOverview: React.FC = () => {
         ) {
             return (
                 <View style={[{ width: "20%", marginTop: 15 }]}>
-                    <Button
-                        color={dark.Opacity.blueGreen}
+                    <TextButton
                         title={i18n.t("itrex.videoPool")}
+                        color="light"
+                        size="small"
+                        fontsize="small"
                         onPress={() => goToVideoPool()}
                     />
                 </View>
@@ -87,16 +90,20 @@ export const ScreenCourseOverview: React.FC = () => {
             return (
                 <View style={{ flexDirection: "row" }}>
                     <Pressable style={styles.styledButton}>
-                        <Button
-                            color={dark.Opacity.blueGreen}
+                        <TextButton
                             title={i18n.t("itrex.publishCourse")}
-                            onPress={() => patchCourse(course)}></Button>
+                            color="light"
+                            size="small"
+                            onPress={() => patchCourse(course)}
+                        />
                     </Pressable>
                     <Pressable style={styles.styledButton}>
-                        <Button
-                            color={dark.Opacity.pink}
+                        <TextButton
                             title={i18n.t("itrex.deleteCourse")}
-                            onPress={() => deleteCourse(course)}></Button>
+                            color="pink"
+                            size="small"
+                            onPress={() => deleteCourse(course)}
+                        />
                     </Pressable>
                 </View>
             );

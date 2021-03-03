@@ -23,6 +23,7 @@ import { dark } from "../constants/themes/dark";
 import { ListItem } from "react-native-elements";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { calculateVideoSize } from "../services/calculateVideoSize";
+import { TextButton } from "./UIElements/TextButton";
 
 const endpointsVideo = new EndpointsVideo();
 const loggerService = loggerFactory.getLogger("service.VideoPoolComponent");
@@ -96,14 +97,13 @@ export const VideoPoolComponent: React.FC = () => {
 
     // Button to access video upload.
     const uploadButton = () => (
-        <TouchableOpacity
-            style={styles.button}
+        <TextButton
+            title={i18n.t("itrex.toUploadVideo")}
             onPress={() => {
                 resetStates();
                 navigation.navigate(NavigationRoutes.ROUTE_VIDEO_UPLOAD);
-            }}>
-            <Text style={styles.buttonText}>{i18n.t("itrex.toUploadVideo")}</Text>
-        </TouchableOpacity>
+            }}
+        />
     );
 
     // Button to refresh video list.
@@ -248,21 +248,6 @@ const styles = StyleSheet.create({
         color: "white",
         fontSize: 20,
         margin: 10,
-    },
-    button: {
-        backgroundColor: dark.theme.darkBlue2,
-        borderColor: dark.theme.pink,
-        borderWidth: 1,
-        margin: 5,
-        alignItems: "center",
-        justifyContent: "center",
-    },
-    buttonText: {
-        color: "white",
-        fontSize: 20,
-        padding: 10,
-        alignItems: "center",
-        justifyContent: "center",
     },
     refreshButton: {
         padding: 20,
