@@ -54,6 +54,10 @@ export const VideoPoolComponent: React.FC = () => {
     const initialVideoState: IVideo[] = [];
     const [videos, setVideos] = useState(initialVideoState);
 
+    // Vertical slide animation for FlatList.
+    const translateY = new Animated.Value(100);
+    Animated.timing(translateY, { toValue: 1, duration: 500, useNativeDriver: false }).start();
+
     // Call following function/s only once when this screen is shown.
     useFocusEffect(
         React.useCallback(() => {
@@ -126,13 +130,15 @@ export const VideoPoolComponent: React.FC = () => {
             <View style={styles.videoListContainer}>
                 {renderRefreshButton()}
 
-                <FlatList
-                    style={styles.videoList}
-                    showsVerticalScrollIndicator={false}
-                    data={videos}
-                    renderItem={renderListItem}
-                    keyExtractor={(item, index) => index.toString()}
-                />
+                <Animated.View style={{ transform: [{ translateY }], flex: 1, maxWidth: "95%" }}>
+                    <FlatList
+                        style={styles.videoList}
+                        showsVerticalScrollIndicator={false}
+                        data={videos}
+                        renderItem={renderListItem}
+                        keyExtractor={(item, index) => index.toString()}
+                    />
+                </Animated.View>
             </View>
         );
     };
@@ -301,7 +307,7 @@ const styles = StyleSheet.create({
     imageContainer: {
         flex: 1,
         resizeMode: "stretch",
-        alignItems: "center",
+        justifyContent: "center", // Prevents video list item names from being unnecessary cut.
     },
     header: {
         textAlign: "center",
@@ -310,8 +316,7 @@ const styles = StyleSheet.create({
     },
     videoUploadingContainer: {
         width: "95%",
-        alignItems: "center",
-        justifyContent: "center",
+        alignSelf: "center",
         padding: 5,
         backgroundColor: dark.theme.darkBlue2,
         borderColor: dark.theme.darkBlue4,
@@ -320,6 +325,7 @@ const styles = StyleSheet.create({
     },
     videoUploadContainer: {
         width: "95%",
+        alignSelf: "center",
         alignItems: "center",
         padding: 5,
         backgroundColor: dark.theme.darkBlue2,
@@ -333,22 +339,17 @@ const styles = StyleSheet.create({
         margin: 10,
     },
     button: {
-        alignItems: "center",
-        justifyContent: "center",
         margin: 5,
         backgroundColor: dark.theme.darkBlue4,
         borderRadius: 2,
     },
     buttonText: {
-        alignItems: "center",
-        justifyContent: "center",
         padding: 10,
-        color: "white",
         fontSize: 20,
+        color: "white",
     },
     videoListDownloadingContainer: {
         flex: 1,
-        alignItems: "center",
         justifyContent: "center",
     },
     videoListContainer: {
@@ -361,8 +362,6 @@ const styles = StyleSheet.create({
     },
     infoTextBox: {
         maxWidth: "95%",
-        textAlign: "center",
-        justifyContent: "center",
         marginTop: 50,
         padding: 50,
         backgroundColor: dark.theme.darkBlue2,
@@ -371,7 +370,6 @@ const styles = StyleSheet.create({
         borderRadius: 2,
     },
     videoList: {
-        maxWidth: "95%",
         marginBottom: 20,
     },
     listItemTitle: {
