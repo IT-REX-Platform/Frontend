@@ -15,7 +15,6 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { dark } from "../constants/themes/dark";
 import { calculateVideoSize } from "../services/calculateVideoSize";
-import { ScrollView } from "react-native-gesture-handler";
 
 const loggerService = loggerFactory.getLogger("service.VideoComponent");
 const endpointsVideo = new EndpointsVideo();
