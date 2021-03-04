@@ -30,7 +30,6 @@ export const ScreenCourse: React.FC = () => {
     const navigation = useNavigation<ScreenCourseNavigationProp>();
     const route = useRoute<ScreenCourseRouteProp>();
 
-    //const courseId: number = route.params.courseId;
     const courseId = route.params.courseId;
 
     React.useContext(LocalizationContext);
