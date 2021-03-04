@@ -5,9 +5,7 @@ import { dark } from "../../constants/themes/dark";
 import { RequestFactory } from "../../api/requests/RequestFactory";
 import { EndpointsCourse } from "../../api/endpoints/EndpointsCourse";
 import { ICourse } from "../../types/ICourse";
-
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-
 import { createStackNavigator } from "@react-navigation/stack";
 import { ScreenCourseTabs } from "./course/ScreenCourseTabs";
 import { CourseContext, LocalizationContext } from "../Context";
@@ -17,7 +15,6 @@ import { VideoPoolComponent } from "../videoPoolComponent/VideoPoolComponent";
 import { VideoComponent } from "../VideoComponent";
 import AuthenticationService from "../../services/AuthenticationService";
 import { ITREXRoles } from "../../constants/ITREXRoles";
-import i18n from "../../locales";
 
 export type ScreenCourseNavigationProp = DrawerNavigationProp<RootDrawerParamList, "ROUTE_COURSE_DETAILS">;
 export type ScreenCourseRouteProp = RouteProp<RootDrawerParamList, "ROUTE_COURSE_DETAILS">;
@@ -50,34 +47,35 @@ export const ScreenCourse: React.FC = () => {
             <CourseStack.Navigator
                 initialRouteName="INFO"
                 screenOptions={{
+                    // headerLeft: () => (
+                    //     <MaterialCommunityIcons
+                    //         style={styles.icon}
+                    //         name="menu"
+                    //         size={28}
+                    //         color="white"
+                    //         onPress={() => navigation.openDrawer()}
+                    //     />
+                    // ),
+
                     headerTitle: () => <Text style={styles.headerTitle}>{course.name}</Text>,
                     headerTitleAlign: "center",
                     headerStyle: {
                         backgroundColor: dark.theme.darkBlue1,
-                        borderBottomWidth: 3,
                         borderBottomColor: dark.theme.darkBlue2,
-                        borderLeftColor: dark.theme.darkBlue2,
+                        borderBottomWidth: 3,
                     },
                     headerTintColor: "white",
                     headerBackTitle: "Back",
+
                     headerRight: () => (
                         <MaterialCommunityIcons
+                            style={styles.icon}
                             name="home-outline"
                             size={28}
                             color="white"
-                            style={styles.icon}
                             onPress={() => navigation.navigate("ROUTE_HOME")}
                         />
                     ),
-                    // headerLeft: () => (
-                    //     <MaterialCommunityIcons
-                    //         name="menu"
-                    //         color="white"
-                    //         size={28}
-                    //         onPress={() => navigation.openDrawer()}
-                    //         style={styles.icon}
-                    //     />
-                    // ),
                 }}>
                 <CourseStack.Screen name="INFO" component={ScreenCourseTabs}></CourseStack.Screen>
 
@@ -102,28 +100,14 @@ export const ScreenCourse: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-    container: {
-        marginTop: 70,
-        textDecorationColor: dark.theme.pink,
-        fontSize: 50,
-        color: dark.theme.pink,
-        justifyContent: "center",
-        textAlign: "center",
-    },
-    image: {
-        flex: 1,
-        resizeMode: "stretch",
-    },
     icon: {
-        alignItems: "center",
-        paddingLeft: 10,
-        paddingRight: 10,
+        padding: 10,
     },
     headerTitle: {
+        fontSize: 22,
+        color: "white",
         textShadowColor: "white",
         textShadowOffset: { width: -1, height: 1 },
         textShadowRadius: 2,
-        fontSize: 22,
-        color: "white",
     },
 });
