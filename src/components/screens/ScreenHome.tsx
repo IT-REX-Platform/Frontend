@@ -235,6 +235,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "flex-start",
         flexShrink: 1,
+        zIndex: 1,
     },
     cardHeader: {
         padding: 16,
