@@ -32,9 +32,27 @@ export const ScreenHome: React.FC<ScreenHomeProps> = (props) => {
     const [allCourses, setAllCourses] = useState<ICourse[]>([]);
     const [filteredCourses, setFilteredCourses] = useState<ICourse[]>([]);
 
-    const [selectedPublishStateFilter, setPublishStateFilter] = useState<CoursePublishState | undefined>(undefined);
+    const publishStateFilterOptions = [
+        { value: CoursePublishState.PUBLISHED, label: i18n.t("itrex.published") },
+        { value: CoursePublishState.UNPUBLISHED, label: i18n.t("itrex.unpublished") },
+        { value: undefined, label: i18n.t("itrex.all") },
+    ];
+
+    const activeStateFilterOptions = [
+        { value: CourseActivityState.ACTIVE, label: i18n.t("itrex.active") },
+        // Functionality in Backend currently not available for next line
+        // { value: CourseActivityState.INACTIVE, label: i18n.t("itrex.inactive") },
+        { value: undefined, label: i18n.t("itrex.all") },
+    ];
+
+    const defaultPublishStateValue = publishStateFilterOptions[2];
+    const [selectedPublishStateFilter, setPublishStateFilter] = useState<CoursePublishState | undefined>(
+        defaultPublishStateValue.value
+    );
+
+    const defaultActiveStateValue = activeStateFilterOptions[0];
     const [selectedActiveState, setSelectedActiveState] = useState<CourseActivityState | undefined>(
-        CourseActivityState.ACTIVE
+        defaultActiveStateValue.value
     );
 
     useEffect(() => {
@@ -84,7 +102,7 @@ export const ScreenHome: React.FC<ScreenHomeProps> = (props) => {
                             <Text style={{ color: "white" }}>{i18n.t("itrex.filterPubUnpub")}</Text>
                             <Select
                                 options={publishStateFilterOptions}
-                                defaultValue={publishStateFilterOptions[0]}
+                                defaultValue={defaultPublishStateValue}
                                 onChange={(option) => {
                                     setPublishStateFilter(option?.value);
                                 }}
@@ -105,7 +123,7 @@ export const ScreenHome: React.FC<ScreenHomeProps> = (props) => {
                         <Text style={{ color: "white" }}>{i18n.t("itrex.filterActiveInActive")}</Text>
                         <Select
                             options={activeStateFilterOptions}
-                            defaultValue={activeStateFilterOptions[0]}
+                            defaultValue={defaultActiveStateValue}
                             onChange={(option) => {
                                 setSelectedActiveState(option?.value);
                             }}
@@ -172,19 +190,6 @@ export const ScreenHome: React.FC<ScreenHomeProps> = (props) => {
         </View>
     );
 };
-
-const publishStateFilterOptions = [
-    { value: CoursePublishState.PUBLISHED, label: i18n.t("itrex.published") },
-    { value: CoursePublishState.UNPUBLISHED, label: i18n.t("itrex.unpublished") },
-    { value: undefined, label: i18n.t("itrex.all") },
-];
-
-const activeStateFilterOptions = [
-    { value: CourseActivityState.ACTIVE, label: i18n.t("itrex.active") },
-    // Functionality in Backend currently not available for next line
-    // { value: CourseActivityState.INACTIVE, label: i18n.t("itrex.inactive") },
-    { value: undefined, label: i18n.t("itrex.all") },
-];
 
 function getEndDateBasedOnFilter(setSelectedActiveState: CourseActivityState | undefined): boolean | undefined {
     if (setSelectedActiveState === CourseActivityState.ACTIVE) {
