@@ -2,6 +2,7 @@ import { loggerFactory } from "../../../logger/LoggerConfig";
 import { createAlert } from "../../helperScripts/createAlert";
 import { ICourse } from "../../types/ICourse";
 import { IVideo } from "../../types/IVideo";
+import { IUser } from "../../types/IUser";
 import i18n from "../../locales";
 
 export class ResponseParser {
@@ -47,6 +48,25 @@ export class ResponseParser {
                 .catch((error) => {
                     ResponseParser.loggerApi.error("An error occurred while parsing courses data.", error);
                     resolve([]);
+                });
+        });
+    }
+
+    public static async parseUserInfo(response: Promise<Response>): Promise<IUser> {
+        return new Promise((resolve) => {
+            response
+                .then((response) => {
+                    if (!response.ok) {
+                        ResponseParser._checkResponseCode(response);
+                    }
+                    return response.json();
+                })
+                .then((user: IUser) => {
+                    resolve(user);
+                })
+                .catch((error) => {
+                    ResponseParser.loggerApi.error("An error occured while parsing user data.", error);
+                    resolve({});
                 });
         });
     }
