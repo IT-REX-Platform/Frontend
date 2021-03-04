@@ -61,8 +61,8 @@ export const VideoPoolComponent: React.FC = () => {
             loggerUI.trace("Uploading videos: displaying loading icon.");
             return (
                 <View style={videoPoolStyles.videoUploadContainer}>
-                    <ActivityIndicator size="large" color="white" />
                     <Text style={videoPoolStyles.infoText}>{i18n.t("itrex.videoUploading")}</Text>
+                    <ActivityIndicator style={videoPoolStyles.loadingIcon} size="large" color="white" />
                 </View>
             );
         }
@@ -85,7 +85,7 @@ export const VideoPoolComponent: React.FC = () => {
             loggerUI.trace("Receiving videos: displaying loading icon.");
             return (
                 <View style={videoPoolStyles.videoListDownloadingContainer}>
-                    <ActivityIndicator size="large" color="white" />
+                    <ActivityIndicator style={videoPoolStyles.loadingIcon} size="large" color="white" />
                 </View>
             );
         }

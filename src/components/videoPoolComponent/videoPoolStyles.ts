@@ -12,17 +12,8 @@ export const videoPoolStyles = StyleSheet.create({
         color: dark.theme.pink,
         fontSize: 50,
     },
-    videoUploadingContainer: {
-        width: "95%",
-        alignSelf: "center",
-        padding: 5,
-        backgroundColor: dark.theme.darkBlue2,
-        borderColor: dark.theme.darkBlue4,
-        borderWidth: 2,
-        borderRadius: 2,
-    },
     videoUploadContainer: {
-        width: "95%",
+        width: "50%",
         alignSelf: "center",
         alignItems: "center",
         padding: 5,
@@ -32,9 +23,8 @@ export const videoPoolStyles = StyleSheet.create({
         borderRadius: 2,
     },
     infoText: {
-        maxWidth: "90%",
         textAlign: "center",
-        margin: 10,
+        margin: 5,
         color: "white",
     },
     button: {
@@ -45,6 +35,9 @@ export const videoPoolStyles = StyleSheet.create({
     buttonText: {
         padding: 10,
         color: "white",
+    },
+    loadingIcon: {
+        margin: 5,
     },
     videoListDownloadingContainer: {
         flex: 1,
