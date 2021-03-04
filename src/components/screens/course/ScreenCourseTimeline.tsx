@@ -25,8 +25,6 @@ export const ScreenCourseTimeline: React.FC = () => {
     const navigation = useNavigation<ScreenCourseTimelineNavigationProp>();
     const courseService: CourseService = new CourseService();
 
-    const [count, setCount] = useState(0);
-
     const [edit, setEdit] = useState(false);
 
     React.useContext(LocalizationContext);

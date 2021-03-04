@@ -1,18 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import i18n from "../locales";
-import { Header } from "../constants/navigators/Header";
-import { CourseContext, LocalizationContext } from "./Context";
-import {
-    Button,
-    ImageBackground,
-    Platform,
-    Pressable,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
-} from "react-native";
+import { LocalizationContext } from "./Context";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import * as DocumentPicker from "expo-document-picker";
 import * as ImagePicker from "expo-image-picker";
 import { RequestFactory } from "../api/requests/RequestFactory";
@@ -57,9 +46,8 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
         <View style={styles.chapterContainer}>
             <View style={styles.chapterTopRow}>
                 <Text style={styles.chapterHeader}>{chapter?.title}</Text>
-                <View style={styles.chapterStatus}>
-                    <Text>{getPublishedSate("PUBLISHED")}</Text>
-                </View>
+                {/* TODO: add real publish/unpublished state to the chapterss*/}
+                <View style={styles.chapterStatus}>{getPublishedSate("PUBLISHED")} </View>
             </View>
             <View style={styles.chapterBottomRow}>
                 <Text style={styles.chapterMaterialHeader}>Material</Text>
