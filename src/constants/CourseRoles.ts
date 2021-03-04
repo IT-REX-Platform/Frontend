@@ -1,5 +1,5 @@
-export class CourseRoles {
-    static OWNER = "OWNER";
-    static MANAGER = "LECTURER";
-    static PARTICIPANT = "PARTICIPANT";
+export enum CourseRoles {
+    OWNER = "OWNER",
+    MANAGER = "MANAGER",
+    PARTICIPANT = "PARTICIPANT",
 }
