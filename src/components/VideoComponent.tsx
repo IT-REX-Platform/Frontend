@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
         backgroundColor: "black",
     },
     infoContainer: {
-        width: "95%",
+        width: "50%",
         alignItems: "center",
         padding: 5,
         backgroundColor: dark.theme.darkBlue2,
@@ -173,7 +173,6 @@ const styles = StyleSheet.create({
     textInput: {
         width: "100%",
         margin: 5,
-        fontSize: 20,
         textAlign: "center",
         color: "white",
         borderColor: "white",
@@ -183,7 +182,6 @@ const styles = StyleSheet.create({
     text: {
         maxWidth: "100%",
         margin: 5,
-        fontSize: 20,
         textAlign: "center",
         color: "white",
     },
@@ -204,7 +202,6 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         padding: 10,
-        fontSize: 20,
         color: "white",
     },
 });

@@ -209,12 +209,14 @@ export const VideoPoolComponent: React.FC = () => {
     }
 
     function _resetAnimBeforeGetAllVideos() {
+        loggerUI.trace("Resetting video list animation.");
         translateY = new Animated.Value(100);
         _getAllVideos();
     }
 
     async function _getAllVideos(): Promise<void> {
         if (course.id == undefined) {
+            loggerService.warn("Course ID undefined, can't get videos.");
             return;
         }
         loggerService.trace("Getting all videos of course: " + course.id);

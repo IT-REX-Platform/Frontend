@@ -35,7 +35,6 @@ export const videoPoolStyles = StyleSheet.create({
         maxWidth: "90%",
         textAlign: "center",
         margin: 10,
-        fontSize: 20,
         color: "white",
     },
     button: {
@@ -45,7 +44,6 @@ export const videoPoolStyles = StyleSheet.create({
     },
     buttonText: {
         padding: 10,
-        fontSize: 20,
         color: "white",
     },
     videoListDownloadingContainer: {
@@ -82,6 +80,7 @@ export const videoPoolStyles = StyleSheet.create({
     deleteButton: {
         borderColor: "red",
         borderWidth: 1,
+        borderRadius: 2,
     },
     deleteIcon: {
         paddingTop: 5,
