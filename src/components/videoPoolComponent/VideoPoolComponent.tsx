@@ -17,6 +17,7 @@ import { FilePickerService } from "../../services/FilePickerService";
 import { buildVideoAsFormData } from "../../services/VideoFormDataService";
 import { videoPoolStyles } from "./videoPoolStyles";
 import { useToasts } from "react-toast-notifications";
+import { sleep } from "../../services/SleepService";
 
 const endpointsVideo = new EndpointsVideo();
 const loggerService = loggerFactory.getLogger("service.VideoPoolComponent");
@@ -190,6 +191,9 @@ export const VideoPoolComponent: React.FC = () => {
             await _uploadVideo(selectedVideo);
         }
 
+        // Give MediaService 1 second to save uploaded videos before sending getAllVideos() request.
+        await sleep(1000);
+
         setVideoUploading(false);
         addToast(i18n.t("itrex.uploadDone"), { appearance: "info", autoDismiss: false });
     }
@@ -245,7 +249,7 @@ export const VideoPoolComponent: React.FC = () => {
             .catch((error) => {
                 loggerService.error("An error has occured while getting videos.", error);
             })
-            .finally(() => {
+            .finally(async () => {
                 setVideoListLoading(false);
             });
     }
