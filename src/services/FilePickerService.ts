@@ -10,10 +10,11 @@ import i18n from "../locales";
 import { loggerFactory } from "../../logger/LoggerConfig";
 import { ImageInfo, ImagePickerMultipleResult } from "expo-image-picker/build/ImagePicker.types";
 
-const loggerService = loggerFactory.getLogger("service.FilePickerService");
-
 export class FilePickerService {
+    private loggerService;
+
     constructor() {
+        this.loggerService = loggerFactory.getLogger("service.FilePickerService");
         this._requestIosPermission();
     }
 
@@ -23,14 +24,14 @@ export class FilePickerService {
      */
     private _requestIosPermission() {
         if (Platform.OS === "ios") {
-            loggerService.trace("Asking for iOS camera permission.");
+            this.loggerService.trace("Asking for iOS camera permission.");
             const response: Promise<MediaLibraryPermissionResponse> = requestMediaLibraryPermissionsAsync();
             response.then(() => {
                 if (status !== "granted") {
-                    loggerService.trace("iOS camera permission denied.");
+                    this.loggerService.trace("iOS camera permission denied.");
                     alert(i18n.t("itrex.imagePickerPermAlert"));
                 }
-                loggerService.trace("iOS camera permission granted.");
+                this.loggerService.trace("iOS camera permission granted.");
             });
         }
     }
@@ -50,38 +51,48 @@ export class FilePickerService {
      * Expo document picker that only allows picking of video files in mp4 format.
      */
     private async _pickDocument(): Promise<File[]> {
-        const videos: DocumentResult = await getDocumentAsync({
+        const files: DocumentResult = await getDocumentAsync({
             type: "video/mp4",
             multiple: true,
         });
 
-        if (videos.type === "cancel") {
+        if (files.type === "cancel") {
             return [new File([], "")];
         }
 
-        if (videos.output == undefined) {
+        if (files.output == undefined) {
             return [new File([], "")];
         }
 
-        return Array.from(videos.output);
+        this.loggerService.trace("Making sure only MP4 files are selected.");
+        const videos: File[] = [];
+        Array.prototype.forEach.call(files.output, function (file) {
+            if (file.type !== "video/mp4") {
+                return;
+            }
+            videos.push(file);
+        });
+
+        return videos;
     }
 
     /**
      * Expo image picker that only allows picking of video files.
      */
     private async _pickImage(): Promise<File[]> {
-        const videos: ImagePickerMultipleResult = await launchImageLibraryAsync({
+        const files: ImagePickerMultipleResult = await launchImageLibraryAsync({
             mediaTypes: MediaTypeOptions.Videos,
             allowsEditing: true,
             allowsMultipleSelection: true,
         });
 
-        if (videos.cancelled === true) {
+        if (files.cancelled === true) {
             return [new File([], "")];
         }
 
-        const selectedFiles: File[] = [];
-        videos.selected.forEach((video: ImageInfo) => {
+        this.loggerService.trace("Making sure only MP4 files are selected.");
+        const videos: File[] = [];
+        files.selected.forEach((video: ImageInfo) => {
             if (video.type !== "video") {
                 return;
             }
@@ -91,9 +102,9 @@ export class FilePickerService {
             }
 
             const file: File = new File([video.base64], "unnamed_file");
-            selectedFiles.push(file);
+            videos.push(file);
         });
 
-        return selectedFiles;
+        return videos;
     }
 }
