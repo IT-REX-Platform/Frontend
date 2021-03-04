@@ -42,10 +42,6 @@ export class ResponseParser {
                         course.startDate = course.startDate ? new Date(course.startDate) : undefined;
                         course.endDate = course.endDate ? new Date(course.endDate) : undefined;
                     }
-                    // courses.forEach((course: ICourse) => {
-                    //     course.startDate = course.startDate ? new Date(course.startDate) : undefined;
-                    //     course.endDate = course.endDate ? new Date(course.endDate) : undefined;
-                    // });
                     resolve(courses);
                 })
                 .catch((error) => {
@@ -90,10 +86,6 @@ export class ResponseParser {
                         video.startDate = video.startDate ? new Date(video.startDate) : undefined;
                         video.endDate = video.endDate ? new Date(video.endDate) : undefined;
                     }
-                    // videos.forEach((video: IVideo) => {
-                    //     video.startDate = video.startDate ? new Date(video.startDate) : undefined;
-                    //     video.endDate = video.endDate ? new Date(video.endDate) : undefined;
-                    // });
                     resolve(videos);
                 })
                 .catch((error) => {
