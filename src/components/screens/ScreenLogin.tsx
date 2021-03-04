@@ -7,7 +7,7 @@ import * as WebBrowser from "expo-web-browser";
 import * as AuthSession from "expo-auth-session";
 import { itRexVars } from "../../constants/Constants";
 import i18n from "../../locales";
-import AuthenticationService, { discovery } from "../../services/AuthenticationService";
+import { discovery } from "../../services/AuthenticationService";
 
 WebBrowser.maybeCompleteAuthSession();
 

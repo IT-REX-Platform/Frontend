@@ -1,7 +1,7 @@
 import React from "react";
 
 import { createDrawerNavigator } from "@react-navigation/drawer";
-import { Image, StyleSheet, useWindowDimensions } from "react-native";
+import { StyleSheet, useWindowDimensions } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { RootDrawerParamList } from "./NavigationRoutes";

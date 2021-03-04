@@ -1,7 +1,16 @@
 import React, { useState, useEffect } from "react";
 import i18n from "../locales";
 import { CourseContext, LocalizationContext } from "./Context";
-import { Button, ImageBackground, Platform, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+    ActivityIndicator,
+    ImageBackground,
+    Platform,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
+} from "react-native";
 import { DocumentResult, getDocumentAsync } from "expo-document-picker";
 import {
     ImagePickerResult,
@@ -33,6 +42,7 @@ export const VideoUploadComponent: React.FC = () => {
     const [videoUri, setVideoUri] = useState("");
     const [videoName, setVideoName] = useState("");
     const [videoPlayerUri, setVideoPlayerUri] = useState("");
+    const [isLoading, setLoading] = useState(false);
 
     /**
      * Make sure that the necessary permissions are given for the image picker.
@@ -102,6 +112,7 @@ export const VideoUploadComponent: React.FC = () => {
         if (videoUri === "" || course.id === undefined) {
             return;
         }
+        setLoading(true);
 
         const video: FormData = await buildVideoAsFormData(course.id);
         const postRequest: RequestInit = RequestFactory.createPostRequestWithFormData(video);
@@ -135,7 +146,16 @@ export const VideoUploadComponent: React.FC = () => {
         setVideoUri("");
         setVideoName("");
         setVideoPlayerUri("");
+        setLoading(false);
     };
+
+    if (isLoading) {
+        return (
+            <ImageBackground source={require("../constants/images/Background2.png")} style={styles.image}>
+                <ActivityIndicator size="large" color="white" />
+            </ImageBackground>
+        );
+    }
 
     return (
         <ImageBackground source={require("../constants/images/Background2.png")} style={styles.image}>
@@ -152,13 +172,13 @@ export const VideoUploadComponent: React.FC = () => {
                     testID="videoNameInput"
                 />
 
-                <Pressable style={styles.styledButton}>
-                    <Button title={i18n.t("itrex.browseVideos")} onPress={pickVideo} />
-                </Pressable>
+                <TouchableOpacity style={styles.button} onPress={pickVideo}>
+                    <Text style={styles.buttonText}>{i18n.t("itrex.browseVideos")}</Text>
+                </TouchableOpacity>
 
-                <Pressable style={styles.styledButton}>
-                    <Button title={i18n.t("itrex.toUploadVideo")} onPress={uploadVideo} />
-                </Pressable>
+                <TouchableOpacity style={styles.button} onPress={uploadVideo}>
+                    <Text style={styles.buttonText}>{i18n.t("itrex.toUploadVideo")}</Text>
+                </TouchableOpacity>
 
                 <Video
                     style={styles.video}
@@ -195,15 +215,27 @@ const styles = StyleSheet.create({
     },
     textInput: {
         color: "white",
-        fontSize: 24,
+        fontSize: 20,
         borderColor: "lightgray",
         borderWidth: 1,
         width: "50%",
         textAlign: "center",
         margin: 10,
     },
-    styledButton: {
-        margin: 10,
+    button: {
+        backgroundColor: dark.theme.darkBlue2,
+        borderColor: dark.theme.pink,
+        borderWidth: 1,
+        margin: 5,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    buttonText: {
+        color: "white",
+        fontSize: 20,
+        padding: 10,
+        alignItems: "center",
+        justifyContent: "center",
     },
     video: {
         maxWidth: "90%",

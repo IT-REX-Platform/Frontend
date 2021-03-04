@@ -1,5 +1,4 @@
 import React from "react";
-import { dark } from "../../../constants/themes/dark";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { ScreenCourseOverview } from "./ScreenCourseOverview";
 import { ScreenCourseTimeline } from "./ScreenCourseTimeline";
@@ -9,7 +8,7 @@ import {
     CourseTabParamList,
     RootDrawerParamList,
 } from "../../../constants/navigators/NavigationRoutes";
-import { CompositeNavigationProp, RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import { CompositeNavigationProp, RouteProp } from "@react-navigation/native";
 import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 
@@ -26,9 +25,6 @@ export type ScreenCourseTabsProps = StackScreenProps<CourseStackParamList, "INFO
 export const ScreenCourseTabs: React.FC = () => {
     React.useContext(LocalizationContext);
 
-    const navigation = useNavigation<ScreenCourseTabsNavigationProp>();
-    const route = useRoute<ScreenCourseTabsRouteProp>();
-
     return (
         <CourseTab.Navigator
             tabBarOptions={{
@@ -43,7 +39,7 @@ export const ScreenCourseTabs: React.FC = () => {
                 },
                 tabStyle: {},
                 labelStyle: {
-                    color: dark.theme.lightGreen,
+                    color: "white",
                 },
             }}>
             <CourseTab.Screen name="OVERVIEW" component={ScreenCourseOverview}></CourseTab.Screen>

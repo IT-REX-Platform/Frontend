@@ -81,5 +81,7 @@ export const en = {
         internalServerError: "Internal server error.",
         timeoutRequest: "Request timeout.",
         errorOccured: "An error has occurred.",
+        unpublished: "Unpublished",
+        published: "Published",
     },
 };

@@ -1,4 +1,4 @@
-import { CompositeNavigationProp, RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import { CompositeNavigationProp, useNavigation } from "@react-navigation/native";
 import React from "react";
 import { Text, ImageBackground, StyleSheet } from "react-native";
 import { dark } from "../../../constants/themes/dark";

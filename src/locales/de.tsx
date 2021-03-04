@@ -83,5 +83,7 @@ export const de = {
         internalServerError: "Interner Serverfehler.",
         timeoutRequest: "Zeitüberschreitung der Anfrage.",
         errorOccured: "Ein Fehler ist aufgetreten.",
+        unpublished: "Unveröffentlicht",
+        published: "Veröffentlicht",
     },
 };
