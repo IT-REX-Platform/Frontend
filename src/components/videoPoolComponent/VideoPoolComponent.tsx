@@ -1,5 +1,14 @@
 import React, { useState } from "react";
-import { ActivityIndicator, Animated, FlatList, ImageBackground, Text, TouchableOpacity, View } from "react-native";
+import {
+    ActivityIndicator,
+    Animated,
+    FlatList,
+    ImageBackground,
+    Platform,
+    Text,
+    TouchableOpacity,
+    View,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import i18n from "../../locales";
 import { loggerFactory } from "../../../logger/LoggerConfig";
@@ -16,8 +25,8 @@ import { calculateVideoSize } from "../../services/calculateVideoSize";
 import { FilePickerService } from "../../services/FilePickerService";
 import { buildVideoAsFormData } from "../../services/VideoFormDataService";
 import { videoPoolStyles } from "./videoPoolStyles";
-import { useToasts } from "react-toast-notifications";
 import { sleep } from "../../services/SleepService";
+import { ToastService } from "../../services/toasts/ToastService";
 
 const endpointsVideo = new EndpointsVideo();
 const loggerService = loggerFactory.getLogger("service.VideoPoolComponent");
@@ -28,9 +37,6 @@ let translateY = new Animated.Value(100);
 export const VideoPoolComponent: React.FC = () => {
     // Navigation hook.
     const navigation = useNavigation();
-
-    // Toast hook.
-    const { addToast } = useToasts();
 
     // Get localization from context.
     React.useContext(LocalizationContext);
@@ -43,6 +49,8 @@ export const VideoPoolComponent: React.FC = () => {
     const [isVideoListLoading, setVideoListLoading] = useState(true);
     const initialVideoState: IVideo[] = [];
     const [videos, setVideos] = useState(initialVideoState);
+
+    const toast: ToastService = new ToastService();
 
     // Vertical slide animation for FlatList.
     Animated.timing(translateY, { toValue: 0, duration: 500, useNativeDriver: false }).start();
@@ -115,6 +123,7 @@ export const VideoPoolComponent: React.FC = () => {
                         data={videos}
                         renderItem={renderVideoListItem}
                         keyExtractor={(item, index) => index.toString()}
+                        initialNumToRender={_videoListLinesToRender()}
                     />
                 </Animated.View>
             </View>
@@ -195,7 +204,7 @@ export const VideoPoolComponent: React.FC = () => {
         await sleep(1000);
 
         setVideoUploading(false);
-        addToast(i18n.t("itrex.uploadDone"), { appearance: "info", autoDismiss: false });
+        toast.info(i18n.t("itrex.uploadDone"), false);
     }
 
     async function _uploadVideo(selectedVideo: File): Promise<void> {
@@ -211,13 +220,13 @@ export const VideoPoolComponent: React.FC = () => {
 
         if (response.id == undefined) {
             const msg: string = i18n.t("itrex.uploadFailed") + selectedVideo.name;
-            addToast(msg, { appearance: "error", autoDismiss: false });
+            toast.error(msg, false);
             loggerService.error("Upload failed: " + selectedVideo.name);
             return;
         }
 
         const msg: string = i18n.t("itrex.uploadSuccessful") + selectedVideo.name;
-        addToast(msg, { appearance: "success", autoDismiss: false });
+        toast.success(msg, false);
         loggerService.trace("Upload sucessful: " + selectedVideo.name);
     }
 
@@ -270,5 +279,12 @@ export const VideoPoolComponent: React.FC = () => {
         setVideoUploading(false);
         setVideoListLoading(true);
         setVideos(initialVideoState);
+    }
+
+    function _videoListLinesToRender(): number {
+        if (Platform.OS === "web") {
+            return 50;
+        }
+        return 3;
     }
 };

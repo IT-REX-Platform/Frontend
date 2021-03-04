@@ -14,7 +14,7 @@ import { IAuthContext } from "./components/Context";
 import { ILoginReducerAction, ILoginReducerState } from "./types/ILoginReducer";
 import { Provider as PaperProvider } from "react-native-paper";
 import { AsyncStorageService, StorageConstants } from "./services/StorageService";
-import { ToastProvider } from "react-toast-notifications";
+import { ToastContainer } from "react-toastify";
 
 const loggerService = loggerFactory.getLogger("service.App");
 
@@ -129,7 +129,12 @@ function App(): ReactElement {
     };
 
     if (Platform.OS === "web") {
-        return <ToastProvider>{renderApp()}</ToastProvider>;
+        return (
+            <>
+                <ToastContainer />
+                {renderApp()}
+            </>
+        );
     }
 
     return renderApp();
