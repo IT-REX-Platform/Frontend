@@ -65,7 +65,7 @@ export const VideoPoolComponent: React.FC = () => {
             return (
                 <View style={styles.videoUploadContainer}>
                     <ActivityIndicator size="large" color="white" />
-                    <Text style={styles.infoText}>Please wait, the video upload is in progress...</Text>
+                    <Text style={styles.infoText}>{i18n.t("itrex.videoUploading")}</Text>
                 </View>
             );
         }
