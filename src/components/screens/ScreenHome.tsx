@@ -94,11 +94,11 @@ export const ScreenHome: React.FC<ScreenHomeProps> = (props) => {
             return undefined;
         }
         return (
-            <View style={{ flexDirection: "row", zIndex: 1, justifyContent: "flex-start" }}>
-                <View style={styles.card}>
-                    <Text style={styles.cardHeader}>{i18n.t("itrex.filterLabel")}</Text>
+            <View style={styles.card}>
+                <Text style={styles.cardHeader}>{i18n.t("itrex.filterLabel")}</Text>
+                <View style={styles.filterContainer}>
                     {userRole !== ITREXRoles.ROLE_STUDENT && (
-                        <View style={{ width: 250, margin: 5, justifyContent: "center" }}>
+                        <View style={{ padding: 8, flex: 1 }}>
                             <Text style={{ color: "white" }}>{i18n.t("itrex.filterPubUnpub")}</Text>
                             <Select
                                 options={publishStateFilterOptions}
@@ -119,7 +119,7 @@ export const ScreenHome: React.FC<ScreenHomeProps> = (props) => {
                             />
                         </View>
                     )}
-                    <View style={{ width: 250, margin: 5 }}>
+                    <View style={{ padding: 8, flex: 1 }}>
                         <Text style={{ color: "white" }}>{i18n.t("itrex.filterActiveInActive")}</Text>
                         <Select
                             options={activeStateFilterOptions}
@@ -229,22 +229,25 @@ const styles = StyleSheet.create({
         color: "white",
     },
     card: {
+        maxWidth: "50%",
         flexDirection: "row",
-        flexWrap: "wrap",
-        margin: 5,
-        maxWidth: 500,
-        minWidth: 600,
         backgroundColor: dark.Opacity.grey,
         alignItems: "center",
-        justifyContent: "center",
+        justifyContent: "flex-start",
+        flexShrink: 1,
     },
     cardHeader: {
-        flex: 1,
-        margin: 5,
+        padding: 16,
         fontSize: 20,
         fontWeight: "bold",
         color: "white",
-        textAlignVertical: "center",
+        textAlign: "center",
+        flexGrow: 1,
+    },
+    filterContainer: {
+        flexGrow: 4,
+        flexDirection: "row",
+        flexWrap: "nowrap",
     },
     cardContent: {
         fontSize: 15,
@@ -252,11 +255,6 @@ const styles = StyleSheet.create({
         textAlignVertical: "center",
         marginLeft: 5,
         marginBottom: 5,
-    },
-    break: {
-        backgroundColor: "white",
-        opacity: 0.5,
-        height: 1,
     },
     cardView: {
         flexDirection: "row",

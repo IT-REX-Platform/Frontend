@@ -75,7 +75,7 @@ export const de = {
         active: "Aktiv",
         inactive: "Inaktiv",
         noCoursesFilter: "Es wurden keine Kurse für diese Auswahl gefunden!",
-        filterPubUnpub: "veröffentlichte/unveröffentlichte Kurse",
+        filterPubUnpub: "Veröffentlichte/Unveröffentlichte Kurse",
         filterActiveInActive: "aktive/inaktive Kurse",
         filterLabel: "Filter:",
         badRequest: "Ungültige Anfrage.",
@@ -83,7 +83,5 @@ export const de = {
         internalServerError: "Interner Serverfehler.",
         timeoutRequest: "Zeitüberschreitung der Anfrage.",
         errorOccured: "Ein Fehler ist aufgetreten.",
-        unpublished: "Unveröffentlicht",
-        published: "Veröffentlicht",
     },
 };

@@ -17,7 +17,6 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
     const navigation = useNavigation();
 
     function getPublishedSate(isPublished: string | undefined) {
-        console.log(isPublished);
         if (isPublished === "UNPUBLISHED") {
             return (
                 <View style={styles.unpublishedCard}>
@@ -37,28 +36,10 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
         return;
     }
 
-    // eslint-disable-next-line complexity
-    function getCourseOwner(owner: Array<string> | undefined) {
-        let lecturerString = "";
-        if (owner === undefined) {
-            return;
-        }
-        if (owner.length > 1) {
-            for (let i = 0; i < owner?.length; i++) {
-                if (i < owner?.length - 1) {
-                    lecturerString = lecturerString + owner[i] + ", ";
-                } else {
-                    lecturerString = lecturerString + owner[i];
-                }
-            }
-        } else {
-            lecturerString = owner[0];
-        }
-
-        return lecturerString;
-    }
-
     function getDate(showDate: Date | undefined, title: string) {
+        if (dateConverter(showDate) === "") {
+            return <View style={styles.cardContent} />;
+        }
         return (
             <Text style={styles.cardContent}>
                 <Text style={{ fontWeight: "bold" }}>{title}</Text> {dateConverter(showDate)}
@@ -66,28 +47,21 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
         );
     }
 
-    function onPress(course: ICourse) {
-        console.log(course);
+    function navigateToCourse(course: ICourse) {
         navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, {
             courseId: course.id,
         });
     }
+
     return (
-        <TouchableOpacity style={styles.card} onPress={() => onPress(course)} activeOpacity={0.7}>
+        <TouchableOpacity style={styles.card} onPress={() => navigateToCourse(course)} activeOpacity={0.7}>
             {getPublishedSate(course.publishState)}
             <Text style={styles.cardHeader}>{course.name}</Text>
             <View style={styles.break} />
             {/*<Text style={styles.cardContent}>Lecturer:</Text> {getCourseOwner(course.ownership)}*/}
-            {dateConverter(course.startDate) === "" ? (
-                <View style={styles.cardContent} />
-            ) : (
-                getDate(course.startDate, i18n.t("itrex.startDate"))
-            )}
-            {dateConverter(course.endDate) === "" ? (
-                <View style={styles.cardContent} />
-            ) : (
-                getDate(course.endDate, i18n.t("itrex.endDate"))
-            )}
+
+            {getDate(course.startDate, i18n.t("itrex.startDate"))}
+            {getDate(course.endDate, i18n.t("itrex.endDate"))}
         </TouchableOpacity>
     );
 };
@@ -96,14 +70,13 @@ const styles = StyleSheet.create({
     card: {
         shadowRadius: 10,
         shadowOffset: { width: -1, height: 1 },
-        margin: 5,
-        maxWidth: 400,
-        minWidth: 400,
+        margin: 8,
+        width: 400,
         backgroundColor: dark.Opacity.grey,
     },
     cardHeader: {
-        flex: 1,
-        margin: 5,
+        margin: 8,
+        marginLeft: 16,
         fontSize: 20,
         fontWeight: "bold",
         color: "white",
@@ -113,8 +86,8 @@ const styles = StyleSheet.create({
         fontSize: 15,
         color: "white",
         textAlignVertical: "center",
-        marginLeft: 5,
-        marginBottom: 5,
+        margin: 4,
+        marginLeft: 32,
         minHeight: 20,
     },
     unpublishedCard: {
