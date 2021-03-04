@@ -16,6 +16,7 @@ import { calculateVideoSize } from "../../services/calculateVideoSize";
 import { FilePickerService } from "../../services/FilePickerService";
 import { buildVideoAsFormData } from "../../services/VideoFormDataService";
 import { videoPoolStyles } from "./videoPoolStyles";
+import { useToasts } from "react-toast-notifications";
 
 const endpointsVideo = new EndpointsVideo();
 const loggerService = loggerFactory.getLogger("service.VideoPoolComponent");
@@ -26,6 +27,9 @@ let translateY = new Animated.Value(100);
 export const VideoPoolComponent: React.FC = () => {
     // Navigation hook.
     const navigation = useNavigation();
+
+    // Toast hook.
+    const { addToast } = useToasts();
 
     // Get localization from context.
     React.useContext(LocalizationContext);
@@ -187,10 +191,12 @@ export const VideoPoolComponent: React.FC = () => {
         }
 
         setVideoUploading(false);
+        addToast(i18n.t("itrex.uploadDone"), { appearance: "info", autoDismiss: false });
     }
 
     async function _uploadVideo(selectedVideo: File): Promise<void> {
         if (selectedVideo == undefined || course.id == undefined) {
+            loggerService.warn("Selected video or course ID undefined.");
             return;
         }
         loggerService.trace("Selected video: " + selectedVideo.name);
@@ -199,13 +205,16 @@ export const VideoPoolComponent: React.FC = () => {
         const postRequest: RequestInit = RequestFactory.createPostRequestWithFormData(videoFormData);
         const response: IVideo = await endpointsVideo.uploadVideo(postRequest);
 
-        if (response.id == undefined || response.title == undefined) {
-            console.warn("Upload failed of video: " + selectedVideo.name);
+        if (response.id == undefined) {
+            const msg: string = i18n.t("itrex.uploadFailed") + selectedVideo.name;
+            addToast(msg, { appearance: "error", autoDismiss: false });
+            loggerService.error("Upload failed: " + selectedVideo.name);
             return;
         }
 
-        console.warn("Upload finished of video: " + selectedVideo.name);
-        console.log(response);
+        const msg: string = i18n.t("itrex.uploadSuccessful") + selectedVideo.name;
+        addToast(msg, { appearance: "success", autoDismiss: false });
+        loggerService.trace("Upload sucessful: " + selectedVideo.name);
     }
 
     function _resetAnimBeforeGetAllVideos() {
