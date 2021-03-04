@@ -22,13 +22,14 @@ import { dark } from "../constants/themes/dark";
 import { ListItem } from "react-native-elements";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { calculateVideoSize } from "../services/calculateVideoSize";
-import { createAlert } from "../helperScripts/createAlert";
 import { FilePickerService } from "../services/FilePickerService";
 import { buildVideoAsFormData } from "../services/VideoFormDataService";
 
 const endpointsVideo = new EndpointsVideo();
 const loggerService = loggerFactory.getLogger("service.VideoPoolComponent");
 const loggerUI = loggerFactory.getLogger("UI.VideoPoolComponent");
+
+let translateY = new Animated.Value(100);
 
 export const VideoPoolComponent: React.FC = () => {
     // Navigation hook.
@@ -47,15 +48,13 @@ export const VideoPoolComponent: React.FC = () => {
     const [videos, setVideos] = useState(initialVideoState);
 
     // Vertical slide animation for FlatList.
-    const translateY = new Animated.Value(100);
-    Animated.timing(translateY, { toValue: 1, duration: 500, useNativeDriver: false }).start();
+    Animated.timing(translateY, { toValue: 0, duration: 500, useNativeDriver: false }).start();
 
     // Call following function/s only once when this screen is shown.
     useFocusEffect(
         React.useCallback(() => {
             loggerService.trace("EXECUTING THIS ONLY ONCE ON SCREEN FOCUS!");
-            loggerService.trace("Getting all videos of course: " + course.id);
-            _getAllVideos(course.id);
+            _resetAnimBeforeGetAllVideos();
         }, [course])
     );
 
@@ -64,8 +63,9 @@ export const VideoPoolComponent: React.FC = () => {
         if (isVideoUploading) {
             loggerUI.trace("Uploading videos: displaying loading icon.");
             return (
-                <View style={styles.videoUploadingContainer}>
+                <View style={styles.videoUploadContainer}>
                     <ActivityIndicator size="large" color="white" />
+                    <Text style={styles.infoText}>Please wait, the video upload is in progress...</Text>
                 </View>
             );
         }
@@ -74,6 +74,7 @@ export const VideoPoolComponent: React.FC = () => {
         return (
             <View style={styles.videoUploadContainer}>
                 <Text style={styles.infoText}>{i18n.t("itrex.videoProperties")}</Text>
+
                 <TouchableOpacity style={styles.button} onPress={_initVideoUpload}>
                     <Text style={styles.buttonText}>{i18n.t("itrex.toUploadVideo")}</Text>
                 </TouchableOpacity>
@@ -115,7 +116,7 @@ export const VideoPoolComponent: React.FC = () => {
                         style={styles.videoList}
                         showsVerticalScrollIndicator={false}
                         data={videos}
-                        renderItem={renderListItem}
+                        renderItem={renderVideoListItem}
                         keyExtractor={(item, index) => index.toString()}
                     />
                 </Animated.View>
@@ -125,13 +126,13 @@ export const VideoPoolComponent: React.FC = () => {
 
     // Button to refresh video list.
     const renderRefreshButton = () => (
-        <TouchableOpacity style={styles.refreshButton} onPress={() => _getAllVideos(course.id)}>
+        <TouchableOpacity style={styles.refreshButton} onPress={() => _resetAnimBeforeGetAllVideos()}>
             <MaterialCommunityIcons name="refresh" size={32} color="white" />
         </TouchableOpacity>
     );
 
     // Creation of each item of video list.
-    const renderListItem = ({ item }: { item: IVideo }) => (
+    const renderVideoListItem = ({ item }: { item: IVideo }) => (
         <TouchableOpacity
             activeOpacity={0.3}
             onPress={() => {
@@ -180,10 +181,8 @@ export const VideoPoolComponent: React.FC = () => {
         const pickedVideos: File[] = await filePicker.pickFile();
 
         loggerService.trace("Initialising video upload.");
-        // const response: Promise<void> = _uploadVideos(pickedVideos);
-        // response.then(() => _getAllVideos(course.id));
         await _uploadVideos(pickedVideos);
-        _getAllVideos(course.id);
+        _resetAnimBeforeGetAllVideos();
     }
 
     async function _uploadVideos(selectedVideos: File[]): Promise<void> {
@@ -194,7 +193,6 @@ export const VideoPoolComponent: React.FC = () => {
         }
 
         setVideoUploading(false);
-        createAlert(i18n.t("itrex.videoUploadDone"));
     }
 
     // eslint-disable-next-line complexity
@@ -208,24 +206,31 @@ export const VideoPoolComponent: React.FC = () => {
         const postRequest: RequestInit = RequestFactory.createPostRequestWithFormData(videoFormData);
         const response: IVideo = await endpointsVideo.uploadVideo(postRequest);
 
-        if (response.id == undefined) {
+        if (response.id == undefined || response.title == undefined) {
             console.warn("Upload failed of video: " + selectedVideo.name);
             return;
         }
+
         console.warn("Upload finished of video: " + selectedVideo.name);
         console.log(response);
     }
 
-    async function _getAllVideos(courseId?: string): Promise<void> {
-        if (courseId == undefined) {
+    function _resetAnimBeforeGetAllVideos() {
+        translateY = new Animated.Value(100);
+        _getAllVideos();
+    }
+
+    async function _getAllVideos(): Promise<void> {
+        if (course.id == undefined) {
             return;
         }
+        loggerService.trace("Getting all videos of course: " + course.id);
 
         setVideoListLoading(true);
         setVideos(initialVideoState);
 
         const request: RequestInit = RequestFactory.createGetRequest();
-        const response: Promise<IVideo[]> = endpointsVideo.getAllVideos(request, courseId);
+        const response: Promise<IVideo[]> = endpointsVideo.getAllVideos(request, course.id);
 
         await response
             .then((videosReceived: IVideo[]) => {
@@ -249,7 +254,7 @@ export const VideoPoolComponent: React.FC = () => {
         const deleteRequest: RequestInit = RequestFactory.createDeleteRequest();
         const response: Promise<Response> = endpointsVideo.deleteVideo(deleteRequest, videoId);
         response.then(() => {
-            _getAllVideos(course.id);
+            _getAllVideos();
         });
     }
 
