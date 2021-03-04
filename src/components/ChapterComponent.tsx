@@ -2,33 +2,13 @@ import React from "react";
 import i18n from "../locales";
 import { LocalizationContext } from "./Context";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import * as DocumentPicker from "expo-document-picker";
-import * as ImagePicker from "expo-image-picker";
-import { RequestFactory } from "../api/requests/RequestFactory";
-import { EndpointsVideo } from "../api/endpoints/EndpointsVideo";
-import { createAlert } from "../helperScripts/createAlert";
-import { Video } from "expo-av";
-import { IVideo } from "../types/IVideo";
-import { VideoFormDataParams } from "../constants/VideoFormDataParams";
-import { loggerFactory } from "../../logger/LoggerConfig";
-import { createVideoUrl } from "../services/createVideoUrl";
-import { ICourse } from "../types/ICourse";
 import { dark } from "../constants/themes/dark";
 import { IChapter } from "../types/IChapter";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import AuthenticationService from "../services/AuthenticationService";
 import { ITREXRoles } from "../constants/ITREXRoles";
-import { CompositeNavigationProp, RouteProp, useNavigation, useRoute } from "@react-navigation/native";
-import {
-    CourseStackParamList,
-    CourseTabParamList,
-    RootDrawerParamList,
-} from "../constants/navigators/NavigationRoutes";
-import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
-import { DrawerNavigationProp } from "@react-navigation/drawer";
-import { MaterialTopTabNavigationProp } from "@react-navigation/material-top-tabs";
-
-const loggerService = loggerFactory.getLogger("component.ChapterComponent");
+import CourseService from "../services/CourseService";
+import { useNavigation } from "@react-navigation/native";
 
 interface ChapterComponentProps {
     chapter?: IChapter;
@@ -41,7 +21,7 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
     const navigation = useNavigation();
 
     const chapter = props.chapter;
-    console.log(chapter);
+    const courseService = new CourseService();
     return (
         <View style={styles.chapterContainer}>
             <View style={styles.chapterTopRow}>
@@ -50,7 +30,7 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                 <View style={styles.chapterStatus}>{getPublishedSate("PUBLISHED")} </View>
             </View>
             <View style={styles.chapterBottomRow}>
-                <Text style={styles.chapterMaterialHeader}>Material</Text>
+                <Text style={styles.chapterMaterialHeader}>{i18n.t("itrex.chapterMaterial")}</Text>
                 <View style={styles.chapterMaterialElements}>
                     {chapter?.contents?.map((contentId) => {
                         return (
@@ -64,7 +44,13 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
             </View>
             {props.editMode && AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_LECTURER) && (
                 <View style={styles.chapterEditRow}>
-                    <MaterialCommunityIcons name="trash-can" size={28} color="white" style={styles.icon} />
+                    <TouchableOpacity
+                        onPress={() => {
+                            courseService.deleteChapter(chapter?.id);
+                        }}>
+                        <MaterialCommunityIcons name="trash-can" size={28} color="white" style={styles.icon} />
+                    </TouchableOpacity>
+
                     <TouchableOpacity
                         onPress={() => {
                             navigation.navigate("CHAPTER", { chapterId: chapter?.id });
@@ -220,11 +206,5 @@ const styles = StyleSheet.create({
         textShadowRadius: 3,
         width: 100,
         height: 15,
-    },
-    content: {
-        flex: 1,
-        margin: 15,
-        color: "white",
-        alignItems: "center",
     },
 });

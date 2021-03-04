@@ -78,5 +78,10 @@ export const de = {
         errorOccured: "Ein Fehler ist aufgetreten.",
         unpublished: "Unveröffentlicht",
         published: "Veröffentlicht",
+        noChapters: "Es wurden noch keine Kapitel für diesen Kurs angelgt.",
+        addChapter: "+ Kapitel hinzugügen",
+        editMode: "Toggle Bearbeitungs-Modus",
+        availableVideos: "Verfügbare Videos",
+        chapterMaterial: "Kapitel Materialien",
     },
 };

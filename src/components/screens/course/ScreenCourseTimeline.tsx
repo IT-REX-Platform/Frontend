@@ -15,6 +15,9 @@ import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { ChapterComponent } from "../../ChapterComponent";
 import { ICourse } from "../../../types/ICourse";
 import CourseService from "../../../services/CourseService";
+import AuthenticationService from "../../../services/AuthenticationService";
+import { ITREXRoles } from "../../../constants/ITREXRoles";
+import i18n from "../../../locales";
 
 export type ScreenCourseTimelineNavigationProp = CompositeNavigationProp<
     MaterialTopTabNavigationProp<CourseTabParamList, "TIMELINE">,
@@ -42,25 +45,23 @@ export const ScreenCourseTimeline: React.FC = () => {
             });
         }
     }, [isFocused]);
-
     return (
         <View style={styles.container}>
             <ImageBackground
                 source={require("../../../constants/images/Background3.png")}
                 style={styles.image}
                 imageStyle={{ opacity: 0.5, position: "absolute", resizeMode: "contain" }}>
-                <View style={styles.editMode}>
-                    <Text style={styles.editModeText}>Toggle Edit-mode</Text>
-                    <Switch
-                        value={edit}
-                        onValueChange={() => {
-                            setEdit(!edit);
-                        }}></Switch>
-                </View>
+                {lecturerEditMode()}
+                {myCourse.chapters?.length === 0 ? (
+                    <View>
+                        <Text style={styles.textStyle}>{i18n.t("itrex.noChapters")}</Text>
+                    </View>
+                ) : (
+                    myCourse.chapterObjects?.map((chapter) => (
+                        <ChapterComponent key={chapter.id} chapter={chapter} editMode={edit}></ChapterComponent>
+                    ))
+                )}
 
-                {myCourse.chapterObjects?.map((chapter) => (
-                    <ChapterComponent key={chapter.id} chapter={chapter} editMode={edit}></ChapterComponent>
-                ))}
                 {edit && (
                     <View style={styles.addChapterContainer}>
                         <TouchableOpacity
@@ -68,13 +69,32 @@ export const ScreenCourseTimeline: React.FC = () => {
                             onPress={() => {
                                 navigation.navigate("CHAPTER", { chapterId: undefined });
                             }}>
-                            <Text style={styles.txtAddChapter}>+ Add Chapter</Text>
+                            <Text style={styles.txtAddChapter}>{i18n.t("itrex.addChapter")}</Text>
                         </TouchableOpacity>
                     </View>
                 )}
             </ImageBackground>
         </View>
     );
+
+    function lecturerEditMode() {
+        console.log(myCourse);
+        if (
+            AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_LECTURER) ||
+            AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_ADMIN)
+        ) {
+            return (
+                <View style={styles.editMode}>
+                    <Text style={styles.editModeText}>{i18n.t("itrex.editMode")}</Text>
+                    <Switch
+                        value={edit}
+                        onValueChange={() => {
+                            setEdit(!edit);
+                        }}></Switch>
+                </View>
+            );
+        }
+    }
 };
 
 const styles = StyleSheet.create({

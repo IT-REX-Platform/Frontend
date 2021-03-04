@@ -78,5 +78,10 @@ export const en = {
         errorOccured: "An error has occurred.",
         unpublished: "Unpublished",
         published: "Published",
+        noChapters: "No chapters have been created for this course yet.",
+        addChapter: "+ Add Chapter",
+        editMode: "Toggle Edit-mode",
+        availableVideos: "Available Videos",
+        chapterMaterial: "Chapter Material",
     },
 };

@@ -87,4 +87,16 @@ export default class CourseService {
                 .catch(reject);
         });
     }
+
+    public deleteChapter(chapterId: string | undefined) {
+        const chapterEndpoint = new EndpointsChapter();
+        if (chapterId === undefined) {
+            return;
+        }
+
+        const deleteRequest: RequestInit = RequestFactory.createDeleteRequest();
+
+        const response = chapterEndpoint.deleteChapter(deleteRequest, chapterId);
+        console.log(response);
+    }
 }

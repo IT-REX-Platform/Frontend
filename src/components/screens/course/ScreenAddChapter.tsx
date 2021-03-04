@@ -1,7 +1,6 @@
 /* eslint-disable max-lines */
 import {
     ActivityIndicator,
-    Animated,
     FlatList,
     ImageBackground,
     Platform,
@@ -14,21 +13,14 @@ import {
     Button,
 } from "react-native";
 
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 import i18n from "../../../locales";
 import { dark } from "../../../constants/themes/dark";
 import { CourseContext, LocalizationContext } from "../../Context";
 import { DatePickerComponent } from "../../DatePickerComponent";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
-import {
-    CompositeNavigationProp,
-    RouteProp,
-    useFocusEffect,
-    useIsFocused,
-    useNavigation,
-    useRoute,
-} from "@react-navigation/native";
-import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
+import { CompositeNavigationProp, RouteProp, useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { CourseStackParamList, RootDrawerParamList } from "../../../constants/navigators/NavigationRoutes";
 import { IChapter } from "../../../types/IChapter";
@@ -41,7 +33,6 @@ import { IVideo } from "../../../types/IVideo";
 import { EndpointsVideo } from "../../../api/endpoints/EndpointsVideo";
 import { loggerFactory } from "../../../../logger/LoggerConfig";
 import { calculateVideoSize } from "../../../services/calculateVideoSize";
-import { createAlert } from "../../../helperScripts/createAlert";
 import { Event } from "@react-native-community/datetimepicker";
 
 type ScreenCourseTabsNavigationProp = CompositeNavigationProp<
@@ -59,6 +50,7 @@ export const ScreenAddChapter: React.FC = () => {
     const loggerService = loggerFactory.getLogger("service.VideoPoolComponent");
     let chapterId = route.params.chapterId;
 
+    console.log(route.params);
     if (chapterId == "undefined") {
         chapterId = undefined;
     }
@@ -132,7 +124,7 @@ export const ScreenAddChapter: React.FC = () => {
         loggerService.trace("Displaying video list.");
         return (
             <View style={styles.containerTop}>
-                <Text style={styles.courseHeader}>Available Videos</Text>
+                <Text style={styles.courseHeader}>{i18n.t("itrex.availableVideos")}</Text>
                 <FlatList
                     style={styles.list}
                     showsVerticalScrollIndicator={false}
