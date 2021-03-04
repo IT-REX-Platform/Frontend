@@ -1,29 +1,21 @@
 import React, { useState } from "react";
-import {
-    ActivityIndicator,
-    Animated,
-    FlatList,
-    ImageBackground,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
-} from "react-native";
+import { ActivityIndicator, Animated, FlatList, ImageBackground, Text, TouchableOpacity, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import i18n from "../locales";
-import { loggerFactory } from "../../logger/LoggerConfig";
-import { EndpointsVideo } from "../api/endpoints/EndpointsVideo";
-import { RequestFactory } from "../api/requests/RequestFactory";
-import { IVideo } from "../types/IVideo";
+import i18n from "../../locales";
+import { loggerFactory } from "../../../logger/LoggerConfig";
+import { EndpointsVideo } from "../../api/endpoints/EndpointsVideo";
+import { RequestFactory } from "../../api/requests/RequestFactory";
+import { IVideo } from "../../types/IVideo";
 import { useFocusEffect } from "@react-navigation/native";
-import { ICourse } from "../types/ICourse";
-import { CourseContext, LocalizationContext } from "./Context";
-import { dark } from "../constants/themes/dark";
+import { ICourse } from "../../types/ICourse";
+import { CourseContext, LocalizationContext } from "../Context";
+import { dark } from "../../constants/themes/dark";
 import { ListItem } from "react-native-elements";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { calculateVideoSize } from "../services/calculateVideoSize";
-import { FilePickerService } from "../services/FilePickerService";
-import { buildVideoAsFormData } from "../services/VideoFormDataService";
+import { calculateVideoSize } from "../../services/calculateVideoSize";
+import { FilePickerService } from "../../services/FilePickerService";
+import { buildVideoAsFormData } from "../../services/VideoFormDataService";
+import { videoPoolStyles } from "./videoPoolStyles";
 
 const endpointsVideo = new EndpointsVideo();
 const loggerService = loggerFactory.getLogger("service.VideoPoolComponent");
@@ -63,20 +55,20 @@ export const VideoPoolComponent: React.FC = () => {
         if (isVideoUploading) {
             loggerUI.trace("Uploading videos: displaying loading icon.");
             return (
-                <View style={styles.videoUploadContainer}>
+                <View style={videoPoolStyles.videoUploadContainer}>
                     <ActivityIndicator size="large" color="white" />
-                    <Text style={styles.infoText}>{i18n.t("itrex.videoUploading")}</Text>
+                    <Text style={videoPoolStyles.infoText}>{i18n.t("itrex.videoUploading")}</Text>
                 </View>
             );
         }
 
         loggerUI.trace("Ready to upload videos: displaying video upload UI.");
         return (
-            <View style={styles.videoUploadContainer}>
-                <Text style={styles.infoText}>{i18n.t("itrex.videoProperties")}</Text>
+            <View style={videoPoolStyles.videoUploadContainer}>
+                <Text style={videoPoolStyles.infoText}>{i18n.t("itrex.videoProperties")}</Text>
 
-                <TouchableOpacity style={styles.button} onPress={_initVideoUpload}>
-                    <Text style={styles.buttonText}>{i18n.t("itrex.toUploadVideo")}</Text>
+                <TouchableOpacity style={videoPoolStyles.button} onPress={_initVideoUpload}>
+                    <Text style={videoPoolStyles.buttonText}>{i18n.t("itrex.toUploadVideo")}</Text>
                 </TouchableOpacity>
             </View>
         );
@@ -87,7 +79,7 @@ export const VideoPoolComponent: React.FC = () => {
         if (isVideoListLoading) {
             loggerUI.trace("Receiving videos: displaying loading icon.");
             return (
-                <View style={styles.videoListDownloadingContainer}>
+                <View style={videoPoolStyles.videoListDownloadingContainer}>
                     <ActivityIndicator size="large" color="white" />
                 </View>
             );
@@ -96,11 +88,11 @@ export const VideoPoolComponent: React.FC = () => {
         if (videos.length < 1) {
             loggerUI.trace("No video data received: displaying info box.");
             return (
-                <View style={styles.videoListContainer}>
+                <View style={videoPoolStyles.videoListContainer}>
                     {renderRefreshButton()}
 
-                    <View style={styles.infoTextBox}>
-                        <Text style={styles.infoText}>{i18n.t("itrex.noVideosAvailable")}</Text>
+                    <View style={videoPoolStyles.infoTextBox}>
+                        <Text style={videoPoolStyles.infoText}>{i18n.t("itrex.noVideosAvailable")}</Text>
                     </View>
                 </View>
             );
@@ -108,12 +100,12 @@ export const VideoPoolComponent: React.FC = () => {
 
         loggerUI.trace("Video data received: displaying video list.");
         return (
-            <View style={styles.videoListContainer}>
+            <View style={videoPoolStyles.videoListContainer}>
                 {renderRefreshButton()}
 
                 <Animated.View style={{ transform: [{ translateY }], flex: 1, maxWidth: "95%" }}>
                     <FlatList
-                        style={styles.videoList}
+                        style={videoPoolStyles.videoList}
                         showsVerticalScrollIndicator={false}
                         data={videos}
                         renderItem={renderVideoListItem}
@@ -126,7 +118,7 @@ export const VideoPoolComponent: React.FC = () => {
 
     // Button to refresh video list.
     const renderRefreshButton = () => (
-        <TouchableOpacity style={styles.refreshButton} onPress={() => _resetAnimBeforeGetAllVideos()}>
+        <TouchableOpacity style={videoPoolStyles.refreshButton} onPress={() => _resetAnimBeforeGetAllVideos()}>
             <MaterialCommunityIcons name="refresh" size={32} color="white" />
         </TouchableOpacity>
     );
@@ -150,16 +142,16 @@ export const VideoPoolComponent: React.FC = () => {
                 <MaterialCommunityIcons name="video-vintage" size={28} color="white" />
 
                 <ListItem.Content>
-                    <ListItem.Title style={styles.listItemTitle} numberOfLines={1} lineBreakMode="tail">
+                    <ListItem.Title style={videoPoolStyles.listItemTitle} numberOfLines={1} lineBreakMode="tail">
                         {item.title}
                     </ListItem.Title>
-                    <ListItem.Subtitle style={styles.listItemSubtitle} numberOfLines={1} lineBreakMode="tail">
+                    <ListItem.Subtitle style={videoPoolStyles.listItemSubtitle} numberOfLines={1} lineBreakMode="tail">
                         {calculateVideoSize(item.length)}
                     </ListItem.Subtitle>
                 </ListItem.Content>
 
-                <TouchableOpacity style={styles.deleteButton} onPress={() => _deleteVideo(item.id)}>
-                    <MaterialCommunityIcons style={styles.deleteIcon} name="delete" size={32} color="red" />
+                <TouchableOpacity style={videoPoolStyles.deleteButton} onPress={() => _deleteVideo(item.id)}>
+                    <MaterialCommunityIcons style={videoPoolStyles.deleteIcon} name="delete" size={32} color="red" />
                 </TouchableOpacity>
 
                 <ListItem.Chevron color="white" />
@@ -168,8 +160,10 @@ export const VideoPoolComponent: React.FC = () => {
     );
 
     return (
-        <ImageBackground source={require("../constants/images/Background2.png")} style={styles.imageContainer}>
-            <Text style={styles.header}>{i18n.t("itrex.videoPool")}</Text>
+        <ImageBackground
+            source={require("../../constants/images/Background2.png")}
+            style={videoPoolStyles.imageContainer}>
+            <Text style={videoPoolStyles.header}>{i18n.t("itrex.videoPool")}</Text>
             {renderVideoUpload()}
             {renderVideoList()}
         </ImageBackground>
@@ -195,7 +189,6 @@ export const VideoPoolComponent: React.FC = () => {
         setVideoUploading(false);
     }
 
-    // eslint-disable-next-line complexity
     async function _uploadVideo(selectedVideo: File): Promise<void> {
         if (selectedVideo == undefined || course.id == undefined) {
             return;
@@ -264,93 +257,3 @@ export const VideoPoolComponent: React.FC = () => {
         setVideos(initialVideoState);
     }
 };
-
-const styles = StyleSheet.create({
-    imageContainer: {
-        flex: 1,
-        resizeMode: "stretch",
-        justifyContent: "center", // Prevents video list item names from being unnecessary cut.
-    },
-    header: {
-        textAlign: "center",
-        color: dark.theme.pink,
-        fontSize: 50,
-    },
-    videoUploadingContainer: {
-        width: "95%",
-        alignSelf: "center",
-        padding: 5,
-        backgroundColor: dark.theme.darkBlue2,
-        borderColor: dark.theme.darkBlue4,
-        borderWidth: 2,
-        borderRadius: 2,
-    },
-    videoUploadContainer: {
-        width: "95%",
-        alignSelf: "center",
-        alignItems: "center",
-        padding: 5,
-        backgroundColor: dark.theme.darkBlue2,
-        borderColor: dark.theme.darkBlue4,
-        borderWidth: 2,
-        borderRadius: 2,
-    },
-    infoText: {
-        maxWidth: "90%",
-        textAlign: "center",
-        margin: 10,
-        fontSize: 20,
-        color: "white",
-    },
-    button: {
-        margin: 5,
-        backgroundColor: dark.theme.darkBlue4,
-        borderRadius: 2,
-    },
-    buttonText: {
-        padding: 10,
-        fontSize: 20,
-        color: "white",
-    },
-    videoListDownloadingContainer: {
-        flex: 1,
-        justifyContent: "center",
-    },
-    videoListContainer: {
-        flex: 1,
-        maxWidth: "100%",
-        alignItems: "center",
-    },
-    refreshButton: {
-        padding: 20,
-    },
-    infoTextBox: {
-        maxWidth: "95%",
-        marginTop: 50,
-        padding: 50,
-        backgroundColor: dark.theme.darkBlue2,
-        borderColor: dark.theme.darkBlue4,
-        borderWidth: 2,
-        borderRadius: 2,
-    },
-    videoList: {
-        marginBottom: 20,
-    },
-    listItemTitle: {
-        color: "white",
-        fontWeight: "bold",
-    },
-    listItemSubtitle: {
-        color: "white",
-    },
-    deleteButton: {
-        borderColor: "red",
-        borderWidth: 1,
-    },
-    deleteIcon: {
-        paddingTop: 5,
-        paddingBottom: 5,
-        paddingStart: 20,
-        paddingEnd: 20,
-    },
-});

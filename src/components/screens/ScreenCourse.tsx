@@ -13,7 +13,7 @@ import { ScreenCourseTabs } from "./course/ScreenCourseTabs";
 import { CourseContext, LocalizationContext } from "../Context";
 import { DrawerNavigationProp, DrawerScreenProps } from "@react-navigation/drawer";
 import { CourseStackParamList, RootDrawerParamList } from "../../constants/navigators/NavigationRoutes";
-import { VideoPoolComponent } from "../VideoPoolComponent";
+import { VideoPoolComponent } from "../videoPoolComponent/VideoPoolComponent";
 import { VideoComponent } from "../VideoComponent";
 import AuthenticationService from "../../services/AuthenticationService";
 import { ITREXRoles } from "../../constants/ITREXRoles";
