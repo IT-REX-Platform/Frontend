@@ -2,10 +2,6 @@ import { Platform } from "react-native";
 import "../../setupTests.ts";
 import { FilePickerService } from "../../src/services/FilePickerService";
 
-const getDocumentAsync = jest.fn();
-// const _pickDocument = jest.fn();
-const launchImageLibraryAsync = jest.fn();
-
 describe("test file picker service", () => {
     const filePicker: FilePickerService = new FilePickerService();
 
