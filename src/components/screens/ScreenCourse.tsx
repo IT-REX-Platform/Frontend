@@ -1,4 +1,4 @@
-import { RouteProp, useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { Text, StyleSheet } from "react-native";
 import { dark } from "../../constants/themes/dark";
@@ -16,10 +16,8 @@ import { CourseStackParamList, RootDrawerParamList } from "../../constants/navig
 import { VideoPoolComponent } from "../VideoPoolComponent";
 import { VideoComponent } from "../VideoComponent";
 import AuthenticationService from "../../services/AuthenticationService";
-import { ITREXRoles } from "../../constants/ITREXRoles";
 import i18n from "../../locales";
 import { VideoUploadComponent } from "../VideoUploadComponent";
-import CourseService from "../../services/CourseService";
 import { ScreenAddChapter } from "./course/ScreenAddChapter";
 
 export type ScreenCourseNavigationProp = DrawerNavigationProp<RootDrawerParamList, "ROUTE_COURSE_DETAILS">;
@@ -40,7 +38,6 @@ export const ScreenCourse: React.FC = () => {
     const [course, setCourse] = useState(courseInitial);
 
     const endpointsCourse: EndpointsCourse = new EndpointsCourse();
-    const courseService: CourseService = new CourseService();
 
     useEffect(() => {
         const request: RequestInit = RequestFactory.createGetRequest();

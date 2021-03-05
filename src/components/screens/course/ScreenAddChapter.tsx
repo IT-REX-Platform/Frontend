@@ -64,7 +64,7 @@ export const ScreenAddChapter: React.FC = () => {
 
     const course: ICourse = React.useContext(CourseContext);
 
-    const initialCourseName = chapterId == undefined ? "Mein neues Kapitel" : "";
+    const initialCourseName = chapterId == undefined ? i18n.t("itrex.myNewChapter") : "";
     const chapterEndpoint = new EndpointsChapter();
     const courseService = new CourseService();
     const [chapter, setChapter] = useState<IChapter>({} as IChapter);

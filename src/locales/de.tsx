@@ -83,5 +83,6 @@ export const de = {
         editMode: "Toggle Bearbeitungs-Modus",
         availableVideos: "Verfügbare Videos",
         chapterMaterial: "Kapitel Materialien",
+        myNewChapter: "Mein neues Kapitel",
     },
 };

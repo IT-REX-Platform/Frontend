@@ -18,6 +18,8 @@ import CourseService from "../../../services/CourseService";
 import AuthenticationService from "../../../services/AuthenticationService";
 import { ITREXRoles } from "../../../constants/ITREXRoles";
 import i18n from "../../../locales";
+import { EndpointsUserInfo } from "../../../api/endpoints/EndpointsUserInfo";
+import { RequestFactory } from "../../../api/requests/RequestFactory";
 
 export type ScreenCourseTimelineNavigationProp = CompositeNavigationProp<
     MaterialTopTabNavigationProp<CourseTabParamList, "TIMELINE">,
@@ -27,6 +29,7 @@ export type ScreenCourseTimelineNavigationProp = CompositeNavigationProp<
 export const ScreenCourseTimeline: React.FC = () => {
     const navigation = useNavigation<ScreenCourseTimelineNavigationProp>();
     const courseService: CourseService = new CourseService();
+    const userEndpoint = new EndpointsUserInfo();
 
     const [edit, setEdit] = useState(false);
 
@@ -52,15 +55,6 @@ export const ScreenCourseTimeline: React.FC = () => {
                 style={styles.image}
                 imageStyle={{ opacity: 0.5, position: "absolute", resizeMode: "contain" }}>
                 {lecturerEditMode()}
-                {myCourse.chapters?.length === 0 ? (
-                    <View>
-                        <Text style={styles.textStyle}>{i18n.t("itrex.noChapters")}</Text>
-                    </View>
-                ) : (
-                    myCourse.chapterObjects?.map((chapter) => (
-                        <ChapterComponent key={chapter.id} chapter={chapter} editMode={edit}></ChapterComponent>
-                    ))
-                )}
 
                 {edit && (
                     <View style={styles.addChapterContainer}>
@@ -77,6 +71,7 @@ export const ScreenCourseTimeline: React.FC = () => {
         </View>
     );
 
+    // eslint-disable-next-line complexity
     function lecturerEditMode() {
         console.log(myCourse);
         if (
@@ -84,16 +79,41 @@ export const ScreenCourseTimeline: React.FC = () => {
             AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_ADMIN)
         ) {
             return (
-                <View style={styles.editMode}>
-                    <Text style={styles.editModeText}>{i18n.t("itrex.editMode")}</Text>
-                    <Switch
-                        value={edit}
-                        onValueChange={() => {
-                            setEdit(!edit);
-                        }}></Switch>
-                </View>
+                <>
+                    <View style={styles.editMode}>
+                        <Text style={styles.editModeText}>{i18n.t("itrex.editMode")}</Text>
+                        <Switch
+                            value={edit}
+                            onValueChange={() => {
+                                setEdit(!edit);
+                            }}></Switch>
+                    </View>
+                    <View>
+                        {myCourse.chapters?.length === 0 ? (
+                            <View>
+                                {!edit && (
+                                    <View>
+                                        <Text style={styles.textStyle}>{i18n.t("itrex.noChapters")}</Text>
+                                    </View>
+                                )}
+                            </View>
+                        ) : (
+                            myCourse.chapterObjects?.map((chapter) => (
+                                <ChapterComponent key={chapter.id} chapter={chapter} editMode={edit}></ChapterComponent>
+                            ))
+                        )}
+                    </View>
+                </>
             );
         }
+    }
+
+    function getUserInfo() {
+        const getRequest: RequestInit = RequestFactory.createGetRequest();
+        console.log(getRequest);
+        userEndpoint.getUserInfo(getRequest).then((receivedUserInfo) => {
+            console.log(receivedUserInfo);
+        });
     }
 };
 
@@ -201,6 +221,7 @@ const styles = StyleSheet.create({
         height: 100,
     },
     textStyle: {
+        margin: 10,
         color: "white",
         fontWeight: "bold",
     },
