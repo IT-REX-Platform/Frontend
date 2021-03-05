@@ -279,42 +279,7 @@ export const ScreenAddChapter: React.FC = () => {
                     </View>
                     <View>
                         <Pressable style={{ margin: 5, width: 80 }}>
-                            <Button
-                                color={dark.Opacity.darkGreen}
-                                title="Save"
-                                onPress={() => {
-                                    const currContentList = [];
-                                    for (const content of contentList) {
-                                        if (content.id !== undefined) {
-                                            currContentList.push(content.id);
-                                        }
-                                    }
-
-                                    // Create new Chapter
-                                    if (chapterId == undefined) {
-                                        const myNewChapter: IChapter = {
-                                            title: chapterName,
-                                            startDate: startDate,
-                                            endDate: endDate,
-                                            courseId: course.id,
-                                            contents: currContentList,
-                                        };
-                                        courseService.createNewChapter(myNewChapter, course).then((chapter) => {
-                                            navigation.navigate("CHAPTER", { chapterId: chapter.id });
-                                        });
-                                    } else {
-                                        // Update an existing chapter
-                                        chapter.title = chapterName;
-                                        chapter.startDate = startDate;
-                                        chapter.endDate = endDate;
-
-                                        chapter.contents = currContentList;
-
-                                        const patchRequest: RequestInit = RequestFactory.createPatchRequest(chapter);
-                                        chapterEndpoint.patchChapter(patchRequest);
-                                    }
-                                }}
-                            />
+                            <Button color={dark.Opacity.darkGreen} title="Save" onPress={() => saveChapter()} />
                         </Pressable>
                     </View>
                 </View>
@@ -343,7 +308,7 @@ export const ScreenAddChapter: React.FC = () => {
                                 data={contentList}
                                 renderItem={listRemoveItem}
                                 keyExtractor={(item, index) => index.toString()}
-                                onDragEnd={({ to, from }) => moveContentOrder(to, from)}
+                                onDragEnd={({ to, from }) => reorderContent(to, from)}
                             />
                         </View>
                     </View>
@@ -353,14 +318,47 @@ export const ScreenAddChapter: React.FC = () => {
         </View>
     );
 
-    function reorder(from: number, to: number) {
-        console.log(contentList);
-        contentList.splice(to, 0, contentList.splice(from, 1)[0]);
-        console.log(contentList);
+    function saveChapter() {
+        const currContentList = [];
+        for (const content of contentList) {
+            if (content.id !== undefined) {
+                currContentList.push(content.id);
+            }
+        }
+
+        // Create new Chapter
+        if (chapterId == undefined) {
+            const myNewChapter: IChapter = {
+                title: chapterName,
+                startDate: startDate,
+                endDate: endDate,
+                courseId: course.id,
+                contents: currContentList,
+            };
+            courseService.createNewChapter(myNewChapter, course).then((chapter) => {
+                navigation.navigate("CHAPTER", { chapterId: chapter.id });
+            });
+        } else {
+            // Update an existing chapter
+            chapter.title = chapterName;
+            chapter.startDate = startDate;
+            chapter.endDate = endDate;
+
+            chapter.contents = currContentList;
+
+            const patchRequest: RequestInit = RequestFactory.createPatchRequest(chapter);
+            chapterEndpoint.patchChapter(patchRequest);
+        }
     }
 
-    function moveContentOrder(to: number, from: number) {
-        reorder(from, to);
+    /**
+     * Reorder the video objects in the content list, to save them in the correct order
+     *
+     * @param from
+     * @param to
+     */
+    function reorderContent(to: number, from: number) {
+        contentList.splice(to, 0, contentList.splice(from, 1)[0]);
     }
 
     /**

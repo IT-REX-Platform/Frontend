@@ -44,12 +44,12 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
             </View>
             {props.editMode && AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_LECTURER) && (
                 <View style={styles.chapterEditRow}>
-                    <TouchableOpacity
+                    {/**<TouchableOpacity
                         onPress={() => {
                             courseService.deleteChapter(chapter?.id);
                         }}>
                         <MaterialCommunityIcons name="trash-can" size={28} color="white" style={styles.icon} />
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
 
                     <TouchableOpacity
                         onPress={() => {
