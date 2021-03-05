@@ -11,9 +11,10 @@ import { Header } from "../constants/navigators/Header";
 import { LocalizationContext } from "./Context";
 import { NavigationRoutes, RootDrawerParamList } from "../constants/navigators/NavigationRoutes";
 import { CoursePublishState } from "../constants/CoursePublishState";
+import { IUser } from "../types/IUser";
+import { EndpointsUserInfo } from "../api/endpoints/EndpointsUserInfo";
 
 const loggerService = loggerFactory.getLogger("service.JoinCourseComponent");
-const endpointsCourse: EndpointsCourse = new EndpointsCourse();
 
 export type JoinCourseRouteProp = RouteProp<RootDrawerParamList, "ROUTE_JOIN_COURSE">;
 
@@ -21,14 +22,21 @@ export const JoinCourseComponent: React.FC = () => {
     React.useContext(LocalizationContext);
     const navigation = useNavigation();
 
+    const endpointsCourse: EndpointsCourse = new EndpointsCourse();
+    const endpointsUserInfo: EndpointsUserInfo = new EndpointsUserInfo();
+
     // const route = useRoute<JoinCourseRouteProp>();
 
     const [courseIdString, setCourseId] = useState("");
 
     const initialPublishedCourseState: ICourse[] = [];
     const [coursesPublished, setCoursesPublished] = useState(initialPublishedCourseState);
-
     useEffect(() => getPublishedCourses(), []);
+
+    const [user, setUserInfo] = useState<IUser>({});
+    useEffect(() => {
+        getUserInfo();
+    }, []);
 
     return (
         <ImageBackground source={require("../constants/images/Background2.png")} style={styles.image}>
@@ -59,16 +67,35 @@ export const JoinCourseComponent: React.FC = () => {
             });
     }
 
+    function getUserInfo(): void {
+        const request: RequestInit = RequestFactory.createGetRequest();
+        endpointsUserInfo.getUserInfo(request).then((userInfo) => {
+            setUserInfo(userInfo);
+        });
+    }
+
     function joinCourse(): void {
         const course: ICourse = {
             id: courseIdString,
         };
 
+        // Check for the course to join being published/available.
         if (coursesPublished.find((val) => val.id == courseIdString) === undefined) {
             alert(i18n.t("itrex.joinCourseNoCourseError"));
             return;
         }
 
+        // Check whether the user already joined the course.
+        if (user.courses !== undefined && user.courses[courseIdString] !== undefined) {
+            alert(i18n.t("itrex.joinCourseAlreadyMember"));
+
+            navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, {
+                courseId: courseIdString,
+            });
+            return;
+        }
+
+        // Do the request stuff.
         const request: RequestInit = RequestFactory.createPostRequest(course);
         endpointsCourse.joinCourse(request, courseIdString);
 
@@ -101,7 +128,7 @@ const styles = StyleSheet.create({
         borderColor: "lightgray",
         borderWidth: 2,
         color: "white",
-        minWidth: 196,
+        minWidth: 384,
     },
     styledButton: {
         margin: 5,
