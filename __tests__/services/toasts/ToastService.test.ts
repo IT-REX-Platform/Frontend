@@ -25,10 +25,6 @@ describe("test Web toast service", () => {
     it("check if toast method error is called", async () => {
         expect(toastWeb.error("error_msg")).toBe(undefined);
     });
-
-    it("check if toast method dismissAllToasts is called", async () => {
-        expect(toastWeb.dismissAllToasts()).toBe(undefined);
-    });
 });
 
 describe("test Android toast service", () => {
