@@ -2,6 +2,7 @@ import { loggerFactory } from "../../../logger/LoggerConfig";
 import { createAlert } from "../../helperScripts/createAlert";
 import { ICourse } from "../../types/ICourse";
 import { IVideo } from "../../types/IVideo";
+import { IUser } from "../../types/IUser";
 import i18n from "../../locales";
 import { IChapter } from "../../types/IChapter";
 
@@ -54,6 +55,33 @@ export class ResponseParser {
         });
     }
 
+    public static parseChapters(response: Promise<Response>): Promise<IChapter[]> {
+        return new Promise((resolve) => {
+            response
+                .then((response) => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        createAlert(i18n.t("itrex.chaptersNotfound"));
+                        ResponseParser.loggerApi.error("No courses data received.");
+                        resolve([]);
+                    }
+                })
+                .then((chapters: IChapter[]) => {
+                    chapters.forEach((chapter: IChapter) => {
+                        chapter.startDate = chapter.startDate ? new Date(chapter.startDate) : undefined;
+                        chapter.endDate = chapter.endDate ? new Date(chapter.endDate) : undefined;
+                    });
+                    resolve(chapters);
+                })
+                .catch((error) => {
+                    createAlert(i18n.t("itrex.chaptersNotfound"));
+                    ResponseParser.loggerApi.error("An error occurred while parsing courses data.", error);
+                    resolve([]);
+                });
+        });
+    }
+
     public static parseChapter(response: Promise<Response>): Promise<IChapter> {
         return new Promise((resolve) => {
             response
@@ -79,29 +107,21 @@ export class ResponseParser {
         });
     }
 
-    public static parseChapters(response: Promise<Response>): Promise<IChapter[]> {
+    public static async parseUserInfo(response: Promise<Response>): Promise<IUser> {
         return new Promise((resolve) => {
             response
                 .then((response) => {
-                    if (response.ok) {
-                        return response.json();
-                    } else {
-                        createAlert(i18n.t("itrex.chaptersNotfound"));
-                        ResponseParser.loggerApi.error("No courses data received.");
-                        resolve([]);
+                    if (!response.ok) {
+                        ResponseParser._checkResponseCode(response);
                     }
+                    return response.json();
                 })
-                .then((chapters: IChapter[]) => {
-                    chapters.forEach((chapter: IChapter) => {
-                        chapter.startDate = chapter.startDate ? new Date(chapter.startDate) : undefined;
-                        chapter.endDate = chapter.endDate ? new Date(chapter.endDate) : undefined;
-                    });
-                    resolve(chapters);
+                .then((user: IUser) => {
+                    resolve(user);
                 })
                 .catch((error) => {
-                    createAlert(i18n.t("itrex.chaptersNotfound"));
-                    ResponseParser.loggerApi.error("An error occurred while parsing courses data.", error);
-                    resolve([]);
+                    ResponseParser.loggerApi.error("An error occured while parsing user data.", error);
+                    resolve({});
                 });
         });
     }
