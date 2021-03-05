@@ -51,7 +51,7 @@ export const en = {
         lastLearned: "Last learned Course",
         imagePickerPermAlert: "Sorry, we need camera roll permissions to make this work!",
         videoPool: "Video Pool",
-        videoProperties: "Choose an MP4 video file of size up to 100MB.",
+        videoProperties: "Choose one or several MP4 file/s of size up to 100MB.",
         getAllVideos: "Get All Videos",
         video: "Video",
         videoNotFound: "No video found.",
