@@ -55,6 +55,15 @@ export const ScreenCourseTimeline: React.FC = () => {
                 style={styles.image}
                 imageStyle={{ opacity: 0.5, position: "absolute", resizeMode: "contain" }}>
                 {lecturerEditMode()}
+                {myCourse.chapters?.length === 0 ? (
+                    <View>
+                        <Text style={styles.textStyle}>{i18n.t("itrex.noChapters")}</Text>
+                    </View>
+                ) : (
+                    myCourse.chapterObjects?.map((chapter) => (
+                        <ChapterComponent key={chapter.id} chapter={chapter} editMode={edit}></ChapterComponent>
+                    ))
+                )}
 
                 {edit && (
                     <View style={styles.addChapterContainer}>
@@ -87,21 +96,6 @@ export const ScreenCourseTimeline: React.FC = () => {
                             onValueChange={() => {
                                 setEdit(!edit);
                             }}></Switch>
-                    </View>
-                    <View>
-                        {myCourse.chapters?.length === 0 ? (
-                            <View>
-                                {!edit && (
-                                    <View>
-                                        <Text style={styles.textStyle}>{i18n.t("itrex.noChapters")}</Text>
-                                    </View>
-                                )}
-                            </View>
-                        ) : (
-                            myCourse.chapterObjects?.map((chapter) => (
-                                <ChapterComponent key={chapter.id} chapter={chapter} editMode={edit}></ChapterComponent>
-                            ))
-                        )}
                     </View>
                 </>
             );
