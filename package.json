@@ -37,6 +37,7 @@
         "react-native": "~0.63.4",
         "react-native-appearance": "^0.3.4",
         "react-native-draggable": "^3.3.0",
+        "react-native-draggable-flatlist": "^2.5.4",
         "react-native-drax": "^0.7.2",
         "react-native-elements": "^3.2.0",
         "react-native-gesture-handler": "~1.8.0",

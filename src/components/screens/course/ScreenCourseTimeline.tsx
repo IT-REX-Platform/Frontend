@@ -56,9 +56,15 @@ export const ScreenCourseTimeline: React.FC = () => {
                 imageStyle={{ opacity: 0.5, position: "absolute", resizeMode: "contain" }}>
                 {lecturerEditMode()}
                 {myCourse.chapters?.length === 0 ? (
-                    <View>
-                        <Text style={styles.textStyle}>{i18n.t("itrex.noChapters")}</Text>
-                    </View>
+                    <>
+                        <View>
+                            {!edit && (
+                                <View>
+                                    <Text style={styles.textStyle}>{i18n.t("itrex.noChapters")}</Text>
+                                </View>
+                            )}
+                        </View>
+                    </>
                 ) : (
                     myCourse.chapterObjects?.map((chapter) => (
                         <ChapterComponent key={chapter.id} chapter={chapter} editMode={edit}></ChapterComponent>

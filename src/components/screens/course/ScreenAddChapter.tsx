@@ -34,6 +34,8 @@ import { EndpointsVideo } from "../../../api/endpoints/EndpointsVideo";
 import { loggerFactory } from "../../../../logger/LoggerConfig";
 import { calculateVideoSize } from "../../../services/calculateVideoSize";
 import { Event } from "@react-native-community/datetimepicker";
+import DraggableFlatList from "react-native-draggable-flatlist";
+import { createAlert } from "../../../helperScripts/createAlert";
 
 type ScreenCourseTabsNavigationProp = CompositeNavigationProp<
     StackNavigationProp<CourseStackParamList, "CHAPTER">,
@@ -72,6 +74,7 @@ export const ScreenAddChapter: React.FC = () => {
     const [chapterName, setChapterName] = useState<string | undefined>(initialCourseName);
 
     const [contentList, setContentList] = useState<IVideo[]>([]);
+    const [data, setData] = useState(contentList);
 
     const [videoPoolList, setVideoPoolList] = useState<IVideo[]>([]);
 
@@ -137,7 +140,7 @@ export const ScreenAddChapter: React.FC = () => {
     };
 
     // Creates a list for the left side, so that videos can be removed
-    const listRemoveItem = ({ item }: { item: IVideo }) => (
+    const listRemoveItem = ({ item, drag }: { item: IVideo; drag: undefined }) => (
         <View>
             <ListItem
                 containerStyle={{
@@ -153,13 +156,20 @@ export const ScreenAddChapter: React.FC = () => {
                 <MaterialCommunityIcons name="video-vintage" size={28} color="white" />
 
                 <ListItem.Content>
-                    <ListItem.Title style={styles.listItemTitle} numberOfLines={1} lineBreakMode="tail">
-                        {item.title}
-                    </ListItem.Title>
-                    <ListItem.Subtitle style={styles.listItemSubtitle}>
-                        {calculateVideoSize(item.length)}
-                    </ListItem.Subtitle>
+                    <TouchableOpacity onLongPress={drag}>
+                        <ListItem.Title style={styles.listItemTitle} numberOfLines={1} lineBreakMode="tail">
+                            {item.title}
+                        </ListItem.Title>
+                        <ListItem.Subtitle style={styles.listItemSubtitle}>
+                            {calculateVideoSize(item.length)}
+                        </ListItem.Subtitle>
+                    </TouchableOpacity>
                 </ListItem.Content>
+                <ListItem.Chevron
+                    onPress={() => {
+                        navigation.navigate("VIDEO", { video: item });
+                    }}
+                />
             </ListItem>
         </View>
     );
@@ -185,6 +195,11 @@ export const ScreenAddChapter: React.FC = () => {
                 </ListItem.Title>
                 <ListItem.Subtitle style={styles.listItemSubtitle}>{calculateVideoSize(item.length)}</ListItem.Subtitle>
             </ListItem.Content>
+            <ListItem.Chevron
+                onPress={() => {
+                    navigation.navigate("VIDEO", { video: item });
+                }}
+            />
         </ListItem>
     );
 
@@ -329,12 +344,13 @@ export const ScreenAddChapter: React.FC = () => {
                 <View style={styles.videoContainer}>
                     <View style={styles.sequenceArea}>
                         <View style={styles.containerTop}>
-                            <FlatList
+                            <DraggableFlatList
                                 style={styles.list}
                                 showsVerticalScrollIndicator={false}
                                 data={contentList}
                                 renderItem={listRemoveItem}
                                 keyExtractor={(item, index) => index.toString()}
+                                onDragEnd={({ data, to, from }) => moveContentOrder(to, from)}
                             />
                         </View>
                     </View>
@@ -343,6 +359,16 @@ export const ScreenAddChapter: React.FC = () => {
             </ImageBackground>
         </View>
     );
+
+    function reorder(from: number, to: number) {
+        console.log(contentList);
+        contentList.splice(to, 0, contentList.splice(from, 1)[0]);
+        console.log(contentList);
+    }
+
+    function moveContentOrder(to: number, from: number) {
+        reorder(from, to);
+    }
 
     /**
      * Method gets all videos belonging to specified course ID.
