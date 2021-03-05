@@ -14,7 +14,7 @@ describe("test video as FormData service", () => {
         const courseId = "course_ID";
 
         const expectedFormData = new jsdom.window.FormData();
-        expectedFormData.append(VideoFormDataParams.PARAM_VIDEO_FILE, videoBlob, videoFile.name);
+        expectedFormData.append(VideoFormDataParams.PARAM_VIDEO_FILE, videoFile, videoFile.name);
         expectedFormData.append(VideoFormDataParams.PARAM_COURSE_ID, courseId);
 
         expect(buildVideoAsFormData(videoFile, courseId)).toBe(expectedFormData);
