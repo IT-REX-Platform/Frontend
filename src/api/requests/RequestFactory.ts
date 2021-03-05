@@ -19,7 +19,13 @@ export class RequestFactory {
         return request;
     }
 
-    public static createPostRequest(object: ICourse | IVideo): RequestInit {
+    public static createPostRequestWithoutBody(): RequestInit {
+        const request = RequestAuthorization.createAuthorizedRequest();
+        request.method = "POST";
+        return request;
+    }
+
+    public static createPostRequestWithBody(object: ICourse | IVideo): RequestInit {
         return RequestFactory.createRequestWithJson("POST", object);
     }
 

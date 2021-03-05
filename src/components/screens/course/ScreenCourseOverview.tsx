@@ -205,7 +205,7 @@ export const ScreenCourseOverview: React.FC = () => {
 
     function leaveCourse() {
         if (course.id !== undefined) {
-            const request: RequestInit = RequestFactory.createPostRequest(course);
+            const request: RequestInit = RequestFactory.createPostRequestWithoutBody();
             endpointsCourse.leaveCourse(request, course.id);
 
             navigation.navigate("ROUTE_HOME");

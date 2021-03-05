@@ -75,10 +75,6 @@ export const JoinCourseComponent: React.FC = () => {
     }
 
     function joinCourse(): void {
-        const course: ICourse = {
-            id: courseIdString,
-        };
-
         // Check for the course to join being published/available.
         if (coursesPublished.find((val) => val.id == courseIdString) === undefined) {
             alert(i18n.t("itrex.joinCourseNoCourseError"));
@@ -96,7 +92,7 @@ export const JoinCourseComponent: React.FC = () => {
         }
 
         // Do the request stuff.
-        const request: RequestInit = RequestFactory.createPostRequest(course);
+        const request: RequestInit = RequestFactory.createPostRequestWithoutBody();
         endpointsCourse.joinCourse(request, courseIdString);
 
         navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, {
