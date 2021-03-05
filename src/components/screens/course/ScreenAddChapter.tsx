@@ -35,7 +35,6 @@ import { loggerFactory } from "../../../../logger/LoggerConfig";
 import { calculateVideoSize } from "../../../services/calculateVideoSize";
 import { Event } from "@react-native-community/datetimepicker";
 import DraggableFlatList from "react-native-draggable-flatlist";
-import { createAlert } from "../../../helperScripts/createAlert";
 
 type ScreenCourseTabsNavigationProp = CompositeNavigationProp<
     StackNavigationProp<CourseStackParamList, "CHAPTER">,
@@ -74,7 +73,6 @@ export const ScreenAddChapter: React.FC = () => {
     const [chapterName, setChapterName] = useState<string | undefined>(initialCourseName);
 
     const [contentList, setContentList] = useState<IVideo[]>([]);
-    const [data, setData] = useState(contentList);
 
     const [videoPoolList, setVideoPoolList] = useState<IVideo[]>([]);
 
@@ -310,11 +308,6 @@ export const ScreenAddChapter: React.FC = () => {
                                         chapter.startDate = startDate;
                                         chapter.endDate = endDate;
 
-                                        /* Kann mir mal bitte jemand erklären was das Problem von dem Linter da ist ???????
-                                        const currContentList: string[] | undefined = contentList
-                                            .filter((content) => content.id !== undefined)
-                                            .map((item) => item.id);
-                                        */
                                         chapter.contents = currContentList;
 
                                         const patchRequest: RequestInit = RequestFactory.createPatchRequest(chapter);
@@ -350,7 +343,7 @@ export const ScreenAddChapter: React.FC = () => {
                                 data={contentList}
                                 renderItem={listRemoveItem}
                                 keyExtractor={(item, index) => index.toString()}
-                                onDragEnd={({ data, to, from }) => moveContentOrder(to, from)}
+                                onDragEnd={({ to, from }) => moveContentOrder(to, from)}
                             />
                         </View>
                     </View>

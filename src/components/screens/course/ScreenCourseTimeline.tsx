@@ -18,8 +18,6 @@ import CourseService from "../../../services/CourseService";
 import AuthenticationService from "../../../services/AuthenticationService";
 import { ITREXRoles } from "../../../constants/ITREXRoles";
 import i18n from "../../../locales";
-import { EndpointsUserInfo } from "../../../api/endpoints/EndpointsUserInfo";
-import { RequestFactory } from "../../../api/requests/RequestFactory";
 
 export type ScreenCourseTimelineNavigationProp = CompositeNavigationProp<
     MaterialTopTabNavigationProp<CourseTabParamList, "TIMELINE">,
@@ -29,7 +27,6 @@ export type ScreenCourseTimelineNavigationProp = CompositeNavigationProp<
 export const ScreenCourseTimeline: React.FC = () => {
     const navigation = useNavigation<ScreenCourseTimelineNavigationProp>();
     const courseService: CourseService = new CourseService();
-    const userEndpoint = new EndpointsUserInfo();
 
     const [edit, setEdit] = useState(false);
 
@@ -106,14 +103,6 @@ export const ScreenCourseTimeline: React.FC = () => {
                 </>
             );
         }
-    }
-
-    function getUserInfo() {
-        const getRequest: RequestInit = RequestFactory.createGetRequest();
-        console.log(getRequest);
-        userEndpoint.getUserInfo(getRequest).then((receivedUserInfo) => {
-            console.log(receivedUserInfo);
-        });
     }
 };
 

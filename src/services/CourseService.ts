@@ -80,7 +80,7 @@ export default class CourseService {
                     };
 
                     const patchRequest: RequestInit = RequestFactory.createPatchRequest(partialCourse);
-                    courseEndpoint.patchCourse(patchRequest).then((newCourse) => {
+                    courseEndpoint.patchCourse(patchRequest).then(() => {
                         resolve(chapter);
                     });
                 })

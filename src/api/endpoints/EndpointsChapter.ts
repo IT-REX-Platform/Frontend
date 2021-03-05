@@ -1,9 +1,7 @@
-import { ICourse } from "../../types/ICourse";
 import { sendRequest } from "./sendRequest";
 import { itRexVars } from "../../constants/Constants";
 import { ApiUrls } from "../../constants/ApiUrls";
 import { loggerFactory } from "../../../logger/LoggerConfig";
-import { CourseUrlParams } from "../../constants/CourseUrlParams";
 import { ResponseParser } from "./ResponseParser";
 import { IEndpointsChapter } from "../endpoints_interfaces/IEndpointsChapter";
 import { IChapter } from "../../types/IChapter";
