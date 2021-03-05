@@ -1,5 +1,5 @@
 import { CompositeNavigationProp, useNavigation } from "@react-navigation/native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Text, ImageBackground, StyleSheet, Button, View, Pressable } from "react-native";
 import { dark } from "../../../constants/themes/dark";
 import { ICourse } from "../../../types/ICourse";
@@ -20,6 +20,9 @@ import { EndpointsCourse } from "../../../api/endpoints/EndpointsCourse";
 import { loggerFactory } from "../../../../logger/LoggerConfig";
 import AuthenticationService from "../../../services/AuthenticationService";
 import { ITREXRoles } from "../../../constants/ITREXRoles";
+import { EndpointsUserInfo } from "../../../api/endpoints/EndpointsUserInfo";
+import { CourseRoles } from "../../../constants/CourseRoles";
+import { IUser } from "../../../types/IUser";
 
 export type ScreenCourseOverviewNavigationProp = CompositeNavigationProp<
     MaterialTopTabNavigationProp<CourseTabParamList, "OVERVIEW">,
@@ -29,15 +32,19 @@ export type ScreenCourseOverviewNavigationProp = CompositeNavigationProp<
 //export type ScreenCourseTabsRouteProp = RouteProp<CourseStackParamList, "INFO">;
 //export type ScreenCourseTabsProps = StackScreenProps<CourseStackParamList, "INFO">;
 
-const endpointsCourse: EndpointsCourse = new EndpointsCourse();
-
 export const ScreenCourseOverview: React.FC = () => {
     const navigation = useNavigation<ScreenCourseOverviewNavigationProp>();
 
     React.useContext(LocalizationContext);
     const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");
     const endpointsCourse: EndpointsCourse = new EndpointsCourse();
+    const endpointsUserInfo: EndpointsUserInfo = new EndpointsUserInfo();
     const course: ICourse = React.useContext(CourseContext);
+
+    const [user, setUserInfo] = useState<IUser>({});
+    useEffect(() => {
+        getUserInfo();
+    }, []);
 
     return (
         <>
@@ -46,7 +53,7 @@ export const ScreenCourseOverview: React.FC = () => {
                     <View style={styles.content}>
                         <View style={styles.content}>{getPublishedSate(course.publishState)} </View>
 
-                        <Button title={i18n.t("itrex.leaveCourse")} onPress={() => leaveCourse()} />
+                        {checkForLeaveCourse()}
 
                         <Text style={styles.textWhite}>{course.courseDescription}</Text>
 
@@ -63,6 +70,34 @@ export const ScreenCourseOverview: React.FC = () => {
                 <Text style={{ fontWeight: "bold" }}>{title}</Text> {dateConverter(showDate)}
             </Text>
         );
+    }
+
+    function getUserInfo() {
+        const request: RequestInit = RequestFactory.createGetRequest();
+        endpointsUserInfo.getUserInfo(request).then((userInfo) => {
+            setUserInfo(userInfo);
+        });
+    }
+
+    function checkForLeaveCourse() {
+        if (user.courses === undefined || course.id === undefined) {
+            return <></>;
+        }
+
+        const courseRole = user.courses[course.id];
+        if (courseRole !== CourseRoles.OWNER) {
+            return (
+                <View style={[{ width: "20%", marginTop: 15 }]}>
+                    <Button
+                        color={dark.Opacity.pink}
+                        title={i18n.t("itrex.leaveCourse")}
+                        onPress={() => leaveCourse()}
+                    />
+                </View>
+            );
+        }
+
+        return <></>;
     }
 
     function uploadViedeoAsOwner() {
