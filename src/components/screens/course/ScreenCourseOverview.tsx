@@ -20,7 +20,6 @@ import { EndpointsCourse } from "../../../api/endpoints/EndpointsCourse";
 import { loggerFactory } from "../../../../logger/LoggerConfig";
 import AuthenticationService from "../../../services/AuthenticationService";
 import { ITREXRoles } from "../../../constants/ITREXRoles";
-import { EndpointsUserInfo } from "../../../api/endpoints/EndpointsUserInfo";
 import { CourseRoles } from "../../../constants/CourseRoles";
 import { IUser } from "../../../types/IUser";
 
@@ -38,12 +37,11 @@ export const ScreenCourseOverview: React.FC = () => {
     React.useContext(LocalizationContext);
     const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");
     const endpointsCourse: EndpointsCourse = new EndpointsCourse();
-    const endpointsUserInfo: EndpointsUserInfo = new EndpointsUserInfo();
     const course: ICourse = React.useContext(CourseContext);
 
     const [user, setUserInfo] = useState<IUser>({});
     useEffect(() => {
-        getUserInfo();
+        AuthenticationService.getInstance().getUserInfo(setUserInfo);
     }, []);
 
     return (
@@ -70,13 +68,6 @@ export const ScreenCourseOverview: React.FC = () => {
                 <Text style={{ fontWeight: "bold" }}>{title}</Text> {dateConverter(showDate)}
             </Text>
         );
-    }
-
-    function getUserInfo() {
-        const request: RequestInit = RequestFactory.createGetRequest();
-        endpointsUserInfo.getUserInfo(request).then((userInfo) => {
-            setUserInfo(userInfo);
-        });
     }
 
     function checkForLeaveCourse() {

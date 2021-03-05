@@ -12,7 +12,7 @@ import { LocalizationContext } from "./Context";
 import { NavigationRoutes, RootDrawerParamList } from "../constants/navigators/NavigationRoutes";
 import { CoursePublishState } from "../constants/CoursePublishState";
 import { IUser } from "../types/IUser";
-import { EndpointsUserInfo } from "../api/endpoints/EndpointsUserInfo";
+import AuthenticationService from "../services/AuthenticationService";
 
 const loggerService = loggerFactory.getLogger("service.JoinCourseComponent");
 
@@ -23,7 +23,6 @@ export const JoinCourseComponent: React.FC = () => {
     const navigation = useNavigation();
 
     const endpointsCourse: EndpointsCourse = new EndpointsCourse();
-    const endpointsUserInfo: EndpointsUserInfo = new EndpointsUserInfo();
 
     // const route = useRoute<JoinCourseRouteProp>();
 
@@ -35,7 +34,7 @@ export const JoinCourseComponent: React.FC = () => {
 
     const [user, setUserInfo] = useState<IUser>({});
     useEffect(() => {
-        getUserInfo();
+        AuthenticationService.getInstance().getUserInfo(setUserInfo);
     }, []);
 
     return (
@@ -65,13 +64,6 @@ export const JoinCourseComponent: React.FC = () => {
             .then((receivedCoursesPublished) => {
                 setCoursesPublished(receivedCoursesPublished);
             });
-    }
-
-    function getUserInfo(): void {
-        const request: RequestInit = RequestFactory.createGetRequest();
-        endpointsUserInfo.getUserInfo(request).then((userInfo) => {
-            setUserInfo(userInfo);
-        });
     }
 
     function joinCourse(): void {
