@@ -19,6 +19,10 @@ export class ToastService implements IToasts {
         this._createToastWeb(msg, "error", autoClose);
     }
 
+    public dismissAllToasts(): void {
+        toast.dismiss();
+    }
+
     private _createToastWeb(msg: string, type: TypeOptions, autoClose?: number | false): void {
         toast(msg, {
             type: type,
