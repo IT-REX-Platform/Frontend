@@ -14,6 +14,7 @@ import { DrawerContent } from "./DrawerContent";
 import { ScreenCourse } from "../../components/screens/ScreenCourse";
 import { dark } from "../themes/dark";
 import { CreateCourseComponent } from "../../components/CreateCourseComponent";
+import { JoinCourseComponent } from "../../components/JoinCourseComponent";
 
 const Drawer = createDrawerNavigator<RootDrawerParamList>();
 
@@ -33,6 +34,11 @@ export const DrawerNavigator: React.FC = () => {
             drawerContent={(props) => <DrawerContent {...props}></DrawerContent>}>
             {getHomeScreen()}
             {getCreateCourseScreen()}
+            <Drawer.Screen
+                name="ROUTE_JOIN_COURSE"
+                component={JoinCourseComponent}
+                options={{ title: i18n.t("itrex.joinCourse") }}
+            />
             <Drawer.Screen
                 name="ROUTE_COURSE_DETAILS"
                 component={ScreenCourse}
