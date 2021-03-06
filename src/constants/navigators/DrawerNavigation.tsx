@@ -35,7 +35,7 @@ export const DrawerNavigator: React.FC = () => {
             {_gotoHomeScreen()}
             {_gotoCreateCourseScreen()}
             {_gotoJoinCourse()}
-            {_gotoLastVisitedCourse()}
+            {_gotoLastAccessedCourse()}
         </Drawer.Navigator>
     );
 };
@@ -98,13 +98,13 @@ function _gotoJoinCourse() {
     );
 }
 
-function _gotoLastVisitedCourse() {
+function _gotoLastAccessedCourse() {
     return (
         <Drawer.Screen
             name="ROUTE_COURSE_DETAILS"
             component={ScreenCourse}
             options={{
-                title: i18n.t("itrex.lastVisited"),
+                title: i18n.t("itrex.lastAccessedCourse"),
                 drawerIcon: () => <MaterialIcons name="skip-previous" size={28} color="white" />,
             }}
         />

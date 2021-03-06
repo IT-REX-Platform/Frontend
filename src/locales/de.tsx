@@ -52,7 +52,7 @@ export const de = {
         courseTabTimeline: "Zeitachse",
         myCoursesDivider: "Meine Kurse",
         fastSettings: "Kurzeinstellung",
-        lastVisited: "Zuletzt besuchter Kurs",
+        lastAccessedCourse: "Zuletzt besuchter Kurs",
         imagePickerPermAlert: "Entschuldigung, wir benötigen die Kamera-Berechtigung, damit das funktioniert!",
         noCoursesLecturer: "Bisher wurden keine Kurse erstellt!",
         noCoursesStudent: "Bisher wurde keinem Kursen beigetreten!",

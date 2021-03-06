@@ -52,7 +52,7 @@ export const en = {
         courseTabTimeline: "Timeline",
         myCoursesDivider: "My Courses",
         fastSettings: "Fast settings",
-        lastVisited: "Last visited course",
+        lastAccessedCourse: "Last accessed course",
         imagePickerPermAlert: "Sorry, we need camera roll permissions to make this work!",
         videoPool: "Video Pool",
         videoProperties: "Choose one or several MP4 file/s of size up to 100MB.",
