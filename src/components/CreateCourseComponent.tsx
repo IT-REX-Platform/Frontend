@@ -62,6 +62,8 @@ export const CreateCourseComponent: React.FC = () => {
                     <View style={styles.pageContainer} />
                     <View style={styles.styledInputContainer}>
                         <Text style={styles.textSytle}>{i18n.t("itrex.enterCourseName")}</Text>
+                    </View>
+                    <View style={styles.styledInputContainer}>
                         <TextInput
                             style={styles.styledTextInput}
                             onChangeText={(text: string) => setCourseName(text)}
@@ -69,12 +71,14 @@ export const CreateCourseComponent: React.FC = () => {
                     </View>
                     <View style={styles.styledInputContainer}>
                         <Text style={styles.textSytle}>{i18n.t("itrex.enterCourseDescription")}</Text>
+                    </View>
+                    <View style={styles.styledInputContainer}>
                         <TextInput
                             style={styles.styledTextInput}
                             onChangeText={(text: string) => setCourseDescription(text)}
                             testID="courseDescriptionInput"></TextInput>
                     </View>
-                    <View style={styles.styledInputContainer}>
+                    <View style={[styles.styledInputContainer, styles.separator]}>
                         <DatePickerComponent
                             title={i18n.t("itrex.startDate")}
                             date={startDate}
@@ -153,11 +157,16 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "center",
     },
+    separator: {
+        marginTop: 20,
+    },
     styledTextInput: {
         color: "white",
-        marginLeft: 8,
         borderColor: "lightgray",
         borderWidth: 2,
+        borderRadius: 5,
+        height: 30,
+        width: 200,
     },
     item: {
         padding: 10,
@@ -166,5 +175,6 @@ const styles = StyleSheet.create({
     },
     textSytle: {
         color: "white",
+        fontSize: 18,
     },
 });

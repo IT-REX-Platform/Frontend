@@ -13,6 +13,7 @@ import { NavigationRoutes, RootDrawerParamList } from "../constants/navigators/N
 import { CoursePublishState } from "../constants/CoursePublishState";
 import { IUser } from "../types/IUser";
 import AuthenticationService from "../services/AuthenticationService";
+import { TextButton } from "./UIElements/TextButton";
 
 const loggerService = loggerFactory.getLogger("service.JoinCourseComponent");
 
@@ -42,16 +43,23 @@ export const JoinCourseComponent: React.FC = () => {
             <ScrollView>
                 <View style={styles.container}>
                     <Header title={i18n.t("itrex.joinCourse")} />
-                    <View style={styles.styledInputContainer}>
+                    <View style={[styles.styledInputContainer, styles.separator]}>
                         <Text style={styles.textSytle}>{i18n.t("itrex.enterCouseId")}</Text>
+                    </View>
+                    <View style={styles.styledInputContainer}>
                         <TextInput
                             style={styles.styledTextInput}
                             onChangeText={(id: string) => setCourseId(id)}
                             testID="courseIdInput"></TextInput>
                     </View>
-                    <Pressable style={styles.styledButton}>
-                        <Button title={i18n.t("itrex.joinCourse")} onPress={joinCourse}></Button>
-                    </Pressable>
+                    <View style={styles.styledInputContainer}>
+                        <View style={[{ width: "20%", margin: 5 }]}>
+                            <TextButton
+                                title={i18n.t("itrex.joinCourse")}
+                                size={"small"}
+                                onPress={joinCourse}></TextButton>
+                        </View>
+                    </View>
                 </View>
             </ScrollView>
         </ImageBackground>
@@ -111,12 +119,16 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "center",
     },
+    separator: {
+        marginTop: 20,
+    },
     styledTextInput: {
-        marginLeft: 8,
         borderColor: "lightgray",
         borderWidth: 2,
         color: "white",
         minWidth: 384,
+        borderRadius: 5,
+        height: 30,
     },
     styledButton: {
         margin: 5,
@@ -128,5 +140,6 @@ const styles = StyleSheet.create({
     },
     textSytle: {
         color: "white",
+        fontSize: 18,
     },
 });
