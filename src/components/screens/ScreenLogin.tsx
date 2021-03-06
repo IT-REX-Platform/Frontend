@@ -93,6 +93,7 @@ export const ScreenLogin: React.FC = () => {
                         />
                     )}
                 </View>
+                {/* IT-Rex */}
                 <Image source={require("../../constants/images/ITRex-Login.png")} style={[styles.itrex]}></Image>
             </View>
         </View>
