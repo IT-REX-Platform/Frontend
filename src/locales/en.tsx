@@ -16,7 +16,7 @@ export const en = {
         enterCourseName: "Enter Course name:",
         enterCourseDescription: "Enter Course description:",
         createCourse: "Create new course",
-        joinCourse: "Join Course",
+        joinCourse: "Join course",
         joinCourseNoCourseError: "Joining course failed! No published course with that id could be found.",
         joinCourseAlreadyMember: "You are already a member of this course. You will be redirected...",
         leaveCourse: "Leave Course",

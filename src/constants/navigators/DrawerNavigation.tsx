@@ -32,19 +32,15 @@ export const DrawerNavigator: React.FC = () => {
                 inactiveBackgroundColor: dark.theme.darkBlue2,
             }}
             drawerContent={(props) => <DrawerContent {...props} />}>
-            {_getHomeScreen()}
-            {_getCreateCourseScreen()}
-            <Drawer.Screen
-                name="ROUTE_JOIN_COURSE"
-                component={JoinCourseComponent}
-                options={{ title: i18n.t("itrex.joinCourse") }}
-            />
-            {_lastVisitedCourse()}
+            {_gotoHomeScreen()}
+            {_gotoCreateCourseScreen()}
+            {_gotoJoinCourse()}
+            {_gotoLastVisitedCourse()}
         </Drawer.Navigator>
     );
 };
 
-function _getHomeScreen() {
+function _gotoHomeScreen() {
     const userRole: string[] = AuthenticationService.getInstance().getRoles();
     switch (true) {
         case userRole.includes(ITREXRoles.ROLE_ADMIN):
@@ -71,7 +67,7 @@ function _homeScreen(homeScreenType: React.FC) {
     );
 }
 
-function _getCreateCourseScreen() {
+function _gotoCreateCourseScreen() {
     if (
         AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_ADMIN) ||
         AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_LECTURER)
@@ -82,14 +78,27 @@ function _getCreateCourseScreen() {
                 component={CreateCourseComponent}
                 options={{
                     title: i18n.t("itrex.createCourse"),
-                    drawerIcon: () => <MaterialIcons name="add" size={28} color="white" />,
+                    drawerIcon: () => <MaterialIcons name="note-add" size={28} color="white" />,
                 }}
             />
         );
     }
 }
 
-function _lastVisitedCourse() {
+function _gotoJoinCourse() {
+    return (
+        <Drawer.Screen
+            name="ROUTE_JOIN_COURSE"
+            component={JoinCourseComponent}
+            options={{
+                title: i18n.t("itrex.joinCourse"),
+                drawerIcon: () => <MaterialIcons name="add" size={28} color="white" />,
+            }}
+        />
+    );
+}
+
+function _gotoLastVisitedCourse() {
     return (
         <Drawer.Screen
             name="ROUTE_COURSE_DETAILS"
