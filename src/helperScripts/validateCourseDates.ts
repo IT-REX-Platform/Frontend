@@ -1,19 +1,22 @@
-import { createAlert } from "./createAlert";
+import { ToastService } from "../services/toasts/ToastService";
+import i18n from "../locales";
 
 // eslint-disable-next-line complexity
 export function validateCourseDates(startDate: Date | undefined, endDate: Date | undefined): boolean {
+    const toast: ToastService = new ToastService();
+
     if (!isValidDate(startDate)) {
-        createAlert("startDate is undefined");
+        toast.warn(i18n.t("itrex.noStartDate"));
         return false;
     }
     if (!isValidDate(endDate)) {
-        createAlert("endDate is undefined");
+        toast.warn(i18n.t("itrex.noEndDate"));
         return false;
     }
 
     if (endDate && startDate) {
         if (endDate < startDate) {
-            createAlert("startDate can't be higher than endDate");
+            toast.warn(i18n.t("itrex.startDateInvalid"));
             return false;
         }
     }

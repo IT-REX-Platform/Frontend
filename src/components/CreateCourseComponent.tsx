@@ -14,12 +14,15 @@ import { Header } from "../constants/navigators/Header";
 import { LocalizationContext } from "./Context";
 import { Event } from "@react-native-community/datetimepicker";
 import { dark } from "../constants/themes/dark";
+import { ToastService } from "../services/toasts/ToastService";
 
 const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");
 const endpointsCourse: EndpointsCourse = new EndpointsCourse();
 
 export const CreateCourseComponent: React.FC = () => {
     React.useContext(LocalizationContext);
+
+    const toast: ToastService = new ToastService();
 
     // Enter course name to create course
     const [courseName, setCourseName] = useState("");
@@ -93,7 +96,7 @@ export const CreateCourseComponent: React.FC = () => {
                             <Button
                                 color={dark.Opacity.blueGreen}
                                 title={i18n.t("itrex.createCourse")}
-                                onPress={createCourse}
+                                onPress={_createCourse}
                             />
                         </View>
                     </View>
@@ -103,7 +106,7 @@ export const CreateCourseComponent: React.FC = () => {
     );
 
     // eslint-disable-next-line complexity
-    function createCourse(): void {
+    function _createCourse(): void {
         loggerService.trace(`Validating course name: ${courseName}.`);
 
         if (validateCourseName(courseName) == false) {
@@ -131,7 +134,10 @@ export const CreateCourseComponent: React.FC = () => {
 
         loggerService.trace(`Creating course: name=${courseName}.`);
         const postRequest: RequestInit = RequestFactory.createPostRequestWithBody(course);
-        endpointsCourse.createCourse(postRequest).then((data) => console.log(data));
+        endpointsCourse.createCourse(postRequest).then((data) => {
+            toast.success(i18n.t("itrex.courseCreated") + courseName);
+            console.log(data);
+        });
     }
 };
 
