@@ -116,6 +116,7 @@ export const CreateCourseComponent: React.FC = () => {
 
         if (validateCourseDescription(courseDescription) == false) {
             loggerService.warn("Course description invalid.");
+            return;
         }
 
         // Validate start/end Date
