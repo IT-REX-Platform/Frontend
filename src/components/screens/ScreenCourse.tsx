@@ -23,8 +23,8 @@ export type ScreenCourseProps = DrawerScreenProps<RootDrawerParamList, "ROUTE_CO
 const CourseStack = createStackNavigator<CourseStackParamList>();
 
 export const ScreenCourse: React.FC = () => {
-    const navigation = useNavigation<ScreenCourseNavigationProp>();
-    const route = useRoute<ScreenCourseRouteProp>();
+    const navigation: ScreenCourseNavigationProp = useNavigation<ScreenCourseNavigationProp>();
+    const route: ScreenCourseRouteProp = useRoute<ScreenCourseRouteProp>();
 
     const courseId = route.params.courseId;
 

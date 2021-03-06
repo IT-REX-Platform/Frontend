@@ -46,28 +46,28 @@ export const DrawerContent: React.FC<DrawerContentComponentProps> = (props: Draw
 
     const { signOut } = React.useContext(AuthContext);
 
-    if (courses.length > 0) {
-        for (const course of courses) {
-            drawerItems.push(
-                <DrawerItem
-                    {...props}
-                    icon={() => <MaterialCommunityIcons name="notebook-outline" size={28} color="white" />}
-                    label={course.name + ""}
-                    key={course.id}
-                    onPress={() => {
-                        console.log("Course Details");
-                        navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, { courseId: course.id });
-                    }}
-                />
-            );
-        }
-    } else {
+    useEffect(() => {
+        _getAllCourses();
+    }, []);
+
+    if (courses.length < 1) {
         _displayNoCourses();
     }
 
-    useEffect(() => {
-        getAllCourses();
-    }, []);
+    for (const course of courses) {
+        drawerItems.push(
+            <DrawerItem
+                {...props}
+                icon={() => <MaterialCommunityIcons name="notebook-outline" size={28} color="white" />}
+                label={course.name + ""}
+                key={course.id}
+                onPress={() => {
+                    console.log("Course Details");
+                    navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, { courseId: course.id });
+                }}
+            />
+        );
+    }
 
     return (
         <>
@@ -102,12 +102,10 @@ export const DrawerContent: React.FC<DrawerContentComponentProps> = (props: Draw
         </>
     );
 
-    function getAllCourses(): void {
+    function _getAllCourses(): void {
         loggerService.trace("Getting all courses.");
         const request: RequestInit = RequestFactory.createGetRequest();
-        endpointsCourse.getAllCourses(request).then((receivedCourses) => {
-            setCourses(receivedCourses);
-        });
+        endpointsCourse.getAllCourses(request).then((receivedCourses) => setCourses(receivedCourses));
     }
 
     function _displayNoCourses() {
@@ -159,10 +157,8 @@ const styles = StyleSheet.create({
         margin: 5,
     },
     textNoCourses: {
-        alignContent: "center",
-        justifyContent: "center",
-        marginLeft: 25,
-        fontSize: 15,
+        alignSelf: "center",
+        margin: 5,
         color: "white",
     },
 });
