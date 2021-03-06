@@ -1,5 +1,5 @@
 import { CompositeNavigationProp, useNavigation } from "@react-navigation/native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Text, ImageBackground, StyleSheet, Button, View, Pressable } from "react-native";
 import { dark } from "../../../constants/themes/dark";
 import { ICourse } from "../../../types/ICourse";
@@ -21,6 +21,8 @@ import { loggerFactory } from "../../../../logger/LoggerConfig";
 import AuthenticationService from "../../../services/AuthenticationService";
 import { ITREXRoles } from "../../../constants/ITREXRoles";
 import { TextButton } from "../../UIElements/TextButton";
+import { CourseRoles } from "../../../constants/CourseRoles";
+import { IUser } from "../../../types/IUser";
 
 export type ScreenCourseOverviewNavigationProp = CompositeNavigationProp<
     MaterialTopTabNavigationProp<CourseTabParamList, "OVERVIEW">,
@@ -38,12 +40,19 @@ export const ScreenCourseOverview: React.FC = () => {
     const endpointsCourse: EndpointsCourse = new EndpointsCourse();
     const course: ICourse = React.useContext(CourseContext);
 
+    const [user, setUserInfo] = useState<IUser>({});
+    useEffect(() => {
+        AuthenticationService.getInstance().getUserInfo(setUserInfo);
+    }, []);
+
     return (
         <>
             <ImageBackground source={require("../../../constants/images/Background_forest.svg")} style={styles.image}>
                 <View style={styles.container}>
                     <View style={styles.content}>
                         <View style={styles.content}>{getPublishedSate(course.publishState)} </View>
+
+                        {checkForLeaveCourse()}
 
                         <Text style={styles.textWhite}>{course.courseDescription}</Text>
 
@@ -60,6 +69,27 @@ export const ScreenCourseOverview: React.FC = () => {
                 <Text style={{ fontWeight: "bold" }}>{title}</Text> {dateConverter(showDate)}
             </Text>
         );
+    }
+
+    function checkForLeaveCourse() {
+        if (user.courses === undefined || course.id === undefined) {
+            return <></>;
+        }
+
+        const courseRole = user.courses[course.id];
+        if (courseRole !== CourseRoles.OWNER) {
+            return (
+                <View style={[{ width: "20%", marginTop: 15 }]}>
+                    <Button
+                        color={dark.Opacity.pink}
+                        title={i18n.t("itrex.leaveCourse")}
+                        onPress={() => leaveCourse()}
+                    />
+                </View>
+            );
+        }
+
+        return <></>;
     }
 
     function uploadViedeoAsOwner() {
@@ -167,6 +197,15 @@ export const ScreenCourseOverview: React.FC = () => {
     function goToVideoPool() {
         if (course.id !== undefined) {
             navigation.navigate("VIDEO_POOL");
+        }
+    }
+
+    function leaveCourse() {
+        if (course.id !== undefined) {
+            const request: RequestInit = RequestFactory.createPostRequestWithoutBody();
+            endpointsCourse.leaveCourse(request, course.id);
+
+            navigation.navigate("ROUTE_HOME");
         }
     }
 };

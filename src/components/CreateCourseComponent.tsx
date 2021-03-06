@@ -130,7 +130,7 @@ export const CreateCourseComponent: React.FC = () => {
         };
 
         loggerService.trace(`Creating course: name=${courseName}.`);
-        const postRequest: RequestInit = RequestFactory.createPostRequest(course);
+        const postRequest: RequestInit = RequestFactory.createPostRequestWithBody(course);
         endpointsCourse.createCourse(postRequest).then((data) => console.log(data));
     }
 };
