@@ -14,7 +14,7 @@ import { Header } from "../constants/navigators/Header";
 import { LocalizationContext } from "./Context";
 import { Event } from "@react-native-community/datetimepicker";
 import { dark } from "../constants/themes/dark";
-import { TextButton } from "./testUiElements/TextButton";
+import { TextButton } from "./uiElements/TextButton";
 
 const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");
 const endpointsCourse: EndpointsCourse = new EndpointsCourse();

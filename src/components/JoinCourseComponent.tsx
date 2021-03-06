@@ -13,7 +13,7 @@ import { NavigationRoutes, RootDrawerParamList } from "../constants/navigators/N
 import { CoursePublishState } from "../constants/CoursePublishState";
 import { IUser } from "../types/IUser";
 import AuthenticationService from "../services/AuthenticationService";
-import { TextButton } from "./testUiElements/TextButton";
+import { TextButton } from "./uiElements/TextButton";
 
 const loggerService = loggerFactory.getLogger("service.JoinCourseComponent");
 
