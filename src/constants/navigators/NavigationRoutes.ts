@@ -23,7 +23,6 @@ export const config = {
                 },
                 VIDEO_POOL: "VIDEO_POOL",
                 VIDEO: "VIDEO",
-                VIDEO_UPLOAD: "VIDEO_UPLOAD",
             },
         },
     },
@@ -42,7 +41,6 @@ export type CourseStackParamList = {
     VIDEO: {
         video: IVideo;
     };
-    VIDEO_UPLOAD: undefined;
 };
 
 export type CourseTabParamList = {

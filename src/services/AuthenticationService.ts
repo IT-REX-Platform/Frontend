@@ -25,7 +25,7 @@ export default class AuthenticationService {
         }
         return AuthenticationService.instance;
     }
-    private loggerApi = loggerFactory.getLogger("AuthenticationService");
+    private loggerApi = loggerFactory.getLogger("API.AuthenticationService");
 
     // The endpoint for requesting user info.
     private endpointsUserInfo = new EndpointsUserInfo();
