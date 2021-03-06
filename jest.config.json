@@ -1,6 +1,6 @@
 {
     "setupFiles": ["./setupTests.ts"],
-    "projects": [{ "preset": "jest-expo/ios" }],
+    "preset": "jest-expo",
     "collectCoverage": true,
     "collectCoverageFrom": [
         "**/*.{js,jsx,ts,tsx}",
@@ -28,5 +28,8 @@
     "transformIgnorePatterns": [
         "node_modules/(?!(jest-)?react-native|react-clone-referenced-element|@react-native-community|expo(nent)?|@expo(nent)?/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|@sentry/.*)"
     ],
-    "moduleDirectories": ["node_modules"]
+    "moduleDirectories": ["node_modules"],
+    "moduleNameMapper": {
+        "\\.(css)$": "<rootDir>/__mocks__/styleMock.js"
+    }
 }

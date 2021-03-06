@@ -22,7 +22,7 @@ export default class AuthenticationService {
         }
         return AuthenticationService.instance;
     }
-    private loggerApi = loggerFactory.getLogger("AuthenticationService");
+    private loggerApi = loggerFactory.getLogger("API.AuthenticationService");
 
     // Request a new access token this many seconds prior to expiration
     private requestNewAccessTokenBuffer = 5 * 1000;

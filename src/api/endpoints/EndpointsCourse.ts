@@ -55,7 +55,7 @@ export class EndpointsCourse implements IEndpointsCourse {
             );
         }
 
-        // TODO: insert checks for more ICourse params here once implemented. @s.pastuchov 29.01.21.
+        // TODO: insert checks for more ICourse params here once implemented in backend. @s.pastuchov 29.01.21.
 
         return urlUpdated;
     }
