@@ -20,7 +20,7 @@ import { EndpointsCourse } from "../../../api/endpoints/EndpointsCourse";
 import { loggerFactory } from "../../../../logger/LoggerConfig";
 import AuthenticationService from "../../../services/AuthenticationService";
 import { ITREXRoles } from "../../../constants/ITREXRoles";
-import { TextButton } from "../../uiElements/TextButton";
+import { TextButton } from "../../testUiElements/TextButton";
 import { CourseRoles } from "../../../constants/CourseRoles";
 import { IUser } from "../../../types/IUser";
 

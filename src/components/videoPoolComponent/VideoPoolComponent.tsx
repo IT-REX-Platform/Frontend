@@ -27,7 +27,7 @@ import { buildVideoAsFormData } from "../../services/VideoFormDataService";
 import { videoPoolStyles } from "./videoPoolStyles";
 import { sleep } from "../../services/SleepService";
 import { ToastService } from "../../services/toasts/ToastService";
-import { TextButton } from "../uiElements/TextButton";
+import { TextButton } from "../testUiElements/TextButton";
 
 const endpointsVideo = new EndpointsVideo();
 const loggerService = loggerFactory.getLogger("service.VideoPoolComponent");
