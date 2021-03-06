@@ -1,12 +1,10 @@
 import React from "react";
-
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { StyleSheet, useWindowDimensions } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { RootDrawerParamList } from "./NavigationRoutes";
 import i18n from "../../locales";
-
 import AuthenticationService from "../../services/AuthenticationService";
 import { ITREXRoles } from "../ITREXRoles";
 import { ScreenHomeLecturer } from "../../components/screens/ScreenHomeLecturer";

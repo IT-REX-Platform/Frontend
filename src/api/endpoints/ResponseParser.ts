@@ -1,9 +1,9 @@
 import { loggerFactory } from "../../../logger/LoggerConfig";
-import { createAlert } from "../../helperScripts/createAlert";
 import { ICourse } from "../../types/ICourse";
 import { IVideo } from "../../types/IVideo";
 import { IUser } from "../../types/IUser";
 import i18n from "../../locales";
+import { ToastService } from "../../services/toasts/ToastService";
 
 export class ResponseParser {
     private static loggerApi = loggerFactory.getLogger("API.ResponseParser");
@@ -39,10 +39,10 @@ export class ResponseParser {
                     return response.json();
                 })
                 .then((courses: ICourse[]) => {
-                    courses.forEach((course: ICourse) => {
+                    for (const course of courses) {
                         course.startDate = course.startDate ? new Date(course.startDate) : undefined;
                         course.endDate = course.endDate ? new Date(course.endDate) : undefined;
-                    });
+                    }
                     resolve(courses);
                 })
                 .catch((error) => {
@@ -102,10 +102,10 @@ export class ResponseParser {
                     return response.json();
                 })
                 .then((videos: IVideo[]) => {
-                    videos.forEach((video: IVideo) => {
+                    for (const video of videos) {
                         video.startDate = video.startDate ? new Date(video.startDate) : undefined;
                         video.endDate = video.endDate ? new Date(video.endDate) : undefined;
-                    });
+                    }
                     resolve(videos);
                 })
                 .catch((error) => {
@@ -117,21 +117,23 @@ export class ResponseParser {
 
     // eslint-disable-next-line complexity
     private static _checkResponseCode(response: Response): void {
+        const toast: ToastService = new ToastService();
+
         switch (response.status) {
             case 400:
-                createAlert(i18n.t("itrex.badRequest"));
+                toast.error(i18n.t("itrex.badRequest"));
                 throw new Error("Bad request error: " + response.status);
             case 404:
-                createAlert(i18n.t("itrex.notFound"));
+                toast.error(i18n.t("itrex.notFound"));
                 throw new Error("Not found error: " + response.status);
             case 500:
-                createAlert(i18n.t("itrex.internalServerError"));
+                toast.error(i18n.t("itrex.internalServerError"));
                 throw new Error("Internal server error: " + response.status);
             case 504:
-                createAlert(i18n.t("itrex.timeoutRequest"));
+                toast.error(i18n.t("itrex.timeoutRequest"));
                 throw new Error("Request timeout error: " + response.status);
             default:
-                createAlert(i18n.t("itrex.errorOccured"));
+                toast.error(i18n.t("itrex.errorOccured"));
                 throw new Error("HTTP error: " + response.status);
         }
     }
