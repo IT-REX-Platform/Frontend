@@ -8,7 +8,7 @@ import * as AuthSession from "expo-auth-session";
 import { itRexVars } from "../../constants/Constants";
 import i18n from "../../locales";
 import { discovery } from "../../services/AuthenticationService";
-import { TextButton } from "../UIElements/TextButton";
+import { TextButton } from "../uiElements/TextButton";
 
 WebBrowser.maybeCompleteAuthSession();
 
