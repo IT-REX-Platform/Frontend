@@ -27,6 +27,7 @@ import { buildVideoAsFormData } from "../../services/VideoFormDataService";
 import { videoPoolStyles } from "./videoPoolStyles";
 import { sleep } from "../../services/SleepService";
 import { ToastService } from "../../services/toasts/ToastService";
+import { TextButton } from "../UIElements/TextButton";
 
 const endpointsVideo = new EndpointsVideo();
 const loggerService = loggerFactory.getLogger("service.VideoPoolComponent");
@@ -80,9 +81,12 @@ export const VideoPoolComponent: React.FC = () => {
             <View style={videoPoolStyles.videoUploadContainer}>
                 <Text style={videoPoolStyles.infoText}>{i18n.t("itrex.videoProperties")}</Text>
 
-                <TouchableOpacity style={videoPoolStyles.button} onPress={_initVideoUpload}>
-                    <Text style={videoPoolStyles.buttonText}>{i18n.t("itrex.toUploadVideo")}</Text>
-                </TouchableOpacity>
+                <TextButton
+                    title={i18n.t("itrex.toUploadVideo")}
+                    size="small"
+                    color="light"
+                    onPress={_initVideoUpload}
+                />
             </View>
         );
     };
