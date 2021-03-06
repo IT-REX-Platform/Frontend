@@ -47,6 +47,7 @@ export const ScreenCourse: React.FC = () => {
             <CourseStack.Navigator
                 initialRouteName="INFO"
                 screenOptions={{
+                    // Hamburder button.
                     // headerLeft: () => (
                     //     <MaterialCommunityIcons
                     //         style={styles.icon}
@@ -57,6 +58,11 @@ export const ScreenCourse: React.FC = () => {
                     //     />
                     // ),
 
+                    // Back button.
+                    headerTintColor: "white",
+                    headerBackTitle: "Back",
+
+                    // Title in center.
                     headerTitle: () => <Text style={styles.headerTitle}>{course.name}</Text>,
                     headerTitleAlign: "center",
                     headerStyle: {
@@ -64,9 +70,8 @@ export const ScreenCourse: React.FC = () => {
                         borderBottomColor: dark.theme.darkBlue2,
                         borderBottomWidth: 3,
                     },
-                    headerTintColor: "white",
-                    headerBackTitle: "Back",
 
+                    // Home button.
                     headerRight: () => (
                         <MaterialCommunityIcons
                             style={styles.icon}

@@ -1,6 +1,6 @@
 import React from "react";
 import { createDrawerNavigator } from "@react-navigation/drawer";
-import { StyleSheet, useWindowDimensions } from "react-native";
+import { useWindowDimensions } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { RootDrawerParamList } from "./NavigationRoutes";
@@ -23,35 +23,58 @@ export const DrawerNavigator: React.FC = () => {
 
     return (
         <Drawer.Navigator
-            drawerContentOptions={{
-                activeBackgroundColor: dark.theme.pink,
-                activeTintColor: "white",
-                inactiveBackgroundColor: dark.theme.darkBlue2,
-                inactiveTintColor: "white",
-            }}
+            drawerStyle={{ backgroundColor: dark.theme.darkBlue1, paddingBottom: 5, height: dimensions.height }}
             drawerType={dimensions.width >= 1400 ? "permanent" : "front"}
-            drawerStyle={{ backgroundColor: dark.theme.darkBlue1 }}
-            drawerContent={(props) => <DrawerContent {...props}></DrawerContent>}>
-            {getHomeScreen()}
-            {getCreateCourseScreen()}
+            drawerContentOptions={{
+                activeTintColor: "white",
+                activeBackgroundColor: dark.theme.pink,
+                inactiveTintColor: "white",
+                inactiveBackgroundColor: dark.theme.darkBlue2,
+            }}
+            drawerContent={(props) => <DrawerContent {...props} />}>
+            {_getHomeScreen()}
+            {_getCreateCourseScreen()}
             <Drawer.Screen
                 name="ROUTE_JOIN_COURSE"
                 component={JoinCourseComponent}
                 options={{ title: i18n.t("itrex.joinCourse") }}
             />
-            <Drawer.Screen
-                name="ROUTE_COURSE_DETAILS"
-                component={ScreenCourse}
-                options={{ title: i18n.t("itrex.lastLearned") }}
-            />
+            {_lastVisitedCourse()}
         </Drawer.Navigator>
     );
 };
 
-function getCreateCourseScreen() {
+function _getHomeScreen() {
+    const userRole: string[] = AuthenticationService.getInstance().getRoles();
+    switch (true) {
+        case userRole.includes(ITREXRoles.ROLE_ADMIN):
+            return _homeScreen(ScreenHomeAdmin);
+        case userRole.includes(ITREXRoles.ROLE_LECTURER):
+            return _homeScreen(ScreenHomeLecturer);
+        case userRole.includes(ITREXRoles.ROLE_STUDENT):
+            return _homeScreen(ScreenHomeStudent);
+        default:
+            return;
+    }
+}
+
+function _homeScreen(homeScreenType: React.FC) {
+    return (
+        <Drawer.Screen
+            name="ROUTE_HOME"
+            component={homeScreenType}
+            options={{
+                title: i18n.t("itrex.home"),
+                drawerIcon: () => <MaterialCommunityIcons name="home" size={28} color="white" />,
+            }}
+        />
+    );
+}
+
+function _getCreateCourseScreen() {
     if (
-        AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_LECTURER) ||
-        AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_ADMIN)
+        AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_ADMIN) ||
+        AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_LECTURER)
     ) {
         return (
             <Drawer.Screen
@@ -59,64 +82,24 @@ function getCreateCourseScreen() {
                 component={CreateCourseComponent}
                 options={{
                     title: i18n.t("itrex.createCourse"),
-                    drawerIcon: () => <MaterialIcons name="add" size={28} color="white" style={styles.icon} />,
+                    drawerIcon: () => <MaterialIcons name="add" size={28} color="white" />,
                 }}
             />
         );
     }
 }
 
-function getHomeScreen() {
-    let homeScreen;
-    if (AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_LECTURER)) {
-        homeScreen = (
-            <Drawer.Screen
-                name="ROUTE_HOME"
-                component={ScreenHomeLecturer}
-                options={{
-                    title: i18n.t("itrex.home"),
-                    drawerIcon: () => (
-                        <MaterialCommunityIcons name="home" size={28} color="white" style={styles.icon} />
-                    ),
-                }}
-            />
-        );
-    }
-    if (AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_ADMIN)) {
-        homeScreen = (
-            <Drawer.Screen
-                name="ROUTE_HOME"
-                component={ScreenHomeAdmin}
-                options={{
-                    title: i18n.t("itrex.home"),
-                    drawerIcon: () => (
-                        <MaterialCommunityIcons name="home" size={28} color="white" style={styles.icon} />
-                    ),
-                }}
-            />
-        );
-    }
-    if (AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_STUDENT)) {
-        homeScreen = (
-            <Drawer.Screen
-                name="ROUTE_HOME"
-                component={ScreenHomeStudent}
-                options={{
-                    title: i18n.t("itrex.home"),
-                    drawerIcon: () => (
-                        <MaterialCommunityIcons name="home" size={28} color="white" style={styles.icon} />
-                    ),
-                }}
-            />
-        );
-    }
-    return homeScreen;
+function _lastVisitedCourse() {
+    return (
+        <Drawer.Screen
+            name="ROUTE_COURSE_DETAILS"
+            component={ScreenCourse}
+            options={{
+                title: i18n.t("itrex.lastVisited"),
+                drawerIcon: () => <MaterialIcons name="skip-previous" size={28} color="white" />,
+            }}
+        />
+    );
 }
 
-const styles = StyleSheet.create({
-    icon: {
-        width: 24,
-        height: 24,
-    },
-});
 export default DrawerNavigator;
