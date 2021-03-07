@@ -110,8 +110,8 @@ const styles = StyleSheet.create({
     },
     largeButton: {
         width: "60%",
-        minWidth: 300,
-        maxWidth: 250,
+        minWidth: 250,
+        maxWidth: 300,
         height: 50,
     },
 });
