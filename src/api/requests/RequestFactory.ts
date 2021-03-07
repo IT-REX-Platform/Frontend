@@ -1,6 +1,7 @@
 import { RequestAuthorization } from "./RequestAuthorization";
 import { ICourse } from "../../types/ICourse";
 import { IVideo } from "../../types/IVideo";
+import { IChapter } from "../../types/IChapter";
 
 /**
  * Class for backend request creation.
@@ -19,7 +20,13 @@ export class RequestFactory {
         return request;
     }
 
-    public static createPostRequest(object: ICourse | IVideo): RequestInit {
+    public static createPostRequestWithoutBody(): RequestInit {
+        const request = RequestAuthorization.createAuthorizedRequest();
+        request.method = "POST";
+        return request;
+    }
+
+    public static createPostRequestWithBody(object: ICourse | IVideo | IChapter): RequestInit {
         return RequestFactory.createRequestWithJson("POST", object);
     }
 
@@ -27,7 +34,7 @@ export class RequestFactory {
         return RequestFactory.createRequestWithJson("PUT", object);
     }
 
-    public static createPatchRequest(object: ICourse | IVideo): RequestInit {
+    public static createPatchRequest(object: ICourse | IVideo | IChapter): RequestInit {
         return RequestFactory.createRequestWithJson("PATCH", object);
     }
 

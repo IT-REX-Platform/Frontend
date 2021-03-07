@@ -1,6 +1,6 @@
 import { CompositeNavigationProp, useNavigation } from "@react-navigation/native";
-import React from "react";
-import { Text, ImageBackground, StyleSheet, Button, View, Pressable } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Text, ImageBackground, StyleSheet, Button, View } from "react-native";
 import { dark } from "../../../constants/themes/dark";
 import { ICourse } from "../../../types/ICourse";
 import {
@@ -20,6 +20,9 @@ import { EndpointsCourse } from "../../../api/endpoints/EndpointsCourse";
 import { loggerFactory } from "../../../../logger/LoggerConfig";
 import AuthenticationService from "../../../services/AuthenticationService";
 import { ITREXRoles } from "../../../constants/ITREXRoles";
+import { TextButton } from "../../uiElements/TextButton";
+import { CourseRoles } from "../../../constants/CourseRoles";
+import { IUser } from "../../../types/IUser";
 
 export type ScreenCourseOverviewNavigationProp = CompositeNavigationProp<
     MaterialTopTabNavigationProp<CourseTabParamList, "OVERVIEW">,
@@ -37,28 +40,56 @@ export const ScreenCourseOverview: React.FC = () => {
     const endpointsCourse: EndpointsCourse = new EndpointsCourse();
     const course: ICourse = React.useContext(CourseContext);
 
+    const [user, setUserInfo] = useState<IUser>({});
+    useEffect(() => {
+        AuthenticationService.getInstance().getUserInfo(setUserInfo);
+    }, []);
+
     return (
-        <>
-            <ImageBackground source={require("../../../constants/images/Background_forest.svg")} style={styles.image}>
+        <View style={styles.rootContainer}>
+            <ImageBackground source={require("../../../constants/images/Background2.png")} style={styles.image}>
                 <View style={styles.container}>
                     <View style={styles.content}>
-                        <View style={styles.content}>{getPublishedSate(course.publishState)} </View>
+                        {getPublishedSate(course.publishState)}
+
+                        {checkForLeaveCourse()}
 
                         <Text style={styles.textWhite}>{course.courseDescription}</Text>
-
                         {uploadViedeoAsOwner()}
                     </View>
                 </View>
             </ImageBackground>
-        </>
+        </View>
     );
 
     function getDate(showDate: Date | undefined, title: string) {
         return (
             <Text style={{ color: "white" }}>
-                <Text style={{ fontWeight: "bold" }}>{title}</Text> {dateConverter(showDate)}
+                <Text style={{ fontWeight: "bold" }}>{title}</Text>
+                <Text>{dateConverter(showDate)}</Text>
             </Text>
         );
+    }
+
+    function checkForLeaveCourse() {
+        if (user.courses === undefined || course.id === undefined) {
+            return <></>;
+        }
+
+        const courseRole = user.courses[course.id];
+        if (courseRole !== CourseRoles.OWNER) {
+            return (
+                <View style={[{ width: "20%", marginTop: 15 }]}>
+                    <Button
+                        color={dark.Opacity.pink}
+                        title={i18n.t("itrex.leaveCourse")}
+                        onPress={() => leaveCourse()}
+                    />
+                </View>
+            );
+        }
+
+        return <></>;
     }
 
     function uploadViedeoAsOwner() {
@@ -66,15 +97,7 @@ export const ScreenCourseOverview: React.FC = () => {
             AuthenticationService.getInstance().getRoles().includes("ROLE_ITREX_LECTURER") ||
             AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_ADMIN)
         ) {
-            return (
-                <View style={[{ width: "20%", marginTop: 15 }]}>
-                    <Button
-                        color={dark.Opacity.blueGreen}
-                        title={i18n.t("itrex.videoPool")}
-                        onPress={() => goToVideoPool()}
-                    />
-                </View>
-            );
+            return <TextButton title={i18n.t("itrex.videoPool")} onPress={() => goToVideoPool()} />;
         }
     }
 
@@ -86,25 +109,18 @@ export const ScreenCourseOverview: React.FC = () => {
         ) {
             return (
                 <View style={{ flexDirection: "row" }}>
-                    <Pressable style={styles.styledButton}>
-                        <Button
-                            color={dark.Opacity.blueGreen}
-                            title={i18n.t("itrex.publishCourse")}
-                            onPress={() => patchCourse(course)}></Button>
-                    </Pressable>
-                    <Pressable style={styles.styledButton}>
-                        <Button
-                            color={dark.Opacity.pink}
-                            title={i18n.t("itrex.deleteCourse")}
-                            onPress={() => deleteCourse(course)}></Button>
-                    </Pressable>
+                    <TextButton title={i18n.t("itrex.publishCourse")} onPress={() => patchCourse(course)} />
+                    <TextButton
+                        title={i18n.t("itrex.deleteCourse")}
+                        color="pink"
+                        onPress={() => deleteCourse(course)}
+                    />
                 </View>
             );
         }
     }
 
     function getPublishedSate(isPublished: string | undefined) {
-        console.log(isPublished);
         if (isPublished === "UNPUBLISHED") {
             return (
                 <>
@@ -112,8 +128,8 @@ export const ScreenCourseOverview: React.FC = () => {
                         <View style={styles.circleUnpublished} />
                         <Text style={styles.textUnpublished}>{i18n.t("itrex.unpublished")}</Text>
                     </View>
-                    {getDate(course.startDate, i18n.t("itrex.startDate"))}
-                    {getDate(course.endDate, i18n.t("itrex.endDate"))}
+                    <Text>{getDate(course.startDate, i18n.t("itrex.startDate"))}</Text>
+                    <Text>{getDate(course.endDate, i18n.t("itrex.endDate"))}</Text>
                     {checkOwnerSettings()}
                 </>
             );
@@ -124,8 +140,8 @@ export const ScreenCourseOverview: React.FC = () => {
                         <View style={styles.circlePublished} />
                         <Text style={styles.textPublished}>{i18n.t("itrex.published")}</Text>
                     </View>
-                    {getDate(course.startDate, i18n.t("itrex.startDate") + ": ")}
-                    {getDate(course.endDate, i18n.t("itrex.endDate") + ": ")}
+                    <Text>{getDate(course.startDate, i18n.t("itrex.startDate") + ": ")}</Text>
+                    <Text>{getDate(course.endDate, i18n.t("itrex.endDate") + ": ")}</Text>
                 </>
             );
         }
@@ -136,7 +152,6 @@ export const ScreenCourseOverview: React.FC = () => {
     function patchCourse(courses: ICourse) {
         loggerService.trace("Parsing ID string to ID number");
 
-        // ATTENTION: fields without values will be overwritten with null in DB. @s.pastuchov 27.01.21
         const course: ICourse = {
             id: courses.id,
             publishState: CoursePublishState.PUBLISHED,
@@ -163,6 +178,15 @@ export const ScreenCourseOverview: React.FC = () => {
             navigation.navigate("VIDEO_POOL");
         }
     }
+
+    function leaveCourse() {
+        if (course.id !== undefined) {
+            const request: RequestInit = RequestFactory.createPostRequestWithoutBody();
+            endpointsCourse.leaveCourse(request, course.id);
+
+            navigation.navigate("ROUTE_HOME");
+        }
+    }
 };
 const styles = StyleSheet.create({
     container: {
@@ -174,15 +198,15 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         textAlign: "center",
     },
+    rootContainer: {
+        paddingTop: "3%",
+        flex: 4,
+        flexDirection: "column",
+        backgroundColor: dark.theme.darkBlue1,
+    },
     image: {
         flex: 1,
         resizeMode: "stretch",
-    },
-    icon: {
-        alignItems: "center",
-        paddingLeft: 10,
-        paddingRight: 10,
-        marginTop: 20,
     },
     content: {
         flex: 1,
@@ -192,9 +216,6 @@ const styles = StyleSheet.create({
     },
     textWhite: {
         color: "white",
-    },
-    styledButton: {
-        margin: 5,
     },
     unpublishedCard: {
         flexDirection: "row",
@@ -249,13 +270,5 @@ const styles = StyleSheet.create({
         borderRadius: 8 / 2,
         backgroundColor: dark.theme.lightGreen,
         marginRight: 5,
-    },
-    input: {
-        borderRadius: 20,
-        minHeight: 40,
-        maxHeight: 200,
-        margin: 20,
-        padding: 20,
-        borderWidth: 1,
     },
 });

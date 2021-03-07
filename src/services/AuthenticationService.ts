@@ -1,7 +1,10 @@
 import * as AuthSession from "expo-auth-session";
 import { loggerFactory } from "../../logger/LoggerConfig";
+import { EndpointsUserInfo } from "../api/endpoints/EndpointsUserInfo";
+import { RequestFactory } from "../api/requests/RequestFactory";
 import { itRexVars } from "../constants/Constants";
 import { ITREXRoles } from "../constants/ITREXRoles";
+import { IUser } from "../types/IUser";
 import { AsyncStorageService, StorageConstants } from "./StorageService";
 
 export const discovery = {
@@ -22,7 +25,10 @@ export default class AuthenticationService {
         }
         return AuthenticationService.instance;
     }
-    private loggerApi = loggerFactory.getLogger("AuthenticationService");
+    private loggerApi = loggerFactory.getLogger("API.AuthenticationService");
+
+    // The endpoint for requesting user info.
+    private endpointsUserInfo = new EndpointsUserInfo();
 
     // Request a new access token this many seconds prior to expiration
     private requestNewAccessTokenBuffer = 5 * 1000;
@@ -69,9 +75,9 @@ export default class AuthenticationService {
                         );
                         resolve(tResponse);
                     })
-                    .catch((reason) => {
+                    .catch((error) => {
                         // Refresh does not work
-                        this.loggerApi.info("Could not refresh oauth2 token");
+                        this.loggerApi.error("Could not refresh oauth2 token.", error);
                         new AsyncStorageService().deleteItem(StorageConstants.OAUTH_REFRESH_TOKEN);
                         reject(false);
                     });
@@ -98,6 +104,16 @@ export default class AuthenticationService {
         }
         new AsyncStorageService().deleteItem(StorageConstants.OAUTH_REFRESH_TOKEN);
         this.setTokenResponse({} as AuthSession.TokenResponseConfig);
+    }
+
+    /**
+     * Receives the user info and handles execution once received.
+     *
+     * @param consumer the consumer function continuing with the received user info.
+     */
+    public getUserInfo(consumer: (userInfo: IUser) => void): void {
+        const request: RequestInit = RequestFactory.createGetRequest();
+        this.endpointsUserInfo.getUserInfo(request).then(consumer);
     }
 
     public getRoles(): string[] {

@@ -1,5 +1,5 @@
 import React, { ChangeEvent, useState } from "react";
-import { Button, ImageBackground, Platform, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { ImageBackground, Platform, StyleSheet, Text, TextInput, View } from "react-native";
 import { ICourse } from "../types/ICourse";
 import { validateCourseName } from "../helperScripts/validateCourseEntry";
 import { validateCourseDescription } from "../helperScripts/validateCourseEntry";
@@ -13,13 +13,16 @@ import { EndpointsCourse } from "../api/endpoints/EndpointsCourse";
 import { Header } from "../constants/navigators/Header";
 import { LocalizationContext } from "./Context";
 import { Event } from "@react-native-community/datetimepicker";
-import { dark } from "../constants/themes/dark";
+import { TextButton } from "./uiElements/TextButton";
+import { ToastService } from "../services/toasts/ToastService";
 
 const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");
 const endpointsCourse: EndpointsCourse = new EndpointsCourse();
 
 export const CreateCourseComponent: React.FC = () => {
     React.useContext(LocalizationContext);
+
+    const toast: ToastService = new ToastService();
 
     // Enter course name to create course
     const [courseName, setCourseName] = useState("");
@@ -54,56 +57,55 @@ export const CreateCourseComponent: React.FC = () => {
     };
 
     return (
-        <ImageBackground source={require("../constants/images/Background2.png")} style={styles.image}>
-            <ScrollView>
-                <View style={styles.container}>
-                    <Header title={i18n.t("itrex.toCourse")} />
-                    <View style={styles.pageContainer} />
-                    <View style={styles.styledInputContainer}>
-                        <Text style={styles.textSytle}>{i18n.t("itrex.enterCourseName")}</Text>
-                        <TextInput
-                            style={styles.styledTextInput}
-                            onChangeText={(text: string) => setCourseName(text)}
-                            testID="courseNameInput"></TextInput>
-                    </View>
-                    <View style={styles.styledInputContainer}>
-                        <Text style={styles.textSytle}>{i18n.t("itrex.enterCourseDescription")}</Text>
-                        <TextInput
-                            style={styles.styledTextInput}
-                            onChangeText={(text: string) => setCourseDescription(text)}
-                            testID="courseDescriptionInput"></TextInput>
-                    </View>
-                    <View style={styles.styledInputContainer}>
-                        <DatePickerComponent
-                            title={i18n.t("itrex.startDate")}
-                            date={startDate}
-                            onDateChanged={startDateChanged}
-                            maxDate={endDate}></DatePickerComponent>
+        <ImageBackground source={require("../constants/images/Background2.png")} style={styles.imageContainer}>
+            <Header title={i18n.t("itrex.toCourse")} />
 
-                        <View style={{ margin: 16 }}></View>
+            <View style={styles.container}>
+                <View style={{ marginTop: 70 }} />
 
-                        <DatePickerComponent
-                            title={i18n.t("itrex.endDate")}
-                            date={endDate}
-                            onDateChanged={endDateChanged}
-                            minDate={startDate}></DatePickerComponent>
-                    </View>
-                    <View style={styles.styledInputContainer}>
-                        <View style={[{ width: "20%", margin: 5 }]}>
-                            <Button
-                                color={dark.Opacity.blueGreen}
-                                title={i18n.t("itrex.createCourse")}
-                                onPress={createCourse}
-                            />
-                        </View>
-                    </View>
+                <Text style={styles.textStyle}>{i18n.t("itrex.enterCourseName")}</Text>
+                <TextInput
+                    style={[styles.nameInput, styles.separator]}
+                    value={courseName}
+                    onChangeText={(text: string) => setCourseName(text)}
+                    testID="courseNameInput"
+                />
+
+                <Text style={styles.textStyle}>{i18n.t("itrex.enterCourseDescription")}</Text>
+                <TextInput
+                    style={[styles.descriptionInput, styles.separator]}
+                    value={courseDescription}
+                    onChangeText={(text: string) => setCourseDescription(text)}
+                    multiline={true}
+                    testID="courseDescriptionInput"
+                />
+
+                <View style={[styles.horizontalContainer, styles.separator]}>
+                    {/* <View style={styles.horizontalContainer}> */}
+                    <DatePickerComponent
+                        title={i18n.t("itrex.startDate")}
+                        date={startDate}
+                        onDateChanged={startDateChanged}
+                        maxDate={endDate}
+                    />
+
+                    <View style={{ margin: 20 }} />
+
+                    <DatePickerComponent
+                        title={i18n.t("itrex.endDate")}
+                        date={endDate}
+                        onDateChanged={endDateChanged}
+                        minDate={startDate}
+                    />
                 </View>
-            </ScrollView>
+
+                <TextButton title={i18n.t("itrex.createCourse")} size="medium" onPress={_createCourse}></TextButton>
+            </View>
         </ImageBackground>
     );
 
     // eslint-disable-next-line complexity
-    function createCourse(): void {
+    function _createCourse(): void {
         loggerService.trace(`Validating course name: ${courseName}.`);
 
         if (validateCourseName(courseName) == false) {
@@ -113,6 +115,7 @@ export const CreateCourseComponent: React.FC = () => {
 
         if (validateCourseDescription(courseDescription) == false) {
             loggerService.warn("Course description invalid.");
+            return;
         }
 
         // Validate start/end Date
@@ -130,44 +133,59 @@ export const CreateCourseComponent: React.FC = () => {
         };
 
         loggerService.trace(`Creating course: name=${courseName}.`);
-        const postRequest: RequestInit = RequestFactory.createPostRequest(course);
-        endpointsCourse.createCourse(postRequest).then((data) => console.log(data));
+        const postRequest: RequestInit = RequestFactory.createPostRequestWithBody(course);
+        endpointsCourse.createCourse(postRequest).then((data) => {
+            toast.success(i18n.t("itrex.courseCreated") + courseName);
+            console.log(data);
+            _resetStates();
+        });
+    }
+
+    function _resetStates(): void {
+        setCourseName("");
+        setCourseDescription("");
+        setStartDate(undefined);
+        setEndDate(undefined);
     }
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        flexDirection: "column",
-    },
-    pageContainer: {
-        marginTop: 70,
-    },
-    image: {
+    imageContainer: {
         flex: 1,
         resizeMode: "stretch",
-        justifyContent: "center",
     },
-    styledInputContainer: {
-        margin: 5,
-        flexDirection: "row",
-        justifyContent: "center",
+    container: {
+        alignItems: "center",
     },
-    styledTextInput: {
+    textStyle: {
         color: "white",
-        marginLeft: 8,
-        borderColor: "lightgray",
-        borderWidth: 2,
-    },
-    styledButton: {
-        margin: 5,
-    },
-    item: {
-        padding: 10,
         fontSize: 18,
-        height: 44,
     },
-    textSytle: {
+    nameInput: {
+        width: "90%",
+        margin: 5,
+        padding: 5,
+        fontSize: 16,
         color: "white",
+        borderColor: "white",
+        borderWidth: 2,
+        borderRadius: 5,
+    },
+    descriptionInput: {
+        width: "90%",
+        height: 150,
+        margin: 5,
+        padding: 5,
+        fontSize: 16,
+        color: "white",
+        borderColor: "white",
+        borderWidth: 2,
+        borderRadius: 5,
+    },
+    horizontalContainer: {
+        flexDirection: "row",
+    },
+    separator: {
+        marginBottom: 20,
     },
 });

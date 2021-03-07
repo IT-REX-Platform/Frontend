@@ -9,5 +9,5 @@ export type IUser = {
     familiyName?: string;
     email?: string;
     rexRole?: ITREXRoles;
-    courses?: Map<string, CourseRoles>;
+    courses?: Record<string, CourseRoles>;
 };

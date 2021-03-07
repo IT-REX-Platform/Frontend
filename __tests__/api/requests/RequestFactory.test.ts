@@ -40,7 +40,7 @@ describe("RequestFactory", () => {
         expect(actualGetRequest).toMatchObject(expectedGetRequest);
     });
 
-    it("createPostRequest() should generate an authorized POST request for createCourse endpoint.", () => {
+    it("createPostRequestWithBody() should generate an authorized POST request for createCourse endpoint.", () => {
         const course: ICourse = {
             name: "test_course",
             courseDescription: "test_description",
@@ -60,7 +60,7 @@ describe("RequestFactory", () => {
             body: JSON.stringify(course),
         };
 
-        const actualPostRequest: RequestInit = RequestFactory.createPostRequest(course);
+        const actualPostRequest: RequestInit = RequestFactory.createPostRequestWithBody(course);
 
         expect(actualPostRequest).toMatchObject(expectedPostRequest);
     });

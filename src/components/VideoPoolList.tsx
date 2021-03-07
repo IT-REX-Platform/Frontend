@@ -1,15 +1,5 @@
 import React, { useState } from "react";
-import {
-    ActivityIndicator,
-    Animated,
-    FlatList,
-    ImageBackground,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
-} from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { ActivityIndicator, Animated, FlatList, StyleSheet, Text, View } from "react-native";
 import i18n from "../locales";
 import { loggerFactory } from "../../logger/LoggerConfig";
 import { EndpointsVideo } from "../api/endpoints/EndpointsVideo";
@@ -18,20 +8,16 @@ import { IVideo } from "../types/IVideo";
 import { useFocusEffect } from "@react-navigation/native";
 import { ICourse } from "../types/ICourse";
 import { CourseContext, LocalizationContext } from "./Context";
-import { NavigationRoutes } from "../constants/navigators/NavigationRoutes";
 import { dark } from "../constants/themes/dark";
 import { ListItem } from "react-native-elements";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { calculateVideoSize } from "../services/calculateVideoSize";
 
 const endpointsVideo = new EndpointsVideo();
 const loggerService = loggerFactory.getLogger("service.VideoPoolComponent");
 
-export const VideoPoolComponent: React.FC = () => {
+export const VideoPoolList: React.FC = () => {
     loggerService.trace("Started VideoPoolComponent.");
-
-    // Navigation hook.
-    const navigation = useNavigation();
 
     // Get localization from context.
     React.useContext(LocalizationContext);
@@ -60,12 +46,7 @@ export const VideoPoolComponent: React.FC = () => {
 
     // Creation of each item of video list.
     const listItem = ({ item }: { item: IVideo }) => (
-        <TouchableOpacity
-            activeOpacity={0.3}
-            onPress={() => {
-                resetStates();
-                navigation.navigate("VIDEO", { video: item });
-            }}>
+        <View>
             <ListItem
                 containerStyle={{
                     marginBottom: 5,
@@ -74,6 +55,7 @@ export const VideoPoolComponent: React.FC = () => {
                     borderColor: dark.theme.darkBlue4,
                     borderWidth: 2,
                 }}>
+                <MaterialIcons name="add" size={28} color={dark.theme.pink} />
                 <MaterialCommunityIcons name="video-vintage" size={28} color="white" />
 
                 <ListItem.Content>
@@ -84,33 +66,8 @@ export const VideoPoolComponent: React.FC = () => {
                         {calculateVideoSize(item.length)}
                     </ListItem.Subtitle>
                 </ListItem.Content>
-
-                <TouchableOpacity style={styles.deleteButton} onPress={() => deleteVideo(item.id)}>
-                    <MaterialCommunityIcons style={styles.deleteIcon} name="delete" size={32} color="red" />
-                </TouchableOpacity>
-
-                <ListItem.Chevron color="white" />
             </ListItem>
-        </TouchableOpacity>
-    );
-
-    // Button to access video upload.
-    const uploadButton = () => (
-        <TouchableOpacity
-            style={styles.button}
-            onPress={() => {
-                resetStates();
-                navigation.navigate(NavigationRoutes.ROUTE_VIDEO_UPLOAD);
-            }}>
-            <Text style={styles.buttonText}>{i18n.t("itrex.toUploadVideo")}</Text>
-        </TouchableOpacity>
-    );
-
-    // Button to refresh video list.
-    const refreshButton = () => (
-        <TouchableOpacity style={styles.refreshButton} onPress={() => getAllVideos(course.id)}>
-            <MaterialCommunityIcons name="refresh" size={32} color="white" />
-        </TouchableOpacity>
+        </View>
     );
 
     // Render UI according to un-/available videos data.
@@ -130,9 +87,6 @@ export const VideoPoolComponent: React.FC = () => {
             loggerService.trace("Displaying info box.");
             return (
                 <View style={styles.containerTop}>
-                    {uploadButton()}
-                    {refreshButton()}
-
                     <View style={styles.infoTextBox}>
                         <Text style={styles.infoText}>{i18n.t("itrex.noVideosAvailable")}</Text>
                     </View>
@@ -143,9 +97,6 @@ export const VideoPoolComponent: React.FC = () => {
         loggerService.trace("Displaying video list.");
         return (
             <View style={styles.containerTop}>
-                {uploadButton()}
-                {refreshButton()}
-
                 <Animated.View style={{ transform: [{ translateY }], flex: 1, maxWidth: "90%" }}>
                     <FlatList
                         style={styles.list}
@@ -159,12 +110,7 @@ export const VideoPoolComponent: React.FC = () => {
         );
     };
 
-    return (
-        <ImageBackground source={require("../constants/images/Background2.png")} style={styles.image}>
-            <Text style={styles.header}>{i18n.t("itrex.videoPool")}</Text>
-            {renderUi()}
-        </ImageBackground>
-    );
+    return <View>{renderUi()}</View>;
 
     /**
      * Method gets all videos belonging to specified course ID.
@@ -188,30 +134,6 @@ export const VideoPoolComponent: React.FC = () => {
                 setLoading(false);
             });
     }
-
-    // function calculateVideoDuration(videoDuration?: number): string {
-    //     if (videoDuration == undefined) {
-    //         return "";
-    //     }
-    //     return new Date(videoDuration / 100).toISOString().substr(11, 8);
-    // }
-
-    async function deleteVideo(videoId?: string): Promise<void> {
-        if (videoId === undefined) {
-            return;
-        }
-
-        const deleteRequest: RequestInit = RequestFactory.createDeleteRequest();
-        const response: Promise<Response> = endpointsVideo.deleteVideo(deleteRequest, videoId);
-        response.then(() => {
-            getAllVideos(course.id);
-        });
-    }
-
-    function resetStates(): void {
-        setLoading(true);
-        setVideos([]);
-    }
 };
 
 const styles = StyleSheet.create({
@@ -223,16 +145,6 @@ const styles = StyleSheet.create({
     containerTop: {
         flex: 1,
         alignItems: "center",
-    },
-    image: {
-        flex: 1,
-        resizeMode: "stretch",
-        justifyContent: "center",
-    },
-    header: {
-        fontSize: 50,
-        color: dark.theme.pink,
-        textAlign: "center",
     },
     infoTextBox: {
         width: "50%",
@@ -249,24 +161,6 @@ const styles = StyleSheet.create({
         fontSize: 20,
         margin: 10,
     },
-    button: {
-        backgroundColor: dark.theme.darkBlue2,
-        borderColor: dark.theme.pink,
-        borderWidth: 1,
-        margin: 5,
-        alignItems: "center",
-        justifyContent: "center",
-    },
-    buttonText: {
-        color: "white",
-        fontSize: 20,
-        padding: 10,
-        alignItems: "center",
-        justifyContent: "center",
-    },
-    refreshButton: {
-        padding: 20,
-    },
     list: {
         flex: 1,
     },
@@ -276,15 +170,5 @@ const styles = StyleSheet.create({
     },
     listItemSubtitle: {
         color: "white",
-    },
-    deleteButton: {
-        borderColor: "red",
-        borderWidth: 1,
-    },
-    deleteIcon: {
-        paddingTop: 5,
-        paddingBottom: 5,
-        paddingStart: 20,
-        paddingEnd: 20,
     },
 });
