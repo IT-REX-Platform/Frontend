@@ -92,5 +92,6 @@ export const en = {
         availableVideos: "Available Videos",
         chapterMaterial: "Chapter Material",
         myNewChapter: "My new Chapter",
+        save: "Save",
     },
 };

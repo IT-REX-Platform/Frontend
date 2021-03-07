@@ -3,7 +3,7 @@ export const de = {
         welcome: "Willkommen bei IT-Rex!",
         starter: "Starte direkt durch mit dem Lernen!",
         itrex: "IT-Rex",
-        home: "Home",
+        home: "Startseite",
         login: "Einloggen",
         logout: "Ausloggen",
         homeStudentTitle: "Home",
@@ -92,5 +92,6 @@ export const de = {
         availableVideos: "Verfügbare Videos",
         chapterMaterial: "Kapitel Materialien",
         myNewChapter: "Mein neues Kapitel",
+        save: "Speichern",
     },
 };
