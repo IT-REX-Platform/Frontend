@@ -1,15 +1,5 @@
 import React, { useState } from "react";
-import {
-    ActivityIndicator,
-    Animated,
-    FlatList,
-    ImageBackground,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
-} from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { ActivityIndicator, Animated, FlatList, StyleSheet, Text, View } from "react-native";
 import i18n from "../locales";
 import { loggerFactory } from "../../logger/LoggerConfig";
 import { EndpointsVideo } from "../api/endpoints/EndpointsVideo";
@@ -18,7 +8,6 @@ import { IVideo } from "../types/IVideo";
 import { useFocusEffect } from "@react-navigation/native";
 import { ICourse } from "../types/ICourse";
 import { CourseContext, LocalizationContext } from "./Context";
-import { NavigationRoutes } from "../constants/navigators/NavigationRoutes";
 import { dark } from "../constants/themes/dark";
 import { ListItem } from "react-native-elements";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
@@ -29,9 +18,6 @@ const loggerService = loggerFactory.getLogger("service.VideoPoolComponent");
 
 export const VideoPoolList: React.FC = () => {
     loggerService.trace("Started VideoPoolComponent.");
-
-    // Navigation hook.
-    const navigation = useNavigation();
 
     // Get localization from context.
     React.useContext(LocalizationContext);
@@ -148,11 +134,6 @@ export const VideoPoolList: React.FC = () => {
                 setLoading(false);
             });
     }
-
-    function resetStates(): void {
-        setLoading(true);
-        setVideos([]);
-    }
 };
 
 const styles = StyleSheet.create({
@@ -164,16 +145,6 @@ const styles = StyleSheet.create({
     containerTop: {
         flex: 1,
         alignItems: "center",
-    },
-    image: {
-        flex: 1,
-        resizeMode: "stretch",
-        justifyContent: "center",
-    },
-    header: {
-        fontSize: 50,
-        color: dark.theme.pink,
-        textAlign: "center",
     },
     infoTextBox: {
         width: "50%",
@@ -190,24 +161,6 @@ const styles = StyleSheet.create({
         fontSize: 20,
         margin: 10,
     },
-    button: {
-        backgroundColor: dark.theme.darkBlue2,
-        borderColor: dark.theme.pink,
-        borderWidth: 1,
-        margin: 5,
-        alignItems: "center",
-        justifyContent: "center",
-    },
-    buttonText: {
-        color: "white",
-        fontSize: 20,
-        padding: 10,
-        alignItems: "center",
-        justifyContent: "center",
-    },
-    refreshButton: {
-        padding: 20,
-    },
     list: {
         flex: 1,
     },
@@ -217,15 +170,5 @@ const styles = StyleSheet.create({
     },
     listItemSubtitle: {
         color: "white",
-    },
-    deleteButton: {
-        borderColor: "red",
-        borderWidth: 1,
-    },
-    deleteIcon: {
-        paddingTop: 5,
-        paddingBottom: 5,
-        paddingStart: 20,
-        paddingEnd: 20,
     },
 });

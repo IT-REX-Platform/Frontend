@@ -1,8 +1,6 @@
-import { Button, StyleSheet, Text, TextInput, TouchableOpacity, View, Image, ImageBackground } from "react-native";
-
 import React from "react";
+import { StyleSheet, Text, View, Image, ImageBackground } from "react-native";
 import { AuthContext, LocalizationContext } from "../Context";
-
 import * as WebBrowser from "expo-web-browser";
 import * as AuthSession from "expo-auth-session";
 import { itRexVars } from "../../constants/Constants";

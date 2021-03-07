@@ -1,6 +1,6 @@
-import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { Text, StyleSheet } from "react-native";
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { dark } from "../../constants/themes/dark";
 import { RequestFactory } from "../../api/requests/RequestFactory";
 import { EndpointsCourse } from "../../api/endpoints/EndpointsCourse";
@@ -16,7 +16,6 @@ import { VideoComponent } from "../VideoComponent";
 import AuthenticationService from "../../services/AuthenticationService";
 import i18n from "../../locales";
 import { ScreenAddChapter } from "./course/ScreenAddChapter";
-import { ITREXRoles } from "../../constants/ITREXRoles";
 
 export type ScreenCourseNavigationProp = DrawerNavigationProp<RootDrawerParamList, "ROUTE_COURSE_DETAILS">;
 export type ScreenCourseRouteProp = RouteProp<RootDrawerParamList, "ROUTE_COURSE_DETAILS">;
@@ -25,8 +24,8 @@ export type ScreenCourseProps = DrawerScreenProps<RootDrawerParamList, "ROUTE_CO
 const CourseStack = createStackNavigator<CourseStackParamList>();
 
 export const ScreenCourse: React.FC = () => {
-    const navigation = useNavigation<ScreenCourseNavigationProp>();
-    const route = useRoute<ScreenCourseRouteProp>();
+    const navigation: ScreenCourseNavigationProp = useNavigation<ScreenCourseNavigationProp>();
+    const route: ScreenCourseRouteProp = useRoute<ScreenCourseRouteProp>();
 
     const courseId = route.params.courseId;
 
@@ -49,6 +48,7 @@ export const ScreenCourse: React.FC = () => {
             <CourseStack.Navigator
                 initialRouteName="INFO"
                 screenOptions={{
+                    // Hamburder button.
                     // headerLeft: () => (
                     //     <MaterialCommunityIcons
                     //         style={styles.icon}
@@ -59,6 +59,11 @@ export const ScreenCourse: React.FC = () => {
                     //     />
                     // ),
 
+                    // Back button.
+                    headerTintColor: "white",
+                    headerBackTitle: "Back",
+
+                    // Title in center.
                     headerTitle: () => <Text style={styles.headerTitle}>{course.name}</Text>,
                     headerTitleAlign: "center",
                     headerStyle: {
@@ -66,9 +71,8 @@ export const ScreenCourse: React.FC = () => {
                         borderBottomColor: dark.theme.darkBlue2,
                         borderBottomWidth: 3,
                     },
-                    headerTintColor: "white",
-                    headerBackTitle: "Back",
 
+                    // Home button.
                     headerRight: () => (
                         <MaterialCommunityIcons
                             style={styles.icon}

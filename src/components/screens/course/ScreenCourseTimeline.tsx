@@ -1,7 +1,6 @@
-import { CompositeNavigationProp, useIsFocused, useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { Text, ImageBackground, StyleSheet, View, TouchableOpacity, Switch } from "react-native";
-
+import { CompositeNavigationProp, useIsFocused, useNavigation } from "@react-navigation/native";
 import { dark } from "../../../constants/themes/dark";
 import {
     CourseStackParamList,
@@ -16,7 +15,6 @@ import { ChapterComponent } from "../../ChapterComponent";
 import { ICourse } from "../../../types/ICourse";
 import CourseService from "../../../services/CourseService";
 import AuthenticationService from "../../../services/AuthenticationService";
-import { ITREXRoles } from "../../../constants/ITREXRoles";
 import i18n from "../../../locales";
 
 export type ScreenCourseTimelineNavigationProp = CompositeNavigationProp<
@@ -120,17 +118,6 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         paddingRight: "20px",
     },
-    headConatiner: {
-        flex: 1,
-        flexDirection: "column",
-        alignItems: "center",
-        paddingTop: "3%",
-    },
-    courseHeader: {
-        color: "white",
-        fontSize: 24,
-        fontWeight: "bold",
-    },
     addChapterContainer: {
         backgroundColor: "rgba(0,0,0,0.3)",
         height: "100px",
@@ -139,44 +126,6 @@ const styles = StyleSheet.create({
         padding: "0.5%",
         borderWidth: 3,
         borderColor: dark.theme.lightBlue,
-    },
-    chapterContainer: {
-        backgroundColor: "rgba(0,0,0,0.3)",
-        height: "20%",
-        width: "80%",
-        marginTop: "1%",
-        padding: "1.5%",
-        borderWidth: 3,
-        borderColor: dark.theme.darkGreen,
-        flexDirection: "column",
-        justifyContent: "flex-start",
-    },
-    chapterTopRow: {
-        width: "100%",
-        flex: 2,
-    },
-
-    chapterBottomRow: {
-        width: "100%",
-        flex: 1,
-        alignItems: "baseline",
-    },
-    chapterHeader: {
-        alignSelf: "flex-start",
-        color: "white",
-        fontSize: 18,
-        fontWeight: "bold",
-    },
-    chapterStatus: {
-        alignSelf: "flex-end",
-        position: "absolute",
-        color: "white",
-        fontWeight: "bold",
-    },
-    chapterMaterial: {
-        alignSelf: "center",
-        color: "white",
-        fontWeight: "bold",
     },
     txtAddChapter: {
         alignSelf: "center",
@@ -199,10 +148,6 @@ const styles = StyleSheet.create({
         borderStyle: "dotted",
         alignItems: "center",
         justifyContent: "center",
-    },
-    icon: {
-        width: 100,
-        height: 100,
     },
     textStyle: {
         margin: 10,

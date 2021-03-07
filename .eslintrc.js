@@ -2,6 +2,7 @@ module.exports = {
     env: {
         browser: true,
         es2021: true,
+        "react-native/react-native": true,
     },
     extends: [
         "eslint:recommended", // Enables recommended rules from "eslint" plugin.
@@ -13,8 +14,11 @@ module.exports = {
     parserOptions: {
         ecmaVersion: 12,
         sourceType: "module",
+        ecmaFeatures: {
+            jsx: true,
+        },
     },
-    plugins: ["@typescript-eslint", "prettier"],
+    plugins: ["@typescript-eslint", "prettier", "react", "react-native"],
     rules: {
         // https://eslint.org/docs/rules/   // ESLint rules.
         // https://github.com/typescript-eslint/typescript-eslint/tree/master/packages/eslint-plugin   // Typescript-ESLint rules.
@@ -25,5 +29,6 @@ module.exports = {
         complexity: ["warn", 4], // Cyclomatic complexity.
         "max-len": ["warn", { code: 120, ignoreComments: true, ignoreTrailingComments: true, ignoreUrls: true }],
         "max-lines": ["warn", { max: 300, skipBlankLines: true, skipComments: true }],
+        "react-native/no-unused-styles": 2,
     },
 };

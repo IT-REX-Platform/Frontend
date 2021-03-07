@@ -1,7 +1,7 @@
 import * as React from "react";
 import { NavigationRoutes } from "../constants/navigators/NavigationRoutes";
 import { NavigationContainer } from "@react-navigation/native";
-import { DrawerNavigator } from "../constants/navigators/DrawNavigation";
+import { DrawerNavigator } from "../constants/navigators/DrawerNavigation";
 import { LocalizationContext } from "../components/Context";
 
 export const LoggedInNavigator: React.FC = () => {

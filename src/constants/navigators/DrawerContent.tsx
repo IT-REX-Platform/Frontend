@@ -13,32 +13,30 @@ import { RequestFactory } from "../../api/requests/RequestFactory";
 import { NavigationRoutes } from "./NavigationRoutes";
 import { AuthContext, LocalizationContext } from "../../components/Context";
 import i18n from "../../locales";
-import { Drawer } from "react-native-paper";
-import { dark } from "../themes/dark";
 import { EndpointsCourse } from "../../api/endpoints/EndpointsCourse";
 import AuthenticationService from "../../services/AuthenticationService";
 import { ITREXRoles } from "../ITREXRoles";
+import { dark } from "../themes/dark";
 import { CommonActions } from "@react-navigation/native";
 
 export const DrawerContent: React.FC<DrawerContentComponentProps> = (props: DrawerContentComponentProps) => {
-    const { signOut } = React.useContext(AuthContext);
-
+    const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");
+    const endpointsCourse: EndpointsCourse = new EndpointsCourse();
     const { navigation } = props;
 
-    // Display all courses
+    // Courses array.
+    const drawerItems = [];
+
+    // Courses state.
     const initialCourseState: ICourse[] = [];
     const [courses, setCourses] = useState(initialCourseState);
 
-    const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");
-    const endpointsCourse: EndpointsCourse = new EndpointsCourse();
-
-    const drawerItems = [];
-
+    // Theme state.
     const [isDarkTheme, setIsDarkTheme] = React.useState(false);
     const toggleIsDarkTheme = () => setIsDarkTheme((previousState) => !previousState);
 
+    // Localisation.
     const { locale, setLocale } = React.useContext(LocalizationContext);
-
     const toggleIsGerman = () => {
         if (locale == "de-DE") {
             setLocale("en");
@@ -47,15 +45,82 @@ export const DrawerContent: React.FC<DrawerContentComponentProps> = (props: Draw
         }
     };
 
-    function getAllCourses(): void {
-        loggerService.trace("Getting all courses.");
-        const request: RequestInit = RequestFactory.createGetRequest();
-        endpointsCourse.getAllCourses(request).then((receivedCourses) => {
-            setCourses(receivedCourses);
-        });
+    const { signOut } = React.useContext(AuthContext);
+
+    useEffect(() => {
+        _getAllCourses();
+    }, []);
+
+    if (courses.length < 1) {
+        _displayNoCourses();
     }
 
-    function noCourses() {
+    for (const course of courses) {
+        drawerItems.push(
+            <DrawerItem
+                {...props}
+                icon={() => <MaterialCommunityIcons name="notebook-outline" size={28} color="white" />}
+                label={"" + course.name}
+                key={course.id}
+                onPress={() => {
+                    console.log("Course Details");
+                    navigation.dispatch({
+                        ...CommonActions.reset({
+                            index: 0,
+                            routes: [{ name: NavigationRoutes.ROUTE_COURSE_DETAILS, params: { courseId: course.id } }],
+                        }),
+                    });
+                    /*
+                        navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, {
+                            courseId: course.id,
+
+                        });
+                        */
+                }}
+            />
+        );
+    }
+
+    return (
+        <>
+            <View style={styles.titleContainer}>
+                <Image style={styles.titleImage} source={require("../images/Logo_white.png")} />
+                <Text style={styles.titleText}>IT-REX</Text>
+            </View>
+
+            <DrawerItemList {...props} />
+
+            <Text style={styles.sectionHeader}>{i18n.t("itrex.myCoursesDivider")}</Text>
+            <DrawerContentScrollView {...props}>{drawerItems}</DrawerContentScrollView>
+
+            <Text style={styles.sectionHeader}>{i18n.t("itrex.quickSettings")}</Text>
+            <View style={styles.settingsContainer}>
+                <View style={styles.horizontalContainer}>
+                    <Text style={{ color: "white" }}>{i18n.t("itrex.darkTheme")}</Text>
+                    <Switch value={isDarkTheme} onValueChange={toggleIsDarkTheme} />
+                </View>
+                <View style={styles.horizontalContainer}>
+                    <Text style={{ color: "white" }}>{i18n.t("itrex.switchLang")}</Text>
+                    <Switch value={locale == "de-DE"} onValueChange={toggleIsGerman} />
+                </View>
+            </View>
+
+            <DrawerItem
+                {...props}
+                icon={() => <MaterialCommunityIcons name="logout" size={28} color="white" />}
+                label={i18n.t("itrex.logout")}
+                onPress={() => signOut()}
+            />
+        </>
+    );
+
+    function _getAllCourses(): void {
+        loggerService.trace("Getting all courses.");
+        const request: RequestInit = RequestFactory.createGetRequest();
+        endpointsCourse.getAllCourses(request).then((receivedCourses) => setCourses(receivedCourses));
+    }
+
+    function _displayNoCourses() {
         if (
             AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_LECTURER) ||
             AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_ADMIN)
@@ -65,136 +130,47 @@ export const DrawerContent: React.FC<DrawerContentComponentProps> = (props: Draw
             drawerItems.push(<Text style={styles.textNoCourses}>{i18n.t("itrex.noCoursesStudent")}</Text>);
         }
     }
-
-    if (courses.length > 0) {
-        for (const course of courses) {
-            drawerItems.push(
-                <DrawerItem
-                    {...props}
-                    icon={() => <MaterialCommunityIcons name="notebook-outline" size={28} style={styles.icon} />}
-                    label={"" + course.name}
-                    key={course.id}
-                    onPress={() => {
-                        console.log("Course Details");
-                        navigation.dispatch({
-                            ...CommonActions.reset({
-                                index: 0,
-                                routes: [
-                                    { name: NavigationRoutes.ROUTE_COURSE_DETAILS, params: { courseId: course.id } },
-                                ],
-                            }),
-                        });
-                        /*
-                        navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, {
-                            courseId: course.id,
-
-                        });
-                        */
-                    }}></DrawerItem>
-            );
-        }
-    } else {
-        noCourses();
-    }
-
-    useEffect(() => {
-        getAllCourses();
-    }, []);
-
-    return (
-        <View style={{ flex: 1 }}>
-            <Drawer.Section
-                style={{
-                    backgroundColor: dark.theme.darkBlue1,
-                    borderBottomWidth: 3,
-                    borderBottomColor: dark.theme.darkBlue2,
-                }}>
-                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", height: 56 }}>
-                    <Image source={require("../images/Logo_white.png")} style={[styles.icon]} />
-                    <Text style={styles.textWithShadow}>IT-REX</Text>
-                </View>
-            </Drawer.Section>
-            <Drawer.Section
-                style={{
-                    backgroundColor: dark.theme.darkBlue1,
-                    borderBottomWidth: 3,
-                    borderBottomColor: dark.theme.darkBlue2,
-                }}>
-                <DrawerItemList {...props} />
-            </Drawer.Section>
-
-            <DrawerContentScrollView {...props}>
-                <Drawer.Section
-                    style={{
-                        backgroundColor: dark.theme.darkBlue1,
-                        borderBottomWidth: 3,
-                        borderBottomColor: dark.theme.darkBlue2,
-                    }}>
-                    <View>
-                        <Text style={styles.sectionHeader}> {i18n.t("itrex.myCoursesDevider")}</Text>
-                    </View>
-                    {drawerItems}
-                </Drawer.Section>
-            </DrawerContentScrollView>
-            <Drawer.Section>
-                <View>
-                    <Text style={styles.sectionHeader}> {i18n.t("itrex.fastSettings")}</Text>
-                </View>
-                <View
-                    style={{
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        paddingVertical: 12,
-                        paddingHorizontal: 16,
-                    }}>
-                    <Text style={{ color: "white" }}>{i18n.t("itrex.darkTheme")}</Text>
-                    <Switch value={isDarkTheme} onValueChange={toggleIsDarkTheme} />
-                </View>
-                <View
-                    style={{
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        paddingVertical: 12,
-                        paddingHorizontal: 16,
-                    }}>
-                    <Text style={{ color: "white" }}>{i18n.t("itrex.switchLang")}</Text>
-                    <Switch value={locale == "de-DE"} onValueChange={toggleIsGerman} />
-                </View>
-                <DrawerItem
-                    {...props}
-                    icon={() => <MaterialCommunityIcons name="logout" size={28} style={styles.icon} />}
-                    label={i18n.t("itrex.logout")}
-                    onPress={() => {
-                        signOut();
-                    }}
-                />
-            </Drawer.Section>
-        </View>
-    );
 };
 
 const styles = StyleSheet.create({
-    icon: {
-        color: "white",
-        marginTop: 10,
+    titleContainer: {
+        flexDirection: "row",
+        justifyContent: "center",
+        margin: 10,
+    },
+    titleImage: {
         width: 36,
         height: 36,
+        alignSelf: "center",
+        color: "white",
     },
-    textWithShadow: {
-        marginLeft: 10,
-        marginTop: 10,
+    titleText: {
+        marginStart: 10,
+        fontSize: 30,
+        color: "white",
         textShadowColor: "white",
         textShadowOffset: { width: -1, height: 1 },
         textShadowRadius: 2,
-        fontSize: 30,
-        tintColor: "white",
-        color: "white",
     },
     sectionHeader: {
-        color: dark.theme.darkBlue4,
-        marginTop: 3,
-        marginBottom: 10,
-        fontSize: 15,
+        marginTop: 20,
+        marginStart: 10,
+        color: "white",
     },
-    textNoCourses: { justifyContent: "center", color: "white", alignContent: "center", marginLeft: 25, fontSize: 15 },
+    settingsContainer: {
+        marginHorizontal: 10,
+        marginVertical: 5,
+        backgroundColor: dark.theme.darkBlue2,
+        borderRadius: 4,
+    },
+    horizontalContainer: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        margin: 5,
+    },
+    textNoCourses: {
+        alignSelf: "center",
+        margin: 5,
+        color: "white",
+    },
 });

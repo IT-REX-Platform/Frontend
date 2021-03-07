@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ImageBackground, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { ImageBackground, StyleSheet, Text, TextInput, View } from "react-native";
 import { loggerFactory } from "../../logger/LoggerConfig";
 import { IVideo } from "../types/IVideo";
 import { Video } from "expo-av";
@@ -158,22 +158,24 @@ const styles = StyleSheet.create({
         backgroundColor: "black",
     },
     infoContainer: {
-        width: "50%",
+        width: "90%",
         alignItems: "center",
         padding: 5,
         backgroundColor: dark.theme.darkBlue2,
         borderColor: dark.theme.darkBlue4,
         borderWidth: 2,
-        borderRadius: 2,
+        borderRadius: 5,
     },
     textInput: {
         width: "100%",
         margin: 5,
+        padding: 5,
         textAlign: "center",
+        fontSize: 16,
         color: "white",
         borderColor: "white",
-        borderWidth: 1,
-        borderRadius: 2,
+        borderWidth: 2,
+        borderRadius: 5,
     },
     text: {
         maxWidth: "100%",
@@ -185,19 +187,5 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
-    },
-    button: {
-        margin: 5,
-        backgroundColor: dark.theme.darkBlue4,
-        borderRadius: 2,
-    },
-    buttonDelete: {
-        margin: 5,
-        backgroundColor: "red",
-        borderRadius: 2,
-    },
-    buttonText: {
-        padding: 10,
-        color: "white",
     },
 });

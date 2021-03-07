@@ -150,7 +150,7 @@ export const VideoPoolComponent: React.FC = () => {
                     backgroundColor: dark.theme.darkBlue2,
                     borderColor: dark.theme.darkBlue4,
                     borderWidth: 2,
-                    borderRadius: 2,
+                    borderRadius: 5,
                 }}>
                 <MaterialCommunityIcons name="video-vintage" size={28} color="white" />
 
