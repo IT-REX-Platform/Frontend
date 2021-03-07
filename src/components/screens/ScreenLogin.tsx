@@ -71,7 +71,7 @@ export const ScreenLogin: React.FC = () => {
                     <TextButton
                         title={i18n.t("itrex.login")}
                         size={"large"}
-                        fontsize="large"
+                        fontSize="large"
                         color="dark"
                         onPress={() => {
                             promptAuthentication();
