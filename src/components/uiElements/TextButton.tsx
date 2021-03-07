@@ -1,42 +1,59 @@
-/* eslint-disable complexity */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as React from "react";
-import { StyleSheet, TouchableOpacity, Text } from "react-native";
+import { GestureResponderEvent, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { dark } from "../../constants/themes/dark";
-import i18n from "../../locales";
-import { LocalizationContext } from "../Context";
 
 interface ButtonProps {
     title: string;
     size?: string;
     color?: string;
     fontsize?: string;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    onPress?: any;
+    onPress?: (event: GestureResponderEvent) => void;
 }
 
 export const TextButton: React.FC<ButtonProps> = (props) => {
-    const { locale, setLocale } = React.useContext(LocalizationContext);
-
-    const ButtonSize =
-        props.size === "small" ? styles.smallButton : props.size === "large" ? styles.largeButton : styles.mediumButton;
-
-    const FontSize =
-        props.fontsize === "medium"
-            ? styles.mediumText
-            : props.fontsize === "large"
-            ? styles.largeText
-            : styles.smallText;
-
-    const ButtonColor =
-        props.color === "dark" ? styles.darkBlue : props.color === "pink" ? styles.red : styles.lightBlue;
+    const buttonSize = _setButtonSize(props);
+    const fontSize = _setFontSize(props);
+    const buttonColor = _setButtonColor(props);
 
     return (
-        <TouchableOpacity style={[styles.button, ButtonSize, ButtonColor]} onPress={props.onPress}>
-            <Text style={[FontSize]}>{props.title}</Text>
+        <TouchableOpacity style={[styles.button, buttonSize, buttonColor]} onPress={props.onPress}>
+            <Text style={[fontSize]}>{props.title}</Text>
         </TouchableOpacity>
     );
 };
+
+function _setButtonSize(props: ButtonProps) {
+    switch (props.size) {
+        case "small":
+            return styles.smallButton;
+        case "large":
+            return styles.largeButton;
+        default:
+            return styles.mediumButton;
+    }
+}
+
+function _setFontSize(props: ButtonProps) {
+    switch (props.fontsize) {
+        case "medium":
+            return styles.mediumText;
+        case "large":
+            return styles.largeText;
+        default:
+            return styles.smallText;
+    }
+}
+
+function _setButtonColor(props: ButtonProps) {
+    switch (props.color) {
+        case "dark":
+            return styles.darkBlue;
+        case "pink":
+            return styles.pink;
+        default:
+            return styles.lightBlue;
+    }
+}
 
 const styles = StyleSheet.create({
     button: {
@@ -52,7 +69,6 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderColor: "#FFFFFF",
     },
-
     darkBlue: {
         backgroundColor: dark.Opacity.darkBlue1,
         shadowColor: dark.Opacity.darkBlue1,
@@ -61,17 +77,19 @@ const styles = StyleSheet.create({
         backgroundColor: dark.Opacity.blueGreen,
         shadowColor: dark.Opacity.blueGreen,
     },
-    red: {
+    pink: {
         backgroundColor: dark.Opacity.pink,
         shadowColor: dark.Opacity.pink,
     },
     smallText: {
         fontSize: 15,
         color: "#FFFFFF",
+        marginBottom: 5,
     },
     mediumText: {
         fontSize: 20,
         color: "#FFFFFF",
+        marginBottom: 5,
     },
     largeText: {
         fontSize: 26,
