@@ -1,5 +1,6 @@
 import { CoursePublishState } from "../constants/CoursePublishState";
 import { IChapter } from "./IChapter";
+import { ITimePeriod } from "./ITimePeriod";
 
 export type ICourse = {
     id?: string;
@@ -11,4 +12,5 @@ export type ICourse = {
     publishState?: CoursePublishState;
     chapters?: string[];
     chapterObjects?: IChapter[];
+    timePeriodObjects?: ITimePeriod[];
 };

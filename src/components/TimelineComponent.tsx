@@ -1,0 +1,109 @@
+/* eslint-disable complexity */
+
+import React from "react";
+import i18n from "../locales";
+import { LocalizationContext } from "./Context";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { dark } from "../constants/themes/dark";
+import { IChapter } from "../types/IChapter";
+import { MaterialIcons } from "@expo/vector-icons";
+import AuthenticationService from "../services/AuthenticationService";
+import { useNavigation } from "@react-navigation/native";
+import { ITimePeriod, TimePeriodPublishState } from "../types/ITimePeriod";
+import { ChapterComponent } from "./ChapterComponent";
+
+interface TimelineComponentProps {
+    isLast?: boolean;
+    timePeriod?: ITimePeriod;
+    edit: boolean;
+}
+
+export const TimelineComponent: React.FC<TimelineComponentProps> = (props) => {
+    React.useContext(LocalizationContext);
+    const navigation = useNavigation();
+
+    return (
+        <>
+            <View style={styles.circleContainer}>
+                <Text style={styles.periodText}>{props.timePeriod?.title}</Text>
+                <View
+                    style={[
+                        styles.mainCircle,
+                        props.timePeriod?.publishState === TimePeriodPublishState.PUBLISHED
+                            ? styles.mainCirclePublished
+                            : {},
+                        props.timePeriod?.publishState === TimePeriodPublishState.UNPUBLISHED
+                            ? styles.mainCircleNotPublished
+                            : {},
+                        props.timePeriod?.publishState === TimePeriodPublishState.NOTSTARTED
+                            ? styles.mainCircleNotStarted
+                            : {},
+                    ]}>
+                    <View
+                        style={[
+                            styles.innerCircle,
+                            props.timePeriod?.publishState === TimePeriodPublishState.PUBLISHED
+                                ? styles.innerCirclePublished
+                                : {},
+                            props.timePeriod?.publishState === TimePeriodPublishState.UNPUBLISHED
+                                ? styles.innerCircleNotPublished
+                                : {},
+                            props.timePeriod?.publishState === TimePeriodPublishState.NOTSTARTED
+                                ? styles.innerCircleNotStarted
+                                : {},
+                        ]}></View>
+                </View>
+            </View>
+            {props.timePeriod?.chapterObjects?.map((chapter) => (
+                <ChapterComponent key={chapter.id} chapter={chapter} editMode={props.edit}></ChapterComponent>
+            ))}
+            <View style={styles.verticalLine}></View>
+        </>
+    );
+};
+
+const styles = StyleSheet.create({
+    circleContainer: {
+        alignItems: "center",
+    },
+    periodText: {
+        color: "white",
+    },
+    mainCircle: {
+        width: 50,
+        height: 50,
+        borderRadius: 50 / 2,
+    },
+    innerCircle: {
+        margin: 12.5,
+        width: 25,
+        height: 25,
+        borderRadius: 25 / 2,
+    },
+    verticalLine: {
+        height: 50,
+        backgroundColor: "#465371",
+        width: 5,
+    },
+    // Published-Styles
+    mainCirclePublished: {
+        backgroundColor: "#769575",
+    },
+    innerCirclePublished: {
+        backgroundColor: "#B6EF93",
+    },
+    // Not published
+    mainCircleNotPublished: {
+        backgroundColor: "#769575",
+    },
+    innerCircleNotPublished: {
+        backgroundColor: "#707070",
+    },
+    // Not started yet
+    mainCircleNotStarted: {
+        backgroundColor: "#3C495B",
+    },
+    innerCircleNotStarted: {
+        backgroundColor: "#707070",
+    },
+});

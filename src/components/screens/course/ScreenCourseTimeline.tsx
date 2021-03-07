@@ -18,6 +18,9 @@ import CourseService from "../../../services/CourseService";
 import AuthenticationService from "../../../services/AuthenticationService";
 import { ITREXRoles } from "../../../constants/ITREXRoles";
 import i18n from "../../../locales";
+import { TimelineComponent } from "../../TimelineComponent";
+import { CoursePublishState } from "../../../constants/CoursePublishState";
+import { TimePeriodPublishState } from "../../../types/ITimePeriod";
 
 export type ScreenCourseTimelineNavigationProp = CompositeNavigationProp<
     MaterialTopTabNavigationProp<CourseTabParamList, "TIMELINE">,
@@ -39,9 +42,12 @@ export const ScreenCourseTimeline: React.FC = () => {
     const isFocused = useIsFocused();
     useEffect(() => {
         if (isFocused && course.id !== undefined) {
+            setMyCourse(fakeData);
+            /*
             courseService.getCourse(course.id).then((receivedCourse) => {
                 setMyCourse(receivedCourse);
             });
+            */
         }
     }, [isFocused]);
     return (
@@ -51,7 +57,8 @@ export const ScreenCourseTimeline: React.FC = () => {
                 style={styles.image}
                 imageStyle={{ opacity: 0.5, position: "absolute", resizeMode: "contain" }}>
                 {lecturerEditMode()}
-                {myCourse.chapters?.length === 0 ? (
+
+                {myCourse.timePeriodObjects?.length === 0 ? (
                     <>
                         <View>
                             {!edit && (
@@ -62,8 +69,8 @@ export const ScreenCourseTimeline: React.FC = () => {
                         </View>
                     </>
                 ) : (
-                    myCourse.chapterObjects?.map((chapter) => (
-                        <ChapterComponent key={chapter.id} chapter={chapter} editMode={edit}></ChapterComponent>
+                    myCourse.timePeriodObjects?.map((timePeriod) => (
+                        <TimelineComponent key={timePeriod.id} edit={edit} timePeriod={timePeriod}></TimelineComponent>
                     ))
                 )}
 
@@ -99,6 +106,98 @@ export const ScreenCourseTimeline: React.FC = () => {
             );
         }
     }
+};
+
+const fakeData: ICourse = {
+    id: "ca8955ca-a849-497a-8583-2e3bcaf45ba1",
+    name: "Forschungsprojekt",
+    startDate: new Date("2021-02-23T00:00:00.000Z"),
+    endDate: new Date("2021-08-23T00:00:00.000Z"),
+    maxFoodSum: 1000,
+    courseDescription: "",
+    publishState: CoursePublishState.PUBLISHED,
+    chapters: ["31a763c9-f765-41be-b16d-51b2118be5be", "1b00bd0e-e43c-4cf2-be03-950e7ffa0c85"],
+    timePeriodObjects: [
+        {
+            id: "0001",
+            title: "Woche 1",
+            chapterObjects: [
+                {
+                    id: "31a763c9-f765-41be-b16d-51b2118be5be",
+                    title: "01: Einführung",
+                    courseId: "ca8955ca-a849-497a-8583-2e3bcaf45ba1",
+                    startDate: new Date("2021-03-08T00:00:00.000Z"),
+                    endDate: new Date("2021-03-14T00:00:00.000Z"),
+                    contents: [],
+                },
+                {
+                    id: "1b00bd0e-e43c-4cf2-be03-950e7ffa0c85",
+                    title: "02: Einführung Part 2",
+                    courseId: "ca8955ca-a849-497a-8583-2e3bcaf45ba1",
+                    startDate: new Date("2021-03-15T00:00:00.000Z"),
+                    endDate: new Date("2021-03-21T00:00:00.000Z"),
+                    contents: ["27c06535-4491-4312-b0ed-c22381fb04fb", "bb725bf5-514f-4eda-8f04-65e95ab03dab"],
+                },
+            ],
+            publishState: TimePeriodPublishState.PUBLISHED,
+        },
+        {
+            id: "0002",
+            title: "Woche 2",
+            chapterObjects: [
+                {
+                    id: "31a763c9-f765-41be-b16d-51b2118be5be",
+                    title: "03: Weiterführung von letzter Woche",
+                    courseId: "ca8955ca-a849-497a-8583-2e3bcaf45ba1",
+                    startDate: new Date("2021-03-08T00:00:00.000Z"),
+                    endDate: new Date("2021-03-14T00:00:00.000Z"),
+                    contents: [],
+                },
+                {
+                    id: "1b00bd0e-e43c-4cf2-be03-950e7ffa0c85",
+                    title: "04: Noch eine Ergänzung",
+                    courseId: "ca8955ca-a849-497a-8583-2e3bcaf45ba1",
+                    startDate: new Date("2021-03-15T00:00:00.000Z"),
+                    endDate: new Date("2021-03-21T00:00:00.000Z"),
+                    contents: ["27c06535-4491-4312-b0ed-c22381fb04fb", "bb725bf5-514f-4eda-8f04-65e95ab03dab"],
+                },
+            ],
+            publishState: TimePeriodPublishState.UNPUBLISHED,
+        },
+        {
+            id: "0003",
+            title: "Woche 3",
+            publishState: TimePeriodPublishState.NOTSTARTED,
+        },
+        {
+            id: "0004",
+            title: "Woche 4",
+            publishState: TimePeriodPublishState.NOTSTARTED,
+        },
+        {
+            id: "0005",
+            title: "Woche 5",
+            publishState: TimePeriodPublishState.NOTSTARTED,
+        },
+    ],
+    chapterObjects: [
+        {
+            id: "31a763c9-f765-41be-b16d-51b2118be5be",
+            title: "01: Einführung",
+            courseId: "ca8955ca-a849-497a-8583-2e3bcaf45ba1",
+            startDate: new Date("2021-03-08T00:00:00.000Z"),
+            endDate: new Date("2021-03-14T00:00:00.000Z"),
+            contents: [],
+        },
+        {
+            id: "1b00bd0e-e43c-4cf2-be03-950e7ffa0c85",
+            title: "02: Bla Bla Blaa",
+            courseId: "ca8955ca-a849-497a-8583-2e3bcaf45ba1",
+            startDate: new Date("2021-03-15T00:00:00.000Z"),
+            endDate: new Date("2021-03-21T00:00:00.000Z"),
+            contents: ["27c06535-4491-4312-b0ed-c22381fb04fb", "bb725bf5-514f-4eda-8f04-65e95ab03dab"],
+        },
+    ],
 };
 
 const styles = StyleSheet.create({
