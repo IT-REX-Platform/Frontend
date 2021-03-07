@@ -35,6 +35,7 @@ import { loggerFactory } from "../../../../logger/LoggerConfig";
 import { calculateVideoSize } from "../../../services/calculateVideoSize";
 import { Event } from "@react-native-community/datetimepicker";
 import DraggableFlatList from "react-native-draggable-flatlist";
+import { TextButton } from "../../uiElements/TextButton";
 
 type ScreenCourseTabsNavigationProp = CompositeNavigationProp<
     StackNavigationProp<CourseStackParamList, "CHAPTER">,
@@ -277,9 +278,7 @@ export const ScreenAddChapter: React.FC = () => {
                         <MaterialCommunityIcons name="pen" size={24} color={dark.theme.darkGreen} style={styles.icon} />
                     </View>
                     <View>
-                        <Pressable style={{ margin: 5, width: 80 }}>
-                            <Button color={dark.Opacity.darkGreen} title="Save" onPress={() => saveChapter()} />
-                        </Pressable>
+                        <TextButton title={i18n.t("itrex.save")} onPress={() => saveChapter()} />
                     </View>
                 </View>
 

@@ -1,9 +1,9 @@
 export const de = {
     itrex: {
-        welcome: "Willkommen bei IT-Rex!",
+        welcome: "Willkommen bei IT-REX!",
         starter: "Starte direkt durch mit dem Lernen!",
-        itrex: "IT-Rex",
-        home: "Home",
+        itrex: "IT-REX",
+        home: "Startseite",
         login: "Einloggen",
         logout: "Ausloggen",
 
@@ -91,5 +91,6 @@ export const de = {
         availableVideos: "Verfügbare Videos",
         chapterMaterial: "Kapitel Materialien",
         myNewChapter: "Mein neues Kapitel",
+        save: "Speichern",
     },
 };

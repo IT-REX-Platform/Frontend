@@ -1,8 +1,8 @@
 export const en = {
     itrex: {
-        welcome: "Welcome to IT-Rex!",
+        welcome: "Welcome to IT-REX!",
         starter: "Start learning right away!",
-        itrex: "IT-Rex",
+        itrex: "IT-REX",
         home: "Home",
         login: "Login",
         logout: "Logout",
@@ -90,6 +90,7 @@ export const en = {
         editMode: "Toggle Edit-mode",
         availableVideos: "Available Videos",
         chapterMaterial: "Chapter Material",
-        myNewChapter: "My new Chapter",
+        myNewChapter: "My new chapter",
+        save: "Save",
     },
 };
