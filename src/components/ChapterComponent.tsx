@@ -27,7 +27,7 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
             <View style={styles.chapterTopRow}>
                 <Text style={styles.chapterHeader}>{chapter?.title}</Text>
                 {/* TODO: add real publish/unpublished state to the chapterss*/}
-                <View style={styles.chapterStatus}>{getPublishedSate("PUBLISHED")} </View>
+                <View style={styles.chapterStatus}>{getPublishedSate("PUBLISHED")}</View>
             </View>
             <View style={styles.chapterBottomRow}>
                 <Text style={styles.chapterMaterialHeader}>{i18n.t("itrex.chapterMaterial")}</Text>
@@ -42,7 +42,7 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                     })}
                 </View>
             </View>
-            {props.editMode && AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_LECTURER) && (
+            {props.editMode && AuthenticationService.getInstance().isLecturer() && (
                 <View style={styles.chapterEditRow}>
                     {/**<TouchableOpacity
                         onPress={() => {
