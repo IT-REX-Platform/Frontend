@@ -1,5 +1,5 @@
 import React, { ChangeEvent, useState } from "react";
-import { Button, ImageBackground, Platform, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { Button, ImageBackground, Platform, StyleSheet, TextInput, View } from "react-native";
 import { ICourse } from "../types/ICourse";
 import { validateCourseName } from "../helperScripts/validateCourseEntry";
 import { validateCourseDescription } from "../helperScripts/validateCourseEntry";
@@ -57,51 +57,49 @@ export const CreateCourseComponent: React.FC = () => {
     };
 
     return (
-        <ImageBackground source={require("../constants/images/Background2.png")} style={styles.image}>
-            <ScrollView>
-                <View style={styles.container}>
-                    <Header title={i18n.t("itrex.toCourse")} />
-                    <View style={styles.pageContainer} />
-                    <View style={styles.styledInputContainer}>
-                        <Text style={styles.textSytle}>{i18n.t("itrex.enterCourseName")}</Text>
-                        <TextInput
-                            style={styles.styledTextInput}
-                            onChangeText={(text: string) => setCourseName(text)}
-                            testID="courseNameInput"></TextInput>
-                    </View>
-                    <View style={styles.styledInputContainer}>
-                        <Text style={styles.textSytle}>{i18n.t("itrex.enterCourseDescription")}</Text>
-                        <TextInput
-                            style={styles.styledTextInput}
-                            onChangeText={(text: string) => setCourseDescription(text)}
-                            testID="courseDescriptionInput"></TextInput>
-                    </View>
-                    <View style={styles.styledInputContainer}>
-                        <DatePickerComponent
-                            title={i18n.t("itrex.startDate")}
-                            date={startDate}
-                            onDateChanged={startDateChanged}
-                            maxDate={endDate}></DatePickerComponent>
+        <ImageBackground source={require("../constants/images/Background2.png")} style={styles.imageContainer}>
+            <Header title={i18n.t("itrex.toCourse")} />
 
-                        <View style={{ margin: 16 }}></View>
+            <View style={{ marginTop: 70 }} />
 
-                        <DatePickerComponent
-                            title={i18n.t("itrex.endDate")}
-                            date={endDate}
-                            onDateChanged={endDateChanged}
-                            minDate={startDate}></DatePickerComponent>
-                    </View>
-                    <View style={styles.styledInputContainer}>
-                        <View style={[{ width: "20%", margin: 5 }]}>
-                            <Button
-                                color={dark.Opacity.blueGreen}
-                                title={i18n.t("itrex.createCourse")}
-                                onPress={_createCourse}
-                            />
-                        </View>
-                    </View>
-                </View>
-            </ScrollView>
+            <TextInput
+                style={styles.nameInput}
+                placeholder={i18n.t("itrex.enterCourseName")}
+                onChangeText={(text: string) => setCourseName(text)}
+                defaultValue={""}
+                testID="courseNameInput"
+            />
+
+            <TextInput
+                style={styles.descriptionInput}
+                placeholder={i18n.t("itrex.enterCourseDescription")}
+                onChangeText={(text: string) => setCourseDescription(text)}
+                defaultValue={""}
+                multiline={true}
+                testID="courseDescriptionInput"
+            />
+
+            <View style={styles.horizontalContainer}>
+                <DatePickerComponent
+                    title={i18n.t("itrex.startDate")}
+                    date={startDate}
+                    onDateChanged={startDateChanged}
+                    maxDate={endDate}
+                />
+
+                <View style={{ margin: 20 }} />
+
+                <DatePickerComponent
+                    title={i18n.t("itrex.endDate")}
+                    date={endDate}
+                    onDateChanged={endDateChanged}
+                    minDate={startDate}
+                />
+            </View>
+
+            <View style={styles.button}>
+                <Button color={dark.Opacity.blueGreen} title={i18n.t("itrex.createCourse")} onPress={_createCourse} />
+            </View>
         </ImageBackground>
     );
 
@@ -138,43 +136,57 @@ export const CreateCourseComponent: React.FC = () => {
         endpointsCourse.createCourse(postRequest).then((data) => {
             toast.success(i18n.t("itrex.courseCreated") + courseName);
             console.log(data);
+            _resetStates();
         });
+    }
+
+    function _resetStates(): void {
+        setCourseName("");
+        setCourseDescription("");
+        setStartDate(undefined);
+        setEndDate(undefined);
     }
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        flexDirection: "column",
-    },
-    pageContainer: {
-        marginTop: 70,
-    },
-    image: {
+    imageContainer: {
         flex: 1,
         resizeMode: "stretch",
-        justifyContent: "center",
+        flexDirection: "column",
     },
-    styledInputContainer: {
+    nameInput: {
+        width: "50%",
+        alignSelf: "center",
         margin: 5,
-        flexDirection: "row",
-        justifyContent: "center",
-    },
-    styledTextInput: {
+        padding: 5,
+        textAlign: "center",
+        fontSize: 16,
         color: "white",
-        marginLeft: 8,
-        borderColor: "lightgray",
+        borderColor: "white",
         borderWidth: 2,
+        borderRadius: 2,
     },
-    styledButton: {
+    descriptionInput: {
+        width: "50%",
+        height: "20%",
+        alignSelf: "center",
+        margin: 5,
+        padding: 5,
+        textAlign: "center",
+        fontSize: 16,
+        color: "white",
+        borderColor: "white",
+        borderWidth: 2,
+        borderRadius: 2,
+    },
+    horizontalContainer: {
+        alignSelf: "center",
+        flexDirection: "row",
         margin: 5,
     },
-    item: {
-        padding: 10,
-        fontSize: 18,
-        height: 44,
-    },
-    textSytle: {
-        color: "white",
+    button: {
+        width: "20%",
+        alignSelf: "center",
+        margin: 5,
     },
 });

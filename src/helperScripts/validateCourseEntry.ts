@@ -8,12 +8,12 @@ export function validateCourseName(courseName: string): boolean {
         toast.warn(i18n.t("itrex.courseNameInvalid"));
         return false;
     }
-    if (courseName.length > 3) {
-        return true;
+    if (courseName.length <= 3) {
+        toast.warn(i18n.t("itrex.courseNameTooShort"));
+        return false;
     }
 
-    toast.warn("Course name invalid.");
-    return false;
+    return true;
 }
 
 export function validateCourseDescription(courseDescription: string): boolean {
