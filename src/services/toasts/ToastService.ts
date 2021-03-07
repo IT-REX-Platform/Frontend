@@ -2,6 +2,8 @@ import { IToasts } from "./IToasts";
 import { Slide, toast, TypeOptions } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+import "./styles.css";
+
 export class ToastService implements IToasts {
     public success(msg: string, autoClose?: number | false): void {
         this._createToastWeb(msg, "success", autoClose);

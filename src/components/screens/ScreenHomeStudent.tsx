@@ -1,6 +1,5 @@
-import { Image, ImageBackground, StyleSheet, Text, View } from "react-native";
-
 import React from "react";
+import { Image, ImageBackground, StyleSheet, Text, View } from "react-native";
 import i18n from "../../locales";
 import { Header } from "../../constants/navigators/Header";
 import { LocalizationContext } from "../Context";

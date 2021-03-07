@@ -12,7 +12,6 @@ import AuthenticationService from "./services/AuthenticationService";
 import * as AuthSession from "expo-auth-session";
 import { IAuthContext } from "./components/Context";
 import { ILoginReducerAction, ILoginReducerState } from "./types/ILoginReducer";
-import { Provider as PaperProvider } from "react-native-paper";
 import { AsyncStorageService, StorageConstants } from "./services/StorageService";
 import { ToastContainer } from "react-toastify";
 
@@ -116,15 +115,13 @@ function App(): ReactElement {
         );
     }
 
-    const renderApp = () => {
+    const _renderApp = () => {
         return (
-            <PaperProvider>
-                <AuthContext.Provider value={authContext}>
-                    <LocalizationContext.Provider value={localizationContext}>
-                        {loginState.userInfo != null ? <LoggedInNavigator /> : <LoggedOutNavigator />}
-                    </LocalizationContext.Provider>
-                </AuthContext.Provider>
-            </PaperProvider>
+            <AuthContext.Provider value={authContext}>
+                <LocalizationContext.Provider value={localizationContext}>
+                    {loginState.userInfo != null ? <LoggedInNavigator /> : <LoggedOutNavigator />}
+                </LocalizationContext.Provider>
+            </AuthContext.Provider>
         );
     };
 
@@ -132,12 +129,12 @@ function App(): ReactElement {
         return (
             <>
                 <ToastContainer />
-                {renderApp()}
+                {_renderApp()}
             </>
         );
     }
 
-    return renderApp();
+    return _renderApp();
 }
 
 export default App;

@@ -57,7 +57,7 @@ export default class CourseService {
      * @param course the course which the chapter should by linked
      */
     public createNewChapter(chapter: IChapter, course: ICourse): Promise<IChapter> {
-        const postRequest: RequestInit = RequestFactory.createPostRequest(chapter);
+        const postRequest: RequestInit = RequestFactory.createPostRequestWithBody(chapter);
         const chapterEndpoint = new EndpointsChapter();
         const courseEndpoint = new EndpointsCourse();
         return new Promise((resolve, reject) => {

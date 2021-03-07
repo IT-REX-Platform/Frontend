@@ -75,9 +75,9 @@ export default class AuthenticationService {
                         );
                         resolve(tResponse);
                     })
-                    .catch((reason) => {
+                    .catch((error) => {
                         // Refresh does not work
-                        this.loggerApi.info("Could not refresh oauth2 token");
+                        this.loggerApi.error("Could not refresh oauth2 token.", error);
                         new AsyncStorageService().deleteItem(StorageConstants.OAUTH_REFRESH_TOKEN);
                         reject(false);
                     });
