@@ -11,7 +11,6 @@ interface CourseCardProps {
     course: ICourse;
 }
 
-// eslint-disable-next-line complexity
 export const CourseCard: React.FC<CourseCardProps> = (props) => {
     const { course } = props;
     const navigation = useNavigation();
@@ -153,24 +152,5 @@ const styles = StyleSheet.create({
         opacity: 0.5,
         height: 1,
         marginTop: 1,
-    },
-    image: {
-        flex: 1,
-        resizeMode: "stretch",
-        justifyContent: "center",
-    },
-    touchableStyle: {
-        color: dark.theme.pink,
-    },
-    gradient: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        borderRadius: 5,
-    },
-    container: {
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
     },
 });

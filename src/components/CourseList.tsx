@@ -15,21 +15,20 @@ export const CourseList: React.FC<CourseListProps> = (props) => {
 };
 
 function getList(courses: ICourse[]) {
-    if (courses === undefined || courses.length === 0) {
+    if (courses.length === 0) {
         return (
             <View style={styles.cardView}>
                 <Text style={{ color: "white", fontSize: 20, marginTop: 32 }}>{i18n.t("itrex.noCoursesFilter")}</Text>
             </View>
         );
-    } else if (courses.length > 0) {
-        return (
-            <View style={styles.cardView}>
-                {courses.map((course: ICourse) => {
-                    return <CourseCard course={course} />;
-                })}
-            </View>
-        );
     }
+    return (
+        <View style={styles.cardView}>
+            {courses.map((course: ICourse) => {
+                return <CourseCard course={course} />;
+            })}
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({

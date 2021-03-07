@@ -83,8 +83,8 @@ export const de = {
         active: "Aktiv",
         inactive: "Inaktiv",
         noCoursesFilter: "Es wurden keine Kurse für diese Auswahl gefunden!",
-        filterPubUnpub: "Veröffentlichte/Unveröffentlichte Kurse",
-        filterActiveInActive: "aktive/inaktive Kurse",
+        filterPubUnpub: "Veröffentlichtung",
+        filterActiveInActive: "Aktivität",
         filterLabel: "Filter:",
 
         badRequest: "Ungültige Anfrage.",
