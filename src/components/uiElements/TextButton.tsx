@@ -6,14 +6,14 @@ interface ButtonProps {
     title: string;
     size?: string;
     color?: string;
-    fontsize?: string;
+    fontSize?: string;
     onPress?: (event: GestureResponderEvent) => void;
 }
 
 export const TextButton: React.FC<ButtonProps> = (props) => {
     const buttonSize = _setButtonSize(props);
-    const fontSize = _setFontSize(props);
     const buttonColor = _setButtonColor(props);
+    const fontSize = _setFontSize(props);
 
     return (
         <TouchableOpacity style={[styles.button, buttonSize, buttonColor]} onPress={props.onPress}>
@@ -33,17 +33,6 @@ function _setButtonSize(props: ButtonProps) {
     }
 }
 
-function _setFontSize(props: ButtonProps) {
-    switch (props.fontsize) {
-        case "medium":
-            return styles.mediumText;
-        case "large":
-            return styles.largeText;
-        default:
-            return styles.smallText;
-    }
-}
-
 function _setButtonColor(props: ButtonProps) {
     switch (props.color) {
         case "dark":
@@ -52,6 +41,17 @@ function _setButtonColor(props: ButtonProps) {
             return styles.pink;
         default:
             return styles.lightBlue;
+    }
+}
+
+function _setFontSize(props: ButtonProps) {
+    switch (props.fontSize) {
+        case "medium":
+            return styles.mediumText;
+        case "large":
+            return styles.largeText;
+        default:
+            return styles.smallText;
     }
 }
 
@@ -84,7 +84,6 @@ const styles = StyleSheet.create({
     smallText: {
         fontSize: 15,
         color: "#FFFFFF",
-        marginBottom: 5,
     },
     mediumText: {
         fontSize: 20,
