@@ -204,13 +204,6 @@ function getEndDateBasedOnFilter(setSelectedActiveState: CourseActivityState | u
 }
 
 const styles = StyleSheet.create({
-    textContainer: {
-        marginTop: 20,
-        marginBottom: 20,
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
-    },
     container: {
         flex: 1,
         flexDirection: "column",
@@ -220,13 +213,6 @@ const styles = StyleSheet.create({
         flex: 1,
         resizeMode: "stretch",
         justifyContent: "flex-start",
-    },
-    icon: {
-        width: 100,
-        height: 100,
-    },
-    textSytle: {
-        color: "white",
     },
     card: {
         maxWidth: "50%",
@@ -249,13 +235,6 @@ const styles = StyleSheet.create({
         flexGrow: 4,
         flexDirection: "row",
         flexWrap: "nowrap",
-    },
-    cardContent: {
-        fontSize: 15,
-        color: "white",
-        textAlignVertical: "center",
-        marginLeft: 5,
-        marginBottom: 5,
     },
     cardView: {
         flexDirection: "row",
