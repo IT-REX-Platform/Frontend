@@ -6,6 +6,7 @@ import { IEndpointsCourse } from "../endpoints_interfaces/IEndpointsCourse";
 import { loggerFactory } from "../../../logger/LoggerConfig";
 import { CourseUrlParams } from "../../constants/CourseUrlParams";
 import { ResponseParser } from "./ResponseParser";
+import { CourseURLSuffix } from "../../constants/CourseURLSuffix";
 
 /**
  * Endpoints for courseservice/api/courses/.
@@ -27,7 +28,7 @@ export class EndpointsCourse implements IEndpointsCourse {
      */
     public async getAllCourses(getRequest: RequestInit, params?: ICourse): Promise<ICourse[]> {
         this.loggerApi.trace("Checking for additional parameters for GET request URL.");
-        const url: string = this.appendCourseParams(params);
+        const url: string = this._appendCourseParams(this.url, params);
 
         this.loggerApi.trace("Sending GET request to URL: " + url);
         const response: Promise<Response> = sendRequest(url, getRequest);
@@ -37,12 +38,29 @@ export class EndpointsCourse implements IEndpointsCourse {
     }
 
     /**
+     * Get courses that belong to current user (I manage them / I joined them).
+     *
+     * @param getRequest GET request.
+     * @param params Optional parameters for GET request URL to filter users courses.
+     */
+    public async getUserCourses(getRequest: RequestInit, params?: ICourse): Promise<ICourse[]> {
+        this.loggerApi.trace("Checking for additional parameters for GET request URL.");
+        const myCoursesURL = this.url + CourseURLSuffix.USER;
+        const url: string = this._appendCourseParams(myCoursesURL, params);
+
+        this.loggerApi.trace("Sending GET request to URL: " + url);
+        const response: Promise<Response> = sendRequest(url, getRequest);
+        const parsedResponse: Promise<ICourse[]> = ResponseParser.parseCourses(response);
+        return parsedResponse;
+    }
+
+    /**
      * Append course filter parameters to the URL.
      *
      * @param params Optional parameters for GET request URL.
      */
-    private appendCourseParams(params?: ICourse): string {
-        const urlBase = this.url;
+    private _appendCourseParams(url: string, params?: ICourse): string {
+        const urlBase = url;
 
         if (params === undefined) {
             return urlBase;
@@ -133,7 +151,7 @@ export class EndpointsCourse implements IEndpointsCourse {
      * @param id the UUID of the course to join.
      */
     joinCourse(postRequest: RequestInit, id: string): void {
-        const urlJoin = this.url + "/" + id + "/join";
+        const urlJoin = this.url + "/" + id + CourseURLSuffix.JOIN;
 
         this.loggerApi.trace("Sending POST request to URL: " + urlJoin);
         const response: Promise<Response> = sendRequest(urlJoin, postRequest);
@@ -147,7 +165,7 @@ export class EndpointsCourse implements IEndpointsCourse {
      * @param id the UUID of the course to leave.
      */
     leaveCourse(postRequest: RequestInit, id: string): void {
-        const urlLeave = this.url + "/" + id + "/leave";
+        const urlLeave = this.url + "/" + id + CourseURLSuffix.LEAVE;
 
         this.loggerApi.trace("Sending POST request to URL: " + urlLeave);
         const response: Promise<Response> = sendRequest(urlLeave, postRequest);
