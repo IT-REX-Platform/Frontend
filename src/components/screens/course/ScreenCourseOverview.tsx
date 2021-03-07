@@ -20,6 +20,7 @@ import { EndpointsCourse } from "../../../api/endpoints/EndpointsCourse";
 import { loggerFactory } from "../../../../logger/LoggerConfig";
 import AuthenticationService from "../../../services/AuthenticationService";
 import { ITREXRoles } from "../../../constants/ITREXRoles";
+import { TextButton } from "../../uiElements/TextButton";
 import { CourseRoles } from "../../../constants/CourseRoles";
 import { IUser } from "../../../types/IUser";
 
@@ -49,7 +50,7 @@ export const ScreenCourseOverview: React.FC = () => {
             <ImageBackground source={require("../../../constants/images/Background_forest.svg")} style={styles.image}>
                 <View style={styles.container}>
                     <View style={styles.content}>
-                        <View style={styles.content}>{getPublishedSate(course.publishState)} </View>
+                        {getPublishedSate(course.publishState)}
 
                         {checkForLeaveCourse()}
 
@@ -96,15 +97,7 @@ export const ScreenCourseOverview: React.FC = () => {
             AuthenticationService.getInstance().getRoles().includes("ROLE_ITREX_LECTURER") ||
             AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_ADMIN)
         ) {
-            return (
-                <View style={[{ width: "20%", marginTop: 15 }]}>
-                    <Button
-                        color={dark.Opacity.blueGreen}
-                        title={i18n.t("itrex.videoPool")}
-                        onPress={() => goToVideoPool()}
-                    />
-                </View>
-            );
+            return <TextButton title={i18n.t("itrex.videoPool")} onPress={() => goToVideoPool()} />;
         }
     }
 
@@ -116,18 +109,12 @@ export const ScreenCourseOverview: React.FC = () => {
         ) {
             return (
                 <View style={{ flexDirection: "row" }}>
-                    <Pressable style={styles.styledButton}>
-                        <Button
-                            color={dark.Opacity.blueGreen}
-                            title={i18n.t("itrex.publishCourse")}
-                            onPress={() => patchCourse(course)}></Button>
-                    </Pressable>
-                    <Pressable style={styles.styledButton}>
-                        <Button
-                            color={dark.Opacity.pink}
-                            title={i18n.t("itrex.deleteCourse")}
-                            onPress={() => deleteCourse(course)}></Button>
-                    </Pressable>
+                    <TextButton title={i18n.t("itrex.publishCourse")} onPress={() => patchCourse(course)} />
+                    <TextButton
+                        title={i18n.t("itrex.deleteCourse")}
+                        color="pink"
+                        onPress={() => deleteCourse(course)}
+                    />
                 </View>
             );
         }

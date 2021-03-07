@@ -1,6 +1,6 @@
 export const de = {
     itrex: {
-        welcome: "Wilkommen bei IT-Rex!",
+        welcome: "Willkommen bei IT-Rex!",
         starter: "Starte direkt durch mit dem Lernen!",
         itrex: "IT-Rex",
         home: "Home",
@@ -46,7 +46,7 @@ export const de = {
         switchLangEN: "Zu Englisch wechseln",
         switchLang: "Zu Englisch wechseln",
         courseDetails: "Kurs-Details",
-        darkTheme: "Dark-Theme",
+        darkTheme: "Dunkelmodus",
         courseOverview: "Kursübersicht",
         courseTabOverview: "Übersicht",
         courseTabTimeline: "Zeitachse",
