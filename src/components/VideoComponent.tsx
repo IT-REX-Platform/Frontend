@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ImageBackground, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { ImageBackground, StyleSheet, Text, TextInput, View } from "react-native";
 import { loggerFactory } from "../../logger/LoggerConfig";
 import { IVideo } from "../types/IVideo";
 import { Video } from "expo-av";

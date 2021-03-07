@@ -182,14 +182,6 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderRadius: 5,
     },
-    styledTextInput: {
-        color: "white",
-        borderColor: "lightgray",
-        borderWidth: 2,
-        borderRadius: 5,
-        height: 30,
-        width: 200,
-    },
     horizontalContainer: {
         flexDirection: "row",
     },

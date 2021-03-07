@@ -1,6 +1,6 @@
-import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { Text, StyleSheet } from "react-native";
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { dark } from "../../constants/themes/dark";
 import { RequestFactory } from "../../api/requests/RequestFactory";
 import { EndpointsCourse } from "../../api/endpoints/EndpointsCourse";
@@ -16,7 +16,6 @@ import { VideoComponent } from "../VideoComponent";
 import AuthenticationService from "../../services/AuthenticationService";
 import i18n from "../../locales";
 import { ScreenAddChapter } from "./course/ScreenAddChapter";
-import { ITREXRoles } from "../../constants/ITREXRoles";
 
 export type ScreenCourseNavigationProp = DrawerNavigationProp<RootDrawerParamList, "ROUTE_COURSE_DETAILS">;
 export type ScreenCourseRouteProp = RouteProp<RootDrawerParamList, "ROUTE_COURSE_DETAILS">;

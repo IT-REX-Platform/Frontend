@@ -1,6 +1,6 @@
 import { CompositeNavigationProp, useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import { Text, ImageBackground, StyleSheet, Button, View, Pressable } from "react-native";
+import { Text, ImageBackground, StyleSheet, Button, View } from "react-native";
 import { dark } from "../../../constants/themes/dark";
 import { ICourse } from "../../../types/ICourse";
 import {
@@ -204,18 +204,9 @@ const styles = StyleSheet.create({
         flexDirection: "column",
         backgroundColor: dark.theme.darkBlue1,
     },
-    editMode: {
-        paddingTop: "20px",
-    },
     image: {
         flex: 1,
         resizeMode: "stretch",
-    },
-    icon: {
-        alignItems: "center",
-        paddingLeft: 10,
-        paddingRight: 10,
-        marginTop: 20,
     },
     content: {
         flex: 1,
@@ -225,9 +216,6 @@ const styles = StyleSheet.create({
     },
     textWhite: {
         color: "white",
-    },
-    styledButton: {
-        margin: 5,
     },
     unpublishedCard: {
         flexDirection: "row",

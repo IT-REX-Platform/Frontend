@@ -7,7 +7,6 @@ import { RootDrawerParamList } from "./NavigationRoutes";
 import i18n from "../../locales";
 import AuthenticationService from "../../services/AuthenticationService";
 import { ITREXRoles } from "../ITREXRoles";
-import { ScreenAddChapter } from "../../components/screens/course/ScreenAddChapter";
 import { ScreenHomeLecturer } from "../../components/screens/ScreenHomeLecturer";
 import { ScreenHomeAdmin } from "../../components/screens/ScreenHomeAdmin";
 import { ScreenHomeStudent } from "../../components/screens/ScreenHomeStudent";
@@ -45,17 +44,17 @@ function _gotoHomeScreen() {
     const userRole: string[] = AuthenticationService.getInstance().getRoles();
     switch (true) {
         case userRole.includes(ITREXRoles.ROLE_ADMIN):
-            return _homeScreen(ScreenHomeAdmin);
+            return _getHomeScreen(ScreenHomeAdmin);
         case userRole.includes(ITREXRoles.ROLE_LECTURER):
-            return _homeScreen(ScreenHomeLecturer);
+            return _getHomeScreen(ScreenHomeLecturer);
         case userRole.includes(ITREXRoles.ROLE_STUDENT):
-            return _homeScreen(ScreenHomeStudent);
+            return _getHomeScreen(ScreenHomeStudent);
         default:
             return;
     }
 }
 
-function _homeScreen(homeScreenType: React.FC) {
+function _getHomeScreen(homeScreenType: React.FC) {
     return (
         <Drawer.Screen
             name="ROUTE_HOME"

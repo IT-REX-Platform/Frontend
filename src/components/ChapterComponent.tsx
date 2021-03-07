@@ -99,7 +99,6 @@ const styles = StyleSheet.create({
         width: "100%",
         flex: 2,
     },
-
     chapterBottomRow: {
         width: "100%",
         flex: 1,
