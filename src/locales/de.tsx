@@ -1,8 +1,8 @@
 export const de = {
     itrex: {
-        welcome: "Willkommen bei IT-Rex!",
+        welcome: "Willkommen bei IT-REX!",
         starter: "Starte direkt durch mit dem Lernen!",
-        itrex: "IT-Rex",
+        itrex: "IT-REX",
         home: "Startseite",
         login: "Einloggen",
         logout: "Ausloggen",
