@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
         backgroundColor: "black",
     },
     infoContainer: {
-        width: "50%",
+        width: "90%",
         alignItems: "center",
         padding: 5,
         backgroundColor: dark.theme.darkBlue2,

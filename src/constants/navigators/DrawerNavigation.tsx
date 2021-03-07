@@ -24,7 +24,7 @@ export const DrawerNavigator: React.FC = () => {
     return (
         <Drawer.Navigator
             drawerStyle={{ backgroundColor: dark.theme.darkBlue1, paddingBottom: 5, height: dimensions.height }}
-            drawerType={dimensions.width >= 140 ? "permanent" : "front"}
+            drawerType={dimensions.width >= 1280 ? "permanent" : "front"}
             drawerContentOptions={{
                 activeTintColor: "white",
                 activeBackgroundColor: dark.theme.pink,

@@ -99,7 +99,7 @@ export const CreateCourseComponent: React.FC = () => {
                     />
                 </View>
 
-                <TextButton title={i18n.t("itrex.createCourse")} onPress={_createCourse}></TextButton>
+                <TextButton title={i18n.t("itrex.createCourse")} size="medium" onPress={_createCourse}></TextButton>
             </View>
         </ImageBackground>
     );
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
     },
     nameInput: {
-        width: "50%",
+        width: "90%",
         margin: 5,
         padding: 5,
         fontSize: 16,
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
     },
     descriptionInput: {
-        width: "50%",
+        width: "90%",
         height: 150,
         margin: 5,
         padding: 5,
