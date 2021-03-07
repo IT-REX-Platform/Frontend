@@ -5,7 +5,6 @@ import { IUser } from "../../types/IUser";
 import i18n from "../../locales";
 import { IChapter } from "../../types/IChapter";
 import { ToastService } from "../../services/toasts/ToastService";
-import { createAlert } from "../../helperScripts/createAlert";
 
 export class ResponseParser {
     private static loggerApi = loggerFactory.getLogger("API.ResponseParser");
@@ -56,17 +55,35 @@ export class ResponseParser {
         });
     }
 
+    public static parseChapter(response: Promise<Response>): Promise<IChapter> {
+        return new Promise((resolve) => {
+            response
+                .then((response) => {
+                    if (!response.ok) {
+                        ResponseParser._checkResponseCode(response);
+                    }
+                    return response.json();
+                })
+                .then((chapter: IChapter) => {
+                    chapter.startDate = chapter.startDate ? new Date(chapter.startDate) : undefined;
+                    chapter.endDate = chapter.endDate ? new Date(chapter.endDate) : undefined;
+                    resolve(chapter);
+                })
+                .catch((error) => {
+                    ResponseParser.loggerApi.error("An error occurred while parsing course data.", error);
+                    resolve({});
+                });
+        });
+    }
+
     public static parseChapters(response: Promise<Response>): Promise<IChapter[]> {
         return new Promise((resolve) => {
             response
                 .then((response) => {
-                    if (response.ok) {
-                        return response.json();
-                    } else {
-                        createAlert(i18n.t("itrex.chaptersNotfound"));
-                        ResponseParser.loggerApi.error("No courses data received.");
-                        resolve([]);
+                    if (!response.ok) {
+                        ResponseParser._checkResponseCode(response);
                     }
+                    return response.json();
                 })
                 .then((chapters: IChapter[]) => {
                     chapters.forEach((chapter: IChapter) => {
@@ -76,34 +93,8 @@ export class ResponseParser {
                     resolve(chapters);
                 })
                 .catch((error) => {
-                    createAlert(i18n.t("itrex.chaptersNotfound"));
                     ResponseParser.loggerApi.error("An error occurred while parsing courses data.", error);
                     resolve([]);
-                });
-        });
-    }
-
-    public static parseChapter(response: Promise<Response>): Promise<IChapter> {
-        return new Promise((resolve) => {
-            response
-                .then((response) => {
-                    if (response.ok) {
-                        return response.json();
-                    } else {
-                        createAlert(i18n.t("itrex.chapterNotfound"));
-                        ResponseParser.loggerApi.error("No course data received.");
-                        resolve({});
-                    }
-                })
-                .then((chapter: IChapter) => {
-                    chapter.startDate = chapter.startDate ? new Date(chapter.startDate) : undefined;
-                    chapter.endDate = chapter.endDate ? new Date(chapter.endDate) : undefined;
-                    resolve(chapter);
-                })
-                .catch((error) => {
-                    createAlert(i18n.t("itrex.chapterNotfound"));
-                    ResponseParser.loggerApi.error("An error occurred while parsing course data.", error);
-                    resolve({});
                 });
         });
     }
