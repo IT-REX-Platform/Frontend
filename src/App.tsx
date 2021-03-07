@@ -1,10 +1,8 @@
 import { ReactElement } from "react";
-import { NavigationContainer } from "@react-navigation/native";
 import { loggerFactory } from "../logger/LoggerConfig";
-import { Linking, TouchableOpacity, Text, StyleSheet, ActivityIndicator, Button, SafeAreaView } from "react-native";
+import { Linking, StyleSheet, ActivityIndicator, SafeAreaView } from "react-native";
 import i18n from "./locales/index";
 import * as Localization from "expo-localization";
-import DrawerNavigator from "./constants/navigators/DrawNavigation";
 import React from "react";
 import { dark } from "./constants/themes/dark";
 import { AuthContext, LocalizationContext } from "./components/Context";

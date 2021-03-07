@@ -41,7 +41,6 @@ export const ScreenCourseTimeline: React.FC = () => {
         if (isFocused && course.id !== undefined) {
             courseService.getCourse(course.id).then((receivedCourse) => {
                 setMyCourse(receivedCourse);
-                console.log("Load course again");
             });
         }
     }, [isFocused]);
@@ -85,11 +84,7 @@ export const ScreenCourseTimeline: React.FC = () => {
 
     // eslint-disable-next-line complexity
     function lecturerEditMode() {
-        console.log(myCourse);
-        if (
-            AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_LECTURER) ||
-            AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_ADMIN)
-        ) {
+        if (AuthenticationService.getInstance().isLecturerOrAdmin()) {
             return (
                 <>
                     <View style={styles.editMode}>

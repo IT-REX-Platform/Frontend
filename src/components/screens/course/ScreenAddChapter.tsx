@@ -51,7 +51,6 @@ export const ScreenAddChapter: React.FC = () => {
     const loggerService = loggerFactory.getLogger("service.VideoPoolComponent");
     let chapterId = route.params.chapterId;
 
-    console.log(route.params);
     if (chapterId == "undefined") {
         chapterId = undefined;
     }

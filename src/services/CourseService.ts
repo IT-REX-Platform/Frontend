@@ -88,7 +88,7 @@ export default class CourseService {
         });
     }
 
-    public deleteChapter(chapterId: string | undefined) {
+    public deleteChapter(chapterId: string | undefined): void {
         const chapterEndpoint = new EndpointsChapter();
         if (chapterId === undefined) {
             return;

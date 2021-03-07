@@ -42,12 +42,9 @@ export const ScreenCourse: React.FC = () => {
     useEffect(() => {
         const request: RequestInit = RequestFactory.createGetRequest();
         endpointsCourse.getCourse(request, courseId).then((receivedCourse) => {
-            console.log(receivedCourse);
             setCourse(receivedCourse);
         });
     }, [courseId]);
-
-    console.log(course);
 
     return (
         <CourseContext.Provider value={course}>

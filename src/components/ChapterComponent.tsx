@@ -4,10 +4,8 @@ import { LocalizationContext } from "./Context";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { dark } from "../constants/themes/dark";
 import { IChapter } from "../types/IChapter";
-import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 import AuthenticationService from "../services/AuthenticationService";
-import { ITREXRoles } from "../constants/ITREXRoles";
-import CourseService from "../services/CourseService";
 import { useNavigation } from "@react-navigation/native";
 
 interface ChapterComponentProps {
@@ -21,7 +19,6 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
     const navigation = useNavigation();
 
     const chapter = props.chapter;
-    const courseService = new CourseService();
     return (
         <View style={styles.chapterContainer}>
             <View style={styles.chapterTopRow}>
@@ -63,7 +60,6 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
     );
 
     function getPublishedSate(isPublished: string | undefined) {
-        console.log(isPublished);
         if (isPublished === "UNPUBLISHED") {
             return (
                 <>

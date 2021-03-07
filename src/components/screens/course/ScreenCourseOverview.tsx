@@ -37,8 +37,6 @@ export const ScreenCourseOverview: React.FC = () => {
     const endpointsCourse: EndpointsCourse = new EndpointsCourse();
     const course: ICourse = React.useContext(CourseContext);
 
-    console.log(course);
-
     return (
         <View style={styles.rootContainer}>
             <ImageBackground source={require("../../../constants/images/Background2.png")} style={styles.image}>
@@ -105,7 +103,6 @@ export const ScreenCourseOverview: React.FC = () => {
     }
 
     function getPublishedSate(isPublished: string | undefined) {
-        console.log(isPublished);
         if (isPublished === "UNPUBLISHED") {
             return (
                 <>
