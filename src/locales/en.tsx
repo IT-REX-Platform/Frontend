@@ -46,7 +46,7 @@ export const en = {
         switchLangDE: "Switch to german",
         switchLang: "Switch to german",
         courseDetails: "Course Details",
-        darkTheme: "Dark Xeme",
+        darkTheme: "Dark-Theme",
         courseOverview: "Course Overview",
         courseTabOverview: "Overview",
         courseTabTimeline: "Timeline",

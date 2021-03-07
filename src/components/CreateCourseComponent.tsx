@@ -14,6 +14,7 @@ import { Header } from "../constants/navigators/Header";
 import { LocalizationContext } from "./Context";
 import { Event } from "@react-native-community/datetimepicker";
 import { dark } from "../constants/themes/dark";
+import { TextButton } from "./uiElements/TextButton";
 
 const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");
 const endpointsCourse: EndpointsCourse = new EndpointsCourse();
@@ -61,6 +62,8 @@ export const CreateCourseComponent: React.FC = () => {
                     <View style={styles.pageContainer} />
                     <View style={styles.styledInputContainer}>
                         <Text style={styles.textSytle}>{i18n.t("itrex.enterCourseName")}</Text>
+                    </View>
+                    <View style={styles.styledInputContainer}>
                         <TextInput
                             style={styles.styledTextInput}
                             onChangeText={(text: string) => setCourseName(text)}
@@ -68,12 +71,14 @@ export const CreateCourseComponent: React.FC = () => {
                     </View>
                     <View style={styles.styledInputContainer}>
                         <Text style={styles.textSytle}>{i18n.t("itrex.enterCourseDescription")}</Text>
+                    </View>
+                    <View style={styles.styledInputContainer}>
                         <TextInput
                             style={styles.styledTextInput}
                             onChangeText={(text: string) => setCourseDescription(text)}
                             testID="courseDescriptionInput"></TextInput>
                     </View>
-                    <View style={styles.styledInputContainer}>
+                    <View style={[styles.styledInputContainer, styles.separator]}>
                         <DatePickerComponent
                             title={i18n.t("itrex.startDate")}
                             date={startDate}
@@ -89,13 +94,7 @@ export const CreateCourseComponent: React.FC = () => {
                             minDate={startDate}></DatePickerComponent>
                     </View>
                     <View style={styles.styledInputContainer}>
-                        <View style={[{ width: "20%", margin: 5 }]}>
-                            <Button
-                                color={dark.Opacity.blueGreen}
-                                title={i18n.t("itrex.createCourse")}
-                                onPress={createCourse}
-                            />
-                        </View>
+                        <TextButton title={i18n.t("itrex.createCourse")} onPress={createCourse}></TextButton>
                     </View>
                 </View>
             </ScrollView>
@@ -153,14 +152,16 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "center",
     },
+    separator: {
+        marginTop: 20,
+    },
     styledTextInput: {
         color: "white",
-        marginLeft: 8,
         borderColor: "lightgray",
         borderWidth: 2,
-    },
-    styledButton: {
-        margin: 5,
+        borderRadius: 5,
+        height: 30,
+        width: 200,
     },
     item: {
         padding: 10,
@@ -169,5 +170,6 @@ const styles = StyleSheet.create({
     },
     textSytle: {
         color: "white",
+        fontSize: 18,
     },
 });
