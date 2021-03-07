@@ -46,8 +46,8 @@ export const ScreenCourseOverview: React.FC = () => {
     }, []);
 
     return (
-        <>
-            <ImageBackground source={require("../../../constants/images/Background_forest.svg")} style={styles.image}>
+        <View style={styles.rootContainer}>
+            <ImageBackground source={require("../../../constants/images/Background2.png")} style={styles.image}>
                 <View style={styles.container}>
                     <View style={styles.content}>
                         {getPublishedSate(course.publishState)}
@@ -55,18 +55,18 @@ export const ScreenCourseOverview: React.FC = () => {
                         {checkForLeaveCourse()}
 
                         <Text style={styles.textWhite}>{course.courseDescription}</Text>
-
                         {uploadViedeoAsOwner()}
                     </View>
                 </View>
             </ImageBackground>
-        </>
+        </View>
     );
 
     function getDate(showDate: Date | undefined, title: string) {
         return (
             <Text style={{ color: "white" }}>
-                <Text style={{ fontWeight: "bold" }}>{title}</Text> {dateConverter(showDate)}
+                <Text style={{ fontWeight: "bold" }}>{title}</Text>
+                <Text>{dateConverter(showDate)}</Text>
             </Text>
         );
     }
@@ -121,7 +121,6 @@ export const ScreenCourseOverview: React.FC = () => {
     }
 
     function getPublishedSate(isPublished: string | undefined) {
-        console.log(isPublished);
         if (isPublished === "UNPUBLISHED") {
             return (
                 <>
@@ -129,8 +128,8 @@ export const ScreenCourseOverview: React.FC = () => {
                         <View style={styles.circleUnpublished} />
                         <Text style={styles.textUnpublished}>{i18n.t("itrex.unpublished")}</Text>
                     </View>
-                    {getDate(course.startDate, i18n.t("itrex.startDate"))}
-                    {getDate(course.endDate, i18n.t("itrex.endDate"))}
+                    <Text>{getDate(course.startDate, i18n.t("itrex.startDate"))}</Text>
+                    <Text>{getDate(course.endDate, i18n.t("itrex.endDate"))}</Text>
                     {checkOwnerSettings()}
                 </>
             );
@@ -141,8 +140,8 @@ export const ScreenCourseOverview: React.FC = () => {
                         <View style={styles.circlePublished} />
                         <Text style={styles.textPublished}>{i18n.t("itrex.published")}</Text>
                     </View>
-                    {getDate(course.startDate, i18n.t("itrex.startDate") + ": ")}
-                    {getDate(course.endDate, i18n.t("itrex.endDate") + ": ")}
+                    <Text>{getDate(course.startDate, i18n.t("itrex.startDate") + ": ")}</Text>
+                    <Text>{getDate(course.endDate, i18n.t("itrex.endDate") + ": ")}</Text>
                 </>
             );
         }
@@ -198,6 +197,15 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         justifyContent: "center",
         textAlign: "center",
+    },
+    rootContainer: {
+        paddingTop: "3%",
+        flex: 4,
+        flexDirection: "column",
+        backgroundColor: dark.theme.darkBlue1,
+    },
+    editMode: {
+        paddingTop: "20px",
     },
     image: {
         flex: 1,

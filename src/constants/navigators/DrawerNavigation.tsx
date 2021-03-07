@@ -7,6 +7,7 @@ import { RootDrawerParamList } from "./NavigationRoutes";
 import i18n from "../../locales";
 import AuthenticationService from "../../services/AuthenticationService";
 import { ITREXRoles } from "../ITREXRoles";
+import { ScreenAddChapter } from "../../components/screens/course/ScreenAddChapter";
 import { ScreenHomeLecturer } from "../../components/screens/ScreenHomeLecturer";
 import { ScreenHomeAdmin } from "../../components/screens/ScreenHomeAdmin";
 import { ScreenHomeStudent } from "../../components/screens/ScreenHomeStudent";
@@ -24,7 +25,7 @@ export const DrawerNavigator: React.FC = () => {
     return (
         <Drawer.Navigator
             drawerStyle={{ backgroundColor: dark.theme.darkBlue1, paddingBottom: 5, height: dimensions.height }}
-            drawerType={dimensions.width >= 1400 ? "permanent" : "front"}
+            drawerType={dimensions.width >= 140 ? "permanent" : "front"}
             drawerContentOptions={{
                 activeTintColor: "white",
                 activeBackgroundColor: dark.theme.pink,

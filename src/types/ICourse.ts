@@ -1,4 +1,5 @@
 import { CoursePublishState } from "../constants/CoursePublishState";
+import { IChapter } from "./IChapter";
 
 export type ICourse = {
     id?: string;
@@ -8,5 +9,6 @@ export type ICourse = {
     endDate?: Date;
     maxFoodSum?: number;
     publishState?: CoursePublishState;
-    // ownership?: string;
+    chapters?: string[];
+    chapterObjects?: IChapter[];
 };

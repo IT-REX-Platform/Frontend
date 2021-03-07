@@ -17,6 +17,7 @@ import { EndpointsCourse } from "../../api/endpoints/EndpointsCourse";
 import AuthenticationService from "../../services/AuthenticationService";
 import { ITREXRoles } from "../ITREXRoles";
 import { dark } from "../themes/dark";
+import { CommonActions } from "@react-navigation/native";
 
 export const DrawerContent: React.FC<DrawerContentComponentProps> = (props: DrawerContentComponentProps) => {
     const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");
@@ -59,11 +60,22 @@ export const DrawerContent: React.FC<DrawerContentComponentProps> = (props: Draw
             <DrawerItem
                 {...props}
                 icon={() => <MaterialCommunityIcons name="notebook-outline" size={28} color="white" />}
-                label={course.name + ""}
+                label={"" + course.name}
                 key={course.id}
                 onPress={() => {
                     console.log("Course Details");
-                    navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, { courseId: course.id });
+                    navigation.dispatch({
+                        ...CommonActions.reset({
+                            index: 0,
+                            routes: [{ name: NavigationRoutes.ROUTE_COURSE_DETAILS, params: { courseId: course.id } }],
+                        }),
+                    });
+                    /*
+                        navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, {
+                            courseId: course.id,
+
+                        });
+                        */
                 }}
             />
         );
@@ -81,7 +93,7 @@ export const DrawerContent: React.FC<DrawerContentComponentProps> = (props: Draw
             <Text style={styles.sectionHeader}>{i18n.t("itrex.myCoursesDivider")}</Text>
             <DrawerContentScrollView {...props}>{drawerItems}</DrawerContentScrollView>
 
-            <Text style={styles.sectionHeader}>{i18n.t("itrex.fastSettings")}</Text>
+            <Text style={styles.sectionHeader}>{i18n.t("itrex.quickSettings")}</Text>
             <View style={styles.settingsContainer}>
                 <View style={styles.horizontalContainer}>
                     <Text style={{ color: "white" }}>{i18n.t("itrex.darkTheme")}</Text>
