@@ -50,7 +50,7 @@ export const ScreenCourseOverview: React.FC = () => {
             <ImageBackground source={require("../../../constants/images/Background_forest.svg")} style={styles.image}>
                 <View style={styles.container}>
                     <View style={styles.content}>
-                        <View style={styles.content}>{getPublishedSate(course.publishState)} </View>
+                        {getPublishedSate(course.publishState)}
 
                         {checkForLeaveCourse()}
 
