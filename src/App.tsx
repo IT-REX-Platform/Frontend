@@ -1,10 +1,9 @@
 import { ReactElement } from "react";
 import { loggerFactory } from "../logger/LoggerConfig";
-import { Linking, StyleSheet, ActivityIndicator, SafeAreaView } from "react-native";
+import { Linking, ActivityIndicator, SafeAreaView, Platform } from "react-native";
 import i18n from "./locales/index";
 import * as Localization from "expo-localization";
 import React from "react";
-import { dark } from "./constants/themes/dark";
 import { AuthContext, LocalizationContext } from "./components/Context";
 import { LoggedInNavigator } from "./navigation/LoggedInNavigator";
 import { LoggedOutNavigator } from "./navigation/LoggedOutNavigator";
@@ -15,6 +14,7 @@ import { IAuthContext } from "./components/Context";
 import { ILoginReducerAction, ILoginReducerState } from "./types/ILoginReducer";
 import { Provider as PaperProvider } from "react-native-paper";
 import { AsyncStorageService, StorageConstants } from "./services/StorageService";
+import { ToastContainer } from "react-toastify";
 
 const loggerService = loggerFactory.getLogger("service.App");
 
@@ -55,7 +55,7 @@ const initialLoginState: ILoginReducerState = {
 
 function App(): ReactElement {
     Linking.addEventListener("login", (url) => {
-        loggerService.trace("URL" + url);
+        loggerService.trace("URL: " + url);
     });
 
     // Language Switch (save locale as const)
@@ -116,35 +116,28 @@ function App(): ReactElement {
         );
     }
 
-    return (
-        <PaperProvider>
-            <AuthContext.Provider value={authContext}>
-                <LocalizationContext.Provider value={localizationContext}>
-                    {loginState.userInfo != null ? <LoggedInNavigator /> : <LoggedOutNavigator />}
-                </LocalizationContext.Provider>
-            </AuthContext.Provider>
-        </PaperProvider>
-    );
-}
+    const renderApp = () => {
+        return (
+            <PaperProvider>
+                <AuthContext.Provider value={authContext}>
+                    <LocalizationContext.Provider value={localizationContext}>
+                        {loginState.userInfo != null ? <LoggedInNavigator /> : <LoggedOutNavigator />}
+                    </LocalizationContext.Provider>
+                </AuthContext.Provider>
+            </PaperProvider>
+        );
+    };
 
-const styles = StyleSheet.create({
-    appButtonContainer: {
-        elevation: 8,
-        backgroundColor: dark.theme.blueGreen,
-        paddingVertical: 10,
-        paddingHorizontal: 12,
-    },
-    buttonText: {
-        alignContent: "center",
-        textAlign: "center",
-        fontSize: 15,
-        color: dark.theme.darkBlue1,
-    },
-    image: {
-        flex: 1,
-        resizeMode: "cover",
-        justifyContent: "center",
-    },
-});
+    if (Platform.OS === "web") {
+        return (
+            <>
+                <ToastContainer />
+                {renderApp()}
+            </>
+        );
+    }
+
+    return renderApp();
+}
 
 export default App;

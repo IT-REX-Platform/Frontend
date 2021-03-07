@@ -60,11 +60,7 @@ export const ScreenLogin: React.FC = () => {
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity
-                style={styles.button}
-                onPress={() => {
-                    promptAuthentication();
-                }}>
+            <TouchableOpacity style={styles.button} onPress={() => promptAuthentication()}>
                 <Text style={styles.buttonText}>{i18n.t("itrex.login")}</Text>
             </TouchableOpacity>
             {locale == "en" || locale == "en-GB" || locale == "en-US" ? (

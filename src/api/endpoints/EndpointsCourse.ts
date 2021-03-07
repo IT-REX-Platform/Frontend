@@ -55,7 +55,7 @@ export class EndpointsCourse implements IEndpointsCourse {
             );
         }
 
-        // TODO: insert checks for more ICourse params here once implemented. @s.pastuchov 29.01.21.
+        // TODO: insert checks for more ICourse params here once implemented in backend. @s.pastuchov 29.01.21.
 
         return urlUpdated;
     }
@@ -119,5 +119,33 @@ export class EndpointsCourse implements IEndpointsCourse {
         this.loggerApi.trace("Sending DELETE request to URL: " + urlUpdated);
         const response: Promise<Response> = sendRequest(urlUpdated, deleteRequest);
         return response;
+    }
+
+    /**
+     * Send a request to join a course.
+     *
+     * @param postRequest the POST request used.
+     * @param id the UUID of the course to join.
+     */
+    joinCourse(postRequest: RequestInit, id: string): void {
+        const urlJoin = this.url + "/" + id + "/join";
+
+        this.loggerApi.trace("Sending POST request to URL: " + urlJoin);
+        const response: Promise<Response> = sendRequest(urlJoin, postRequest);
+        response.then((data) => console.log(data));
+    }
+
+    /**
+     * Send a request to leave a course.
+     *
+     * @param postRequest the POST request used.
+     * @param id the UUID of the course to leave.
+     */
+    leaveCourse(postRequest: RequestInit, id: string): void {
+        const urlLeave = this.url + "/" + id + "/leave";
+
+        this.loggerApi.trace("Sending POST request to URL: " + urlLeave);
+        const response: Promise<Response> = sendRequest(urlLeave, postRequest);
+        response.then((data) => console.log(data));
     }
 }

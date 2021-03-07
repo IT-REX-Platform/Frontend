@@ -1,12 +1,10 @@
 import React from "react";
-
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { StyleSheet, useWindowDimensions } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { RootDrawerParamList } from "./NavigationRoutes";
 import i18n from "../../locales";
-
 import AuthenticationService from "../../services/AuthenticationService";
 import { ITREXRoles } from "../ITREXRoles";
 import { ScreenAddChapter } from "../../components/screens/ScreenAddChapter";
@@ -17,6 +15,7 @@ import { DrawerContent } from "./DrawerContent";
 import { ScreenCourse } from "../../components/screens/ScreenCourse";
 import { dark } from "../themes/dark";
 import { CreateCourseComponent } from "../../components/CreateCourseComponent";
+import { JoinCourseComponent } from "../../components/JoinCourseComponent";
 
 const Drawer = createDrawerNavigator<RootDrawerParamList>();
 
@@ -36,6 +35,11 @@ export const DrawerNavigator: React.FC = () => {
             drawerContent={(props) => <DrawerContent {...props}></DrawerContent>}>
             {getHomeScreen()}
             {getCreateCourseScreen()}
+            <Drawer.Screen
+                name="ROUTE_JOIN_COURSE"
+                component={JoinCourseComponent}
+                options={{ title: i18n.t("itrex.joinCourse") }}
+            />
             <Drawer.Screen
                 name="ROUTE_COURSE_DETAILS"
                 component={ScreenCourse}
