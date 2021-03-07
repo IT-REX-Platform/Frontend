@@ -67,8 +67,8 @@ export const CreateCourseComponent: React.FC = () => {
 
                 <TextInput
                     style={[styles.nameInput, styles.separator]}
+                    value={courseName}
                     onChangeText={(text: string) => setCourseName(text)}
-                    defaultValue={""} // TODO
                     testID="courseNameInput"
                 />
 
@@ -76,8 +76,8 @@ export const CreateCourseComponent: React.FC = () => {
 
                 <TextInput
                     style={[styles.descriptionInput, styles.separator]}
+                    value={courseDescription}
                     onChangeText={(text: string) => setCourseDescription(text)}
-                    defaultValue={""} // TODO
                     multiline={true}
                     testID="courseDescriptionInput"
                 />
