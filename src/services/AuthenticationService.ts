@@ -10,6 +10,7 @@ import { AsyncStorageService, StorageConstants } from "./StorageService";
 export const discovery = {
     authorizationEndpoint: itRexVars().authEndpoint,
     tokenEndpoint: itRexVars().authTokenEndpoint,
+    authTokenRevoke: itRexVars().authTokenRevoke,
 };
 
 export default class AuthenticationService {
@@ -102,8 +103,20 @@ export default class AuthenticationService {
         if (this.refreshTimeout !== undefined) {
             clearTimeout(this.refreshTimeout);
         }
+        this.logout();
         new AsyncStorageService().deleteItem(StorageConstants.OAUTH_REFRESH_TOKEN);
         this.setTokenResponse({} as AuthSession.TokenResponseConfig);
+    }
+
+    private logout() {
+        AuthSession.revokeAsync(
+            {
+                token: this.getToken().accessToken,
+            },
+            {
+                revocationEndpoint: discovery.authTokenRevoke,
+            }
+        );
     }
 
     /**

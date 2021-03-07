@@ -4,6 +4,7 @@ interface Environment {
     apiUrl: string;
     authEndpoint: string;
     authTokenEndpoint: string;
+    authTokenRevoke: string;
 }
 
 export default (config: ExpoConfig): ExpoConfig => {
@@ -12,16 +13,19 @@ export default (config: ExpoConfig): ExpoConfig => {
             apiUrl: "http://localhost:8080/",
             authEndpoint: "http://keycloak:9080/auth/realms/jhipster/protocol/openid-connect/auth",
             authTokenEndpoint: "http://keycloak:9080/auth/realms/jhipster/protocol/openid-connect/token",
+            authTokenRevoke: "http://keycloak:9080/auth/realms/jhipster/protocol/openid-connect/logout",
         },
         staging: {
             apiUrl: "http://129.69.217.173:8080/",
             authEndpoint: "http://129.69.217.173:9080/auth/realms/jhipster/protocol/openid-connect/auth",
             authTokenEndpoint: "http://129.69.217.173:9080/auth/realms/jhipster/protocol/openid-connect/token",
+            authTokenRevoke: "http://129.69.217.173:9080/auth/realms/jhipster/protocol/openid-connect/logout",
         },
         prod: {
             apiUrl: "prod",
             authEndpoint: "",
             authTokenEndpoint: "",
+            authTokenRevoke: "",
         },
     };
     const general_variables = {
