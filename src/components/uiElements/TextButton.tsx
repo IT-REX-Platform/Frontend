@@ -84,14 +84,17 @@ const styles = StyleSheet.create({
     smallText: {
         fontSize: 15,
         color: "#FFFFFF",
+        marginBottom: 5,
     },
     mediumText: {
         fontSize: 20,
         color: "#FFFFFF",
+        marginBottom: 5,
     },
     largeText: {
         fontSize: 26,
         color: "#FFFFFF",
+        marginBottom: 5,
     },
     smallButton: {
         width: "40%",
