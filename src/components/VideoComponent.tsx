@@ -15,6 +15,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { dark } from "../constants/themes/dark";
 import { calculateVideoSize } from "../services/calculateVideoSize";
+import { TextButton } from "./uiElements/TextButton";
 
 const loggerService = loggerFactory.getLogger("service.VideoComponent");
 const endpointsVideo = new EndpointsVideo();
@@ -40,12 +41,12 @@ export const VideoComponent: React.FC = () => {
     return (
         <ImageBackground style={styles.imageContainer} source={require("../constants/images/Background2.png")}>
             <Text style={styles.header} numberOfLines={1} lineBreakMode="tail">
-                {getTitle()}
+                {_getTitle()}
             </Text>
 
             <Video
                 style={styles.videoStyle}
-                source={{ uri: getVideoUrl() }}
+                source={{ uri: _getVideoUrl() }}
                 rate={1.0}
                 volume={1.0}
                 isMuted={false}
@@ -65,19 +66,14 @@ export const VideoComponent: React.FC = () => {
                 <Text style={styles.text}>{calculateVideoSize(video.length)}</Text>
 
                 <View style={styles.horizontalContainer}>
-                    <TouchableOpacity style={styles.button} onPress={updateVideo}>
-                        <Text style={styles.buttonText}>{i18n.t("itrex.update")}</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style={styles.buttonDelete} onPress={deleteVideo}>
-                        <Text style={styles.buttonText}>{i18n.t("itrex.delete")}</Text>
-                    </TouchableOpacity>
+                    <TextButton title={i18n.t("itrex.update")} onPress={_updateVideo}></TextButton>
+                    <TextButton title={i18n.t("itrex.delete")} color="pink" onPress={_deleteVideo}></TextButton>
                 </View>
             </View>
         </ImageBackground>
     );
 
-    function getVideoUrl(): string {
+    function _getVideoUrl(): string {
         if (video.id == undefined || null) {
             createAlert(i18n.t("itrex.videoNotFound"));
             return "";
@@ -86,28 +82,28 @@ export const VideoComponent: React.FC = () => {
         return createVideoUrl(video.id);
     }
 
-    function getTitle(): string {
+    function _getTitle(): string {
         if (video.title == undefined || null) {
             return "-";
         }
         return video.title;
     }
 
-    // function getStartDate(): string {
+    // function _getStartDate(): string {
     //     if (video.startDate == undefined || null) {
     //         return "-";
     //     }
     //     return video.startDate.toString();
     // }
 
-    // function getEndDate(): string {
+    // function _getEndDate(): string {
     //     if (video.endDate == undefined || null) {
     //         return "-";
     //     }
     //     return video.endDate.toString();
     // }
 
-    async function updateVideo(): Promise<void> {
+    async function _updateVideo(): Promise<void> {
         const videoUpdate: IVideo = {
             id: video.id,
         };
@@ -129,7 +125,7 @@ export const VideoComponent: React.FC = () => {
         }
     }
 
-    async function deleteVideo(): Promise<void> {
+    async function _deleteVideo(): Promise<void> {
         if (video.id === undefined) {
             return;
         }
@@ -188,7 +184,7 @@ const styles = StyleSheet.create({
     horizontalContainer: {
         flexDirection: "row",
         alignItems: "center",
-        justifyContent: "space-around",
+        justifyContent: "space-between",
     },
     button: {
         margin: 5,

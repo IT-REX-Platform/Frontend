@@ -109,16 +109,12 @@ export const ScreenCourseOverview: React.FC = () => {
         ) {
             return (
                 <View style={{ flexDirection: "row" }}>
-                    <Pressable style={styles.styledButton}>
-                        <TextButton title={i18n.t("itrex.publishCourse")} onPress={() => patchCourse(course)} />
-                    </Pressable>
-                    <Pressable style={styles.styledButton}>
-                        <TextButton
-                            title={i18n.t("itrex.deleteCourse")}
-                            color="pink"
-                            onPress={() => deleteCourse(course)}
-                        />
-                    </Pressable>
+                    <TextButton title={i18n.t("itrex.publishCourse")} onPress={() => patchCourse(course)} />
+                    <TextButton
+                        title={i18n.t("itrex.deleteCourse")}
+                        color="pink"
+                        onPress={() => deleteCourse(course)}
+                    />
                 </View>
             );
         }
