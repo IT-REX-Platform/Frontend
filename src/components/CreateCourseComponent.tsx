@@ -94,12 +94,7 @@ export const CreateCourseComponent: React.FC = () => {
                             minDate={startDate}></DatePickerComponent>
                     </View>
                     <View style={styles.styledInputContainer}>
-                        <View style={[{ width: "20%", margin: 5 }]}>
-                            <TextButton
-                                title={i18n.t("itrex.createCourse")}
-                                size={"small"}
-                                onPress={createCourse}></TextButton>
-                        </View>
+                        <TextButton title={i18n.t("itrex.createCourse")} onPress={createCourse}></TextButton>
                     </View>
                 </View>
             </ScrollView>

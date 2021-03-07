@@ -53,12 +53,7 @@ export const JoinCourseComponent: React.FC = () => {
                             testID="courseIdInput"></TextInput>
                     </View>
                     <View style={styles.styledInputContainer}>
-                        <View style={[{ width: "20%", margin: 5 }]}>
-                            <TextButton
-                                title={i18n.t("itrex.joinCourse")}
-                                size={"small"}
-                                onPress={joinCourse}></TextButton>
-                        </View>
+                        <TextButton title={i18n.t("itrex.joinCourse")} onPress={joinCourse}></TextButton>
                     </View>
                 </View>
             </ScrollView>
@@ -126,7 +121,8 @@ const styles = StyleSheet.create({
         borderColor: "lightgray",
         borderWidth: 2,
         color: "white",
-        minWidth: 384,
+        width: "40%",
+        minWidth: 200,
         borderRadius: 5,
         height: 30,
     },

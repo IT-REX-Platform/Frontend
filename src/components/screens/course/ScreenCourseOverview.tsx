@@ -97,17 +97,7 @@ export const ScreenCourseOverview: React.FC = () => {
             AuthenticationService.getInstance().getRoles().includes("ROLE_ITREX_LECTURER") ||
             AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_ADMIN)
         ) {
-            return (
-                <View style={[{ width: "20%", marginTop: 15 }]}>
-                    <TextButton
-                        title={i18n.t("itrex.videoPool")}
-                        color="light"
-                        size="small"
-                        fontsize="small"
-                        onPress={() => goToVideoPool()}
-                    />
-                </View>
-            );
+            return <TextButton title={i18n.t("itrex.videoPool")} onPress={() => goToVideoPool()} />;
         }
     }
 
@@ -120,18 +110,12 @@ export const ScreenCourseOverview: React.FC = () => {
             return (
                 <View style={{ flexDirection: "row" }}>
                     <Pressable style={styles.styledButton}>
-                        <TextButton
-                            title={i18n.t("itrex.publishCourse")}
-                            color="light"
-                            size="small"
-                            onPress={() => patchCourse(course)}
-                        />
+                        <TextButton title={i18n.t("itrex.publishCourse")} onPress={() => patchCourse(course)} />
                     </Pressable>
                     <Pressable style={styles.styledButton}>
                         <TextButton
                             title={i18n.t("itrex.deleteCourse")}
                             color="pink"
-                            size="small"
                             onPress={() => deleteCourse(course)}
                         />
                     </Pressable>

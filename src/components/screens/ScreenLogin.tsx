@@ -78,19 +78,9 @@ export const ScreenLogin: React.FC = () => {
                         }}
                     />
                     {locale == "en" || locale == "en-GB" || locale == "en-US" ? (
-                        <TextButton
-                            title={i18n.t("itrex.switchLangDE")}
-                            size="small"
-                            color="light"
-                            onPress={() => setLocale("de-DE")}
-                        />
+                        <TextButton title={i18n.t("itrex.switchLangDE")} onPress={() => setLocale("de-DE")} />
                     ) : (
-                        <TextButton
-                            title={i18n.t("itrex.switchLangEN")}
-                            size="small"
-                            color="light"
-                            onPress={() => setLocale("en")}
-                        />
+                        <TextButton title={i18n.t("itrex.switchLangEN")} onPress={() => setLocale("en")} />
                     )}
                 </View>
                 {/* IT-Rex */}

@@ -24,12 +24,12 @@ export const TextButton: React.FC<ButtonProps> = (props) => {
 
 function _setButtonSize(props: ButtonProps) {
     switch (props.size) {
-        case "small":
-            return styles.smallButton;
+        case "medium":
+            return styles.mediumButton;
         case "large":
             return styles.largeButton;
         default:
-            return styles.mediumButton;
+            return styles.smallButton;
     }
 }
 
@@ -84,28 +84,31 @@ const styles = StyleSheet.create({
     smallText: {
         fontSize: 15,
         color: "#FFFFFF",
-        marginBottom: 5,
     },
     mediumText: {
         fontSize: 20,
         color: "#FFFFFF",
-        marginBottom: 5,
     },
     largeText: {
         fontSize: 26,
         color: "#FFFFFF",
-        marginBottom: 5,
     },
     smallButton: {
-        minWidth: 200,
+        width: "40%",
+        minWidth: 150,
+        maxWidth: 250,
         height: 30,
     },
     mediumButton: {
-        minWidth: 300,
+        width: "50%",
+        minWidth: 200,
+        maxWidth: 250,
         height: 40,
     },
     largeButton: {
-        minWidth: 400,
+        width: "60%",
+        minWidth: 300,
+        maxWidth: 250,
         height: 50,
     },
 });

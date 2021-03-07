@@ -81,12 +81,7 @@ export const VideoPoolComponent: React.FC = () => {
             <View style={videoPoolStyles.videoUploadContainer}>
                 <Text style={videoPoolStyles.infoText}>{i18n.t("itrex.videoProperties")}</Text>
 
-                <TextButton
-                    title={i18n.t("itrex.toUploadVideo")}
-                    size="small"
-                    color="light"
-                    onPress={_initVideoUpload}
-                />
+                <TextButton title={i18n.t("itrex.toUploadVideo")} onPress={_initVideoUpload} />
             </View>
         );
     };
