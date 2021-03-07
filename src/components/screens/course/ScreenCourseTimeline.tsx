@@ -21,6 +21,7 @@ import i18n from "../../../locales";
 import { TimelineComponent } from "../../TimelineComponent";
 import { CoursePublishState } from "../../../constants/CoursePublishState";
 import { TimePeriodPublishState } from "../../../types/ITimePeriod";
+import { ScrollView } from "react-native-gesture-handler";
 
 export type ScreenCourseTimelineNavigationProp = CompositeNavigationProp<
     MaterialTopTabNavigationProp<CourseTabParamList, "TIMELINE">,
@@ -51,7 +52,10 @@ export const ScreenCourseTimeline: React.FC = () => {
         }
     }, [isFocused]);
     return (
-        <View style={styles.container}>
+        <ScrollView
+            style={styles.container}
+            contentContainerStyle={{ flexGrow: 1 }}
+            showsVerticalScrollIndicator={false}>
             <ImageBackground
                 source={require("../../../constants/images/Background3.png")}
                 style={styles.image}
@@ -79,14 +83,14 @@ export const ScreenCourseTimeline: React.FC = () => {
                         <TouchableOpacity
                             style={styles.btnAdd}
                             onPress={() => {
-                                navigation.navigate("CHAPTER", { chapterId: undefined });
+                                console.log("New Time Period");
                             }}>
-                            <Text style={styles.txtAddChapter}>{i18n.t("itrex.addChapter")}</Text>
+                            <Text style={styles.txtAddChapter}>Add TimePeriod</Text>
                         </TouchableOpacity>
                     </View>
                 )}
             </ImageBackground>
-        </View>
+        </ScrollView>
     );
 
     // eslint-disable-next-line complexity

@@ -57,6 +57,17 @@ export const TimelineComponent: React.FC<TimelineComponentProps> = (props) => {
             {props.timePeriod?.chapterObjects?.map((chapter) => (
                 <ChapterComponent key={chapter.id} chapter={chapter} editMode={props.edit}></ChapterComponent>
             ))}
+            {props.edit && (
+                <View style={styles.addChapterContainer}>
+                    <TouchableOpacity
+                        style={styles.btnAdd}
+                        onPress={() => {
+                            navigation.navigate("CHAPTER", { chapterId: undefined });
+                        }}>
+                        <Text style={styles.txtAddChapter}>{i18n.t("itrex.addChapter")}</Text>
+                    </TouchableOpacity>
+                </View>
+            )}
             <View style={styles.verticalLine}></View>
         </>
     );
@@ -105,5 +116,31 @@ const styles = StyleSheet.create({
     },
     innerCircleNotStarted: {
         backgroundColor: "#707070",
+    },
+
+    addChapterContainer: {
+        backgroundColor: "rgba(0,0,0,0.3)",
+        height: "100px",
+        width: "80%",
+        marginTop: "1%",
+        padding: "0.5%",
+        borderWidth: 3,
+        borderColor: dark.theme.lightBlue,
+    },
+    btnAdd: {
+        width: "100%",
+        height: "100%",
+        borderWidth: 2,
+        borderColor: "rgba(79,175,165,1.0)",
+        borderRadius: 25,
+        borderStyle: "dotted",
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    txtAddChapter: {
+        alignSelf: "center",
+        color: "white",
+        fontSize: 18,
+        fontWeight: "bold",
     },
 });
