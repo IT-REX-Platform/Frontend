@@ -66,7 +66,7 @@ export const CreateCourseComponent: React.FC = () => {
                 <Text style={styles.textStyle}>{i18n.t("itrex.enterCourseName")}</Text>
 
                 <TextInput
-                    style={styles.nameInput}
+                    style={[styles.nameInput, styles.separator]}
                     onChangeText={(text: string) => setCourseName(text)}
                     defaultValue={""} // TODO
                     testID="courseNameInput"
@@ -75,16 +75,15 @@ export const CreateCourseComponent: React.FC = () => {
                 <Text style={styles.textStyle}>{i18n.t("itrex.enterCourseDescription")}</Text>
 
                 <TextInput
-                    style={styles.descriptionInput}
-                    placeholder={i18n.t("itrex.enterCourseDescription")}
+                    style={[styles.descriptionInput, styles.separator]}
                     onChangeText={(text: string) => setCourseDescription(text)}
                     defaultValue={""} // TODO
                     multiline={true}
                     testID="courseDescriptionInput"
                 />
 
-                {/* <View style={[styles.styledInputContainer, styles.separator]}> */}
-                <View style={styles.horizontalContainer}>
+                <View style={[styles.horizontalContainer, styles.separator]}>
+                    {/* <View style={styles.horizontalContainer}> */}
                     <DatePickerComponent
                         title={i18n.t("itrex.startDate")}
                         date={startDate}
@@ -102,10 +101,7 @@ export const CreateCourseComponent: React.FC = () => {
                     />
                 </View>
 
-                <View style={styles.button}>
-                    {/* <Button color={dark.Opacity.blueGreen} title={i18n.t("itrex.createCourse")} onPress={_createCourse} /> */}
-                    <TextButton title={i18n.t("itrex.createCourse")} onPress={_createCourse}></TextButton>
-                </View>
+                <TextButton title={i18n.t("itrex.createCourse")} onPress={_createCourse}></TextButton>
             </View>
         </ImageBackground>
     );
@@ -159,7 +155,6 @@ const styles = StyleSheet.create({
     imageContainer: {
         flex: 1,
         resizeMode: "stretch",
-        flexDirection: "column",
     },
     container: {
         alignItems: "center",
@@ -170,10 +165,8 @@ const styles = StyleSheet.create({
     },
     nameInput: {
         width: "50%",
-        alignSelf: "center",
         margin: 5,
         padding: 5,
-        textAlign: "center",
         fontSize: 16,
         color: "white",
         borderColor: "white",
@@ -182,19 +175,14 @@ const styles = StyleSheet.create({
     },
     descriptionInput: {
         width: "50%",
-        height: "20%",
-        alignSelf: "center",
+        height: 150,
         margin: 5,
         padding: 5,
-        textAlign: "center",
         fontSize: 16,
         color: "white",
         borderColor: "white",
         borderWidth: 2,
         borderRadius: 2,
-    },
-    separator: {
-        marginTop: 20,
     },
     styledTextInput: {
         color: "white",
@@ -205,13 +193,9 @@ const styles = StyleSheet.create({
         width: 200,
     },
     horizontalContainer: {
-        alignSelf: "center",
         flexDirection: "row",
-        margin: 5,
     },
-    button: {
-        width: "20%",
-        alignSelf: "center",
-        margin: 5,
+    separator: {
+        marginBottom: 20,
     },
 });
