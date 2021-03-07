@@ -275,12 +275,4 @@ const styles = StyleSheet.create({
         backgroundColor: dark.theme.lightGreen,
         marginRight: 5,
     },
-    input: {
-        borderRadius: 20,
-        minHeight: 40,
-        maxHeight: 200,
-        margin: 20,
-        padding: 20,
-        borderWidth: 1,
-    },
 });

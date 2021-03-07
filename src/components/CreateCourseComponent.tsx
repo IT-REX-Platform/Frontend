@@ -64,7 +64,6 @@ export const CreateCourseComponent: React.FC = () => {
                 <View style={{ marginTop: 70 }} />
 
                 <Text style={styles.textStyle}>{i18n.t("itrex.enterCourseName")}</Text>
-
                 <TextInput
                     style={[styles.nameInput, styles.separator]}
                     value={courseName}
@@ -73,7 +72,6 @@ export const CreateCourseComponent: React.FC = () => {
                 />
 
                 <Text style={styles.textStyle}>{i18n.t("itrex.enterCourseDescription")}</Text>
-
                 <TextInput
                     style={[styles.descriptionInput, styles.separator]}
                     value={courseDescription}
@@ -171,7 +169,7 @@ const styles = StyleSheet.create({
         color: "white",
         borderColor: "white",
         borderWidth: 2,
-        borderRadius: 2,
+        borderRadius: 5,
     },
     descriptionInput: {
         width: "50%",
@@ -182,7 +180,7 @@ const styles = StyleSheet.create({
         color: "white",
         borderColor: "white",
         borderWidth: 2,
-        borderRadius: 2,
+        borderRadius: 5,
     },
     styledTextInput: {
         color: "white",

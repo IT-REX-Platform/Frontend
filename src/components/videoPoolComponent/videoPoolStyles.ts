@@ -20,20 +20,11 @@ export const videoPoolStyles = StyleSheet.create({
         backgroundColor: dark.theme.darkBlue2,
         borderColor: dark.theme.darkBlue4,
         borderWidth: 2,
-        borderRadius: 2,
+        borderRadius: 5,
     },
     infoText: {
         textAlign: "center",
         margin: 5,
-        color: "white",
-    },
-    button: {
-        margin: 5,
-        backgroundColor: dark.theme.darkBlue4,
-        borderRadius: 2,
-    },
-    buttonText: {
-        padding: 10,
         color: "white",
     },
     loadingIcon: {
@@ -58,7 +49,7 @@ export const videoPoolStyles = StyleSheet.create({
         backgroundColor: dark.theme.darkBlue2,
         borderColor: dark.theme.darkBlue4,
         borderWidth: 2,
-        borderRadius: 2,
+        borderRadius: 5,
     },
     videoList: {
         marginBottom: 20,
