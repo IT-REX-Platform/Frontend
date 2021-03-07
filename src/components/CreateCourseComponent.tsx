@@ -1,5 +1,5 @@
 import React, { ChangeEvent, useState } from "react";
-import { Button, ImageBackground, Platform, StyleSheet, TextInput, View } from "react-native";
+import { ImageBackground, Platform, StyleSheet, Text, TextInput, View } from "react-native";
 import { ICourse } from "../types/ICourse";
 import { validateCourseName } from "../helperScripts/validateCourseEntry";
 import { validateCourseDescription } from "../helperScripts/validateCourseEntry";
@@ -13,7 +13,7 @@ import { EndpointsCourse } from "../api/endpoints/EndpointsCourse";
 import { Header } from "../constants/navigators/Header";
 import { LocalizationContext } from "./Context";
 import { Event } from "@react-native-community/datetimepicker";
-import { dark } from "../constants/themes/dark";
+import { TextButton } from "./uiElements/TextButton";
 import { ToastService } from "../services/toasts/ToastService";
 
 const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");
@@ -60,45 +60,52 @@ export const CreateCourseComponent: React.FC = () => {
         <ImageBackground source={require("../constants/images/Background2.png")} style={styles.imageContainer}>
             <Header title={i18n.t("itrex.toCourse")} />
 
-            <View style={{ marginTop: 70 }} />
+            <View style={styles.container}>
+                <View style={{ marginTop: 70 }} />
 
-            <TextInput
-                style={styles.nameInput}
-                placeholder={i18n.t("itrex.enterCourseName")}
-                onChangeText={(text: string) => setCourseName(text)}
-                defaultValue={""}
-                testID="courseNameInput"
-            />
+                <Text style={styles.textStyle}>{i18n.t("itrex.enterCourseName")}</Text>
 
-            <TextInput
-                style={styles.descriptionInput}
-                placeholder={i18n.t("itrex.enterCourseDescription")}
-                onChangeText={(text: string) => setCourseDescription(text)}
-                defaultValue={""}
-                multiline={true}
-                testID="courseDescriptionInput"
-            />
-
-            <View style={styles.horizontalContainer}>
-                <DatePickerComponent
-                    title={i18n.t("itrex.startDate")}
-                    date={startDate}
-                    onDateChanged={startDateChanged}
-                    maxDate={endDate}
+                <TextInput
+                    style={styles.nameInput}
+                    onChangeText={(text: string) => setCourseName(text)}
+                    defaultValue={""} // TODO
+                    testID="courseNameInput"
                 />
 
-                <View style={{ margin: 20 }} />
+                <Text style={styles.textStyle}>{i18n.t("itrex.enterCourseDescription")}</Text>
 
-                <DatePickerComponent
-                    title={i18n.t("itrex.endDate")}
-                    date={endDate}
-                    onDateChanged={endDateChanged}
-                    minDate={startDate}
+                <TextInput
+                    style={styles.descriptionInput}
+                    placeholder={i18n.t("itrex.enterCourseDescription")}
+                    onChangeText={(text: string) => setCourseDescription(text)}
+                    defaultValue={""} // TODO
+                    multiline={true}
+                    testID="courseDescriptionInput"
                 />
-            </View>
 
-            <View style={styles.button}>
-                <Button color={dark.Opacity.blueGreen} title={i18n.t("itrex.createCourse")} onPress={_createCourse} />
+                {/* <View style={[styles.styledInputContainer, styles.separator]}> */}
+                <View style={styles.horizontalContainer}>
+                    <DatePickerComponent
+                        title={i18n.t("itrex.startDate")}
+                        date={startDate}
+                        onDateChanged={startDateChanged}
+                        maxDate={endDate}
+                    />
+
+                    <View style={{ margin: 20 }} />
+
+                    <DatePickerComponent
+                        title={i18n.t("itrex.endDate")}
+                        date={endDate}
+                        onDateChanged={endDateChanged}
+                        minDate={startDate}
+                    />
+                </View>
+
+                <View style={styles.button}>
+                    {/* <Button color={dark.Opacity.blueGreen} title={i18n.t("itrex.createCourse")} onPress={_createCourse} /> */}
+                    <TextButton title={i18n.t("itrex.createCourse")} onPress={_createCourse}></TextButton>
+                </View>
             </View>
         </ImageBackground>
     );
@@ -154,6 +161,13 @@ const styles = StyleSheet.create({
         resizeMode: "stretch",
         flexDirection: "column",
     },
+    container: {
+        alignItems: "center",
+    },
+    textStyle: {
+        color: "white",
+        fontSize: 18,
+    },
     nameInput: {
         width: "50%",
         alignSelf: "center",
@@ -178,6 +192,17 @@ const styles = StyleSheet.create({
         borderColor: "white",
         borderWidth: 2,
         borderRadius: 2,
+    },
+    separator: {
+        marginTop: 20,
+    },
+    styledTextInput: {
+        color: "white",
+        borderColor: "lightgray",
+        borderWidth: 2,
+        borderRadius: 5,
+        height: 30,
+        width: 200,
     },
     horizontalContainer: {
         alignSelf: "center",
