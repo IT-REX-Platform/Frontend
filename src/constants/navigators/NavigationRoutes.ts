@@ -1,6 +1,7 @@
 import * as Linking from "expo-linking";
 import { LinkingOptions, NavigatorScreenParams } from "@react-navigation/native";
 import { IVideo } from "../../types/IVideo";
+import { IChapter } from "../../types/IChapter";
 
 const prefix = Linking.makeUrl("it-rex://");
 
@@ -23,6 +24,12 @@ export const config = {
                 },
                 VIDEO_POOL: "VIDEO_POOL",
                 VIDEO: "VIDEO",
+                VIDEO_UPLOAD: "VIDEO_UPLOAD",
+                CHAPTER_CREATE: "CHAPTER_CREATE",
+                CHAPTER: {
+                    path: "chapter/:chapterId",
+                    screens: {},
+                },
             },
         },
     },
@@ -41,6 +48,9 @@ export type CourseStackParamList = {
     VIDEO: {
         video: IVideo;
     };
+    VIDEO_UPLOAD: undefined;
+    CHAPTER_CREATE: undefined;
+    CHAPTER: { chapterId: string | undefined };
 };
 
 export type CourseTabParamList = {

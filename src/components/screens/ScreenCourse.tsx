@@ -14,6 +14,8 @@ import { CourseStackParamList, RootDrawerParamList } from "../../constants/navig
 import { VideoPoolComponent } from "../videoPoolComponent/VideoPoolComponent";
 import { VideoComponent } from "../VideoComponent";
 import AuthenticationService from "../../services/AuthenticationService";
+import i18n from "../../locales";
+import { ScreenAddChapter } from "./course/ScreenAddChapter";
 import { ITREXRoles } from "../../constants/ITREXRoles";
 
 export type ScreenCourseNavigationProp = DrawerNavigationProp<RootDrawerParamList, "ROUTE_COURSE_DETAILS">;
@@ -80,20 +82,32 @@ export const ScreenCourse: React.FC = () => {
                 <CourseStack.Screen name="INFO" component={ScreenCourseTabs}></CourseStack.Screen>
 
                 {getUploadVideoScreen()}
+                {getCreateChapterScreen()}
             </CourseStack.Navigator>
         </CourseContext.Provider>
     );
 
     function getUploadVideoScreen() {
-        if (
-            AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_LECTURER) ||
-            AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_ADMIN)
-        ) {
+        if (AuthenticationService.getInstance().isLecturerOrAdmin()) {
             return (
                 <>
                     <CourseStack.Screen name="VIDEO_POOL" component={VideoPoolComponent}></CourseStack.Screen>
                     <CourseStack.Screen name="VIDEO" component={VideoComponent}></CourseStack.Screen>
                 </>
+            );
+        }
+    }
+
+    function getCreateChapterScreen() {
+        if (AuthenticationService.getInstance().isLecturerOrAdmin()) {
+            return (
+                <CourseStack.Screen
+                    name="CHAPTER"
+                    component={ScreenAddChapter}
+                    options={{
+                        title: i18n.t("itrex.toUploadVideo"),
+                    }}
+                />
             );
         }
     }

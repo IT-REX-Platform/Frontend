@@ -3,6 +3,7 @@ import { ICourse } from "../../types/ICourse";
 import { IVideo } from "../../types/IVideo";
 import { IUser } from "../../types/IUser";
 import i18n from "../../locales";
+import { IChapter } from "../../types/IChapter";
 import { ToastService } from "../../services/toasts/ToastService";
 
 export class ResponseParser {
@@ -20,6 +21,7 @@ export class ResponseParser {
                 .then((course: ICourse) => {
                     course.startDate = course.startDate ? new Date(course.startDate) : undefined;
                     course.endDate = course.endDate ? new Date(course.endDate) : undefined;
+                    course.chapterObjects = [];
                     resolve(course);
                 })
                 .catch((error) => {
@@ -42,8 +44,53 @@ export class ResponseParser {
                     for (const course of courses) {
                         course.startDate = course.startDate ? new Date(course.startDate) : undefined;
                         course.endDate = course.endDate ? new Date(course.endDate) : undefined;
+                        course.chapterObjects = [];
                     }
                     resolve(courses);
+                })
+                .catch((error) => {
+                    ResponseParser.loggerApi.error("An error occurred while parsing courses data.", error);
+                    resolve([]);
+                });
+        });
+    }
+
+    public static parseChapter(response: Promise<Response>): Promise<IChapter> {
+        return new Promise((resolve) => {
+            response
+                .then((response) => {
+                    if (!response.ok) {
+                        ResponseParser._checkResponseCode(response);
+                    }
+                    return response.json();
+                })
+                .then((chapter: IChapter) => {
+                    chapter.startDate = chapter.startDate ? new Date(chapter.startDate) : undefined;
+                    chapter.endDate = chapter.endDate ? new Date(chapter.endDate) : undefined;
+                    resolve(chapter);
+                })
+                .catch((error) => {
+                    ResponseParser.loggerApi.error("An error occurred while parsing course data.", error);
+                    resolve({});
+                });
+        });
+    }
+
+    public static parseChapters(response: Promise<Response>): Promise<IChapter[]> {
+        return new Promise((resolve) => {
+            response
+                .then((response) => {
+                    if (!response.ok) {
+                        ResponseParser._checkResponseCode(response);
+                    }
+                    return response.json();
+                })
+                .then((chapters: IChapter[]) => {
+                    chapters.forEach((chapter: IChapter) => {
+                        chapter.startDate = chapter.startDate ? new Date(chapter.startDate) : undefined;
+                        chapter.endDate = chapter.endDate ? new Date(chapter.endDate) : undefined;
+                    });
+                    resolve(chapters);
                 })
                 .catch((error) => {
                     ResponseParser.loggerApi.error("An error occurred while parsing courses data.", error);
