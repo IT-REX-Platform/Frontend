@@ -461,8 +461,8 @@ const styles = StyleSheet.create({
         margin: 10,
     },
     list: {
-        flex: 1,
-        maxWidth: "100%",
+        height: 1, // Actual value is unimportant, this just makes the video list permanently scrollable, disregarding the current view height.
+        width: "100%",
     },
     listItemTitle: {
         color: "white",
