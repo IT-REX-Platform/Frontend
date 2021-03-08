@@ -58,7 +58,7 @@ export const de = {
         noCoursesStudent: "Bisher wurde keinem Kursen beigetreten!",
 
         videoPool: "Video Pool",
-        videoProperties: "Wählen Sie eine oder mehrere MP4 Dateien von der Größe bis zu 100MB aus.",
+        videoProperties: "Wählen Sie eine oder mehrere MP4 Dateien von der Größe bis zu 1GB aus.",
         getAllVideos: "Alle Videos holen",
         video: "Video",
         videoNotFound: "Kein Video gefunden.",
@@ -92,6 +92,7 @@ export const de = {
         internalServerError: "Interner Serverfehler.",
         timeoutRequest: "Zeitüberschreitung der Anfrage.",
         errorOccured: "Ein Fehler ist aufgetreten.",
+        serviceError: "Ein Fehler ist beim Zugriff auf den IT-REX Service aufgetreten.",
 
         noChapters: "Es wurden noch keine Kapitel für diesen Kurs angelgt.",
         addChapter: "+ Kapitel hinzugügen",

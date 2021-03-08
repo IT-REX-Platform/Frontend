@@ -70,12 +70,9 @@ export const DrawerContent: React.FC<DrawerContentComponentProps> = (props: Draw
                             routes: [{ name: NavigationRoutes.ROUTE_COURSE_DETAILS, params: { courseId: course.id } }],
                         }),
                     });
-                    /*
-                        navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, {
-                            courseId: course.id,
-
-                        });
-                        */
+                    // navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, {
+                    //     courseId: course.id,
+                    // });
                 }}
             />
         );

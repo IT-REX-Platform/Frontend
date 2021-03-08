@@ -58,7 +58,7 @@ export const en = {
         noCoursesStudent: "No courses have been joined so far!",
 
         videoPool: "Video Pool",
-        videoProperties: "Choose one or several MP4 file/s of size up to 100MB.",
+        videoProperties: "Choose one or several MP4 file/s of size up to 1GB.",
         getAllVideos: "Get All Videos",
         video: "Video",
         videoNotFound: "No video found.",
@@ -92,6 +92,7 @@ export const en = {
         internalServerError: "Internal server error.",
         timeoutRequest: "Request timeout.",
         errorOccured: "An error has occurred.",
+        serviceError: "An error has occured while accessing IT-REX service.",
 
         noChapters: "No chapters have been created for this course yet.",
         addChapter: "+ Add Chapter",
