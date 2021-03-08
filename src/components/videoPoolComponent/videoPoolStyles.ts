@@ -5,7 +5,7 @@ export const videoPoolStyles = StyleSheet.create({
     imageContainer: {
         flex: 1,
         resizeMode: "stretch",
-        justifyContent: "center", // Prevents video list item names from being unnecessary cut.
+        justifyContent: "center", // Prevents video list item names from being unnecessary cut, don't use alignItems: "center"
     },
     header: {
         textAlign: "center",
@@ -40,11 +40,10 @@ export const videoPoolStyles = StyleSheet.create({
         alignItems: "center",
     },
     refreshButton: {
+        alignSelf: "center",
         padding: 20,
     },
     infoTextBox: {
-        maxWidth: "95%",
-        marginTop: 50,
         padding: 50,
         backgroundColor: dark.theme.darkBlue2,
         borderColor: dark.theme.darkBlue4,
@@ -52,6 +51,7 @@ export const videoPoolStyles = StyleSheet.create({
         borderRadius: 5,
     },
     videoList: {
+        height: 1, // Actual value is unimportant, this just makes the video list permanently scrollable, disregarding the current view height.
         marginBottom: 20,
     },
     listItemTitle: {

@@ -42,7 +42,8 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
         }
         return (
             <Text style={styles.cardContent}>
-                <Text style={{ fontWeight: "bold" }}>{title}</Text> {dateConverter(showDate)}
+                <Text style={{ fontWeight: "bold", marginEnd: 10 }}>{title}</Text>
+                {dateConverter(showDate)}
             </Text>
         );
     }

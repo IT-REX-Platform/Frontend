@@ -37,6 +37,6 @@ const styles = StyleSheet.create({
         flexWrap: "wrap",
         alignContent: "space-around",
         justifyContent: "center",
-        marginTop: 32,
+        margin: 5,
     },
 });
