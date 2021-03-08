@@ -49,7 +49,7 @@ export const DrawerContent: React.FC<DrawerContentComponentProps> = (props: Draw
 
     useEffect(() => {
         _getAllCourses();
-    }, []);
+    }, [AuthenticationService.getInstance().tokenResponse]);
 
     if (courses.length < 1) {
         _displayNoCourses();
