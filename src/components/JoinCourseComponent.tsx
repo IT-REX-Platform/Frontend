@@ -5,7 +5,7 @@ import { ICourse } from "../types/ICourse";
 import i18n from "../locales";
 import { RequestFactory } from "../api/requests/RequestFactory";
 import { EndpointsCourse } from "../api/endpoints/EndpointsCourse";
-import { RouteProp, useNavigation } from "@react-navigation/native";
+import { RouteProp, useIsFocused, useNavigation } from "@react-navigation/native";
 import { Header } from "../constants/navigators/Header";
 import { LocalizationContext } from "./Context";
 import { NavigationRoutes, RootDrawerParamList } from "../constants/navigators/NavigationRoutes";
@@ -32,6 +32,17 @@ export const JoinCourseComponent: React.FC = () => {
     useEffect(() => {
         AuthenticationService.getInstance().getUserInfo(setUserInfo);
     }, []);
+
+    const isFocused = useIsFocused();
+    useEffect(() => {
+        if (isFocused) {
+            AuthenticationService.getInstance()
+                .refreshToken()
+                .then(() => {
+                    AuthenticationService.getInstance().getUserInfo(setUserInfo);
+                });
+        }
+    }, [isFocused]);
 
     return (
         <ImageBackground source={require("../constants/images/Background2.png")} style={styles.imageContainer}>
@@ -81,10 +92,14 @@ export const JoinCourseComponent: React.FC = () => {
 
         // Do the request stuff.
         const request: RequestInit = RequestFactory.createPostRequestWithoutBody();
-        endpointsCourse.joinCourse(request, courseId);
-
-        navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, {
-            courseId: courseId,
+        endpointsCourse.joinCourse(request, courseId).then(() => {
+            AuthenticationService.getInstance()
+                .refreshToken()
+                .then(() => {
+                    navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, {
+                        courseId: courseId,
+                    });
+                });
         });
     }
 };
