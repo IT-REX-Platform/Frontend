@@ -150,12 +150,12 @@ export class EndpointsCourse implements IEndpointsCourse {
      * @param postRequest the POST request used.
      * @param id the UUID of the course to join.
      */
-    joinCourse(postRequest: RequestInit, id: string): void {
+    public joinCourse(postRequest: RequestInit, id: string): Promise<Response> {
         const urlJoin = this.url + "/" + id + CourseURLSuffix.JOIN;
 
         this.loggerApi.trace("Sending POST request to URL: " + urlJoin);
         const response: Promise<Response> = sendRequest(urlJoin, postRequest);
-        response.then((data) => console.log(data));
+        return response;
     }
 
     /**
@@ -164,11 +164,11 @@ export class EndpointsCourse implements IEndpointsCourse {
      * @param postRequest the POST request used.
      * @param id the UUID of the course to leave.
      */
-    leaveCourse(postRequest: RequestInit, id: string): void {
+    public leaveCourse(postRequest: RequestInit, id: string): Promise<Response> {
         const urlLeave = this.url + "/" + id + CourseURLSuffix.LEAVE;
 
         this.loggerApi.trace("Sending POST request to URL: " + urlLeave);
         const response: Promise<Response> = sendRequest(urlLeave, postRequest);
-        response.then((data) => console.log(data));
+        return response;
     }
 }

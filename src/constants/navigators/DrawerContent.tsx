@@ -49,7 +49,7 @@ export const DrawerContent: React.FC<DrawerContentComponentProps> = (props: Draw
 
     useEffect(() => {
         _getAllCourses();
-    }, []);
+    }, [AuthenticationService.getInstance().tokenResponse]);
 
     if (courses.length < 1) {
         _displayNoCourses();
@@ -117,7 +117,7 @@ export const DrawerContent: React.FC<DrawerContentComponentProps> = (props: Draw
     function _getAllCourses(): void {
         loggerService.trace("Getting all courses.");
         const request: RequestInit = RequestFactory.createGetRequest();
-        endpointsCourse.getAllCourses(request).then((receivedCourses) => setCourses(receivedCourses));
+        endpointsCourse.getUserCourses(request).then((receivedCourses) => setCourses(receivedCourses));
     }
 
     function _displayNoCourses() {

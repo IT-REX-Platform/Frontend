@@ -72,20 +72,24 @@ export const ScreenCourseOverview: React.FC = () => {
         );
     }
 
+    // I'm sorry for this:
+    // eslint-disable-next-line complexity
     function checkForLeaveCourse() {
         if (user.courses === undefined || course.id === undefined) {
             return <></>;
         }
 
         const courseRole = user.courses[course.id];
+        if (courseRole === undefined) {
+            // TODO: Undefined should never happen, buuuut currently does when creating a course.
+            // Apparently updating the token and then navigating isn't waiting long enough.
+            return <></>;
+        }
+
         if (courseRole !== CourseRoles.OWNER) {
             return (
                 <View style={[{ width: "20%", marginTop: 15 }]}>
-                    <Button
-                        color={dark.Opacity.pink}
-                        title={i18n.t("itrex.leaveCourse")}
-                        onPress={() => leaveCourse()}
-                    />
+                    <TextButton color="pink" title={i18n.t("itrex.leaveCourse")} onPress={() => leaveCourse()} />
                 </View>
             );
         }
@@ -196,9 +200,13 @@ export const ScreenCourseOverview: React.FC = () => {
     function leaveCourse() {
         if (course.id !== undefined) {
             const request: RequestInit = RequestFactory.createPostRequestWithoutBody();
-            endpointsCourse.leaveCourse(request, course.id);
-
-            navigation.navigate("ROUTE_HOME");
+            endpointsCourse.leaveCourse(request, course.id).then(() => {
+                AuthenticationService.getInstance()
+                    .refreshToken()
+                    .then(() => {
+                        navigation.navigate("ROUTE_HOME");
+                    });
+            });
         }
     }
 };

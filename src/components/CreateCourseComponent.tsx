@@ -15,12 +15,16 @@ import { LocalizationContext } from "./Context";
 import { Event } from "@react-native-community/datetimepicker";
 import { TextButton } from "./uiElements/TextButton";
 import { ToastService } from "../services/toasts/ToastService";
+import AuthenticationService from "../services/AuthenticationService";
+import { NavigationRoutes } from "../constants/navigators/NavigationRoutes";
+import { useNavigation } from "@react-navigation/native";
 
 const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");
 const endpointsCourse: EndpointsCourse = new EndpointsCourse();
 
 export const CreateCourseComponent: React.FC = () => {
     React.useContext(LocalizationContext);
+    const navigation = useNavigation();
 
     const toast: ToastService = new ToastService();
 
@@ -138,6 +142,14 @@ export const CreateCourseComponent: React.FC = () => {
             toast.success(i18n.t("itrex.courseCreated") + courseName);
             console.log(data);
             _resetStates();
+
+            AuthenticationService.getInstance()
+                .refreshToken()
+                .then(() => {
+                    navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, {
+                        courseId: data.id,
+                    });
+                });
         });
     }
 
