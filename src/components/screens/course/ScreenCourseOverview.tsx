@@ -1,6 +1,6 @@
 import { CompositeNavigationProp, useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import { Text, ImageBackground, StyleSheet, Button, View } from "react-native";
+import { Text, ImageBackground, StyleSheet, View } from "react-native";
 import { dark } from "../../../constants/themes/dark";
 import { ICourse } from "../../../types/ICourse";
 import {
@@ -72,29 +72,27 @@ export const ScreenCourseOverview: React.FC = () => {
         );
     }
 
-    // I'm sorry for this:
-    // eslint-disable-next-line complexity
     function checkForLeaveCourse() {
         if (user.courses === undefined || course.id === undefined) {
             return <></>;
         }
 
-        const courseRole = user.courses[course.id];
-        if (courseRole === undefined) {
+        const courseRole: CourseRoles = user.courses[course.id];
+        return checkForUserRole(courseRole);
+    }
+
+    function checkForUserRole(courseRole: CourseRoles) {
+        if (courseRole === CourseRoles.OWNER || courseRole === undefined) {
             // TODO: Undefined should never happen, buuuut currently does when creating a course.
             // Apparently updating the token and then navigating isn't waiting long enough.
             return <></>;
         }
 
-        if (courseRole !== CourseRoles.OWNER) {
-            return (
-                <View style={[{ width: "20%", marginTop: 15 }]}>
-                    <TextButton color="pink" title={i18n.t("itrex.leaveCourse")} onPress={() => leaveCourse()} />
-                </View>
-            );
-        }
-
-        return <></>;
+        return (
+            <View style={[{ width: "20%", marginTop: 15 }]}>
+                <TextButton color="pink" title={i18n.t("itrex.leaveCourse")} onPress={() => leaveCourse()} />
+            </View>
+        );
     }
 
     function uploadViedeoAsOwner() {

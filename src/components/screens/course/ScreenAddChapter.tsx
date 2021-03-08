@@ -35,7 +35,6 @@ import { Event } from "@react-native-community/datetimepicker";
 import DraggableFlatList from "react-native-draggable-flatlist";
 import { TextButton } from "../../uiElements/TextButton";
 import { validateCourseDates } from "../../../helperScripts/validateCourseDates";
-import { toast } from "react-toastify";
 
 type ScreenCourseTabsNavigationProp = CompositeNavigationProp<
     StackNavigationProp<CourseStackParamList, "CHAPTER">,
