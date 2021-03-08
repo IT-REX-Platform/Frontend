@@ -1,7 +1,6 @@
 import * as Linking from "expo-linking";
 import { LinkingOptions, NavigatorScreenParams } from "@react-navigation/native";
 import { IVideo } from "../../types/IVideo";
-import { IChapter } from "../../types/IChapter";
 
 const prefix = Linking.makeUrl("it-rex://");
 
