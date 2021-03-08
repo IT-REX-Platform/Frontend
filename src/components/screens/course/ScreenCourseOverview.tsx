@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import { CompositeNavigationProp, useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { Text, ImageBackground, StyleSheet, Button, View } from "react-native";
@@ -52,9 +53,7 @@ export const ScreenCourseOverview: React.FC = () => {
                 <View style={styles.container}>
                     <View style={styles.content}>
                         {getPublishedSate(course.publishState)}
-
                         {checkForLeaveCourse()}
-
                         <Text style={styles.textWhite}>{course.courseDescription}</Text>
                         {uploadViedeoAsOwner()}
                     </View>
@@ -94,33 +93,49 @@ export const ScreenCourseOverview: React.FC = () => {
     }
 
     function uploadViedeoAsOwner() {
-        if (
-            AuthenticationService.getInstance().getRoles().includes("ROLE_ITREX_LECTURER") ||
-            AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_ADMIN)
-        ) {
+        if (user.courses === undefined || course.id === undefined) {
+            return <></>;
+        }
+
+        const courseRole = user.courses[course.id];
+        if (courseRole === CourseRoles.OWNER) {
             return <TextButton title={i18n.t("itrex.videoPool")} onPress={() => goToVideoPool()} />;
         }
     }
 
-    //TODO: Check if user is owner, when the course/role list is available
     function checkOwnerSettings() {
-        if (
-            AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_LECTURER) ||
-            AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_ADMIN)
-        ) {
+        if (user.courses === undefined || course.id === undefined) {
+            return <></>;
+        }
+
+        const courseRole = user.courses[course.id];
+        if (courseRole === CourseRoles.OWNER || courseRole === CourseRoles.MANAGER) {
             return (
                 <View style={{ flexDirection: "row" }}>
-                    <TextButton title={i18n.t("itrex.publishCourse")} onPress={() => patchCourse(course)} />
+                    <TextButton title={i18n.t("itrex.publishCourse")} onPress={() => confirmPublishCourse(course)} />
                     <TextButton
                         title={i18n.t("itrex.deleteCourse")}
                         color="pink"
-                        onPress={() => deleteCourse(course)}
+                        onPress={() => confirmDeletion(course)}
                     />
                 </View>
             );
         }
     }
 
+    function confirmPublishCourse(course: ICourse) {
+        const publishCourse = confirm(i18n.t("itrex.confirmPublishCourse"));
+        if (publishCourse === true) {
+            patchCourse(course);
+        }
+    }
+
+    function confirmDeletion(course: ICourse) {
+        const confirmation = confirm(i18n.t("itrex.confirmDeleteCourse"));
+        if (confirmation === true) {
+            deleteCourse(course);
+        }
+    }
     function getPublishedSate(isPublished: string | undefined) {
         if (isPublished === "UNPUBLISHED") {
             return (
@@ -181,6 +196,7 @@ export const ScreenCourseOverview: React.FC = () => {
             .deleteCourse(request, courses.id)
             .then(() => {
                 toast.success(i18n.t("itrex.courseDeletedSuccessfully"));
+                navigation.navigate("ROUTE_HOME");
             })
             .catch(() => {
                 toast.error(i18n.t("itrex.courseDeletedError"));
