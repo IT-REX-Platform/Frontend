@@ -9,6 +9,7 @@ export type ICourse = {
     endDate?: Date;
     maxFoodSum?: number;
     publishState?: CoursePublishState;
+    activeOnly?: boolean;
     chapters?: string[];
     chapterObjects?: IChapter[];
 };
