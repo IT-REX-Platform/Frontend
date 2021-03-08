@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 /* eslint-disable max-lines */
 import {
     ActivityIndicator,
@@ -36,6 +37,8 @@ import { calculateVideoSize } from "../../../services/calculateVideoSize";
 import { Event } from "@react-native-community/datetimepicker";
 import DraggableFlatList from "react-native-draggable-flatlist";
 import { TextButton } from "../../uiElements/TextButton";
+import { validateCourseDates } from "../../../helperScripts/validateCourseDates";
+import { toast } from "react-toastify";
 
 type ScreenCourseTabsNavigationProp = CompositeNavigationProp<
     StackNavigationProp<CourseStackParamList, "CHAPTER">,
@@ -317,6 +320,12 @@ export const ScreenAddChapter: React.FC = () => {
     );
 
     function saveChapter() {
+        // Validate start/end Date
+        // Check if start and Enddate are set
+        if (!validateCourseDates(startDate, endDate)) {
+            return;
+        }
+
         const currContentList = [];
         for (const content of contentList) {
             if (content.id !== undefined) {

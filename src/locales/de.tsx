@@ -92,5 +92,11 @@ export const de = {
         chapterMaterial: "Kapitel Materialien",
         myNewChapter: "Mein neues Kapitel",
         save: "Speichern",
+        chapterCreatedUpdated: "Das Kapitel wurde erfolgreich angelegt/aktualisiert.",
+        chapterCreatedUpdatedError: "Beim Erstellen/Aktualisieren des Kapitels ist ein Fehler aufgetreten.",
+        publishedSuccessfully: "Der Kurs wurde erfolgreich veröffentlicht.",
+        publishedError: "Beim Veröffentlichen des Kurses ist ein Fehler aufgetreten.",
+        courseDeletedSuccessfully: "Der Kurs wurde erfolgreich gelöscht.",
+        courseDeletedError: "Beim Löschen des Kurses ist ein Fehler aufgetreten.",
     },
 };
