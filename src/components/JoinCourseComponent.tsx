@@ -92,15 +92,15 @@ export const JoinCourseComponent: React.FC = () => {
 
         // Do the request stuff.
         const request: RequestInit = RequestFactory.createPostRequestWithoutBody();
-        endpointsCourse.joinCourse(request, courseId);
-
-        AuthenticationService.getInstance()
-            .refreshToken()
-            .then(() => {
-                navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, {
-                    courseId: courseId,
+        endpointsCourse.joinCourse(request, courseId).then(() => {
+            AuthenticationService.getInstance()
+                .refreshToken()
+                .then(() => {
+                    navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, {
+                        courseId: courseId,
+                    });
                 });
-            });
+        });
     }
 };
 
