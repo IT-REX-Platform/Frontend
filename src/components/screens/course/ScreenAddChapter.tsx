@@ -5,15 +5,12 @@ import {
     FlatList,
     ImageBackground,
     Platform,
-    Pressable,
     StyleSheet,
     Text,
     TextInput,
     TouchableOpacity,
     View,
-    Button,
 } from "react-native";
-
 import React, { ChangeEvent, useState } from "react";
 import i18n from "../../../locales";
 import { dark } from "../../../constants/themes/dark";
@@ -113,28 +110,16 @@ export const ScreenAddChapter: React.FC = () => {
             );
         }
 
-        // Display info box if there are no videos.
-        if (videoPoolList.length < 1) {
-            loggerService.trace("Displaying info box.");
-            return (
-                <View style={styles.containerTop}>
-                    <View style={styles.infoTextBox}>
-                        <Text style={styles.infoText}>{i18n.t("itrex.noVideosAvailable")}</Text>
-                    </View>
-                </View>
-            );
-        }
-
         loggerService.trace("Displaying video list.");
         return (
             <View style={styles.containerTop}>
-                <Text style={styles.courseHeader}>{i18n.t("itrex.availableVideos")}</Text>
                 <FlatList
                     style={styles.list}
                     showsVerticalScrollIndicator={false}
                     data={videoPoolList}
                     renderItem={listItem}
                     keyExtractor={(item, index) => index.toString()}
+                    ListEmptyComponent={emptyList}
                 />
             </View>
         );
@@ -166,11 +151,7 @@ export const ScreenAddChapter: React.FC = () => {
                         </ListItem.Subtitle>
                     </TouchableOpacity>
                 </ListItem.Content>
-                <ListItem.Chevron
-                    onPress={() => {
-                        navigation.navigate("VIDEO", { video: item });
-                    }}
-                />
+                <ListItem.Chevron onPress={() => navigation.navigate("VIDEO", { video: item })} />
             </ListItem>
         </View>
     );
@@ -196,13 +177,24 @@ export const ScreenAddChapter: React.FC = () => {
                 </ListItem.Title>
                 <ListItem.Subtitle style={styles.listItemSubtitle}>{calculateVideoSize(item.length)}</ListItem.Subtitle>
             </ListItem.Content>
+
             <ListItem.Chevron
+                style={{ padding: 5 }}
                 onPress={() => {
                     navigation.navigate("VIDEO", { video: item });
                 }}
             />
         </ListItem>
     );
+
+    // Info that the list is empty.
+    const emptyList = () => {
+        return (
+            <View style={styles.infoTextBox}>
+                <Text style={styles.infoText}>{i18n.t("itrex.noVideosAvailable")}</Text>
+            </View>
+        );
+    };
 
     /**
      * Add Video to Chapter List
@@ -273,11 +265,12 @@ export const ScreenAddChapter: React.FC = () => {
             <ImageBackground source={require("../../../constants/images/Background2.png")} style={styles.image}>
                 <View style={[styles.headContainer]}>
                     <View style={styles.borderContainer}>
-                        {/*<TextInput label="name" value={courseName} onChangeText={(text) => setCourseName(text)}></TextInput>*/}
+                        {/*<TextInput label="name" value={courseName} onChangeText={(text) => setCourseName(text)} />*/}
                         <TextInput
                             style={styles.courseHeader}
                             value={chapterName}
-                            onChangeText={(text) => setChapterName(text)}></TextInput>
+                            onChangeText={(text) => setChapterName(text)}
+                        />
                         <MaterialCommunityIcons name="pen" size={24} color={dark.theme.darkGreen} style={styles.icon} />
                     </View>
                     <View>
@@ -290,13 +283,15 @@ export const ScreenAddChapter: React.FC = () => {
                         <DatePickerComponent
                             title={i18n.t("itrex.startDate")}
                             date={startDate}
-                            onDateChanged={startDateChanged}></DatePickerComponent>
+                            onDateChanged={startDateChanged}
+                        />
                     </View>
                     <View style={styles.datePicker}>
                         <DatePickerComponent
                             title={i18n.t("itrex.endDate")}
                             date={endDate}
-                            onDateChanged={endDateChanged}></DatePickerComponent>
+                            onDateChanged={endDateChanged}
+                        />
                     </View>
                 </View>
 
@@ -418,9 +413,7 @@ const styles = StyleSheet.create({
     videoContainer: {
         flex: 2,
         flexDirection: "row",
-        paddingLeft: "3%",
-        paddingTop: "3%",
-        paddingBottom: "3%",
+        padding: "2%",
     },
     sequenceArea: {
         flex: 3,
@@ -455,14 +448,12 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     infoTextBox: {
-        width: "50%",
-        height: "50%",
         backgroundColor: dark.theme.darkBlue2,
         borderColor: dark.theme.darkBlue4,
         borderWidth: 2,
+        borderRadius: 5,
         textAlign: "center",
         justifyContent: "center",
-        marginTop: 50,
     },
     infoText: {
         color: "white",
