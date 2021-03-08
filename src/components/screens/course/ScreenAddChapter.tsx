@@ -114,7 +114,7 @@ export const ScreenAddChapter: React.FC = () => {
             <View style={styles.containerTop}>
                 <FlatList
                     style={styles.list}
-                    showsVerticalScrollIndicator={false}
+                    showsVerticalScrollIndicator={true}
                     data={videoPoolList}
                     renderItem={listItem}
                     keyExtractor={(item, index) => index.toString()}
@@ -299,7 +299,7 @@ export const ScreenAddChapter: React.FC = () => {
                         <View style={styles.containerTop}>
                             <DraggableFlatList
                                 style={styles.list}
-                                showsVerticalScrollIndicator={false}
+                                showsVerticalScrollIndicator={true}
                                 data={contentList}
                                 renderItem={listRemoveItem}
                                 keyExtractor={(item, index) => index.toString()}
