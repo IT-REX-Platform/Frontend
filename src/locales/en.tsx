@@ -100,5 +100,11 @@ export const en = {
         chapterMaterial: "Chapter Material",
         myNewChapter: "My new chapter",
         save: "Save",
+        chapterCreatedUpdatedSuccessfully: "The chapter was created/updated successfully.",
+        chapterCreatedUpdatedError: "An Error occured while creating/updating the chapter.",
+        publishedSuccessfully: "The course was published successfully.",
+        publishedError: "An Error occured while publishing the course.",
+        courseDeletedSuccessfully: "The course was deleted successfully.",
+        courseDeletedError: "An Error occured while deleting the course.",
     },
 };
