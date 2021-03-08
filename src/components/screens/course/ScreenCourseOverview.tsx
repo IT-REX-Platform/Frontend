@@ -66,8 +66,8 @@ export const ScreenCourseOverview: React.FC = () => {
     function getDate(showDate: Date | undefined, title: string) {
         return (
             <Text style={{ color: "white" }}>
-                <Text style={{ fontWeight: "bold" }}>{title}</Text>
-                <Text>{dateConverter(showDate)}</Text>
+                <Text style={{ fontWeight: "bold", marginEnd: 10 }}>{title}</Text>
+                {dateConverter(showDate)}
             </Text>
         );
     }
