@@ -89,11 +89,7 @@ export const ScreenCourseOverview: React.FC = () => {
         if (courseRole !== CourseRoles.OWNER) {
             return (
                 <View style={[{ width: "20%", marginTop: 15 }]}>
-                    <Button
-                        color={dark.Opacity.pink}
-                        title={i18n.t("itrex.leaveCourse")}
-                        onPress={() => leaveCourse()}
-                    />
+                    <TextButton color="pink" title={i18n.t("itrex.leaveCourse")} onPress={() => leaveCourse()} />
                 </View>
             );
         }
