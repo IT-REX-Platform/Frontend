@@ -72,12 +72,20 @@ export const ScreenCourseOverview: React.FC = () => {
         );
     }
 
+    // I'm sorry for this:
+    // eslint-disable-next-line complexity
     function checkForLeaveCourse() {
         if (user.courses === undefined || course.id === undefined) {
             return <></>;
         }
 
         const courseRole = user.courses[course.id];
+        if (courseRole === undefined) {
+            // TODO: Undefined should never happen, buuuut currently does when creating a course.
+            // Apparently updating the token and then navigating isn't waiting long enough.
+            return <></>;
+        }
+
         if (courseRole !== CourseRoles.OWNER) {
             return (
                 <View style={[{ width: "20%", marginTop: 15 }]}>
