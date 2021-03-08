@@ -6,6 +6,7 @@ import { dateConverter } from "../helperScripts/validateCourseDates";
 import { NavigationRoutes } from "../constants/navigators/NavigationRoutes";
 import { useNavigation } from "@react-navigation/native";
 import i18n from "./../locales";
+import { CoursePublishState } from "../constants/CoursePublishState";
 
 interface CourseCardProps {
     course: ICourse;
@@ -15,15 +16,15 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
     const { course } = props;
     const navigation = useNavigation();
 
-    function getPublishedSate(isPublished: string | undefined) {
-        if (isPublished === "UNPUBLISHED") {
+    function getPublishedSate(isPublished: CoursePublishState | undefined) {
+        if (isPublished === CoursePublishState.UNPUBLISHED) {
             return (
                 <View style={styles.unpublishedCard}>
                     <View style={styles.circleUnpublished} />
                     <Text style={styles.textUnpublished}>{i18n.t("itrex.unpublished")}</Text>
                 </View>
             );
-        } else if (isPublished === "PUBLISHED") {
+        } else if (isPublished === CoursePublishState.PUBLISHED) {
             return (
                 <View style={styles.publishedCard}>
                     <View style={styles.circlePublished} />
