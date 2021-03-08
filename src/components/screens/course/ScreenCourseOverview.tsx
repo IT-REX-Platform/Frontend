@@ -23,6 +23,7 @@ import { ITREXRoles } from "../../../constants/ITREXRoles";
 import { TextButton } from "../../uiElements/TextButton";
 import { CourseRoles } from "../../../constants/CourseRoles";
 import { IUser } from "../../../types/IUser";
+import { toast } from "react-toastify";
 
 export type ScreenCourseOverviewNavigationProp = CompositeNavigationProp<
     MaterialTopTabNavigationProp<CourseTabParamList, "OVERVIEW">,
@@ -161,7 +162,13 @@ export const ScreenCourseOverview: React.FC = () => {
 
         loggerService.trace(`Updating course: name=${courses.name}, publishedState=${CoursePublishState.PUBLISHED}.`);
         const putRequest: RequestInit = RequestFactory.createPatchRequest(course);
-        endpointsCourse.patchCourse(putRequest).then((data) => console.log(data));
+        endpointsCourse
+            .patchCourse(putRequest)
+            .then((data) => {
+                console.log(data);
+                toast.success(i18n.t("itrex.publishedSuccessfully"));
+            })
+            .catch(() => toast.error(i18n.t("itrex.publishedError")));
     }
 
     function deleteCourse(courses: ICourse): void {
@@ -170,7 +177,14 @@ export const ScreenCourseOverview: React.FC = () => {
         }
 
         const request: RequestInit = RequestFactory.createDeleteRequest();
-        endpointsCourse.deleteCourse(request, courses.id);
+        endpointsCourse
+            .deleteCourse(request, courses.id)
+            .then(() => {
+                toast.success(i18n.t("itrex.courseDeletedSuccessfully"));
+            })
+            .catch(() => {
+                toast.error(i18n.t("itrex.courseDeletedError"));
+            });
     }
 
     function goToVideoPool() {
