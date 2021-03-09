@@ -23,7 +23,7 @@ import { ITREXRoles } from "../../../constants/ITREXRoles";
 import { TextButton } from "../../uiElements/TextButton";
 import { CourseRoles } from "../../../constants/CourseRoles";
 import { IUser } from "../../../types/IUser";
-import { toast } from "react-toastify";
+import { ToastService } from "../../../services/toasts/ToastService";
 
 export type ScreenCourseOverviewNavigationProp = CompositeNavigationProp<
     MaterialTopTabNavigationProp<CourseTabParamList, "OVERVIEW">,
@@ -35,6 +35,8 @@ export type ScreenCourseOverviewNavigationProp = CompositeNavigationProp<
 
 export const ScreenCourseOverview: React.FC = () => {
     const navigation = useNavigation<ScreenCourseOverviewNavigationProp>();
+
+    const toast: ToastService = new ToastService();
 
     React.useContext(LocalizationContext);
     const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");
@@ -170,7 +172,7 @@ export const ScreenCourseOverview: React.FC = () => {
                 console.log(data);
                 toast.success(i18n.t("itrex.publishedSuccessfully"));
             })
-            .catch(() => toast.error(i18n.t("itrex.publishedError")));
+            .catch(() => toast.error(i18n.t("itrex.publishCourseError")));
     }
 
     function deleteCourse(courses: ICourse): void {
@@ -184,9 +186,7 @@ export const ScreenCourseOverview: React.FC = () => {
             .then(() => {
                 toast.success(i18n.t("itrex.courseDeletedSuccessfully"));
             })
-            .catch(() => {
-                toast.error(i18n.t("itrex.courseDeletedError"));
-            });
+            .catch(() => toast.error(i18n.t("itrex.deleteCourseError")));
     }
 
     function goToVideoPool() {
@@ -198,13 +198,16 @@ export const ScreenCourseOverview: React.FC = () => {
     function leaveCourse() {
         if (course.id !== undefined) {
             const request: RequestInit = RequestFactory.createPostRequestWithoutBody();
-            endpointsCourse.leaveCourse(request, course.id).then(() => {
-                AuthenticationService.getInstance()
-                    .refreshToken()
-                    .then(() => {
-                        navigation.navigate("ROUTE_HOME");
-                    });
-            });
+            endpointsCourse
+                .leaveCourse(request, course.id)
+                .then(() => {
+                    AuthenticationService.getInstance()
+                        .refreshToken()
+                        .then(() => {
+                            navigation.navigate("ROUTE_HOME");
+                        });
+                })
+                .catch(() => toast.error(i18n.t("itrex.leaveCourseError")));
         }
     }
 };

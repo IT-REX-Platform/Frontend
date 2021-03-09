@@ -21,6 +21,7 @@ import { ScreenAddQuiz } from "./course/ScreenAddQuiz";
 import { CourseRoles } from "../../constants/CourseRoles";
 import { IUser } from "../../types/IUser";
 import { ScreenAddQuestion } from "./course/ScreenAddQuestion";
+import { ToastService } from "../../services/toasts/ToastService";
 
 export type ScreenCourseNavigationProp = DrawerNavigationProp<RootDrawerParamList, "ROUTE_COURSE_DETAILS">;
 export type ScreenCourseRouteProp = RouteProp<RootDrawerParamList, "ROUTE_COURSE_DETAILS">;
@@ -42,12 +43,17 @@ export const ScreenCourse: React.FC = () => {
 
     const endpointsCourse: EndpointsCourse = new EndpointsCourse();
 
+    const toast: ToastService = new ToastService();
+
     useEffect(() => {
         AuthenticationService.getInstance().getUserInfo(setUserInfo);
         const request: RequestInit = RequestFactory.createGetRequest();
-        endpointsCourse.getCourse(request, courseId).then((receivedCourse) => {
-            setCourse(receivedCourse);
-        });
+        endpointsCourse
+            .getCourse(request, courseId)
+            .then((receivedCourse) => {
+                setCourse(receivedCourse);
+            })
+            .catch(() => toast.error(i18n.t("itrex.getCourseError")));
     }, [courseId]);
 
     return (

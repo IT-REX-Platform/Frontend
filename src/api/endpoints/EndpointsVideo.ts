@@ -14,9 +14,11 @@ import { VideoUrlParams } from "../../constants/VideoUrlParams";
 export class EndpointsVideo implements IEndpointsVideo {
     private loggerApi = loggerFactory.getLogger("API.EndpointsVideo");
     private url: string;
+    private responseParser: ResponseParser;
 
     public constructor() {
         this.url = itRexVars().apiUrl + ApiUrls.URL_VIDEOS;
+        this.responseParser = new ResponseParser();
     }
 
     /**
@@ -28,13 +30,16 @@ export class EndpointsVideo implements IEndpointsVideo {
     public getAllVideos(getRequest: RequestInit, courseId?: string): Promise<IVideo[]> {
         this.loggerApi.trace("Checking for additional parameters for GET request URL.");
         let url: string = this.url;
+
+        const urlParams = new URLSearchParams();
         if (courseId !== undefined) {
-            url = url + "?" + VideoUrlParams.COURSE_ID + "=" + courseId;
+            urlParams.append(VideoUrlParams.COURSE_ID, courseId);
+            url = url + "?" + urlParams;
         }
 
         this.loggerApi.trace("Sending GET request to URL: " + url);
         const response: Promise<Response> = sendRequest(url, getRequest);
-        return ResponseParser.parseVideos(response);
+        return this.responseParser.parseVideos(response);
     }
 
     /**
@@ -48,7 +53,7 @@ export class EndpointsVideo implements IEndpointsVideo {
 
         this.loggerApi.trace("Sending GET request to URL: " + url);
         const response: Promise<Response> = sendRequest(url, getRequest);
-        return ResponseParser.parseVideo(response);
+        return this.responseParser.parseVideo(response);
     }
 
     /**
@@ -59,7 +64,7 @@ export class EndpointsVideo implements IEndpointsVideo {
     public uploadVideo(postRequest: RequestInit): Promise<IVideo> {
         this.loggerApi.trace("Sending POST request to URL: " + this.url);
         const response: Promise<Response> = sendRequest(this.url, postRequest);
-        return ResponseParser.parseVideo(response);
+        return this.responseParser.parseVideo(response);
     }
 
     /**
@@ -70,7 +75,7 @@ export class EndpointsVideo implements IEndpointsVideo {
     public patchVideo(patchRequest: RequestInit): Promise<IVideo> {
         this.loggerApi.trace("Sending POST request to URL: " + this.url);
         const response: Promise<Response> = sendRequest(this.url, patchRequest);
-        return ResponseParser.parseVideo(response);
+        return this.responseParser.parseVideo(response);
     }
 
     /**
@@ -79,11 +84,11 @@ export class EndpointsVideo implements IEndpointsVideo {
      * @param deleteRequest DELETE request.
      * @param id Video ID for URL parameter.
      */
-    public deleteVideo(deleteRequest: RequestInit, id: string): Promise<Response> {
+    public deleteVideo(deleteRequest: RequestInit, id: string): Promise<void> {
         const url: string = this.url + "/" + id;
 
         this.loggerApi.trace("Sending DELETE request to URL: " + url);
         const response: Promise<Response> = sendRequest(url, deleteRequest);
-        return response;
+        return this.responseParser.checkEmptyResponse(response);
     }
 }

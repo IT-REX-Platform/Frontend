@@ -26,30 +26,35 @@ export default class CourseService {
                     Promise.all(
                         course.chapters?.map((chapterId) => {
                             return new Promise((resolve) => {
-                                chapterEndpoint.getChapter(request, chapterId).then((chapter) => {
-                                    course.chapterObjects?.push(chapter);
-                                    resolve(chapter);
-                                });
+                                chapterEndpoint
+                                    .getChapter(request, chapterId)
+                                    .then((chapter) => {
+                                        course.chapterObjects?.push(chapter);
+                                        resolve(chapter);
+                                    })
+                                    .catch(() => this.toast.error(i18n.t("itrex.getChapterError")));
                             });
                         })
-                    ).then(() => {
-                        // Push the Chapter to the right index
-                        // Promises may resolve in a different order
-                        const order: { [id: string]: number } = {};
-                        if (course.chapters !== undefined && course.chapterObjects != undefined) {
-                            course.chapters.forEach(function (a, i) {
-                                order[a] = i;
-                            });
-                            course.chapterObjects.sort(function (a, b) {
-                                if (a.id !== undefined && b.id !== undefined) {
-                                    return order[a.id] - order[b.id];
-                                }
-                                return 0;
-                            });
-                        }
+                    )
+                        .then(() => {
+                            // Push the Chapter to the right index
+                            // Promises may resolve in a different order
+                            const order: { [id: string]: number } = {};
+                            if (course.chapters !== undefined && course.chapterObjects != undefined) {
+                                course.chapters.forEach(function (a, i) {
+                                    order[a] = i;
+                                });
+                                course.chapterObjects.sort(function (a, b) {
+                                    if (a.id !== undefined && b.id !== undefined) {
+                                        return order[a.id] - order[b.id];
+                                    }
+                                    return 0;
+                                });
+                            }
 
-                        resolve(course);
-                    });
+                            resolve(course);
+                        })
+                        .catch(() => this.toast.error(i18n.t("itrex.getCourseError")));
                 }
             });
         });
@@ -90,11 +95,12 @@ export default class CourseService {
                             this.toast.success(i18n.t("itrex.chapterCreatedUpdated"));
                             resolve(chapter);
                         })
-                        .catch(() => {
-                            this.toast.error(i18n.t("itrex.chapterCreatedUpdatedError"));
-                        });
+                        .catch(() => this.toast.error(i18n.t("itrex.createUpdateChapterError")));
                 })
-                .catch(reject);
+                .catch(() => {
+                    this.toast.error(i18n.t("itrex.createUpdateChapterError"));
+                    reject;
+                });
         });
     }
 
@@ -106,7 +112,9 @@ export default class CourseService {
 
         const deleteRequest: RequestInit = RequestFactory.createDeleteRequest();
 
-        const response = chapterEndpoint.deleteChapter(deleteRequest, chapterId);
+        const response = chapterEndpoint
+            .deleteChapter(deleteRequest, chapterId)
+            .catch(() => this.toast.error(i18n.t("itrex.deleteChapterError")));
         console.log(response);
     }
 }

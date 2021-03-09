@@ -138,19 +138,22 @@ export const CreateCourseComponent: React.FC = () => {
 
         loggerService.trace(`Creating course: name=${courseName}.`);
         const postRequest: RequestInit = RequestFactory.createPostRequestWithBody(course);
-        endpointsCourse.createCourse(postRequest).then((data) => {
-            toast.success(i18n.t("itrex.courseCreated") + courseName);
-            console.log(data);
-            _resetStates();
+        endpointsCourse
+            .createCourse(postRequest)
+            .then((data) => {
+                toast.success(i18n.t("itrex.courseCreated") + courseName);
+                console.log(data);
+                _resetStates();
 
-            AuthenticationService.getInstance()
-                .refreshToken()
-                .then(() => {
-                    navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, {
-                        courseId: data.id,
+                AuthenticationService.getInstance()
+                    .refreshToken()
+                    .then(() => {
+                        navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, {
+                            courseId: data.id,
+                        });
                     });
-                });
-        });
+            })
+            .catch(() => toast.error(i18n.t("itrex.createCourseError")));
     }
 
     function _resetStates(): void {

@@ -13,9 +13,11 @@ import { IChapter } from "../../types/IChapter";
 export class EndpointsChapter implements IEndpointsChapter {
     private loggerApi = loggerFactory.getLogger("API.EndpointsChapter");
     private url: string;
+    private responseParser: ResponseParser;
 
     public constructor() {
         this.url = itRexVars().apiUrl + ApiUrls.URL_CHAPTERS;
+        this.responseParser = new ResponseParser();
     }
 
     /**
@@ -27,7 +29,7 @@ export class EndpointsChapter implements IEndpointsChapter {
     public getChapters(getRequest: RequestInit): Promise<IChapter[]> {
         this.loggerApi.trace("Sending GET request to URL: " + this.url);
         const response: Promise<Response> = sendRequest(this.url, getRequest);
-        return ResponseParser.parseChapters(response);
+        return this.responseParser.parseChapters(response);
     }
 
     /**
@@ -41,7 +43,7 @@ export class EndpointsChapter implements IEndpointsChapter {
 
         this.loggerApi.trace("Sending GET request to URL: " + urlUpdated);
         const response: Promise<Response> = sendRequest(urlUpdated, getRequest);
-        return ResponseParser.parseChapter(response);
+        return this.responseParser.parseChapter(response);
     }
 
     /**
@@ -52,7 +54,7 @@ export class EndpointsChapter implements IEndpointsChapter {
     public createChapter(postRequest: RequestInit): Promise<IChapter> {
         this.loggerApi.trace("Sending POST request to URL: " + this.url);
         const response: Promise<Response> = sendRequest(this.url, postRequest);
-        return ResponseParser.parseChapter(response);
+        return this.responseParser.parseChapter(response);
     }
 
     /**
@@ -63,7 +65,7 @@ export class EndpointsChapter implements IEndpointsChapter {
     public updateChapter(putRequest: RequestInit): Promise<IChapter> {
         this.loggerApi.trace("Sending PUT request to URL: " + this.url);
         const response: Promise<Response> = sendRequest(this.url, putRequest);
-        return ResponseParser.parseChapter(response);
+        return this.responseParser.parseChapter(response);
     }
 
     /**
@@ -74,7 +76,7 @@ export class EndpointsChapter implements IEndpointsChapter {
     public patchChapter(patchRequest: RequestInit): Promise<IChapter> {
         this.loggerApi.trace("Sending PATCH request to URL: " + this.url);
         const response: Promise<Response> = sendRequest(this.url, patchRequest);
-        return ResponseParser.parseChapter(response);
+        return this.responseParser.parseChapter(response);
     }
 
     /**
@@ -83,11 +85,11 @@ export class EndpointsChapter implements IEndpointsChapter {
      * @param deleteRequest DELETE request.
      * @param id Course ID for URL parameter.
      */
-    public deleteChapter(deleteRequest: RequestInit, id: string): void {
+    public deleteChapter(deleteRequest: RequestInit, id: string): Promise<void> {
         const urlUpdated = this.url + "/" + id;
 
         this.loggerApi.trace("Sending DELETE request to URL: " + urlUpdated);
         const response: Promise<Response> = sendRequest(urlUpdated, deleteRequest);
-        response.then((data) => console.log(data));
+        return this.responseParser.checkEmptyResponse(response);
     }
 }

@@ -13,12 +13,15 @@ import { CoursePublishState } from "../constants/CoursePublishState";
 import { IUser } from "../types/IUser";
 import AuthenticationService from "../services/AuthenticationService";
 import { TextButton } from "./uiElements/TextButton";
+import { ToastService } from "../services/toasts/ToastService";
 
 export type JoinCourseRouteProp = RouteProp<RootDrawerParamList, "ROUTE_JOIN_COURSE">;
 
 export const JoinCourseComponent: React.FC = () => {
     React.useContext(LocalizationContext);
     const navigation = useNavigation();
+
+    const toast: ToastService = new ToastService();
 
     const endpointsCourse: EndpointsCourse = new EndpointsCourse();
 
@@ -92,15 +95,18 @@ export const JoinCourseComponent: React.FC = () => {
 
         // Do the request stuff.
         const request: RequestInit = RequestFactory.createPostRequestWithoutBody();
-        endpointsCourse.joinCourse(request, courseId).then(() => {
-            AuthenticationService.getInstance()
-                .refreshToken()
-                .then(() => {
-                    navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, {
-                        courseId: courseId,
+        endpointsCourse
+            .joinCourse(request, courseId)
+            .then(() => {
+                AuthenticationService.getInstance()
+                    .refreshToken()
+                    .then(() => {
+                        navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, {
+                            courseId: courseId,
+                        });
                     });
-                });
-        });
+            })
+            .catch(() => toast.error(i18n.t("itrex.joinCourseError")));
     }
 };
 

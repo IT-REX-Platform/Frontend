@@ -13,9 +13,11 @@ import { IUser } from "../../types/IUser";
 export class EndpointsUserInfo implements IEndpointsUserInfo {
     private loggerApi = loggerFactory.getLogger("API.EndpointsUserInfo");
     private url: string;
+    private responseParser: ResponseParser;
 
     public constructor() {
         this.url = itRexVars().apiUrl + ApiUrls.URL_USERINFO;
+        this.responseParser = new ResponseParser();
     }
 
     /**
@@ -27,6 +29,6 @@ export class EndpointsUserInfo implements IEndpointsUserInfo {
     public getUserInfo(getRequest: RequestInit): Promise<IUser> {
         this.loggerApi.trace("Sending GET request to URL: " + this.url);
         const response: Promise<Response> = sendRequest(this.url, getRequest);
-        return ResponseParser.parseUserInfo(response);
+        return this.responseParser.parseUserInfo(response);
     }
 }

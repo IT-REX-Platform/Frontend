@@ -10,7 +10,7 @@ export interface IEndpointsCourse {
     createCourse(postRequest: RequestInit): Promise<ICourse>;
     updateCourse(putRequest: RequestInit): Promise<ICourse>;
     patchCourse(patchRequest: RequestInit): Promise<ICourse>;
-    deleteCourse(deleteRequest: RequestInit, id: string): Promise<Response>;
-    joinCourse(postRequest: RequestInit, id: string): Promise<Response>;
-    leaveCourse(postRequest: RequestInit, id: string): Promise<Response>;
+    deleteCourse(deleteRequest: RequestInit, id: string): Promise<void>;
+    joinCourse(postRequest: RequestInit, id: string): Promise<void>;
+    leaveCourse(postRequest: RequestInit, id: string): Promise<void>;
 }

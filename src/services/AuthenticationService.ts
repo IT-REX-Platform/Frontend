@@ -6,6 +6,8 @@ import { itRexVars } from "../constants/Constants";
 import { ITREXRoles } from "../constants/ITREXRoles";
 import { IUser } from "../types/IUser";
 import { AsyncStorageService, StorageConstants } from "./StorageService";
+import { ToastService } from "./toasts/ToastService";
+import i18n from "../locales";
 
 export const discovery = {
     authorizationEndpoint: itRexVars().authEndpoint,
@@ -14,6 +16,8 @@ export const discovery = {
 
 export default class AuthenticationService {
     static instance: AuthenticationService;
+
+    private toast: ToastService = new ToastService();
 
     private AuthenticationService() {
         //this.refreshTimeout = null;
@@ -113,7 +117,10 @@ export default class AuthenticationService {
      */
     public getUserInfo(consumer: (userInfo: IUser) => void): void {
         const request: RequestInit = RequestFactory.createGetRequest();
-        this.endpointsUserInfo.getUserInfo(request).then(consumer);
+        this.endpointsUserInfo
+            .getUserInfo(request)
+            .then(consumer)
+            .catch(() => this.toast.error(i18n.t("itrex.getUserInfoError")));
     }
 
     public getRoles(): string[] {
