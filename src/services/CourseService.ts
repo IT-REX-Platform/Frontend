@@ -87,11 +87,11 @@ export default class CourseService {
                     courseEndpoint
                         .patchCourse(patchRequest)
                         .then(() => {
-                            this.toast.success(i18n.t("itrex.chapterCreatedUpdated"));
+                            this.toast.success(i18n.t("itrex.chapterCreatedSuccess"));
                             resolve(chapter);
                         })
                         .catch(() => {
-                            this.toast.error(i18n.t("itrex.chapterCreatedUpdatedError"));
+                            this.toast.error(i18n.t("itrex.chapterCreatedError"));
                         });
                 })
                 .catch(reject);

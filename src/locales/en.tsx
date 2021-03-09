@@ -100,11 +100,18 @@ export const en = {
         chapterMaterial: "Chapter Material",
         myNewChapter: "My new chapter",
         save: "Save",
-        chapterCreatedUpdatedSuccessfully: "The chapter was created/updated successfully.",
-        chapterCreatedUpdatedError: "An Error occured while creating/updating the chapter.",
+        chapterCreatedSuccess: "The chapter was created successfully.",
+        chapterCreatedError: "An Error occured while creating the chapter.",
+
+        chapterUpdateSuccess: "The chapter was updated successfully.",
+        chapterUpdateError: "An Error occured while updating the chapter.",
         publishedSuccessfully: "The course was published successfully.",
         publishedError: "An Error occured while publishing the course.",
         courseDeletedSuccessfully: "The course was deleted successfully.",
         courseDeletedError: "An Error occured while deleting the course.",
+
+        confirmPublishCourse:
+            "Publishing the course will make it possible for students to join the course. Start- and end-date will also be fixed when publishing the course.",
+        confirmDeleteCourse: "Do you really want to delete this course?",
     },
 };
