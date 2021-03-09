@@ -4,9 +4,12 @@ import { LocalizationContext } from "./Context";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { dark } from "../constants/themes/dark";
 import { IChapter } from "../types/IChapter";
-import { MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import AuthenticationService from "../services/AuthenticationService";
 import { useNavigation } from "@react-navigation/native";
+import { TextButton } from "./uiElements/TextButton";
+import { createAlert } from "../helperScripts/createAlert";
+import { quizList } from "../constants/fixtures/quizzes.fixture";
 
 interface ChapterComponentProps {
     chapter?: IChapter;
@@ -38,6 +41,8 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                         );
                     })}
                 </View>
+                <Text style={styles.chapterMaterialHeader}>Chapter Quiz</Text>
+                {chapterQuiz()}
             </View>
             {props.editMode && AuthenticationService.getInstance().isLecturer() && (
                 <View style={styles.chapterEditRow}>
@@ -47,7 +52,6 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                         }}>
                         <MaterialCommunityIcons name="trash-can" size={28} color="white" style={styles.icon} />
                     </TouchableOpacity> */}
-
                     <TouchableOpacity
                         onPress={() => {
                             navigation.navigate("CHAPTER", { chapterId: chapter?.id });
@@ -58,6 +62,33 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
             )}
         </View>
     );
+
+    function chapterQuiz() {
+        console.log(quizList);
+        if (quizList === undefined || quizList.length === 0) {
+            return (
+                <View style={styles.chapterMaterialElements}>
+                    <TextButton title="Create a Quiz" onPress={() => createAlert("Open Create Quiz Page")} />
+                </View>
+            );
+        } else {
+            return (
+                <View style={styles.chapterMaterialElements}>
+                    <View style={styles.chapterMaterialElement}>
+                        <MaterialCommunityIcons
+                            name="file-question-outline"
+                            size={28}
+                            color="white"
+                            style={styles.icon}
+                        />
+                        <TouchableOpacity onPress={() => navigation.navigate("CREATE_QUIZ")}>
+                            <Text style={styles.chapterMaterialElementText}>{quizList[0].name}</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            );
+        }
+    }
 
     function getPublishedSate(isPublished: string | undefined) {
         if (isPublished === "UNPUBLISHED") {
@@ -123,11 +154,17 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
     },
     chapterMaterialHeader: {
+        marginTop: 10,
         alignSelf: "center",
         color: "white",
         fontWeight: "bold",
+        fontSize: 20,
     },
     chapterMaterialElements: {
+        borderBottomWidth: 2,
+        borderStyle: "dotted",
+        marginBottom: 5,
+        borderColor: dark.Opacity.lightGreen,
         paddingTop: "20px",
         flex: 1,
         flexDirection: "row",
