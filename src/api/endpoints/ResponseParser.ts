@@ -5,6 +5,7 @@ import { IUser } from "../../types/IUser";
 import i18n from "../../locales";
 import { IChapter } from "../../types/IChapter";
 import { ToastService } from "../../services/toasts/ToastService";
+import { IQuiz } from "../../types/IQuiz";
 
 export class ResponseParser {
     private loggerApi;
@@ -143,6 +144,32 @@ export class ResponseParser {
                 .catch((error) => {
                     this.loggerApi.error("An error occurred while parsing videos.", error);
                     reject(new Error("An error occurred while parsing videos."));
+                });
+        });
+    }
+
+    public parseQuiz(response: Promise<Response>): Promise<IQuiz> {
+        return new Promise((resolve, reject) => {
+            response
+                .then((response) => {
+                    resolve(this._parseAsJson(response));
+                })
+                .catch((error) => {
+                    this.loggerApi.error("An error occurred while parsing quiz.", error);
+                    reject(new Error("An error occurred while parsing quiz."));
+                });
+        });
+    }
+
+    public parseQuizzes(response: Promise<Response>): Promise<IQuiz[]> {
+        return new Promise((resolve, reject) => {
+            response
+                .then((response) => {
+                    resolve(this._parseAsJson(response));
+                })
+                .catch((error) => {
+                    this.loggerApi.error("An error occurred while parsing quizzes.", error);
+                    reject(new Error("An error occurred while parsing quizzes."));
                 });
         });
     }
