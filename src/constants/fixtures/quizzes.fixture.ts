@@ -2,11 +2,11 @@ import { IChoice } from "../../types/IChoice";
 import { IQuestion } from "../../types/IQuestion";
 import { IQuiz } from "../../types/IQuiz";
 
-const choice = {
-    1: "42",
-    2: "4",
-    3: "8",
-    4: "4",
+const choice: IChoice = {
+    "0": "42",
+    "1": "4",
+    "2": "8",
+    "3": "4",
 };
 
 const question: IQuestion = {
@@ -21,12 +21,11 @@ const question2: IQuestion = {
     type: "SINGLE_CHOICE",
     question: "Was ist 4+4?",
     choices: choice,
-    solution: "3",
+    solution: "2",
 };
+
 const questions: IQuestion[] = [question, question2];
-
 questions.push(question);
-
 questions.push(question2);
 
 const testQuiz: IQuiz = {

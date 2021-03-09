@@ -9,6 +9,7 @@ import i18n from "./../locales";
 import { CoursePublishState } from "../constants/CoursePublishState";
 import { IQuestion } from "../types/IQuestion";
 import { AnswerCard } from "./AnserComponent";
+import { IChoice } from "../types/IChoice";
 
 interface QuestionCardProps {
     question: IQuestion;
@@ -27,22 +28,38 @@ export const QuestionCard: React.FC<QuestionCardProps> = (props) => {
     );
 
     function renderAnswers() {
-        const choices = question.choices;
-        if (choices === undefined) {
-            return;
-        }
-
-        Object.entries(choices).forEach(([key, value]) => {
-            return renderAnswers2(key, value);
-        });
-    }
-    function renderAnswers2(key: string, value: string) {
         return (
-            <View style={{ borderColor: "white" }}>
-                <Text>{value}</Text>
-            </View>
+            <>
+                <View style={{ borderColor: "white" }}>
+                    <Text>{question.choices[0]}</Text>
+                </View>
+
+                <View style={{ borderColor: "white" }}>
+                    <Text>{question.choices[1]}</Text>
+                </View>
+
+                <View style={{ borderColor: "white" }}>
+                    <Text>{question.choices[2]}</Text>
+                </View>
+
+                <View style={{ borderColor: "white" }}>
+                    <Text>{question.choices[3]}</Text>
+                </View>
+            </>
         );
+
+        // Object.entries(question.choices).forEach(([key, value]) => {
+        //     return renderAnswers2(key, value);
+        // });
     }
+
+    // function renderAnswers2(key: string, value: string) {
+    //     return (
+    //         <View style={{ borderColor: "white" }}>
+    //             <Text>{value}</Text>
+    //         </View>
+    //     );
+    // }
 };
 
 const styles = StyleSheet.create({
