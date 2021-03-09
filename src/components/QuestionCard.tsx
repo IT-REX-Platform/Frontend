@@ -26,7 +26,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = (props) => {
             case QuestionTypes.MULTIPLE_CHOICE:
                 return (
                     <>
-                        {question.solution === "0" ? (
+                        {question.solution === "0" || question.solution[0] === true ? (
                             <View style={styles.cardChoicesRight}>
                                 <Text style={styles.textChoice}>{question.choices[0]}</Text>
                             </View>
@@ -36,7 +36,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = (props) => {
                             </View>
                         )}
 
-                        {question.solution === "1" ? (
+                        {question.solution === "1" || question.solution[1] === true ? (
                             <View style={styles.cardChoicesRight}>
                                 <Text style={styles.textChoice}>{question.choices[1]}</Text>
                             </View>
@@ -46,7 +46,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = (props) => {
                             </View>
                         )}
 
-                        {question.solution === "2" ? (
+                        {question.solution === "2" || question.solution[2] === true ? (
                             <View style={styles.cardChoicesRight}>
                                 <Text style={styles.textChoice}>{question.choices[2]}</Text>
                             </View>
@@ -56,7 +56,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = (props) => {
                             </View>
                         )}
 
-                        {question.solution === "3" ? (
+                        {question.solution === "3" || question.solution[3] === true ? (
                             <View style={styles.cardChoicesRight}>
                                 <Text style={styles.textChoice}>{question.choices[3]}</Text>
                             </View>
