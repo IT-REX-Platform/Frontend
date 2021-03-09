@@ -1,12 +1,13 @@
-import { IChapter } from "../../types/IChapter";
+import { IContentProgressTracker } from "../../types/IContentProgressTracker";
+import { ICourseProgressTracker } from "../../types/ICourseProgressTracker";
 
 /**
- * Wrapper for endpoints in backend course-service ChapterResource.java.
+ * Wrapper for endpoints in backend course-service ProgressResource.java.
  */
 export interface IEndpointsProgress {
-    createContentProgress(postRequest: RequestInit): Promise<IChapter>;
-    getCourseProgress(getRequest: RequestInit, courseId: string): Promise<IChapter[]>;
-    setContentStateComplete(putRequest: RequestInit, trackerId: string): Promise<IChapter>;
-    updateContentProgress(putRequest: RequestInit, trackerId: string): Promise<IChapter>;
-    getContentProgress(getRequest: RequestInit, trackerId: string): Promise<IChapter>;
+    createContentProgress(postRequest: RequestInit): Promise<IContentProgressTracker>;
+    getContentProgress(getRequest: RequestInit, trackerId: string): Promise<IContentProgressTracker>;
+    setContentStateComplete(putRequest: RequestInit, trackerId: string): Promise<IContentProgressTracker>;
+    updateContentProgress(putRequest: RequestInit, trackerId: string): Promise<IContentProgressTracker>;
+    getCourseProgress(getRequest: RequestInit, courseId: string): Promise<ICourseProgressTracker>;
 }
