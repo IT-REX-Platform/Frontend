@@ -1,17 +1,9 @@
+/* eslint-disable complexity */
 import React from "react";
-import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
-import { ICourse } from "../types/ICourse";
-import { dark } from "../constants/themes/dark";
-import { dateConverter } from "../helperScripts/validateCourseDates";
-import { NavigationRoutes } from "../constants/navigators/NavigationRoutes";
-import { useNavigation } from "@react-navigation/native";
-import i18n from "./../locales";
-import { CoursePublishState } from "../constants/CoursePublishState";
-import { AnswerCard } from "./AnswerComponent";
-import { IChoices } from "../types/IChoices";
-import { IQuestionMultipleChoice, IQuestionNumeric, IQuestionSingleChoice } from "../types/IQuestion";
+import { View, StyleSheet, Text } from "react-native";
 import { QuestionTypes } from "../constants/QuestionTypes";
-import { TextInput } from "react-native-gesture-handler";
+import { dark } from "../constants/themes/dark";
+import { IQuestionMultipleChoice, IQuestionNumeric, IQuestionSingleChoice } from "../types/IQuestion";
 
 interface QuestionCardProps {
     question: IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric;
@@ -19,13 +11,12 @@ interface QuestionCardProps {
 
 export const QuestionCard: React.FC<QuestionCardProps> = (props) => {
     const { question } = props;
-    const navigation = useNavigation();
 
     return (
         <View style={styles.card}>
             <Text style={styles.cardHeader}>{question.question}</Text>
             <View style={styles.break} />
-            {renderAnswers()}
+            <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "center" }}>{renderAnswers()}</View>
         </View>
     );
 
@@ -35,21 +26,45 @@ export const QuestionCard: React.FC<QuestionCardProps> = (props) => {
             case QuestionTypes.MULTIPLE_CHOICE:
                 return (
                     <>
-                        <View style={{ borderColor: "white" }}>
-                            <Text>{question.choices[0]}</Text>
-                        </View>
+                        {question.solution === "0" ? (
+                            <View style={styles.cardChoicesRight}>
+                                <Text style={styles.textChoice}>{question.choices[0]}</Text>
+                            </View>
+                        ) : (
+                            <View style={styles.cardChoicesWrong}>
+                                <Text style={styles.textChoice}>{question.choices[0]}</Text>
+                            </View>
+                        )}
 
-                        <View style={{ borderColor: "white" }}>
-                            <Text>{question.choices[1]}</Text>
-                        </View>
+                        {question.solution === "1" ? (
+                            <View style={styles.cardChoicesRight}>
+                                <Text style={styles.textChoice}>{question.choices[1]}</Text>
+                            </View>
+                        ) : (
+                            <View style={styles.cardChoicesWrong}>
+                                <Text style={styles.textChoice}>{question.choices[1]}</Text>
+                            </View>
+                        )}
 
-                        <View style={{ borderColor: "white" }}>
-                            <Text>{question.choices[2]}</Text>
-                        </View>
+                        {question.solution === "2" ? (
+                            <View style={styles.cardChoicesRight}>
+                                <Text style={styles.textChoice}>{question.choices[2]}</Text>
+                            </View>
+                        ) : (
+                            <View style={styles.cardChoicesWrong}>
+                                <Text style={styles.textChoice}>{question.choices[2]}</Text>
+                            </View>
+                        )}
 
-                        <View style={{ borderColor: "white" }}>
-                            <Text>{question.choices[3]}</Text>
-                        </View>
+                        {question.solution === "3" ? (
+                            <View style={styles.cardChoicesRight}>
+                                <Text style={styles.textChoice}>{question.choices[3]}</Text>
+                            </View>
+                        ) : (
+                            <View style={styles.cardChoicesWrong}>
+                                <Text style={styles.textChoice}>{question.choices[3]}</Text>
+                            </View>
+                        )}
                     </>
                 );
             case QuestionTypes.NUMERIC:
@@ -81,8 +96,31 @@ const styles = StyleSheet.create({
         shadowRadius: 10,
         shadowOffset: { width: -1, height: 1 },
         margin: 8,
-        width: "100%",
+        minWidth: "40%",
+        marginRight: 20,
         backgroundColor: dark.Opacity.grey,
+    },
+    cardChoicesRight: {
+        margin: 8,
+        minHeight: 40,
+        width: "40%",
+        backgroundColor: dark.Opacity.grey,
+        borderColor: dark.theme.darkGreen,
+        borderWidth: 5,
+        flexDirection: "row",
+        justifyContent: "center",
+        color: "white",
+    },
+    cardChoicesWrong: {
+        minHeight: 40,
+        margin: 8,
+        width: "40%",
+        backgroundColor: dark.Opacity.grey,
+        borderColor: dark.theme.pink,
+        borderWidth: 5,
+        flexDirection: "row",
+        justifyContent: "center",
+        color: "white",
     },
     cardHeader: {
         margin: 8,
@@ -92,76 +130,15 @@ const styles = StyleSheet.create({
         color: "white",
         textAlignVertical: "center",
     },
-    cardContent: {
-        fontSize: 15,
-        color: "white",
-        textAlignVertical: "center",
-        margin: 4,
-        marginLeft: 32,
-        minHeight: 20,
-    },
-    unpublishedCard: {
-        flexDirection: "row",
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "black",
-        borderColor: dark.theme.pink,
-        borderWidth: 2,
-        textShadowColor: dark.theme.pink,
-        textShadowOffset: { width: 1, height: 1 },
-        textShadowRadius: 3,
-        width: 100,
-        height: 15,
-        marginLeft: 295,
-        marginTop: 5,
-    },
-    textUnpublished: {
-        color: dark.theme.pink,
-        fontSize: 10,
-    },
-    circleUnpublished: {
-        shadowRadius: 10,
-        shadowColor: dark.theme.pink,
-        shadowOffset: { width: -1, height: 1 },
-        width: 8,
-        height: 8,
-        borderRadius: 8 / 2,
-        backgroundColor: dark.theme.pink,
-        marginRight: 3,
-    },
-    publishedCard: {
-        flexDirection: "row",
-        backgroundColor: "black",
-        justifyContent: "center",
-        alignItems: "center",
-        borderColor: dark.theme.lightGreen,
-        borderWidth: 2,
-        textShadowColor: dark.theme.lightGreen,
-        textShadowOffset: { width: 1, height: 1 },
-        textShadowRadius: 3,
-        width: 100,
-        height: 15,
-        marginLeft: 295,
-        marginTop: 5,
-    },
-    textPublished: {
-        color: dark.theme.lightGreen,
-        fontSize: 10,
-    },
-    circlePublished: {
-        shadowRadius: 10,
-        shadowColor: dark.theme.lightGreen,
-        shadowOffset: { width: -1, height: 1 },
-        width: 8,
-        height: 8,
-        borderRadius: 8 / 2,
-        backgroundColor: dark.theme.lightGreen,
-        marginRight: 5,
-    },
+
     break: {
         backgroundColor: "white",
         opacity: 0.5,
         height: 1,
         marginTop: 1,
+    },
+    textChoice: {
+        color: "white",
+        fontSize: 20,
     },
 });

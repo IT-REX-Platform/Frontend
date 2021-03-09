@@ -40,7 +40,31 @@ const questionMultipleChoice: IQuestionMultipleChoice = {
     solution: solutionMultipleChoice,
 };
 
-//================= MULTIPLE CHOICE QUESTION ===============
+const question3: IQuestionSingleChoice = {
+    id: "uuid4",
+    type: QuestionTypes.SINGLE_CHOICE,
+    question: "Was ist 21+21?",
+    choices: choicesSingleChoice,
+    solution: "0",
+};
+
+const question4: IQuestionSingleChoice = {
+    id: "uuid5",
+    type: QuestionTypes.SINGLE_CHOICE,
+    question: "Was ist 50+6?",
+    choices: choicesSingleChoice,
+    solution: "1",
+};
+
+const question5: IQuestionSingleChoice = {
+    id: "uuid6",
+    type: QuestionTypes.SINGLE_CHOICE,
+    question: "Das ist eine gaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanz lange Fraaaaaaaage",
+    choices: choicesSingleChoice,
+    solution: "1",
+};
+
+//================= NUMERIC QUESTION ===============
 const solutionNumeric: ISolutionNumeric = {
     result: 3.1412,
     epsilon: 0.1,
@@ -56,6 +80,9 @@ const questionNumeric: IQuestionNumeric = {
 const questions: Array<IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric> = [];
 questions.push(questionSingleChoice);
 questions.push(questionMultipleChoice);
+questions.push(question3);
+questions.push(question4);
+questions.push(question5);
 questions.push(questionNumeric);
 
 //================= QUIZ ===================================

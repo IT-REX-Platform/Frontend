@@ -1,16 +1,15 @@
-import { useFocusEffect, useRoute } from "@react-navigation/native";
+import { useFocusEffect } from "@react-navigation/native";
 import React, { useState } from "react";
-import { Text, ImageBackground, StyleSheet, View, TextInput, TouchableOpacity } from "react-native";
+import { ImageBackground, StyleSheet, View, TextInput } from "react-native";
 import { dark } from "../../../constants/themes/dark";
 import { LocalizationContext } from "../../Context";
-import AuthenticationService from "../../../services/AuthenticationService";
-import { IUser } from "../../../types/IUser";
 import { IChapter } from "../../../types/IChapter";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { TextButton } from "../../uiElements/TextButton";
 import { createAlert } from "../../../helperScripts/createAlert";
 import i18n from "../../../locales";
 import { IQuestionMultipleChoice, IQuestionNumeric, IQuestionSingleChoice } from "../../../types/IQuestion";
+import { IUser } from "../../../types/IUser";
 
 interface ChapterComponentProps {
     chapter?: IChapter;
@@ -28,7 +27,7 @@ export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
 
     useFocusEffect(
         React.useCallback(() => {
-            AuthenticationService.getInstance().getUserInfo(setUserInfo);
+            // AuthenticationService.getInstance().getUserInfo(setUserInfo);
         }, [])
     );
 
