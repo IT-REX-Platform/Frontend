@@ -36,7 +36,7 @@ export default class AuthenticationService {
     // Default token lifetime, 5 minutes -> refresh after
     private accessTokenLifeTime = 1000 * 60 * 5;
 
-    private tokenResponse!: AuthSession.TokenResponseConfig;
+    public tokenResponse!: AuthSession.TokenResponseConfig;
     private roles: string[] = [];
     private refreshTimeout: NodeJS.Timeout | undefined;
 

@@ -1,6 +1,6 @@
 import React from "react";
 import { createDrawerNavigator } from "@react-navigation/drawer";
-import { useWindowDimensions } from "react-native";
+import { Platform, ScaledSize, useWindowDimensions } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { RootDrawerParamList } from "./NavigationRoutes";
@@ -19,12 +19,12 @@ import { JoinCourseComponent } from "../../components/JoinCourseComponent";
 const Drawer = createDrawerNavigator<RootDrawerParamList>();
 
 export const DrawerNavigator: React.FC = () => {
-    const dimensions = useWindowDimensions();
+    const dimensions: ScaledSize = useWindowDimensions();
 
     return (
         <Drawer.Navigator
             drawerStyle={{ backgroundColor: dark.theme.darkBlue1, paddingBottom: 5, height: dimensions.height }}
-            drawerType={dimensions.width >= 1280 ? "permanent" : "front"}
+            drawerType={_selectDrawerType(dimensions)}
             drawerContentOptions={{
                 activeTintColor: "white",
                 activeBackgroundColor: dark.theme.pink,
@@ -39,6 +39,15 @@ export const DrawerNavigator: React.FC = () => {
         </Drawer.Navigator>
     );
 };
+
+function _selectDrawerType(dimensions: ScaledSize): "permanent" | "front" {
+    switch (Platform.OS) {
+        case "web":
+            return dimensions.width >= 1280 ? "permanent" : "front";
+        default:
+            return "front";
+    }
+}
 
 function _gotoHomeScreen() {
     const userRole: string[] = AuthenticationService.getInstance().getRoles();

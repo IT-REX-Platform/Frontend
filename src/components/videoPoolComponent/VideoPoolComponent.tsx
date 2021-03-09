@@ -97,24 +97,11 @@ export const VideoPoolComponent: React.FC = () => {
             );
         }
 
-        if (videos.length < 1) {
-            loggerUI.trace("No video data received: displaying info box.");
-            return (
-                <View style={videoPoolStyles.videoListContainer}>
-                    {renderRefreshButton()}
-
-                    <View style={videoPoolStyles.infoTextBox}>
-                        <Text style={videoPoolStyles.infoText}>{i18n.t("itrex.noVideosAvailable")}</Text>
-                    </View>
-                </View>
-            );
-        }
-
         loggerUI.trace("Video data received: displaying video list.");
         return (
             <View style={videoPoolStyles.videoListContainer}>
-                {renderRefreshButton()}
-
+                {/* // flex: 1: makes the list scrollable
+                // maxWidth: "95%": prevents list items from going beyond left-right screen borders */}
                 <Animated.View style={{ transform: [{ translateY }], flex: 1, maxWidth: "95%" }}>
                     <FlatList
                         style={videoPoolStyles.videoList}
@@ -123,6 +110,7 @@ export const VideoPoolComponent: React.FC = () => {
                         renderItem={renderVideoListItem}
                         keyExtractor={(item, index) => index.toString()}
                         initialNumToRender={_videoListLinesToRender()}
+                        ListEmptyComponent={renderEmptyList}
                     />
                 </Animated.View>
             </View>
@@ -172,12 +160,22 @@ export const VideoPoolComponent: React.FC = () => {
         </TouchableOpacity>
     );
 
+    // Info that the list is empty.
+    const renderEmptyList = () => {
+        return (
+            <View style={videoPoolStyles.infoTextBox}>
+                <Text style={videoPoolStyles.infoText}>{i18n.t("itrex.noVideosAvailable")}</Text>
+            </View>
+        );
+    };
+
     return (
         <ImageBackground
             source={require("../../constants/images/Background2.png")}
             style={videoPoolStyles.imageContainer}>
             <Text style={videoPoolStyles.header}>{i18n.t("itrex.videoPool")}</Text>
             {renderVideoUpload()}
+            {renderRefreshButton()}
             {renderVideoList()}
         </ImageBackground>
     );

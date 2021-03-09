@@ -61,6 +61,7 @@
         "@types/react-native": "~0.63.2",
         "@types/react-native-navbar": "^2.1.2",
         "@types/react-native-vector-icons": "^6.4.6",
+        "@types/react-select": "^4.0.13",
         "@types/react-test-renderer": "^17.0.0",
         "@typescript-eslint/eslint-plugin": "^4.11.0",
         "@typescript-eslint/parser": "^4.11.0",
@@ -79,8 +80,7 @@
         "sonarqube-scanner": "^2.8.0",
         "ts-jest": "^26.4.4",
         "typescript": "~4.0.0",
-        "typescript-logging": "^1.0.0",
-        "@types/react-select": "^4.0.13"
+        "typescript-logging": "^1.0.0"
     },
     "jest": {
         "globals": {

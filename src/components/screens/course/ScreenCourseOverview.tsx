@@ -1,7 +1,7 @@
 /* eslint-disable complexity */
 import { CompositeNavigationProp, useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import { Text, ImageBackground, StyleSheet, Button, View } from "react-native";
+import { Text, ImageBackground, StyleSheet, View } from "react-native";
 import { dark } from "../../../constants/themes/dark";
 import { ICourse } from "../../../types/ICourse";
 import {
@@ -65,8 +65,8 @@ export const ScreenCourseOverview: React.FC = () => {
     function getDate(showDate: Date | undefined, title: string) {
         return (
             <Text style={{ color: "white" }}>
-                <Text style={{ fontWeight: "bold" }}>{title}</Text>
-                <Text>{dateConverter(showDate)}</Text>
+                <Text style={{ fontWeight: "bold", marginEnd: 10 }}>{title}</Text>
+                {dateConverter(showDate)}
             </Text>
         );
     }
@@ -76,20 +76,22 @@ export const ScreenCourseOverview: React.FC = () => {
             return <></>;
         }
 
-        const courseRole = user.courses[course.id];
-        if (courseRole !== CourseRoles.OWNER) {
-            return (
-                <View style={[{ width: "20%", marginTop: 15 }]}>
-                    <Button
-                        color={dark.Opacity.pink}
-                        title={i18n.t("itrex.leaveCourse")}
-                        onPress={() => leaveCourse()}
-                    />
-                </View>
-            );
+        const courseRole: CourseRoles = user.courses[course.id];
+        return checkForUserRole(courseRole);
+    }
+
+    function checkForUserRole(courseRole: CourseRoles) {
+        if (courseRole === CourseRoles.OWNER || courseRole === undefined) {
+            // TODO: Undefined should never happen, buuuut currently does when creating a course.
+            // Apparently updating the token and then navigating isn't waiting long enough.
+            return <></>;
         }
 
-        return <></>;
+        return (
+            <View style={[{ width: "20%", marginTop: 15 }]}>
+                <TextButton color="pink" title={i18n.t("itrex.leaveCourse")} onPress={() => leaveCourse()} />
+            </View>
+        );
     }
 
     function uploadViedeoAsOwner() {
@@ -212,9 +214,13 @@ export const ScreenCourseOverview: React.FC = () => {
     function leaveCourse() {
         if (course.id !== undefined) {
             const request: RequestInit = RequestFactory.createPostRequestWithoutBody();
-            endpointsCourse.leaveCourse(request, course.id);
-
-            navigation.navigate("ROUTE_HOME");
+            endpointsCourse.leaveCourse(request, course.id).then(() => {
+                AuthenticationService.getInstance()
+                    .refreshToken()
+                    .then(() => {
+                        navigation.navigate("ROUTE_HOME");
+                    });
+            });
         }
     }
 };

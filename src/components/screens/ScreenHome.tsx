@@ -16,6 +16,7 @@ import { dark } from "../../constants/themes/dark";
 import { NavigationRoutes } from "../../constants/navigators/NavigationRoutes";
 import { ITREXRoles } from "../../constants/ITREXRoles";
 import { createAlert } from "../../helperScripts/createAlert";
+import { ScrollView } from "react-native-gesture-handler";
 
 interface ScreenHomeProps {
     userRole: ITREXRoles;
@@ -103,9 +104,7 @@ export const ScreenHome: React.FC<ScreenHomeProps> = (props) => {
                             <Select
                                 options={publishStateFilterOptions}
                                 defaultValue={defaultPublishStateValue}
-                                onChange={(option) => {
-                                    setPublishStateFilter(option?.value);
-                                }}
+                                onChange={(option) => setPublishStateFilter(option?.value)}
                                 theme={(theme) => ({
                                     ...theme,
                                     borderRadius: 5,
@@ -124,9 +123,7 @@ export const ScreenHome: React.FC<ScreenHomeProps> = (props) => {
                         <Select
                             options={activeStateFilterOptions}
                             defaultValue={defaultActiveStateValue}
-                            onChange={(option) => {
-                                setSelectedActiveState(option?.value);
-                            }}
+                            onChange={(option) => setSelectedActiveState(option?.value)}
                             theme={(theme) => ({
                                 ...theme,
                                 borderRadius: 5,
@@ -147,9 +144,14 @@ export const ScreenHome: React.FC<ScreenHomeProps> = (props) => {
     function courseList() {
         if (allCourses.length < 1) {
             noCoursesAvailable();
-        } else {
-            return <CourseList courses={filteredCourses} />;
+            return;
         }
+
+        return (
+            <ScrollView>
+                <CourseList courses={filteredCourses} />
+            </ScrollView>
+        );
     }
 
     function noCoursesAvailable() {
@@ -184,7 +186,6 @@ export const ScreenHome: React.FC<ScreenHomeProps> = (props) => {
             <Header title={i18n.t("itrex.home")} />
             <ImageBackground source={require("../../constants/images/Background2.png")} style={styles.image}>
                 {renderFilters()}
-
                 {courseList()}
             </ImageBackground>
         </View>
@@ -217,11 +218,9 @@ const styles = StyleSheet.create({
     card: {
         maxWidth: "50%",
         flexDirection: "row",
-        backgroundColor: dark.Opacity.grey,
         alignItems: "center",
         justifyContent: "flex-start",
-        flexShrink: 1,
-        zIndex: 1,
+        backgroundColor: dark.Opacity.grey,
     },
     cardHeader: {
         padding: 16,

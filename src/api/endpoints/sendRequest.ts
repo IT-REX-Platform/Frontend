@@ -1,4 +1,5 @@
 import { createAlert } from "../../helperScripts/createAlert";
+import i18n from "../../locales";
 
 /**
  * Function for sending requests to backend and receiving responses from backend.
@@ -15,8 +16,8 @@ export function sendRequest(url: string, request: RequestInit): Promise<Response
             })
             // This does not catch HTTP error responses, e.g. 404, 500, etc.
             .catch((error) => {
+                createAlert(i18n.t("itrex.serviceError"));
                 reject(error);
-                createAlert("An error has occured while accessing IT-REX service.");
             });
     });
 }
