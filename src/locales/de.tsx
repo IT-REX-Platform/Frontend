@@ -100,9 +100,14 @@ export const de = {
         chapterMaterial: "Kapitel Materialien",
         myNewChapter: "Mein neues Kapitel",
         save: "Speichern",
-        chapterCreatedUpdated: "Das Kapitel wurde erfolgreich angelegt/aktualisiert.",
+
+        chapterCreatedSuccess: "Das Kapitel wurde erfolgreich angelegt.",
+        chapterUpdateSuccess: "Das Kapitel wurde erfolgreich aktualisiert.",
         publishedSuccessfully: "Der Kurs wurde erfolgreich veröffentlicht.",
         courseDeletedSuccessfully: "Der Kurs wurde erfolgreich gelöscht.",
+        confirmPublishCourse:
+            "Durch das Veröffentlichen des Kurses wird es möglich, dass Teilnehmer dem Kurs beitreten können. Start- und Enddatum werden beim Veröffentlichen des Kurses ebenfalls festgelegt.",
+        confirmDeleteCourse: "Wollen Sie diesen Kurs wirklich löschen?",
 
         getCourseError: "Ein Fehler ist beim Zugriff auf einen Kurs aufgetreten.",
         createCourseError: "Ein Fehler ist beim Erstellen eines Kurses aufgetreten.",
@@ -110,13 +115,16 @@ export const de = {
         joinCourseError: "Ein Fehler ist beim Beitrete zum Kurs aufgetreten.",
         leaveCourseError: "Ein Fehler ist beim Verlassen des Kurses aufgetreten.",
         deleteCourseError: "Ein Fehler ist beim Löschen des Kurses aufgetreten.",
+
         getVideosError: "Ein Fehler ist beim Zugriff auf Videos aufgetreten.",
         updateVideoError: "Ein Fehler ist beim Aktualisieren des Videos aufgetreten.",
         deleteVideoError: "Ein Fehler ist beim Löschen des Videos aufgetreten.",
+
         getChapterError: "Ein Fehler ist beim Zugriff auf den Kapitel aufgetreten.",
-        createUpdateChapterError: "Ein Fehler ist beim Erstellen/Aktualisieren des Kapitels aufgetreten.",
-        patchChapterError: "Ein Fehler ist beim Aktualisieren des Kapitels aufgetreten.",
+        createChapterError: "Ein Fehler ist beim Erstellen des Kapitels aufgetreten.",
+        updateChapterError: "Ein Fehler ist beim Aktualisieren des Kapitels aufgetreten.",
         deleteChapterError: "Ein Fehler ist beim Löschen des Kapitels aufgetreten.",
+
         getUserInfoError: "Ein Fehler ist beim Zugriff auf Benutzerinformationen aufgetreten.",
     },
 };

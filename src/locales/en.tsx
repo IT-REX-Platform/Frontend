@@ -100,9 +100,14 @@ export const en = {
         chapterMaterial: "Chapter Material",
         myNewChapter: "My new chapter",
         save: "Save",
-        chapterCreatedUpdated: "The chapter was created/updated successfully.",
+
+        chapterCreatedSuccess: "The chapter was created successfully.",
+        chapterUpdateSuccess: "The chapter was updated successfully.",
         publishedSuccessfully: "The course was published successfully.",
         courseDeletedSuccessfully: "The course was deleted successfully.",
+        confirmPublishCourse:
+            "Publishing the course will make it possible for students to join the course. Start- and end-date will also be fixed when publishing the course.",
+        confirmDeleteCourse: "Do you really want to delete this course?",
 
         getCourseError: "An error occurred while getting the course.",
         createCourseError: "An error occurred while creating the course.",
@@ -110,13 +115,16 @@ export const en = {
         joinCourseError: "An error occurred while joining the course.",
         leaveCourseError: "An error occurred while leaving the course.",
         deleteCourseError: "An error occurred while deleting the course.",
+
         getVideosError: "An error occurred while getting videos.",
         updateVideoError: "An error occurred while updating the video.",
         deleteVideoError: "An error occurred while deleting the video.",
+
         getChapterError: "An error occurred while getting the chapter.",
-        createUpdateChapterError: "An error occurred while creating/updating the chapter.",
-        patchChapterError: "An error occurred while updating the chapter.",
+        createChapterError: "An error occured while creating the chapter.",
+        updateChapterError: "An error occured while updating the chapter.",
         deleteChapterError: "An error occurred while deleting the chapter.",
+
         getUserInfoError: "An error occurred while getting user info.",
     },
 };
