@@ -12,11 +12,13 @@ import i18n from "../../../locales";
 import { RequestFactory } from "../../../api/requests/RequestFactory";
 import { EndpointsChapter } from "../../../api/endpoints/EndpointsChapter";
 import { ScreenCourseTabsRouteProp } from "./ScreenCourseTabs";
-import { IQuestion } from "../../../types/IQuestion";
+import { IQuiz } from "../../../types/IQuiz";
 import { toast } from "react-toastify";
 import { ScreenCourseOverviewNavigationProp } from "./ScreenCourseOverview";
 import { QuestionCard } from "../../QuestionCard";
 import { ScrollView } from "react-native-gesture-handler";
+import { IQuestionMultipleChoice, IQuestionNumeric, IQuestionSingleChoice } from "../../../types/IQuestion";
+import { IUser } from "../../../types/IUser";
 
 interface ChapterComponentProps {
     chapter?: IChapter;
@@ -34,9 +36,12 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
         chapterId = undefined;
     }
     const chapterEndpoint = new EndpointsChapter();
-
-    const [quizName, setQuizName] = useState<string>();
-    const [questions] = useState<IQuestion[] | undefined>(quizList[0].questionObjects);
+    const [chapter, setChapter] = useState<IChapter>({} as IChapter);
+    const [user, setUserInfo] = useState<IUser>({});
+    const [quizName, setQuizName] = useState<string>("");
+    const [questions, setQuestions] = useState<
+        Array<IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric>
+    >(quizList[0].questionObjects);
 
     useFocusEffect(
         React.useCallback(() => {
@@ -90,9 +95,11 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
             return (
                 <View style={styles.containerTop}>
                     <ScrollView>
-                        {questions?.map((question: IQuestion) => {
-                            return <QuestionCard question={question} />;
-                        })}
+                        {questions.map(
+                            (question: IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric) => {
+                                return <QuestionCard question={question} />;
+                            }
+                        )}
                     </ScrollView>
                 </View>
             );

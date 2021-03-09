@@ -1,11 +1,12 @@
 /* eslint-disable complexity */
 import React from "react";
 import { View, StyleSheet, Text } from "react-native";
+import { QuestionTypes } from "../constants/QuestionTypes";
 import { dark } from "../constants/themes/dark";
-import { IQuestion } from "../types/IQuestion";
+import { IQuestionMultipleChoice, IQuestionNumeric, IQuestionSingleChoice } from "../types/IQuestion";
 
 interface QuestionCardProps {
-    question: IQuestion;
+    question: IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric;
 }
 
 export const QuestionCard: React.FC<QuestionCardProps> = (props) => {
@@ -20,49 +21,61 @@ export const QuestionCard: React.FC<QuestionCardProps> = (props) => {
     );
 
     function renderAnswers() {
-        return (
-            <>
-                {question.solution === "0" ? (
-                    <View style={styles.cardChoicesRight}>
-                        <Text style={styles.textChoice}>{question.choices[0]}</Text>
-                    </View>
-                ) : (
-                    <View style={styles.cardChoicesWrong}>
-                        <Text style={styles.textChoice}>{question.choices[0]}</Text>
-                    </View>
-                )}
+        switch (question.type) {
+            case QuestionTypes.SINGLE_CHOICE:
+            case QuestionTypes.MULTIPLE_CHOICE:
+                return (
+                    <>
+                        {question.solution === "0" ? (
+                            <View style={styles.cardChoicesRight}>
+                                <Text style={styles.textChoice}>{question.choices[0]}</Text>
+                            </View>
+                        ) : (
+                            <View style={styles.cardChoicesWrong}>
+                                <Text style={styles.textChoice}>{question.choices[0]}</Text>
+                            </View>
+                        )}
 
-                {question.solution === "1" ? (
-                    <View style={styles.cardChoicesRight}>
-                        <Text style={styles.textChoice}>{question.choices[1]}</Text>
-                    </View>
-                ) : (
-                    <View style={styles.cardChoicesWrong}>
-                        <Text style={styles.textChoice}>{question.choices[1]}</Text>
-                    </View>
-                )}
+                        {question.solution === "1" ? (
+                            <View style={styles.cardChoicesRight}>
+                                <Text style={styles.textChoice}>{question.choices[1]}</Text>
+                            </View>
+                        ) : (
+                            <View style={styles.cardChoicesWrong}>
+                                <Text style={styles.textChoice}>{question.choices[1]}</Text>
+                            </View>
+                        )}
 
-                {question.solution === "2" ? (
-                    <View style={styles.cardChoicesRight}>
-                        <Text style={styles.textChoice}>{question.choices[2]}</Text>
-                    </View>
-                ) : (
-                    <View style={styles.cardChoicesWrong}>
-                        <Text style={styles.textChoice}>{question.choices[2]}</Text>
-                    </View>
-                )}
+                        {question.solution === "2" ? (
+                            <View style={styles.cardChoicesRight}>
+                                <Text style={styles.textChoice}>{question.choices[2]}</Text>
+                            </View>
+                        ) : (
+                            <View style={styles.cardChoicesWrong}>
+                                <Text style={styles.textChoice}>{question.choices[2]}</Text>
+                            </View>
+                        )}
 
-                {question.solution === "3" ? (
-                    <View style={styles.cardChoicesRight}>
-                        <Text style={styles.textChoice}>{question.choices[3]}</Text>
+                        {question.solution === "3" ? (
+                            <View style={styles.cardChoicesRight}>
+                                <Text style={styles.textChoice}>{question.choices[3]}</Text>
+                            </View>
+                        ) : (
+                            <View style={styles.cardChoicesWrong}>
+                                <Text style={styles.textChoice}>{question.choices[3]}</Text>
+                            </View>
+                        )}
+                    </>
+                );
+            case QuestionTypes.NUMERIC:
+                return (
+                    <View style={{ borderColor: "white" }}>
+                        <Text>TextInput here</Text>
                     </View>
-                ) : (
-                    <View style={styles.cardChoicesWrong}>
-                        <Text style={styles.textChoice}>{question.choices[3]}</Text>
-                    </View>
-                )}
-            </>
-        );
+                );
+            default:
+                return <></>;
+        }
 
         // Object.entries(question.choices).forEach(([key, value]) => {
         //     return renderAnswers2(key, value);

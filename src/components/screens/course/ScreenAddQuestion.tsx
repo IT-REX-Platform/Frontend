@@ -8,6 +8,8 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { TextButton } from "../../uiElements/TextButton";
 import { createAlert } from "../../../helperScripts/createAlert";
 import i18n from "../../../locales";
+import { IQuestionMultipleChoice, IQuestionNumeric, IQuestionSingleChoice } from "../../../types/IQuestion";
+import { IUser } from "../../../types/IUser";
 
 interface ChapterComponentProps {
     chapter?: IChapter;
@@ -17,7 +19,10 @@ interface ChapterComponentProps {
 
 export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
     React.useContext(LocalizationContext);
-    //  const [question, setQuestion] = useState<IQuestion>();
+    const [user, setUserInfo] = useState<IUser>({});
+    const [question, setQuestion] = useState<
+        Array<IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric>
+    >();
     const [questionText, setQuestionText] = useState<string | undefined>("Please add your question here.");
 
     useFocusEffect(

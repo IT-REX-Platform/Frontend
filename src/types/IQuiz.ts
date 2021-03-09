@@ -1,7 +1,7 @@
-import { IQuestion } from "./IQuestion";
+import { IQuestionMultipleChoice, IQuestionNumeric, IQuestionSingleChoice } from "./IQuestion";
 
 export type IQuiz = {
     id?: string;
     name: string;
-    questionObjects: IQuestion[];
+    questionObjects: Array<IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric>;
 };
