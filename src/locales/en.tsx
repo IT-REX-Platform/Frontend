@@ -4,6 +4,8 @@ export const en = {
         starter: "Start learning right away!",
         itrex: "IT-REX",
         home: "Home",
+        timeline: "Timeline",
+        overview: "Overview",
         login: "Login",
         logout: "Logout",
 

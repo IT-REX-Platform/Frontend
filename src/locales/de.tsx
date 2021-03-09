@@ -4,6 +4,8 @@ export const de = {
         starter: "Starte direkt durch mit dem Lernen!",
         itrex: "IT-REX",
         home: "Startseite",
+        timeline: "Zeitplan",
+        overview: "Übersicht",
         login: "Einloggen",
         logout: "Ausloggen",
 
