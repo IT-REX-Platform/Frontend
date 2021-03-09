@@ -8,6 +8,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import AuthenticationService from "../services/AuthenticationService";
 import { useNavigation } from "@react-navigation/native";
 import { InfoPublished } from "./uiElements/InfoPublished";
+import { InfoUnpublished } from "./uiElements/InfoUnpublished";
 
 interface ChapterComponentProps {
     chapter?: IChapter;
@@ -64,10 +65,7 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
         if (isPublished === "UNPUBLISHED") {
             return (
                 <>
-                    <View style={styles.unpublishedCard}>
-                        <View style={styles.circleUnpublished} />
-                        <Text style={styles.textUnpublished}>{i18n.t("itrex.unpublished")}</Text>
-                    </View>
+                    <InfoUnpublished />
                 </>
             );
         } else if (isPublished === "PUBLISHED") {
@@ -145,32 +143,5 @@ const styles = StyleSheet.create({
     icon: {
         paddingLeft: 10,
         paddingRight: 10,
-    },
-    textUnpublished: {
-        color: dark.theme.pink,
-        fontSize: 10,
-    },
-    circleUnpublished: {
-        shadowRadius: 10,
-        shadowColor: dark.theme.pink,
-        shadowOffset: { width: -1, height: 1 },
-        width: 8,
-        height: 8,
-        borderRadius: 8 / 2,
-        backgroundColor: dark.theme.pink,
-        marginRight: 3,
-    },
-    unpublishedCard: {
-        flexDirection: "row",
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "black",
-        borderColor: dark.theme.pink,
-        borderWidth: 2,
-        textShadowColor: dark.theme.pink,
-        textShadowOffset: { width: 1, height: 1 },
-        textShadowRadius: 3,
-        width: 100,
-        height: 15,
     },
 });
