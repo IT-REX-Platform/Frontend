@@ -36,7 +36,7 @@ export default class AuthenticationService {
     // Default token lifetime, 5 minutes -> refresh after
     private accessTokenLifeTime = 1000 * 60 * 5;
 
-    private tokenResponse!: AuthSession.TokenResponseConfig;
+    public tokenResponse!: AuthSession.TokenResponseConfig;
     private roles: string[] = [];
     private refreshTimeout: NodeJS.Timeout | undefined;
 
@@ -75,9 +75,9 @@ export default class AuthenticationService {
                         );
                         resolve(tResponse);
                     })
-                    .catch((reason) => {
+                    .catch((error) => {
                         // Refresh does not work
-                        this.loggerApi.info("Could not refresh oauth2 token");
+                        this.loggerApi.error("Could not refresh oauth2 token.", error);
                         new AsyncStorageService().deleteItem(StorageConstants.OAUTH_REFRESH_TOKEN);
                         reject(false);
                     });

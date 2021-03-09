@@ -1,7 +1,6 @@
 import * as Linking from "expo-linking";
 import { LinkingOptions, NavigatorScreenParams } from "@react-navigation/native";
 import { IVideo } from "../../types/IVideo";
-import { IChapter } from "../../types/IChapter";
 
 const prefix = Linking.makeUrl("it-rex://");
 
@@ -11,7 +10,6 @@ export const config = {
         ROUTE_LOGIN: "login",
         ROUTE_CREATE_COURSE: "createCourse",
         ROUTE_JOIN_COURSE: "joinCourse",
-        ROUTE_UPLOAD_VIDEO: "uploadVideo",
         ROUTE_COURSE_DETAILS: {
             path: "course/:courseId",
             screens: {
@@ -24,7 +22,6 @@ export const config = {
                 },
                 VIDEO_POOL: "VIDEO_POOL",
                 VIDEO: "VIDEO",
-                VIDEO_UPLOAD: "VIDEO_UPLOAD",
                 CHAPTER_CREATE: "CHAPTER_CREATE",
                 CHAPTER: {
                     path: "chapter/:chapterId",
@@ -48,7 +45,6 @@ export type CourseStackParamList = {
     VIDEO: {
         video: IVideo;
     };
-    VIDEO_UPLOAD: undefined;
     CHAPTER_CREATE: undefined;
     CHAPTER: { chapterId: string | undefined };
 };
@@ -63,7 +59,6 @@ export class NavigationRoutes {
     static ROUTE_LOGIN = "ROUTE_LOGIN";
     static ROUTE_CREATE_COURSE = "ROUTE_CREATE_COURSE";
     static ROUTE_JOIN_COURSE = "ROUTE_JOIN_COURSE";
-    static ROUTE_VIDEO_UPLOAD = "VIDEO_UPLOAD";
     static ROUTE_COURSE_DETAILS = "ROUTE_COURSE_DETAILS";
     static ROUTE_COURSE_DETAILS_TABS = "ROUTE_COURSE_DETAILS_TABS";
     static ROUTE_COURSE_DETAILS_OVERVIEW = "ROUTE_COURSE_DETAILS_OVERVIEW";

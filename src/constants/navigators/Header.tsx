@@ -15,6 +15,7 @@ export const Header: React.FC<Title> = (props) => {
     console.log(props.title);
     React.useContext(LocalizationContext);
     const navigation = useNavigation();
+
     return (
         <View style={styles.container}>
             <MaterialCommunityIcons

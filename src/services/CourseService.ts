@@ -1,10 +1,14 @@
 import { EndpointsChapter } from "../api/endpoints/EndpointsChapter";
 import { EndpointsCourse } from "../api/endpoints/EndpointsCourse";
 import { RequestFactory } from "../api/requests/RequestFactory";
+import i18n from "../locales";
 import { IChapter } from "../types/IChapter";
 import { ICourse } from "../types/ICourse";
+import { ToastService } from "./toasts/ToastService";
 
 export default class CourseService {
+    toast: ToastService = new ToastService();
+
     /**
      * This Method returns an course with all its Chapters and Contents
      * @param id of the course to be fetched
@@ -57,7 +61,7 @@ export default class CourseService {
      * @param course the course which the chapter should by linked
      */
     public createNewChapter(chapter: IChapter, course: ICourse): Promise<IChapter> {
-        const postRequest: RequestInit = RequestFactory.createPostRequest(chapter);
+        const postRequest: RequestInit = RequestFactory.createPostRequestWithBody(chapter);
         const chapterEndpoint = new EndpointsChapter();
         const courseEndpoint = new EndpointsCourse();
         return new Promise((resolve, reject) => {
@@ -80,9 +84,15 @@ export default class CourseService {
                     };
 
                     const patchRequest: RequestInit = RequestFactory.createPatchRequest(partialCourse);
-                    courseEndpoint.patchCourse(patchRequest).then(() => {
-                        resolve(chapter);
-                    });
+                    courseEndpoint
+                        .patchCourse(patchRequest)
+                        .then(() => {
+                            this.toast.success(i18n.t("itrex.chapterCreatedUpdated"));
+                            resolve(chapter);
+                        })
+                        .catch(() => {
+                            this.toast.error(i18n.t("itrex.chapterCreatedUpdatedError"));
+                        });
                 })
                 .catch(reject);
         });

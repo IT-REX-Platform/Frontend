@@ -1,6 +1,6 @@
 import { CompositeNavigationProp, useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import { Text, ImageBackground, StyleSheet, Button, View, Pressable } from "react-native";
+import { Text, ImageBackground, StyleSheet, View } from "react-native";
 import { dark } from "../../../constants/themes/dark";
 import { ICourse } from "../../../types/ICourse";
 import {
@@ -23,6 +23,7 @@ import { ITREXRoles } from "../../../constants/ITREXRoles";
 import { TextButton } from "../../uiElements/TextButton";
 import { CourseRoles } from "../../../constants/CourseRoles";
 import { IUser } from "../../../types/IUser";
+import { toast } from "react-toastify";
 
 export type ScreenCourseOverviewNavigationProp = CompositeNavigationProp<
     MaterialTopTabNavigationProp<CourseTabParamList, "OVERVIEW">,
@@ -65,8 +66,8 @@ export const ScreenCourseOverview: React.FC = () => {
     function getDate(showDate: Date | undefined, title: string) {
         return (
             <Text style={{ color: "white" }}>
-                <Text style={{ fontWeight: "bold" }}>{title}</Text>
-                <Text>{dateConverter(showDate)}</Text>
+                <Text style={{ fontWeight: "bold", marginEnd: 10 }}>{title}</Text>
+                {dateConverter(showDate)}
             </Text>
         );
     }
@@ -76,20 +77,22 @@ export const ScreenCourseOverview: React.FC = () => {
             return <></>;
         }
 
-        const courseRole = user.courses[course.id];
-        if (courseRole !== CourseRoles.OWNER) {
-            return (
-                <View style={[{ width: "20%", marginTop: 15 }]}>
-                    <Button
-                        color={dark.Opacity.pink}
-                        title={i18n.t("itrex.leaveCourse")}
-                        onPress={() => leaveCourse()}
-                    />
-                </View>
-            );
+        const courseRole: CourseRoles = user.courses[course.id];
+        return checkForUserRole(courseRole);
+    }
+
+    function checkForUserRole(courseRole: CourseRoles) {
+        if (courseRole === CourseRoles.OWNER || courseRole === undefined) {
+            // TODO: Undefined should never happen, buuuut currently does when creating a course.
+            // Apparently updating the token and then navigating isn't waiting long enough.
+            return <></>;
         }
 
-        return <></>;
+        return (
+            <View style={[{ width: "20%", marginTop: 15 }]}>
+                <TextButton color="pink" title={i18n.t("itrex.leaveCourse")} onPress={() => leaveCourse()} />
+            </View>
+        );
     }
 
     function uploadViedeoAsOwner() {
@@ -161,7 +164,13 @@ export const ScreenCourseOverview: React.FC = () => {
 
         loggerService.trace(`Updating course: name=${courses.name}, publishedState=${CoursePublishState.PUBLISHED}.`);
         const putRequest: RequestInit = RequestFactory.createPatchRequest(course);
-        endpointsCourse.patchCourse(putRequest).then((data) => console.log(data));
+        endpointsCourse
+            .patchCourse(putRequest)
+            .then((data) => {
+                console.log(data);
+                toast.success(i18n.t("itrex.publishedSuccessfully"));
+            })
+            .catch(() => toast.error(i18n.t("itrex.publishedError")));
     }
 
     function deleteCourse(courses: ICourse): void {
@@ -170,7 +179,14 @@ export const ScreenCourseOverview: React.FC = () => {
         }
 
         const request: RequestInit = RequestFactory.createDeleteRequest();
-        endpointsCourse.deleteCourse(request, courses.id);
+        endpointsCourse
+            .deleteCourse(request, courses.id)
+            .then(() => {
+                toast.success(i18n.t("itrex.courseDeletedSuccessfully"));
+            })
+            .catch(() => {
+                toast.error(i18n.t("itrex.courseDeletedError"));
+            });
     }
 
     function goToVideoPool() {
@@ -182,9 +198,13 @@ export const ScreenCourseOverview: React.FC = () => {
     function leaveCourse() {
         if (course.id !== undefined) {
             const request: RequestInit = RequestFactory.createPostRequestWithoutBody();
-            endpointsCourse.leaveCourse(request, course.id);
-
-            navigation.navigate("ROUTE_HOME");
+            endpointsCourse.leaveCourse(request, course.id).then(() => {
+                AuthenticationService.getInstance()
+                    .refreshToken()
+                    .then(() => {
+                        navigation.navigate("ROUTE_HOME");
+                    });
+            });
         }
     }
 };
@@ -204,18 +224,9 @@ const styles = StyleSheet.create({
         flexDirection: "column",
         backgroundColor: dark.theme.darkBlue1,
     },
-    editMode: {
-        paddingTop: "20px",
-    },
     image: {
         flex: 1,
         resizeMode: "stretch",
-    },
-    icon: {
-        alignItems: "center",
-        paddingLeft: 10,
-        paddingRight: 10,
-        marginTop: 20,
     },
     content: {
         flex: 1,
@@ -225,9 +236,6 @@ const styles = StyleSheet.create({
     },
     textWhite: {
         color: "white",
-    },
-    styledButton: {
-        margin: 5,
     },
     unpublishedCard: {
         flexDirection: "row",
@@ -282,13 +290,5 @@ const styles = StyleSheet.create({
         borderRadius: 8 / 2,
         backgroundColor: dark.theme.lightGreen,
         marginRight: 5,
-    },
-    input: {
-        borderRadius: 20,
-        minHeight: 40,
-        maxHeight: 200,
-        margin: 20,
-        padding: 20,
-        borderWidth: 1,
     },
 });
