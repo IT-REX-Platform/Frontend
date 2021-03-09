@@ -25,4 +25,4 @@ const testQuiz: IQuiz = {
     questionObjects: question,
 };
 
-export const quizList: IQuiz[] = [testQuiz];
+export const quizList: IQuiz[] = [];

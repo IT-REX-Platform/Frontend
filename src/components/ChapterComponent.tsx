@@ -41,8 +41,9 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                         );
                     })}
                 </View>
+                <View style={styles.break} />
                 <Text style={styles.chapterMaterialHeader}>Chapter Quiz</Text>
-                {chapterQuiz()}
+                {props.editMode && chapterQuiz()}
             </View>
             {props.editMode && AuthenticationService.getInstance().isLecturer() && (
                 <View style={styles.chapterEditRow}>
@@ -68,7 +69,12 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
         if (quizList === undefined || quizList.length === 0) {
             return (
                 <View style={styles.chapterMaterialElements}>
-                    <TextButton title="Create a Quiz" onPress={() => createAlert("Open Create Quiz Page")} />
+                    <TextButton
+                        title="Create a Quiz"
+                        onPress={() => {
+                            navigation.navigate("CREATE_QUIZ", { chapterId: chapter?.id });
+                        }}
+                    />
                 </View>
             );
         } else {
@@ -81,7 +87,10 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                             color="white"
                             style={styles.icon}
                         />
-                        <TouchableOpacity onPress={() => navigation.navigate("CREATE_QUIZ")}>
+                        <TouchableOpacity
+                            onPress={() => {
+                                createAlert("Go to existing Quiz Page");
+                            }}>
                             <Text style={styles.chapterMaterialElementText}>{quizList[0].name}</Text>
                         </TouchableOpacity>
                     </View>
@@ -161,10 +170,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
     },
     chapterMaterialElements: {
-        borderBottomWidth: 2,
-        borderStyle: "dotted",
         marginBottom: 5,
-        borderColor: dark.Opacity.lightGreen,
         paddingTop: "20px",
         flex: 1,
         flexDirection: "row",
@@ -238,5 +244,13 @@ const styles = StyleSheet.create({
         textShadowRadius: 3,
         width: 100,
         height: 15,
+    },
+    break: {
+        borderBottomColor: dark.theme.lightGreen,
+        borderBottomWidth: 2,
+        width: "100%",
+        borderStyle: "dotted",
+        borderWidth: 2,
+        marginTop: 1,
     },
 });
