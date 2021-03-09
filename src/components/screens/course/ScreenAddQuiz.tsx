@@ -1,11 +1,9 @@
 import { useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
 import React, { useState } from "react";
-import { Text, ImageBackground, StyleSheet, View, TextInput, TouchableOpacity, FlatList } from "react-native";
+import { Text, ImageBackground, StyleSheet, View, TextInput, TouchableOpacity } from "react-native";
 import { dark } from "../../../constants/themes/dark";
 import { quizList } from "../../../constants/fixtures/quizzes.fixture";
 import { LocalizationContext } from "../../Context";
-import AuthenticationService from "../../../services/AuthenticationService";
-import { IUser } from "../../../types/IUser";
 import { IChapter } from "../../../types/IChapter";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { TextButton } from "../../uiElements/TextButton";
@@ -14,14 +12,11 @@ import i18n from "../../../locales";
 import { RequestFactory } from "../../../api/requests/RequestFactory";
 import { EndpointsChapter } from "../../../api/endpoints/EndpointsChapter";
 import { ScreenCourseTabsRouteProp } from "./ScreenCourseTabs";
-import { IQuiz } from "../../../types/IQuiz";
 import { IQuestion } from "../../../types/IQuestion";
 import { toast } from "react-toastify";
 import { ScreenCourseOverviewNavigationProp } from "./ScreenCourseOverview";
-import DraggableFlatList from "react-native-draggable-flatlist";
-import { ListItem } from "react-native-elements";
-import { CourseCard } from "../../CourseCard";
 import { QuestionCard } from "../../QuestionCard";
+import { ScrollView } from "react-native-gesture-handler";
 
 interface ChapterComponentProps {
     chapter?: IChapter;
@@ -39,18 +34,15 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
         chapterId = undefined;
     }
     const chapterEndpoint = new EndpointsChapter();
-    const [chapter, setChapter] = useState<IChapter>({} as IChapter);
-    const [user, setUserInfo] = useState<IUser>({});
-    const [quizName, setQuizName] = useState<string | undefined>();
-    const [questions, setQuestions] = useState<IQuestion[] | undefined>(quizList[0].questionObjects);
+
+    const [quizName, setQuizName] = useState<string>();
+    const [questions] = useState<IQuestion[] | undefined>(quizList[0].questionObjects);
 
     useFocusEffect(
         React.useCallback(() => {
-            AuthenticationService.getInstance().getUserInfo(setUserInfo);
             if (chapterId != undefined) {
                 const request: RequestInit = RequestFactory.createGetRequest();
                 chapterEndpoint.getChapter(request, chapterId).then((chapter) => {
-                    setChapter(chapter);
                     setQuizName(chapter.title + " - Quiz ");
                     console.log(quizList);
                 });
@@ -58,26 +50,6 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
                 setQuizName("My new Quiz");
             }
         }, [])
-    );
-
-    // Creates a list for the right side, so that videos can be added to a chapter
-    const questionItem = ({ item }: { item: IQuestion | undefined }) => (
-        <ListItem
-            containerStyle={{
-                marginBottom: 5,
-                borderRadius: 2,
-                backgroundColor: dark.theme.darkBlue2,
-                borderColor: dark.theme.darkBlue4,
-                borderWidth: 2,
-            }}>
-            <MaterialCommunityIcons name="video-vintage" size={28} color="white" />
-
-            <ListItem.Content>
-                <ListItem.Title numberOfLines={1} lineBreakMode="tail">
-                    {item}
-                </ListItem.Title>
-            </ListItem.Content>
-        </ListItem>
     );
 
     return (
@@ -98,8 +70,8 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
                 </View>
 
                 <View style={styles.contentContainer}>
+                    {displayQuestions()}
                     <View style={[styles.addQuizContainer]}>
-                        {displayQuestions()}
                         <TouchableOpacity
                             style={styles.btnAdd}
                             onPress={() => (console.log(questions), navigation.navigate("CREATE_QUESTION"))}>
@@ -117,16 +89,14 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
         } else {
             return (
                 <View style={styles.containerTop}>
-                    {questions?.map((question: IQuestion) => {
-                        return <QuestionCard question={question} />;
-                    })}
+                    <ScrollView>
+                        {questions?.map((question: IQuestion) => {
+                            return <QuestionCard question={question} />;
+                        })}
+                    </ScrollView>
                 </View>
             );
         }
-    }
-
-    function reorderContent(to: number, from: number) {
-        return;
     }
 
     function saveQuiz() {
@@ -136,13 +106,7 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
             toast.error("Add at least 1 question!");
             return;
         }
-
-        const myNewQuiz: IQuiz = {
-            name: quizName,
-            questionObjects: questions,
-
-            // TODO: create request to save the quiz
-        };
+        // TODO: Create new IQuiz Element with the user infromation & send Request to save
     }
 };
 
@@ -191,8 +155,9 @@ const styles = StyleSheet.create({
         flexDirection: "column",
         backgroundColor: "rgba(0,0,0,0.3)",
         height: "100px",
-        width: "80%",
+        width: "90%",
         padding: "0.5%",
+        margin: 20,
         borderWidth: 3,
         borderColor: dark.theme.lightBlue,
     },
@@ -210,12 +175,11 @@ const styles = StyleSheet.create({
         flex: 2,
         paddingLeft: "3%",
     },
-    list: {
-        height: 1, // Actual value is unimportant, this just makes the video list permanently scrollable, disregarding the current view height.
-        width: "100%",
-    },
     containerTop: {
+        width: "90%",
         flex: 1,
         alignItems: "center",
+        flexDirection: "column",
+        flexWrap: "wrap",
     },
 });
