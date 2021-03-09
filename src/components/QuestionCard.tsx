@@ -76,7 +76,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = (props) => {
             default:
                 return <></>;
         }
-
+        // TODO:  View Elemente für jeden Durchlauf in eine Arraylist pushen
         // Object.entries(question.choices).forEach(([key, value]) => {
         //     return renderAnswers2(key, value);
         // });
