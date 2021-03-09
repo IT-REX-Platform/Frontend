@@ -5,6 +5,8 @@ import { IUser } from "../../types/IUser";
 import i18n from "../../locales";
 import { IChapter } from "../../types/IChapter";
 import { ToastService } from "../../services/toasts/ToastService";
+import { IContentProgressTracker } from "../../types/IContentProgressTracker";
+import { ICourseProgressTracker } from "../../types/ICourseProgressTracker";
 
 export class ResponseParser {
     private static loggerApi = loggerFactory.getLogger("API.ResponseParser");
@@ -95,6 +97,60 @@ export class ResponseParser {
                 .catch((error) => {
                     ResponseParser.loggerApi.error("An error occurred while parsing courses data.", error);
                     resolve([]);
+                });
+        });
+    }
+
+    public static async parseContentProgressTracker(response: Promise<Response>): Promise<IContentProgressTracker> {
+        return new Promise((resolve) => {
+            response
+                .then((response) => {
+                    if (!response.ok) {
+                        ResponseParser._checkResponseCode(response);
+                    }
+                    return response.json();
+                })
+                .then((contentProgressTracker: IContentProgressTracker) => {
+                    if (contentProgressTracker.contentReference !== undefined) {
+                        const ref = contentProgressTracker.contentReference;
+                        ref.startDate = ref.startDate ? new Date(ref.startDate) : undefined;
+                        ref.endDate = ref.endDate ? new Date(ref.endDate) : undefined;
+                    }
+                    resolve(contentProgressTracker);
+                })
+                .catch((error) => {
+                    ResponseParser.loggerApi.error("An error occurred while parsing course data.", error);
+                    resolve({});
+                });
+        });
+    }
+
+    public static async parseCourseProgressTracker(response: Promise<Response>): Promise<ICourseProgressTracker> {
+        return new Promise((resolve) => {
+            response
+                .then((response) => {
+                    if (!response.ok) {
+                        ResponseParser._checkResponseCode(response);
+                    }
+                    return response.json();
+                })
+                // Still sorry, but..
+                // eslint-disable-next-line complexity
+                .then((courseProgressTracker: ICourseProgressTracker) => {
+                    if (courseProgressTracker.contentProgressTrackers !== undefined) {
+                        for (const curTracker of courseProgressTracker.contentProgressTrackers) {
+                            if (curTracker.contentReference !== undefined) {
+                                const ref = curTracker.contentReference;
+                                ref.startDate = ref.startDate ? new Date(ref.startDate) : undefined;
+                                ref.endDate = ref.endDate ? new Date(ref.endDate) : undefined;
+                            }
+                        }
+                    }
+                    resolve(courseProgressTracker);
+                })
+                .catch((error) => {
+                    ResponseParser.loggerApi.error("An error occurred while parsing course data.", error);
+                    resolve({});
                 });
         });
     }

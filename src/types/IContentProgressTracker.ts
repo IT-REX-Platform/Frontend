@@ -5,5 +5,5 @@ export type IContentProgressTracker = {
     id?: string;
     progress?: number;
     state?: ContentProgressTrackerState;
-    contentReference: IContentReference;
+    contentReference?: IContentReference;
 };
