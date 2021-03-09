@@ -348,7 +348,14 @@ export const ScreenAddChapter: React.FC = () => {
             chapter.contents = currContentList;
 
             const patchRequest: RequestInit = RequestFactory.createPatchRequest(chapter);
-            chapterEndpoint.patchChapter(patchRequest);
+            chapterEndpoint
+                .patchChapter(patchRequest)
+                .then(() => {
+                    toast.success(i18n.t("itrex.chapterUpdateSuccess"));
+                })
+                .catch(() => {
+                    toast.error(i18n.t("itrex.chapterUpdateError"));
+                });
         }
     }
 
