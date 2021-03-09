@@ -2,27 +2,37 @@ import { IChoice } from "../../types/IChoice";
 import { IQuestion } from "../../types/IQuestion";
 import { IQuiz } from "../../types/IQuiz";
 
-let choices: IChoice = {};
+const choice = {
+    1: "42",
+    2: "4",
+    3: "8",
+    4: "4",
+};
 
-choices["1"] = "42";
-choices["2"] = "4";
-choices["3"] = "22";
-choices["4"] = "33";
+const question: IQuestion = {
+    id: "uuid",
+    type: "SINGLE_CHOICE",
+    question: "Was ist 2+2?",
+    choices: choice,
+    solution: "3",
+};
+const question2: IQuestion = {
+    id: "uuid3",
+    type: "SINGLE_CHOICE",
+    question: "Was ist 4+4?",
+    choices: choice,
+    solution: "3",
+};
+const questions: IQuestion[] = [question, question2];
 
-const question: IQuestion = [
-    {
-        id: "uuid",
-        type: "SINGLE_CHOICE",
-        question: "Was ist 2+2?",
-        choices: choices,
-        solution: "3",
-    },
-];
+questions.push(question);
+
+questions.push(question2);
 
 const testQuiz: IQuiz = {
     id: "TEST01",
     name: "Chapter 01 - Quiz",
-    questionObjects: question,
+    questionObjects: questions,
 };
 
-export const quizList: IQuiz[] = [];
+export const quizList: IQuiz[] = [testQuiz];

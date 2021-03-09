@@ -20,6 +20,7 @@ import { ScreenAddChapter } from "./course/ScreenAddChapter";
 import { ScreenAddQuiz } from "./course/ScreenAddQuiz";
 import { CourseRoles } from "../../constants/CourseRoles";
 import { IUser } from "../../types/IUser";
+import { ScreenAddQuestion } from "./course/ScreenAddQuestion";
 
 export type ScreenCourseNavigationProp = DrawerNavigationProp<RootDrawerParamList, "ROUTE_COURSE_DETAILS">;
 export type ScreenCourseRouteProp = RouteProp<RootDrawerParamList, "ROUTE_COURSE_DETAILS">;
@@ -120,6 +121,7 @@ export const ScreenCourse: React.FC = () => {
             return (
                 <>
                     <CourseStack.Screen name="CREATE_QUIZ" component={ScreenAddQuiz}></CourseStack.Screen>
+                    <CourseStack.Screen name="CREATE_QUESTION" component={ScreenAddQuestion}></CourseStack.Screen>
                 </>
             );
         }

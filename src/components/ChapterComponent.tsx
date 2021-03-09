@@ -65,8 +65,17 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
     );
 
     function chapterQuiz() {
-        console.log(quizList);
-        if (quizList === undefined || quizList.length === 0) {
+        return (
+            <View style={styles.chapterMaterialElements}>
+                <TextButton
+                    title="Create a Quiz"
+                    onPress={() => {
+                        navigation.navigate("CREATE_QUIZ", { chapterId: chapter?.id });
+                    }}
+                />
+            </View>
+        );
+        /**if (quizList === undefined || quizList.length === 0) {
             return (
                 <View style={styles.chapterMaterialElements}>
                     <TextButton
@@ -96,7 +105,7 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                     </View>
                 </View>
             );
-        }
+        } */
     }
 
     function getPublishedSate(isPublished: string | undefined) {
