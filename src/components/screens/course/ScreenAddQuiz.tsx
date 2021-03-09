@@ -15,13 +15,13 @@ import { RequestFactory } from "../../../api/requests/RequestFactory";
 import { EndpointsChapter } from "../../../api/endpoints/EndpointsChapter";
 import { ScreenCourseTabsRouteProp } from "./ScreenCourseTabs";
 import { IQuiz } from "../../../types/IQuiz";
-import { IQuestion } from "../../../types/IQuestion";
 import { toast } from "react-toastify";
 import { ScreenCourseOverviewNavigationProp } from "./ScreenCourseOverview";
 import DraggableFlatList from "react-native-draggable-flatlist";
 import { ListItem } from "react-native-elements";
 import { CourseCard } from "../../CourseCard";
 import { QuestionCard } from "../../QuestionCard";
+import { IQuestionMultipleChoice, IQuestionNumeric, IQuestionSingleChoice } from "../../../types/IQuestion";
 
 interface ChapterComponentProps {
     chapter?: IChapter;
@@ -41,8 +41,10 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
     const chapterEndpoint = new EndpointsChapter();
     const [chapter, setChapter] = useState<IChapter>({} as IChapter);
     const [user, setUserInfo] = useState<IUser>({});
-    const [quizName, setQuizName] = useState<string | undefined>();
-    const [questions, setQuestions] = useState<IQuestion[] | undefined>(quizList[0].questionObjects);
+    const [quizName, setQuizName] = useState<string>("");
+    const [questions, setQuestions] = useState<
+        Array<IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric>
+    >(quizList[0].questionObjects);
 
     useFocusEffect(
         React.useCallback(() => {
@@ -61,7 +63,7 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
     );
 
     // Creates a list for the right side, so that videos can be added to a chapter
-    const questionItem = ({ item }: { item: IQuestion | undefined }) => (
+    const questionItem = ({ item }: { item: IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric }) => (
         <ListItem
             containerStyle={{
                 marginBottom: 5,
@@ -117,7 +119,7 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
         } else {
             return (
                 <View style={styles.containerTop}>
-                    {questions?.map((question: IQuestion) => {
+                    {questions.map((question: IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric) => {
                         return <QuestionCard question={question} />;
                     })}
                 </View>

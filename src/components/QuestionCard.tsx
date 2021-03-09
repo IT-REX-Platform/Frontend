@@ -7,12 +7,14 @@ import { NavigationRoutes } from "../constants/navigators/NavigationRoutes";
 import { useNavigation } from "@react-navigation/native";
 import i18n from "./../locales";
 import { CoursePublishState } from "../constants/CoursePublishState";
-import { IQuestion } from "../types/IQuestion";
-import { AnswerCard } from "./AnserComponent";
-import { IChoice } from "../types/IChoice";
+import { AnswerCard } from "./AnswerComponent";
+import { IChoices } from "../types/IChoices";
+import { IQuestionMultipleChoice, IQuestionNumeric, IQuestionSingleChoice } from "../types/IQuestion";
+import { QuestionTypes } from "../constants/QuestionTypes";
+import { TextInput } from "react-native-gesture-handler";
 
 interface QuestionCardProps {
-    question: IQuestion;
+    question: IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric;
 }
 
 export const QuestionCard: React.FC<QuestionCardProps> = (props) => {
@@ -28,25 +30,37 @@ export const QuestionCard: React.FC<QuestionCardProps> = (props) => {
     );
 
     function renderAnswers() {
-        return (
-            <>
-                <View style={{ borderColor: "white" }}>
-                    <Text>{question.choices[0]}</Text>
-                </View>
+        switch (question.type) {
+            case QuestionTypes.SINGLE_CHOICE:
+            case QuestionTypes.MULTIPLE_CHOICE:
+                return (
+                    <>
+                        <View style={{ borderColor: "white" }}>
+                            <Text>{question.choices[0]}</Text>
+                        </View>
 
-                <View style={{ borderColor: "white" }}>
-                    <Text>{question.choices[1]}</Text>
-                </View>
+                        <View style={{ borderColor: "white" }}>
+                            <Text>{question.choices[1]}</Text>
+                        </View>
 
-                <View style={{ borderColor: "white" }}>
-                    <Text>{question.choices[2]}</Text>
-                </View>
+                        <View style={{ borderColor: "white" }}>
+                            <Text>{question.choices[2]}</Text>
+                        </View>
 
-                <View style={{ borderColor: "white" }}>
-                    <Text>{question.choices[3]}</Text>
-                </View>
-            </>
-        );
+                        <View style={{ borderColor: "white" }}>
+                            <Text>{question.choices[3]}</Text>
+                        </View>
+                    </>
+                );
+            case QuestionTypes.NUMERIC:
+                return (
+                    <View style={{ borderColor: "white" }}>
+                        <Text>TextInput here</Text>
+                    </View>
+                );
+            default:
+                return <></>;
+        }
 
         // Object.entries(question.choices).forEach(([key, value]) => {
         //     return renderAnswers2(key, value);

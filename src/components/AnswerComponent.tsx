@@ -5,13 +5,12 @@ import { dark } from "../constants/themes/dark";
 import { dateConverter } from "../helperScripts/validateCourseDates";
 import { NavigationRoutes } from "../constants/navigators/NavigationRoutes";
 import { useNavigation } from "@react-navigation/native";
-import i18n from "./../locales";
+import i18n from "../locales";
 import { CoursePublishState } from "../constants/CoursePublishState";
-import { IQuestion } from "../types/IQuestion";
-import { IChoice } from "../types/IChoice";
+import { IChoices } from "../types/IChoices";
 
 interface ChoicesCardProps {
-    choice: IChoice;
+    choice: IChoices;
 }
 
 export const AnswerCard: React.FC<ChoicesCardProps> = (props) => {

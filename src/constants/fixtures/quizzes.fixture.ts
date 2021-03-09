@@ -1,37 +1,67 @@
-import { IChoice } from "../../types/IChoice";
-import { IQuestion } from "../../types/IQuestion";
+import { IChoices as IChoices } from "../../types/IChoices";
+import { IQuestionMultipleChoice, IQuestionNumeric, IQuestionSingleChoice } from "../../types/IQuestion";
 import { IQuiz } from "../../types/IQuiz";
+import { ISolutionMultipleChoice, ISolutionNumeric } from "../../types/ISolution";
+import { QuestionTypes } from "../QuestionTypes";
 
-const choice: IChoice = {
-    "0": "42",
-    "1": "4",
-    "2": "8",
+//================= SINGLE CHOICE QUESTION =================
+const choicesSingleChoice: IChoices = {
+    "0": "0",
+    "1": "1",
+    "2": "42",
     "3": "4",
 };
-
-const question: IQuestion = {
-    id: "uuid",
-    type: "SINGLE_CHOICE",
+const questionSingleChoice: IQuestionSingleChoice = {
+    id: "uuid_1",
+    type: QuestionTypes.SINGLE_CHOICE,
     question: "Was ist 2+2?",
-    choices: choice,
+    choices: choicesSingleChoice,
     solution: "3",
 };
-const question2: IQuestion = {
-    id: "uuid3",
-    type: "SINGLE_CHOICE",
-    question: "Was ist 4+4?",
-    choices: choice,
-    solution: "2",
+
+//================= MULTIPLE CHOICE QUESTION ===============
+const choicesMultipleChoice: IChoices = {
+    "0": "Januar",
+    "1": "Februar",
+    "2": "Mai",
+    "3": "August",
+};
+const solutionMultipleChoice: ISolutionMultipleChoice = {
+    "0": true,
+    "1": true,
+    "2": false,
+    "3": false,
+};
+const questionMultipleChoice: IQuestionMultipleChoice = {
+    id: "uuid_2",
+    type: QuestionTypes.MULTIPLE_CHOICE,
+    question: "Welche Monate haben ein r im Namen?",
+    choices: choicesMultipleChoice,
+    solution: solutionMultipleChoice,
 };
 
-const questions: IQuestion[] = [question, question2];
-questions.push(question);
-questions.push(question2);
+//================= MULTIPLE CHOICE QUESTION ===============
+const solutionNumeric: ISolutionNumeric = {
+    result: 3.1412,
+    epsilon: 0.1,
+};
+const questionNumeric: IQuestionNumeric = {
+    id: "uuid_3",
+    type: QuestionTypes.NUMERIC,
+    question: "What is pi?",
+    solution: solutionNumeric,
+};
 
+//================= QUESTIONS ==============================
+const questions: Array<IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric> = [];
+questions.push(questionSingleChoice);
+questions.push(questionMultipleChoice);
+questions.push(questionNumeric);
+
+//================= QUIZ ===================================
 const testQuiz: IQuiz = {
     id: "TEST01",
     name: "Chapter 01 - Quiz",
     questionObjects: questions,
 };
-
 export const quizList: IQuiz[] = [testQuiz];
