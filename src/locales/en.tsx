@@ -92,7 +92,7 @@ export const en = {
         internalServerError: "Internal server error.",
         timeoutRequest: "Request timeout.",
         errorOccured: "An error has occurred.",
-        serviceError: "An error has occured while accessing IT-REX service.",
+        serviceError: "An error has occurred while accessing IT-REX service.",
 
         noChapters: "No chapters have been created for this course yet.",
         addChapter: "+ Add Chapter",
@@ -100,18 +100,32 @@ export const en = {
         chapterMaterial: "Chapter Material",
         myNewChapter: "My new chapter",
         save: "Save",
+
         chapterCreatedSuccess: "The chapter was created successfully.",
-        chapterCreatedError: "An Error occured while creating the chapter.",
-
         chapterUpdateSuccess: "The chapter was updated successfully.",
-        chapterUpdateError: "An Error occured while updating the chapter.",
-        publishedSuccessfully: "The course was published successfully.",
-        publishedError: "An Error occured while publishing the course.",
+        publishCourseSuccess: "The course was published successfully.",
         courseDeletedSuccessfully: "The course was deleted successfully.",
-        courseDeletedError: "An Error occured while deleting the course.",
-
         confirmPublishCourse:
             "Publishing the course will make it possible for students to join the course. Start- and end-date will also be fixed when publishing the course.",
         confirmDeleteCourse: "Do you really want to delete this course?",
+
+        getCoursesError: "An error occurred while getting courses.",
+        getCourseError: "An error occurred while getting the course.",
+        createCourseError: "An error occurred while creating the course.",
+        publishCourseError: "An error occurred while publishing the course.",
+        joinCourseError: "An error occurred while joining the course.",
+        leaveCourseError: "An error occurred while leaving the course.",
+        deleteCourseError: "An error occurred while deleting the course.",
+
+        getVideosError: "An error occurred while getting videos.",
+        updateVideoError: "An error occurred while updating the video.",
+        deleteVideoError: "An error occurred while deleting the video.",
+
+        getChapterError: "An error occurred while getting the chapter.",
+        createChapterError: "An error occured while creating the chapter.",
+        updateChapterError: "An error occured while updating the chapter.",
+        deleteChapterError: "An error occurred while deleting the chapter.",
+
+        getUserInfoError: "An error occurred while getting user info.",
     },
 };
