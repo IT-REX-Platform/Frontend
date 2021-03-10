@@ -16,6 +16,7 @@ import { ICourse } from "../../../types/ICourse";
 import CourseService from "../../../services/CourseService";
 import AuthenticationService from "../../../services/AuthenticationService";
 import i18n from "../../../locales";
+import { ScrollView } from "react-native-gesture-handler";
 
 export type ScreenCourseTimelineNavigationProp = CompositeNavigationProp<
     MaterialTopTabNavigationProp<CourseTabParamList, "TIMELINE">,
@@ -37,28 +38,18 @@ export const ScreenCourseTimeline: React.FC = () => {
     const isFocused = useIsFocused();
     useEffect(() => {
         if (isFocused && course.id !== undefined) {
-            courseService.getCourse(course.id).then((receivedCourse) => {
-                setMyCourse(receivedCourse);
-            });
+            courseService.getCourse(course.id).then((receivedCourse) => setMyCourse(receivedCourse));
         }
     }, [isFocused]);
     return (
-        <View style={styles.container}>
-            <ImageBackground
-                source={require("../../../constants/images/Background3.png")}
-                style={styles.image}
-                imageStyle={{ opacity: 0.5, position: "absolute", resizeMode: "contain" }}>
-                {lecturerEditMode()}
+        <ImageBackground
+            source={require("../../../constants/images/Background3.png")}
+            style={styles.imageContainer}
+            imageStyle={{ opacity: 0.5, position: "absolute", resizeMode: "contain" }}>
+            {lecturerEditMode()}
+            <ScrollView contentContainerStyle={styles.scrollContainer}>
                 {myCourse.chapters?.length === 0 ? (
-                    <>
-                        <View>
-                            {!edit && (
-                                <View>
-                                    <Text style={styles.textStyle}>{i18n.t("itrex.noChapters")}</Text>
-                                </View>
-                            )}
-                        </View>
-                    </>
+                    <View>{!edit && <Text style={styles.textStyle}>{i18n.t("itrex.noChapters")}</Text>}</View>
                 ) : (
                     myCourse.chapterObjects?.map((chapter) => (
                         <ChapterComponent key={chapter.id} chapter={chapter} editMode={edit}></ChapterComponent>
@@ -76,8 +67,8 @@ export const ScreenCourseTimeline: React.FC = () => {
                         </TouchableOpacity>
                     </View>
                 )}
-            </ImageBackground>
-        </View>
+            </ScrollView>
+        </ImageBackground>
     );
 
     // eslint-disable-next-line complexity
@@ -100,11 +91,15 @@ export const ScreenCourseTimeline: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-    container: {
-        paddingTop: "3%",
+    imageContainer: {
         flex: 1,
-        flexDirection: "column",
+        paddingTop: "3%",
         backgroundColor: dark.theme.darkBlue1,
+    },
+    scrollContainer: {
+        width: "screenWidth",
+        alignItems: "center",
+        paddingBottom: 20,
     },
     editMode: {
         alignSelf: "flex-end",
@@ -132,12 +127,6 @@ const styles = StyleSheet.create({
         color: "white",
         fontSize: 18,
         fontWeight: "bold",
-    },
-    image: {
-        flex: 1,
-        width: "screenWidth",
-        backgroundColor: dark.theme.darkBlue1,
-        alignItems: "center",
     },
     btnAdd: {
         width: "100%",

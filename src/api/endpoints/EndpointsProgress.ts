@@ -15,22 +15,31 @@ import { ICourseProgressTracker } from "../../types/ICourseProgressTracker";
 export class EndpointsProgress implements IEndpointsProgress {
     private loggerApi = loggerFactory.getLogger("API.EndpointsProgress");
     private url: string;
+    private responseParser: ResponseParser;
 
     public constructor() {
         this.url = itRexVars().apiUrl + ApiUrls.URL_PROGRESS;
+        this.responseParser = new ResponseParser();
     }
 
     /**
      * Create a new content progress given a content reference and course tracker id.
      *
      * @param postRequest POST request
+     * @param successMsg A success message.
+     * @param errorMsg An error message.
+     * @returns
      */
-    public createContentProgress(postRequest: RequestInit): Promise<IContentProgressTracker> {
+    public createContentProgress(
+        postRequest: RequestInit,
+        successMsg?: string,
+        errorMsg?: string
+    ): Promise<IContentProgressTracker> {
         const urlToUse = `${this.url}/${ProgressUrlPart.MID_CONTENT}`;
 
         this.loggerApi.trace("Sending POST request to URL: " + urlToUse);
         const response: Promise<Response> = sendRequest(urlToUse, postRequest);
-        return ResponseParser.parseContentProgressTracker(response);
+        return this.responseParser.parseContentProgressTracker(response, successMsg, errorMsg);
     }
 
     /**
@@ -38,13 +47,21 @@ export class EndpointsProgress implements IEndpointsProgress {
      *
      * @param getRequest GET request.
      * @param trackerId the tracker ID to get the progress of.
+     * @param successMsg A success message.
+     * @param errorMsg An error message.
+     * @returns
      */
-    public getContentProgress(getRequest: RequestInit, trackerId: string): Promise<IContentProgressTracker> {
+    public getContentProgress(
+        getRequest: RequestInit,
+        trackerId: string,
+        successMsg?: string,
+        errorMsg?: string
+    ): Promise<IContentProgressTracker> {
         const urlToUse = `${this.url}/${ProgressUrlPart.MID_CONTENT}/${trackerId}`;
 
         this.loggerApi.trace("Sending GET request to URL: " + urlToUse);
         const response: Promise<Response> = sendRequest(urlToUse, getRequest);
-        return ResponseParser.parseContentProgressTracker(response);
+        return this.responseParser.parseContentProgressTracker(response, successMsg, errorMsg);
     }
 
     /**
@@ -52,13 +69,21 @@ export class EndpointsProgress implements IEndpointsProgress {
      *
      * @param putRequest PUT request.
      * @param trackerId  the tracker ID to set the state of.
+     * @param successMsg A success message.
+     * @param errorMsg An error message.
+     * @returns
      */
-    public setContentStateComplete(putRequest: RequestInit, trackerId: string): Promise<IContentProgressTracker> {
+    public setContentStateComplete(
+        putRequest: RequestInit,
+        trackerId: string,
+        successMsg?: string,
+        errorMsg?: string
+    ): Promise<IContentProgressTracker> {
         const urlToUse = `${this.url}/${ProgressUrlPart.MID_CONTENT}/${trackerId}/${ProgressUrlPart.SUF_COMPLETE}`;
 
         this.loggerApi.trace("Sending PUT request to URL: " + urlToUse);
         const response: Promise<Response> = sendRequest(urlToUse, putRequest);
-        return ResponseParser.parseContentProgressTracker(response);
+        return this.responseParser.parseContentProgressTracker(response, successMsg, errorMsg);
     }
 
     /**
@@ -66,13 +91,21 @@ export class EndpointsProgress implements IEndpointsProgress {
      *
      * @param putRequest PUT request.
      * @param trackerId  the tracker ID to set the state of.
+     * @param successMsg A success message.
+     * @param errorMsg An error message.
+     * @returns
      */
-    public updateContentProgress(putRequest: RequestInit, trackerId: string): Promise<IContentProgressTracker> {
+    public updateContentProgress(
+        putRequest: RequestInit,
+        trackerId: string,
+        successMsg?: string,
+        errorMsg?: string
+    ): Promise<IContentProgressTracker> {
         const urlToUse = `${this.url}/${ProgressUrlPart.MID_CONTENT}/${trackerId}/${ProgressUrlPart.SUF_PROGRESS}`;
 
         this.loggerApi.trace("Sending PUT request to URL: " + urlToUse);
         const response: Promise<Response> = sendRequest(urlToUse, putRequest);
-        return ResponseParser.parseContentProgressTracker(response);
+        return this.responseParser.parseContentProgressTracker(response, successMsg, errorMsg);
     }
 
     /**
@@ -80,12 +113,20 @@ export class EndpointsProgress implements IEndpointsProgress {
      *
      * @param getRequest GET request.
      * @param courseId the course id to get the progress of.
+     * @param successMsg A success message.
+     * @param errorMsg An error message.
+     * @returns
      */
-    public getCourseProgress(getRequest: RequestInit, courseId: string): Promise<ICourseProgressTracker> {
+    public getCourseProgress(
+        getRequest: RequestInit,
+        courseId: string,
+        successMsg?: string,
+        errorMsg?: string
+    ): Promise<ICourseProgressTracker> {
         const urlToUse = `${this.url}/${ProgressUrlPart.MID_COURSES}/${courseId}`;
 
         this.loggerApi.trace("Sending GET request to URL: " + urlToUse);
         const response: Promise<Response> = sendRequest(urlToUse, getRequest);
-        return ResponseParser.parseCourseProgressTracker(response);
+        return this.responseParser.parseCourseProgressTracker(response, successMsg, errorMsg);
     }
 }

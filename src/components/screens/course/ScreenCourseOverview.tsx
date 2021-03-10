@@ -1,5 +1,6 @@
-import { CompositeNavigationProp, useNavigation } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+/* eslint-disable complexity */
+import { CompositeNavigationProp, useFocusEffect, useNavigation } from "@react-navigation/native";
+import React, { useState } from "react";
 import { Text, ImageBackground, StyleSheet, View } from "react-native";
 import { dark } from "../../../constants/themes/dark";
 import { ICourse } from "../../../types/ICourse";
@@ -19,11 +20,9 @@ import { RequestFactory } from "../../../api/requests/RequestFactory";
 import { EndpointsCourse } from "../../../api/endpoints/EndpointsCourse";
 import { loggerFactory } from "../../../../logger/LoggerConfig";
 import AuthenticationService from "../../../services/AuthenticationService";
-import { ITREXRoles } from "../../../constants/ITREXRoles";
 import { TextButton } from "../../uiElements/TextButton";
 import { CourseRoles } from "../../../constants/CourseRoles";
 import { IUser } from "../../../types/IUser";
-import { toast } from "react-toastify";
 
 export type ScreenCourseOverviewNavigationProp = CompositeNavigationProp<
     MaterialTopTabNavigationProp<CourseTabParamList, "OVERVIEW">,
@@ -42,9 +41,12 @@ export const ScreenCourseOverview: React.FC = () => {
     const course: ICourse = React.useContext(CourseContext);
 
     const [user, setUserInfo] = useState<IUser>({});
-    useEffect(() => {
-        AuthenticationService.getInstance().getUserInfo(setUserInfo);
-    }, []);
+
+    useFocusEffect(
+        React.useCallback(() => {
+            AuthenticationService.getInstance().getUserInfo(setUserInfo);
+        }, [])
+    );
 
     return (
         <View style={styles.rootContainer}>
@@ -52,9 +54,7 @@ export const ScreenCourseOverview: React.FC = () => {
                 <View style={styles.container}>
                     <View style={styles.content}>
                         {getPublishedSate(course.publishState)}
-
                         {checkForLeaveCourse()}
-
                         <Text style={styles.textWhite}>{course.courseDescription}</Text>
                         {uploadViedeoAsOwner()}
                     </View>
@@ -96,35 +96,51 @@ export const ScreenCourseOverview: React.FC = () => {
     }
 
     function uploadViedeoAsOwner() {
-        if (
-            AuthenticationService.getInstance().getRoles().includes("ROLE_ITREX_LECTURER") ||
-            AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_ADMIN)
-        ) {
+        if (user.courses === undefined || course.id === undefined) {
+            return <></>;
+        }
+
+        const courseRole = user.courses[course.id];
+        if (courseRole === CourseRoles.OWNER) {
             return <TextButton title={i18n.t("itrex.videoPool")} onPress={() => goToVideoPool()} />;
         }
     }
 
-    //TODO: Check if user is owner, when the course/role list is available
     function checkOwnerSettings() {
-        if (
-            AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_LECTURER) ||
-            AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_ADMIN)
-        ) {
+        if (user.courses === undefined || course.id === undefined) {
+            return <></>;
+        }
+
+        const courseRole = user.courses[course.id];
+        if (courseRole === CourseRoles.OWNER || courseRole === CourseRoles.MANAGER) {
             return (
                 <View style={{ flexDirection: "row" }}>
-                    <TextButton title={i18n.t("itrex.publishCourse")} onPress={() => patchCourse(course)} />
+                    <TextButton title={i18n.t("itrex.publishCourse")} onPress={() => confirmPublishCourse(course)} />
                     <TextButton
                         title={i18n.t("itrex.deleteCourse")}
                         color="pink"
-                        onPress={() => deleteCourse(course)}
+                        onPress={() => confirmDeletion(course)}
                     />
                 </View>
             );
         }
     }
 
+    function confirmPublishCourse(course: ICourse) {
+        const publishCourse = confirm(i18n.t("itrex.confirmPublishCourse"));
+        if (publishCourse === true) {
+            patchCourse(course);
+        }
+    }
+
+    function confirmDeletion(course: ICourse) {
+        const confirmation = confirm(i18n.t("itrex.confirmDeleteCourse"));
+        if (confirmation === true) {
+            deleteCourse(course);
+        }
+    }
     function getPublishedSate(isPublished: string | undefined) {
-        if (isPublished === "UNPUBLISHED") {
+        if (isPublished === CoursePublishState.UNPUBLISHED) {
             return (
                 <>
                     <View style={styles.unpublishedCard}>
@@ -136,7 +152,7 @@ export const ScreenCourseOverview: React.FC = () => {
                     {checkOwnerSettings()}
                 </>
             );
-        } else if (isPublished === "PUBLISHED") {
+        } else if (isPublished === CoursePublishState.PUBLISHED) {
             return (
                 <>
                     <View style={styles.publishedCard}>
@@ -165,12 +181,8 @@ export const ScreenCourseOverview: React.FC = () => {
         loggerService.trace(`Updating course: name=${courses.name}, publishedState=${CoursePublishState.PUBLISHED}.`);
         const putRequest: RequestInit = RequestFactory.createPatchRequest(course);
         endpointsCourse
-            .patchCourse(putRequest)
-            .then((data) => {
-                console.log(data);
-                toast.success(i18n.t("itrex.publishedSuccessfully"));
-            })
-            .catch(() => toast.error(i18n.t("itrex.publishedError")));
+            .patchCourse(putRequest, i18n.t("itrex.publishCourseSuccess"), i18n.t("itrex.publishCourseError"))
+            .then((data) => console.log(data));
     }
 
     function deleteCourse(courses: ICourse): void {
@@ -180,13 +192,13 @@ export const ScreenCourseOverview: React.FC = () => {
 
         const request: RequestInit = RequestFactory.createDeleteRequest();
         endpointsCourse
-            .deleteCourse(request, courses.id)
-            .then(() => {
-                toast.success(i18n.t("itrex.courseDeletedSuccessfully"));
-            })
-            .catch(() => {
-                toast.error(i18n.t("itrex.courseDeletedError"));
-            });
+            .deleteCourse(
+                request,
+                courses.id,
+                i18n.t("itrex.courseDeletedSuccessfully"),
+                i18n.t("itrex.deleteCourseError")
+            )
+            .then(() => navigation.navigate("ROUTE_HOME"));
     }
 
     function goToVideoPool() {
@@ -198,12 +210,10 @@ export const ScreenCourseOverview: React.FC = () => {
     function leaveCourse() {
         if (course.id !== undefined) {
             const request: RequestInit = RequestFactory.createPostRequestWithoutBody();
-            endpointsCourse.leaveCourse(request, course.id).then(() => {
+            endpointsCourse.leaveCourse(request, course.id, undefined, i18n.t("itrex.leaveCourseError")).then(() => {
                 AuthenticationService.getInstance()
                     .refreshToken()
-                    .then(() => {
-                        navigation.navigate("ROUTE_HOME");
-                    });
+                    .then(() => navigation.navigate("ROUTE_HOME"));
             });
         }
     }

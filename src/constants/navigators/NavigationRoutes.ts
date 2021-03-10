@@ -27,6 +27,14 @@ export const config = {
                     path: "chapter/:chapterId",
                     screens: {},
                 },
+                CREATE_QUIZ: {
+                    path: "chapter/createQuiz/:chapterId/",
+                    screens: {},
+                },
+                CREATE_QUESTION: {
+                    path: "chapter/createQuiz/createQuestion/:chapterId",
+                    screens: {},
+                },
             },
         },
     },
@@ -46,6 +54,8 @@ export type CourseStackParamList = {
         video: IVideo;
     };
     CHAPTER_CREATE: undefined;
+    CREATE_QUIZ: { chapterId: string | undefined; questionId?: string | undefined };
+    CREATE_QUESTION: undefined;
     CHAPTER: { chapterId: string | undefined };
 };
 
@@ -65,6 +75,8 @@ export class NavigationRoutes {
     static ROUTE_COURSE_DETAILS_TIMELINE = "ROUTE_COURSE_DETAILS_TIMELINE";
     static ROUTE_VIDEO_POOL = "ROUTE_VIDEO_POOL";
     static ROUTE_VIDEO = "ROUTE_VIDEO";
+    static ROUTE_CREATE_QUIZ = "ROUTE_CREATE_QUIZ";
+    static ROUTE_CREATE_QUESTION = "ROUTE_CREATE_QUESTION";
 
     static linking: LinkingOptions = {
         prefixes: [prefix],

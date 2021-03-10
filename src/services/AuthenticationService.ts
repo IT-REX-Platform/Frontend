@@ -6,6 +6,7 @@ import { itRexVars } from "../constants/Constants";
 import { ITREXRoles } from "../constants/ITREXRoles";
 import { IUser } from "../types/IUser";
 import { AsyncStorageService, StorageConstants } from "./StorageService";
+import i18n from "../locales";
 
 export const discovery = {
     authorizationEndpoint: itRexVars().authEndpoint,
@@ -113,7 +114,7 @@ export default class AuthenticationService {
      */
     public getUserInfo(consumer: (userInfo: IUser) => void): void {
         const request: RequestInit = RequestFactory.createGetRequest();
-        this.endpointsUserInfo.getUserInfo(request).then(consumer);
+        this.endpointsUserInfo.getUserInfo(request, undefined, i18n.t("itrex.getUserInfoError")).then(consumer);
     }
 
     public getRoles(): string[] {
