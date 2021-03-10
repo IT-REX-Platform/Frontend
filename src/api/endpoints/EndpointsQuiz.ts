@@ -19,27 +19,32 @@ export class EndpointsQuiz implements IEndpointsQuiz {
         this.responseParser = new ResponseParser();
     }
 
-    getAllQuizzes(getRequest: RequestInit, chapterId: string): Promise<IQuiz[]> {
+    getAllQuizzes(
+        getRequest: RequestInit,
+        chapterId: string,
+        successMsg?: string,
+        errorMsg?: string
+    ): Promise<IQuiz[]> {
         throw new Error("Method not implemented.");
     }
 
-    getQuiz(getRequest: RequestInit, quizId: string): Promise<IQuiz> {
+    getQuiz(getRequest: RequestInit, quizId: string, successMsg?: string, errorMsg?: string): Promise<IQuiz> {
         throw new Error("Method not implemented.");
     }
 
-    createQuiz(postRequest: RequestInit): Promise<IQuiz> {
+    createQuiz(postRequest: RequestInit, successMsg?: string, errorMsg?: string): Promise<IQuiz> {
         throw new Error("Method not implemented.");
     }
 
-    updateQuiz(putRequest: RequestInit): Promise<IQuiz> {
+    updateQuiz(putRequest: RequestInit, successMsg?: string, errorMsg?: string): Promise<IQuiz> {
         throw new Error("Method not implemented.");
     }
 
-    patchQuiz(patchRequest: RequestInit): Promise<IQuiz> {
+    patchQuiz(patchRequest: RequestInit, successMsg?: string, errorMsg?: string): Promise<IQuiz> {
         throw new Error("Method not implemented.");
     }
 
-    deleteQuiz(deleteRequest: RequestInit, quizId: string): Promise<void> {
+    deleteQuiz(deleteRequest: RequestInit, quizId: string, successMsg?: string, errorMsg?: string): Promise<void> {
         throw new Error("Method not implemented.");
     }
 }

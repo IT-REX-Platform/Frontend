@@ -27,6 +27,9 @@ export class EndpointsCourse implements IEndpointsCourse {
      *
      * @param getRequest GET request.
      * @param params Optional parameters for GET request URL to filter all existing courses.
+     * @param successMsg A success message.
+     * @param errorMsg An error message.
+     * @returns
      */
     public getAllCourses(
         getRequest: RequestInit,
@@ -47,6 +50,9 @@ export class EndpointsCourse implements IEndpointsCourse {
      *
      * @param getRequest GET request.
      * @param params Optional parameters for GET request URL to filter users courses.
+     * @param successMsg A success message.
+     * @param errorMsg An error message.
+     * @returns
      */
     public getUserCourses(
         getRequest: RequestInit,
@@ -66,7 +72,9 @@ export class EndpointsCourse implements IEndpointsCourse {
     /**
      * Append course filter parameters to the URL.
      *
+     * @param url Original URL.
      * @param params Optional parameters for GET request URL.
+     * @returns
      */
     private _appendCourseParams(url: string, params?: ICourse): string {
         const urlBase = url;
@@ -97,6 +105,9 @@ export class EndpointsCourse implements IEndpointsCourse {
      *
      * @param getRequest GET request.
      * @param id Course ID for URL parameter.
+     * @param successMsg A success message.
+     * @param errorMsg An error message.
+     * @returns
      */
     public getCourse(getRequest: RequestInit, id: string, successMsg?: string, errorMsg?: string): Promise<ICourse> {
         const urlUpdated = this.url + "/" + id;
@@ -110,6 +121,9 @@ export class EndpointsCourse implements IEndpointsCourse {
      * Create a new course.
      *
      * @param postRequest POST request with course JSON body containing no course ID.
+     * @param successMsg A success message.
+     * @param errorMsg An error message.
+     * @returns
      */
     public createCourse(postRequest: RequestInit, successMsg?: string, errorMsg?: string): Promise<ICourse> {
         this.loggerApi.trace("Sending POST request to URL: " + this.url);
@@ -121,6 +135,9 @@ export class EndpointsCourse implements IEndpointsCourse {
      * Update all fields of a course.
      *
      * @param postRequest PUT request with course JSON body containing a course ID and all available course fields.
+     * @param successMsg A success message.
+     * @param errorMsg An error message.
+     * @returns
      */
     public updateCourse(putRequest: RequestInit, successMsg?: string, errorMsg?: string): Promise<ICourse> {
         this.loggerApi.trace("Sending PUT request to URL: " + this.url);
@@ -131,7 +148,10 @@ export class EndpointsCourse implements IEndpointsCourse {
     /**
      * Update one or more course fields.
      *
-     * @param postRequest PATCH request with course JSON body containing a course ID and one or more course fields.
+     * @param patchRequest PATCH request with course JSON body containing a course ID and one or more course fields.
+     * @param successMsg A success message.
+     * @param errorMsg An error message.
+     * @returns
      */
     public patchCourse(patchRequest: RequestInit, successMsg?: string, errorMsg?: string): Promise<ICourse> {
         this.loggerApi.trace("Sending PATCH request to URL: " + this.url);
@@ -144,6 +164,9 @@ export class EndpointsCourse implements IEndpointsCourse {
      *
      * @param deleteRequest DELETE request.
      * @param id Course ID for URL parameter.
+     * @param successMsg A success message.
+     * @param errorMsg An error message.
+     * @returns
      */
     public deleteCourse(deleteRequest: RequestInit, id: string, successMsg?: string, errorMsg?: string): Promise<void> {
         const urlUpdated = this.url + "/" + id;
@@ -158,6 +181,9 @@ export class EndpointsCourse implements IEndpointsCourse {
      *
      * @param postRequest the POST request used.
      * @param id the UUID of the course to join.
+     * @param successMsg A success message.
+     * @param errorMsg An error message.
+     * @returns
      */
     public joinCourse(postRequest: RequestInit, id: string, successMsg?: string, errorMsg?: string): Promise<void> {
         const urlJoin = this.url + "/" + id + CourseURLSuffix.JOIN;
@@ -172,6 +198,9 @@ export class EndpointsCourse implements IEndpointsCourse {
      *
      * @param postRequest the POST request used.
      * @param id the UUID of the course to leave.
+     * @param successMsg A success message.
+     * @param errorMsg An error message.
+     * @returns
      */
     public leaveCourse(postRequest: RequestInit, id: string, successMsg?: string, errorMsg?: string): Promise<void> {
         const urlLeave = this.url + "/" + id + CourseURLSuffix.LEAVE;
