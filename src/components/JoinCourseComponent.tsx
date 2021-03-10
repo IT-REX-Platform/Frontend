@@ -67,10 +67,13 @@ export const JoinCourseComponent: React.FC = () => {
     function getPublishedCourses(): void {
         const request: RequestInit = RequestFactory.createGetRequest();
         endpointsCourse
-            .getAllCourses(request, { publishState: CoursePublishState.PUBLISHED })
-            .then((receivedCoursesPublished) => {
-                setCoursesPublished(receivedCoursesPublished);
-            });
+            .getAllCourses(
+                request,
+                { publishState: CoursePublishState.PUBLISHED },
+                undefined,
+                i18n.t("itrex.getCoursesError")
+            )
+            .then((receivedCoursesPublished) => setCoursesPublished(receivedCoursesPublished));
     }
 
     function joinCourse(): void {
@@ -92,14 +95,10 @@ export const JoinCourseComponent: React.FC = () => {
 
         // Do the request stuff.
         const request: RequestInit = RequestFactory.createPostRequestWithoutBody();
-        endpointsCourse.joinCourse(request, courseId).then(() => {
+        endpointsCourse.joinCourse(request, courseId, undefined, i18n.t("itrex.joinCourseError")).then(() => {
             AuthenticationService.getInstance()
                 .refreshToken()
-                .then(() => {
-                    navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, {
-                        courseId: courseId,
-                    });
-                });
+                .then(() => navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, { courseId: courseId }));
         });
     }
 };

@@ -8,6 +8,6 @@ export interface IEndpointsChapter {
     updateChapter(putRequest: RequestInit): Promise<IChapter>;
     getChapter(getRequest: RequestInit, id: string): Promise<IChapter>;
     getChapters(getRequest: RequestInit): Promise<IChapter[]>;
-    deleteChapter(deleteRequest: RequestInit, id: string): void;
+    deleteChapter(deleteRequest: RequestInit, id: string): Promise<void>;
     patchChapter(patchRequest: RequestInit): Promise<IChapter>;
 }

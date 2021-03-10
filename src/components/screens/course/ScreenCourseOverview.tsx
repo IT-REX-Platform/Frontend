@@ -1,6 +1,6 @@
 /* eslint-disable complexity */
-import { CompositeNavigationProp, useNavigation } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import { CompositeNavigationProp, useFocusEffect, useNavigation } from "@react-navigation/native";
+import React, { useState } from "react";
 import { Text, ImageBackground, StyleSheet, View } from "react-native";
 import { dark } from "../../../constants/themes/dark";
 import { ICourse } from "../../../types/ICourse";
@@ -20,11 +20,9 @@ import { RequestFactory } from "../../../api/requests/RequestFactory";
 import { EndpointsCourse } from "../../../api/endpoints/EndpointsCourse";
 import { loggerFactory } from "../../../../logger/LoggerConfig";
 import AuthenticationService from "../../../services/AuthenticationService";
-import { ITREXRoles } from "../../../constants/ITREXRoles";
 import { TextButton } from "../../uiElements/TextButton";
 import { CourseRoles } from "../../../constants/CourseRoles";
 import { IUser } from "../../../types/IUser";
-import { toast } from "react-toastify";
 import { InfoPublished } from "../../uiElements/InfoPublished";
 import { InfoUnpublished } from "../../uiElements/InfoUnpublished";
 
@@ -45,9 +43,12 @@ export const ScreenCourseOverview: React.FC = () => {
     const course: ICourse = React.useContext(CourseContext);
 
     const [user, setUserInfo] = useState<IUser>({});
-    useEffect(() => {
-        AuthenticationService.getInstance().getUserInfo(setUserInfo);
-    }, []);
+
+    useFocusEffect(
+        React.useCallback(() => {
+            AuthenticationService.getInstance().getUserInfo(setUserInfo);
+        }, [])
+    );
 
     return (
         <View style={styles.rootContainer}>
@@ -141,7 +142,7 @@ export const ScreenCourseOverview: React.FC = () => {
         }
     }
     function getPublishedSate(isPublished: string | undefined) {
-        if (isPublished === "UNPUBLISHED") {
+        if (isPublished === CoursePublishState.UNPUBLISHED) {
             return (
                 <>
                     <InfoUnpublished />
@@ -150,7 +151,7 @@ export const ScreenCourseOverview: React.FC = () => {
                     {checkOwnerSettings()}
                 </>
             );
-        } else if (isPublished === "PUBLISHED") {
+        } else if (isPublished === CoursePublishState.PUBLISHED) {
             return (
                 <>
                     <InfoPublished />
@@ -176,12 +177,8 @@ export const ScreenCourseOverview: React.FC = () => {
         loggerService.trace(`Updating course: name=${courses.name}, publishedState=${CoursePublishState.PUBLISHED}.`);
         const putRequest: RequestInit = RequestFactory.createPatchRequest(course);
         endpointsCourse
-            .patchCourse(putRequest)
-            .then((data) => {
-                console.log(data);
-                toast.success(i18n.t("itrex.publishedSuccessfully"));
-            })
-            .catch(() => toast.error(i18n.t("itrex.publishedError")));
+            .patchCourse(putRequest, i18n.t("itrex.publishCourseSuccess"), i18n.t("itrex.publishCourseError"))
+            .then((data) => console.log(data));
     }
 
     function deleteCourse(courses: ICourse): void {
@@ -191,14 +188,13 @@ export const ScreenCourseOverview: React.FC = () => {
 
         const request: RequestInit = RequestFactory.createDeleteRequest();
         endpointsCourse
-            .deleteCourse(request, courses.id)
-            .then(() => {
-                toast.success(i18n.t("itrex.courseDeletedSuccessfully"));
-                navigation.navigate("ROUTE_HOME");
-            })
-            .catch(() => {
-                toast.error(i18n.t("itrex.courseDeletedError"));
-            });
+            .deleteCourse(
+                request,
+                courses.id,
+                i18n.t("itrex.courseDeletedSuccessfully"),
+                i18n.t("itrex.deleteCourseError")
+            )
+            .then(() => navigation.navigate("ROUTE_HOME"));
     }
 
     function goToVideoPool() {
@@ -210,12 +206,10 @@ export const ScreenCourseOverview: React.FC = () => {
     function leaveCourse() {
         if (course.id !== undefined) {
             const request: RequestInit = RequestFactory.createPostRequestWithoutBody();
-            endpointsCourse.leaveCourse(request, course.id).then(() => {
+            endpointsCourse.leaveCourse(request, course.id, undefined, i18n.t("itrex.leaveCourseError")).then(() => {
                 AuthenticationService.getInstance()
                     .refreshToken()
-                    .then(() => {
-                        navigation.navigate("ROUTE_HOME");
-                    });
+                    .then(() => navigation.navigate("ROUTE_HOME"));
             });
         }
     }

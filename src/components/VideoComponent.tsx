@@ -4,7 +4,6 @@ import { loggerFactory } from "../../logger/LoggerConfig";
 import { IVideo } from "../types/IVideo";
 import { Video } from "expo-av";
 import { createVideoUrl } from "../services/createVideoUrl";
-import { createAlert } from "../helperScripts/createAlert";
 import i18n from "../locales";
 import { RequestFactory } from "../api/requests/RequestFactory";
 import { EndpointsVideo } from "../api/endpoints/EndpointsVideo";
@@ -16,6 +15,7 @@ import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { dark } from "../constants/themes/dark";
 import { calculateVideoSize } from "../services/calculateVideoSize";
 import { TextButton } from "./uiElements/TextButton";
+import { ToastService } from "../services/toasts/ToastService";
 
 const loggerService = loggerFactory.getLogger("service.VideoComponent");
 const endpointsVideo = new EndpointsVideo();
@@ -32,9 +32,10 @@ export const VideoComponent: React.FC = () => {
     React.useContext(LocalizationContext);
     const navigation = useNavigation<ScreenCourseTabsNavigationProp>();
 
+    const toast: ToastService = new ToastService();
+
     const route = useRoute<ScreenCourseTabsRouteProp>();
     const video: IVideo = route.params.video;
-    console.log(video);
 
     const [newTitle, setTitle] = useState("");
 
@@ -75,7 +76,7 @@ export const VideoComponent: React.FC = () => {
 
     function _getVideoUrl(): string {
         if (video.id == undefined || null) {
-            createAlert(i18n.t("itrex.videoNotFound"));
+            toast.error(i18n.t("itrex.videoNotFound"));
             return "";
         }
 
@@ -115,14 +116,12 @@ export const VideoComponent: React.FC = () => {
         // TODO: add more video fields to update here. @s.pastuchov 22.02.21
 
         const postRequest: RequestInit = RequestFactory.createPatchRequest(videoUpdate);
-        const response: IVideo = await endpointsVideo.patchVideo(postRequest);
-        console.log(response);
-
-        createAlert(i18n.t("itrex.videoUpdated"));
-
-        if (video.courseId !== undefined) {
-            navigation.navigate("VIDEO_POOL");
-        }
+        await endpointsVideo
+            .patchVideo(postRequest, i18n.t("itrex.videoUpdated"), i18n.t("itrex.updateVideoError"))
+            .then((response) => {
+                console.log(response);
+                navigation.navigate("VIDEO_POOL");
+            });
     }
 
     async function _deleteVideo(): Promise<void> {
@@ -131,11 +130,9 @@ export const VideoComponent: React.FC = () => {
         }
 
         const deleteRequest: RequestInit = RequestFactory.createDeleteRequest();
-        const response: Promise<Response> = endpointsVideo.deleteVideo(deleteRequest, video.id);
-        response.then(() => {
-            createAlert(i18n.t("itrex.videoDeleted"));
-            navigation.navigate("VIDEO_POOL");
-        });
+        endpointsVideo
+            .deleteVideo(deleteRequest, video.id, i18n.t("itrex.videoDeleted"), i18n.t("itrex.deleteVideoError"))
+            .then(() => navigation.navigate("VIDEO_POOL"));
     }
 };
 

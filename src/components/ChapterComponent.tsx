@@ -9,6 +9,8 @@ import AuthenticationService from "../services/AuthenticationService";
 import { useNavigation } from "@react-navigation/native";
 import { InfoPublished } from "./uiElements/InfoPublished";
 import { InfoUnpublished } from "./uiElements/InfoUnpublished";
+import { TextButton } from "./uiElements/TextButton";
+import { CoursePublishState } from "../constants/CoursePublishState";
 
 interface ChapterComponentProps {
     chapter?: IChapter;
@@ -26,7 +28,7 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
             <View style={styles.chapterTopRow}>
                 <Text style={styles.chapterHeader}>{chapter?.title}</Text>
                 {/* TODO: add real publish/unpublished state to the chapterss*/}
-                <View style={styles.chapterStatus}>{getPublishedSate("PUBLISHED")}</View>
+                <View style={styles.chapterStatus}>{getPublishedSate(CoursePublishState.PUBLISHED)}</View>
             </View>
             <View style={styles.chapterBottomRow}>
                 <Text style={styles.chapterMaterialHeader}>{i18n.t("itrex.chapterMaterial")}</Text>
@@ -40,6 +42,9 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                         );
                     })}
                 </View>
+                <View style={styles.break} />
+                <Text style={styles.chapterMaterialHeader}>Chapter Quiz</Text>
+                {props.editMode && chapterQuiz()}
             </View>
             {props.editMode && AuthenticationService.getInstance().isLecturer() && (
                 <View style={styles.chapterEditRow}>
@@ -49,7 +54,6 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                         }}>
                         <MaterialCommunityIcons name="trash-can" size={28} color="white" style={styles.icon} />
                     </TouchableOpacity> */}
-
                     <TouchableOpacity
                         onPress={() => {
                             navigation.navigate("CHAPTER", { chapterId: chapter?.id });
@@ -61,14 +65,58 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
         </View>
     );
 
+    function chapterQuiz() {
+        return (
+            <View style={styles.chapterMaterialElements}>
+                <TextButton
+                    title="Create a Quiz"
+                    onPress={() => {
+                        navigation.navigate("CREATE_QUIZ", { chapterId: chapter?.id });
+                    }}
+                />
+            </View>
+        );
+        /**if (quizList === undefined || quizList.length === 0) {
+            return (
+                <View style={styles.chapterMaterialElements}>
+                    <TextButton
+                        title="Create a Quiz"
+                        onPress={() => {
+                            navigation.navigate("CREATE_QUIZ", { chapterId: chapter?.id });
+                        }}
+                    />
+                </View>
+            );
+        } else {
+            return (
+                <View style={styles.chapterMaterialElements}>
+                    <View style={styles.chapterMaterialElement}>
+                        <MaterialCommunityIcons
+                            name="file-question-outline"
+                            size={28}
+                            color="white"
+                            style={styles.icon}
+                        />
+                        <TouchableOpacity
+                            onPress={() => {
+                                createAlert("Go to existing Quiz Page");
+                            }}>
+                            <Text style={styles.chapterMaterialElementText}>{quizList[0].name}</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            );
+        } */
+    }
+
     function getPublishedSate(isPublished: string | undefined) {
-        if (isPublished === "UNPUBLISHED") {
+        if (isPublished === CoursePublishState.UNPUBLISHED) {
             return (
                 <>
                     <InfoUnpublished />
                 </>
             );
-        } else if (isPublished === "PUBLISHED") {
+        } else if (isPublished === CoursePublishState.PUBLISHED) {
             return (
                 <>
                     <InfoPublished />
@@ -119,11 +167,14 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
     },
     chapterMaterialHeader: {
+        marginTop: 10,
         alignSelf: "center",
         color: "white",
         fontWeight: "bold",
+        fontSize: 20,
     },
     chapterMaterialElements: {
+        marginBottom: 5,
         paddingTop: "20px",
         flex: 1,
         flexDirection: "row",
@@ -143,5 +194,13 @@ const styles = StyleSheet.create({
     icon: {
         paddingLeft: 10,
         paddingRight: 10,
+    },
+    break: {
+        borderBottomColor: dark.theme.lightGreen,
+        borderBottomWidth: 2,
+        width: "100%",
+        borderStyle: "dotted",
+        borderWidth: 2,
+        marginTop: 1,
     },
 });

@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import React, { useEffect, useState } from "react";
 import { Text, ImageBackground, StyleSheet, View, TouchableOpacity, Switch } from "react-native";
 import { CompositeNavigationProp, useIsFocused, useNavigation } from "@react-navigation/native";
@@ -42,34 +43,20 @@ export const ScreenCourseTimeline: React.FC = () => {
     useEffect(() => {
         if (isFocused && course.id !== undefined) {
             setMyCourse(fakeData);
-            /*
-            courseService.getCourse(course.id).then((receivedCourse) => {
-                setMyCourse(receivedCourse);
-            });
-            */
+            // courseService.getCourse(course.id).then((receivedCourse) => setMyCourse(receivedCourse));
         }
     }, [isFocused]);
-    return (
-        <ScrollView
-            style={styles.container}
-            contentContainerStyle={{ flexGrow: 1 }}
-            showsVerticalScrollIndicator={false}>
-            <ImageBackground
-                source={require("../../../constants/images/Background3.png")}
-                style={styles.image}
-                imageStyle={{ opacity: 0.5, position: "absolute", resizeMode: "contain" }}>
-                {lecturerEditMode()}
 
+    return (
+        <ImageBackground
+            source={require("../../../constants/images/Background3.png")}
+            style={styles.imageContainer}
+            imageStyle={{ opacity: 0.5, position: "absolute", resizeMode: "contain" }}>
+            {lecturerEditMode()}
+
+            <ScrollView contentContainerStyle={styles.scrollContainer}>
                 {myCourse.timePeriodObjects?.length === 0 ? (
-                    <>
-                        <View>
-                            {!edit && (
-                                <View>
-                                    <Text style={styles.textStyle}>{i18n.t("itrex.noChapters")}</Text>
-                                </View>
-                            )}
-                        </View>
-                    </>
+                    <View>{!edit && <Text style={styles.textStyle}>{i18n.t("itrex.noChapters")}</Text>}</View>
                 ) : (
                     myCourse.timePeriodObjects?.map((timePeriod) => (
                         <TimelineComponent key={timePeriod.id} edit={edit} timePeriod={timePeriod}></TimelineComponent>
@@ -87,8 +74,8 @@ export const ScreenCourseTimeline: React.FC = () => {
                         </TouchableOpacity>
                     </View>
                 )}
-            </ImageBackground>
-        </ScrollView>
+            </ScrollView>
+        </ImageBackground>
     );
 
     // eslint-disable-next-line complexity
@@ -203,11 +190,15 @@ const fakeData: ICourse = {
 };
 
 const styles = StyleSheet.create({
-    container: {
-        paddingTop: "3%",
+    imageContainer: {
         flex: 1,
-        flexDirection: "column",
+        paddingTop: "3%",
         backgroundColor: dark.theme.darkBlue1,
+    },
+    scrollContainer: {
+        width: "screenWidth",
+        alignItems: "center",
+        paddingBottom: 20,
     },
     editMode: {
         alignSelf: "flex-end",
@@ -235,12 +226,6 @@ const styles = StyleSheet.create({
         color: "white",
         fontSize: 18,
         fontWeight: "bold",
-    },
-    image: {
-        flex: 1,
-        width: "screenWidth",
-        backgroundColor: dark.theme.darkBlue1,
-        alignItems: "center",
     },
     btnAdd: {
         width: "100%",

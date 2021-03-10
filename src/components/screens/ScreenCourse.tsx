@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import React, { useEffect, useState } from "react";
 import { Text, StyleSheet } from "react-native";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
@@ -16,6 +17,10 @@ import { VideoComponent } from "../VideoComponent";
 import AuthenticationService from "../../services/AuthenticationService";
 import i18n from "../../locales";
 import { ScreenAddChapter } from "./course/ScreenAddChapter";
+import { ScreenAddQuiz } from "./course/ScreenAddQuiz";
+import { CourseRoles } from "../../constants/CourseRoles";
+import { IUser } from "../../types/IUser";
+import { ScreenAddQuestion } from "./course/ScreenAddQuestion";
 
 export type ScreenCourseNavigationProp = DrawerNavigationProp<RootDrawerParamList, "ROUTE_COURSE_DETAILS">;
 export type ScreenCourseRouteProp = RouteProp<RootDrawerParamList, "ROUTE_COURSE_DETAILS">;
@@ -33,14 +38,16 @@ export const ScreenCourse: React.FC = () => {
 
     const courseInitial: ICourse = {};
     const [course, setCourse] = useState(courseInitial);
+    const [user, setUserInfo] = useState<IUser>({});
 
     const endpointsCourse: EndpointsCourse = new EndpointsCourse();
 
     useEffect(() => {
+        AuthenticationService.getInstance().getUserInfo(setUserInfo);
         const request: RequestInit = RequestFactory.createGetRequest();
-        endpointsCourse.getCourse(request, courseId).then((receivedCourse) => {
-            setCourse(receivedCourse);
-        });
+        endpointsCourse
+            .getCourse(request, courseId, undefined, i18n.t("itrex.getCourseError"))
+            .then((receivedCourse) => setCourse(receivedCourse));
     }, [courseId]);
 
     return (
@@ -87,6 +94,7 @@ export const ScreenCourse: React.FC = () => {
 
                 {getUploadVideoScreen()}
                 {getCreateChapterScreen()}
+                {getQuizCreation()}
             </CourseStack.Navigator>
         </CourseContext.Provider>
     );
@@ -97,6 +105,23 @@ export const ScreenCourse: React.FC = () => {
                 <>
                     <CourseStack.Screen name="VIDEO_POOL" component={VideoPoolComponent}></CourseStack.Screen>
                     <CourseStack.Screen name="VIDEO" component={VideoComponent}></CourseStack.Screen>
+                </>
+            );
+        }
+    }
+
+    function getQuizCreation() {
+        if (user.courses === undefined || course.id === undefined) {
+            return <></>;
+        }
+
+        const courseRole: CourseRoles = user.courses[course.id];
+
+        if (courseRole === CourseRoles.OWNER || courseRole === undefined) {
+            return (
+                <>
+                    <CourseStack.Screen name="CREATE_QUIZ" component={ScreenAddQuiz}></CourseStack.Screen>
+                    <CourseStack.Screen name="CREATE_QUESTION" component={ScreenAddQuestion}></CourseStack.Screen>
                 </>
             );
         }
