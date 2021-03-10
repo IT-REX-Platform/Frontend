@@ -1,6 +1,6 @@
 /* eslint-disable complexity */
-import { CompositeNavigationProp, useNavigation } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import { CompositeNavigationProp, useFocusEffect, useNavigation } from "@react-navigation/native";
+import React, { useState } from "react";
 import { Text, ImageBackground, StyleSheet, View } from "react-native";
 import { dark } from "../../../constants/themes/dark";
 import { ICourse } from "../../../types/ICourse";
@@ -41,9 +41,12 @@ export const ScreenCourseOverview: React.FC = () => {
     const course: ICourse = React.useContext(CourseContext);
 
     const [user, setUserInfo] = useState<IUser>({});
-    useEffect(() => {
-        AuthenticationService.getInstance().getUserInfo(setUserInfo);
-    }, []);
+
+    useFocusEffect(
+        React.useCallback(() => {
+            AuthenticationService.getInstance().getUserInfo(setUserInfo);
+        }, [])
+    );
 
     return (
         <View style={styles.rootContainer}>

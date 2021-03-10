@@ -6,7 +6,6 @@ import { itRexVars } from "../constants/Constants";
 import { ITREXRoles } from "../constants/ITREXRoles";
 import { IUser } from "../types/IUser";
 import { AsyncStorageService, StorageConstants } from "./StorageService";
-import { ToastService } from "./toasts/ToastService";
 import i18n from "../locales";
 
 export const discovery = {
@@ -16,8 +15,6 @@ export const discovery = {
 
 export default class AuthenticationService {
     static instance: AuthenticationService;
-
-    private toast: ToastService = new ToastService();
 
     private AuthenticationService() {
         //this.refreshTimeout = null;
