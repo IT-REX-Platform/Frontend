@@ -21,29 +21,34 @@ export class EndpointsChapter implements IEndpointsChapter {
     }
 
     /**
-     * Get one or more courses.
+     * Get one or more chapters.
      *
      * @param getRequest GET request.
      * @param params Optional parameters for GET request URL to filter all existing courses.
      */
-    public getChapters(getRequest: RequestInit): Promise<IChapter[]> {
+    public getChapters(getRequest: RequestInit, successMsg?: string, errorMsg?: string): Promise<IChapter[]> {
         this.loggerApi.trace("Sending GET request to URL: " + this.url);
         const response: Promise<Response> = sendRequest(this.url, getRequest);
-        return this.responseParser.parseChapters(response);
+        return this.responseParser.parseChapters(response, successMsg, errorMsg);
     }
 
     /**
-     * Get one course.
+     * Get one chapter.
      *
      * @param getRequest GET request.
-     * @param id Course ID for URL parameter.
+     * @param chapterId Chapter ID for URL parameter.
      */
-    public getChapter(getRequest: RequestInit, id: string): Promise<IChapter> {
-        const urlUpdated = this.url + "/" + id;
+    public getChapter(
+        getRequest: RequestInit,
+        chapterId: string,
+        successMsg?: string,
+        errorMsg?: string
+    ): Promise<IChapter> {
+        const urlUpdated = this.url + "/" + chapterId;
 
         this.loggerApi.trace("Sending GET request to URL: " + urlUpdated);
         const response: Promise<Response> = sendRequest(urlUpdated, getRequest);
-        return this.responseParser.parseChapter(response);
+        return this.responseParser.parseChapter(response, successMsg, errorMsg);
     }
 
     /**
@@ -51,10 +56,10 @@ export class EndpointsChapter implements IEndpointsChapter {
      *
      * @param postRequest POST request with course JSON body containing no course ID.
      */
-    public createChapter(postRequest: RequestInit): Promise<IChapter> {
+    public createChapter(postRequest: RequestInit, successMsg?: string, errorMsg?: string): Promise<IChapter> {
         this.loggerApi.trace("Sending POST request to URL: " + this.url);
         const response: Promise<Response> = sendRequest(this.url, postRequest);
-        return this.responseParser.parseChapter(response);
+        return this.responseParser.parseChapter(response, successMsg, errorMsg);
     }
 
     /**
@@ -62,10 +67,10 @@ export class EndpointsChapter implements IEndpointsChapter {
      *
      * @param postRequest PUT request with course JSON body containing a course ID and all available course fields.
      */
-    public updateChapter(putRequest: RequestInit): Promise<IChapter> {
+    public updateChapter(putRequest: RequestInit, successMsg?: string, errorMsg?: string): Promise<IChapter> {
         this.loggerApi.trace("Sending PUT request to URL: " + this.url);
         const response: Promise<Response> = sendRequest(this.url, putRequest);
-        return this.responseParser.parseChapter(response);
+        return this.responseParser.parseChapter(response, successMsg, errorMsg);
     }
 
     /**
@@ -73,10 +78,10 @@ export class EndpointsChapter implements IEndpointsChapter {
      *
      * @param postRequest PATCH request with course JSON body containing a course ID and one or more course fields.
      */
-    public patchChapter(patchRequest: RequestInit): Promise<IChapter> {
+    public patchChapter(patchRequest: RequestInit, successMsg?: string, errorMsg?: string): Promise<IChapter> {
         this.loggerApi.trace("Sending PATCH request to URL: " + this.url);
         const response: Promise<Response> = sendRequest(this.url, patchRequest);
-        return this.responseParser.parseChapter(response);
+        return this.responseParser.parseChapter(response, successMsg, errorMsg);
     }
 
     /**
@@ -85,11 +90,16 @@ export class EndpointsChapter implements IEndpointsChapter {
      * @param deleteRequest DELETE request.
      * @param id Course ID for URL parameter.
      */
-    public deleteChapter(deleteRequest: RequestInit, id: string): Promise<void> {
+    public deleteChapter(
+        deleteRequest: RequestInit,
+        id: string,
+        successMsg?: string,
+        errorMsg?: string
+    ): Promise<void> {
         const urlUpdated = this.url + "/" + id;
 
         this.loggerApi.trace("Sending DELETE request to URL: " + urlUpdated);
         const response: Promise<Response> = sendRequest(urlUpdated, deleteRequest);
-        return this.responseParser.checkEmptyResponse(response);
+        return this.responseParser.checkEmptyResponse(response, successMsg, errorMsg);
     }
 }

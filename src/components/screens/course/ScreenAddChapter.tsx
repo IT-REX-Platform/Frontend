@@ -35,7 +35,6 @@ import { Event } from "@react-native-community/datetimepicker";
 import DraggableFlatList from "react-native-draggable-flatlist";
 import { TextButton } from "../../uiElements/TextButton";
 import { validateCourseDates } from "../../../helperScripts/validateCourseDates";
-import { ToastService } from "../../../services/toasts/ToastService";
 
 type ScreenCourseTabsNavigationProp = CompositeNavigationProp<
     StackNavigationProp<CourseStackParamList, "CHAPTER">,
@@ -51,8 +50,6 @@ export const ScreenAddChapter: React.FC = () => {
     const navigation = useNavigation<ScreenCourseTabsNavigationProp>();
     const loggerService = loggerFactory.getLogger("service.VideoPoolComponent");
     let chapterId = route.params.chapterId;
-
-    const toast: ToastService = new ToastService();
 
     if (chapterId == "undefined") {
         chapterId = undefined;
@@ -231,38 +228,35 @@ export const ScreenAddChapter: React.FC = () => {
 
                 const request: RequestInit = RequestFactory.createGetRequest();
                 chapterEndpoint
-                    .getChapter(request, chapterId)
+                    .getChapter(request, chapterId, undefined, i18n.t("itrex.getChapterError"))
                     .then((chapter) => {
                         setChapter(chapter);
                         setChapterName(chapter.title);
                         setStartDate(chapter.startDate);
                         setEndDate(chapter.endDate);
 
-                        getAllVideos(course.id)
-                            .then((videos) => {
-                                // Are there already contents in this chapter ?
-                                if (chapter.contents !== undefined) {
-                                    const newContentList: IVideo[] = [];
-                                    // Remove assigned contents from the pool, and add those to the "contentList"
-                                    for (const contentId of chapter.contents) {
-                                        const videoInPool = videos.findIndex((content) => content.id === contentId);
+                        _getAllVideos(course.id).then((videos) => {
+                            // Are there already contents in this chapter ?
+                            if (chapter.contents !== undefined) {
+                                const newContentList: IVideo[] = [];
+                                // Remove assigned contents from the pool, and add those to the "contentList"
+                                for (const contentId of chapter.contents) {
+                                    const videoInPool = videos.findIndex((content) => content.id === contentId);
 
-                                        if (videoInPool !== -1) {
-                                            // Add To Content-List
-                                            newContentList.push(videos[videoInPool]);
-                                            // Remove from Pool-List
-                                            videos.splice(videoInPool, 1);
-                                        }
+                                    if (videoInPool !== -1) {
+                                        // Add To Content-List
+                                        newContentList.push(videos[videoInPool]);
+                                        // Remove from Pool-List
+                                        videos.splice(videoInPool, 1);
                                     }
-                                    setContentList(newContentList);
-                                    setVideoPoolList([...videos]);
                                 }
-                            })
-                            .catch(() => toast.error(i18n.t("itrex.getVideosError")));
-                    })
-                    .catch(() => toast.error(i18n.t("itrex.getChapterError")));
+                                setContentList(newContentList);
+                                setVideoPoolList([...videos]);
+                            }
+                        });
+                    });
             } else {
-                getAllVideos(course.id);
+                _getAllVideos(course.id);
             }
         }, [chapterId])
     );
@@ -356,14 +350,11 @@ export const ScreenAddChapter: React.FC = () => {
             chapter.contents = currContentList;
 
             const patchRequest: RequestInit = RequestFactory.createPatchRequest(chapter);
-            chapterEndpoint
-                .patchChapter(patchRequest)
-                .then(() => {
-                    toast.success(i18n.t("itrex.chapterUpdateSuccess"));
-                })
-                .catch(() => {
-                    toast.error(i18n.t("itrex.updateChapterError"));
-                });
+            chapterEndpoint.patchChapter(
+                patchRequest,
+                i18n.t("itrex.chapterUpdateSuccess"),
+                i18n.t("itrex.updateChapterError")
+            );
         }
     }
 
@@ -382,7 +373,7 @@ export const ScreenAddChapter: React.FC = () => {
      *
      * @param courseId ID of the course to which the videos belong.
      */
-    async function getAllVideos(courseId?: string): Promise<IVideo[]> {
+    async function _getAllVideos(courseId?: string): Promise<IVideo[]> {
         if (course.id == undefined) {
             loggerService.warn("Course ID undefined, can't get videos.");
             setLoading(false);
@@ -392,19 +383,12 @@ export const ScreenAddChapter: React.FC = () => {
 
         const request: RequestInit = RequestFactory.createGetRequest();
         return endpointsVideo
-            .getAllVideos(request, courseId)
+            .getAllVideos(request, courseId, undefined, i18n.t("itrex.getVideosError"))
             .then((videosReceived: IVideo[]) => {
                 setVideoPoolList(videosReceived);
                 return videosReceived;
             })
-            .catch((error) => {
-                toast.error(i18n.t("itrex.getVideosError"));
-                loggerService.error("An error has occurred while getting videos.", error);
-                return [];
-            })
-            .finally(() => {
-                setLoading(false);
-            });
+            .finally(() => setLoading(false));
     }
 };
 

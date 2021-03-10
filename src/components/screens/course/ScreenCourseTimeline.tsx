@@ -16,7 +16,6 @@ import { ICourse } from "../../../types/ICourse";
 import CourseService from "../../../services/CourseService";
 import AuthenticationService from "../../../services/AuthenticationService";
 import i18n from "../../../locales";
-import { ToastService } from "../../../services/toasts/ToastService";
 import { ScrollView } from "react-native-gesture-handler";
 
 export type ScreenCourseTimelineNavigationProp = CompositeNavigationProp<
@@ -27,8 +26,6 @@ export type ScreenCourseTimelineNavigationProp = CompositeNavigationProp<
 export const ScreenCourseTimeline: React.FC = () => {
     const navigation = useNavigation<ScreenCourseTimelineNavigationProp>();
     const courseService: CourseService = new CourseService();
-
-    const toast: ToastService = new ToastService();
 
     const [edit, setEdit] = useState(false);
 
@@ -41,12 +38,7 @@ export const ScreenCourseTimeline: React.FC = () => {
     const isFocused = useIsFocused();
     useEffect(() => {
         if (isFocused && course.id !== undefined) {
-            courseService
-                .getCourse(course.id)
-                .then((receivedCourse) => {
-                    setMyCourse(receivedCourse);
-                })
-                .catch(() => toast.error(i18n.t("itrex.getCourseError")));
+            courseService.getCourse(course.id).then((receivedCourse) => setMyCourse(receivedCourse));
         }
     }, [isFocused]);
     return (

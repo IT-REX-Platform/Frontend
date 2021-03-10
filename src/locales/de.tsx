@@ -103,12 +103,13 @@ export const de = {
 
         chapterCreatedSuccess: "Das Kapitel wurde erfolgreich angelegt.",
         chapterUpdateSuccess: "Das Kapitel wurde erfolgreich aktualisiert.",
-        publishedSuccessfully: "Der Kurs wurde erfolgreich veröffentlicht.",
+        publishCourseSuccess: "Der Kurs wurde erfolgreich veröffentlicht.",
         courseDeletedSuccessfully: "Der Kurs wurde erfolgreich gelöscht.",
         confirmPublishCourse:
             "Durch das Veröffentlichen des Kurses wird es möglich, dass Teilnehmer dem Kurs beitreten können. Start- und Enddatum werden beim Veröffentlichen des Kurses ebenfalls festgelegt.",
         confirmDeleteCourse: "Wollen Sie diesen Kurs wirklich löschen?",
 
+        getCoursesError: "Ein Fehler ist beim Zugriff auf die Kurse aufgetreten.",
         getCourseError: "Ein Fehler ist beim Zugriff auf einen Kurs aufgetreten.",
         createCourseError: "Ein Fehler ist beim Erstellen eines Kurses aufgetreten.",
         publishCourseError: "Ein Fehler ist eim Veröffentlichen des Kurses aufgetreten.",

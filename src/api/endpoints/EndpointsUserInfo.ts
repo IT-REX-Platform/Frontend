@@ -26,9 +26,9 @@ export class EndpointsUserInfo implements IEndpointsUserInfo {
      * @param getRequest GET request.
      * @returns a promise containing information about the requesting user.
      */
-    public getUserInfo(getRequest: RequestInit): Promise<IUser> {
+    public getUserInfo(getRequest: RequestInit, successMsg?: string, errorMsg?: string): Promise<IUser> {
         this.loggerApi.trace("Sending GET request to URL: " + this.url);
         const response: Promise<Response> = sendRequest(this.url, getRequest);
-        return this.responseParser.parseUserInfo(response);
+        return this.responseParser.parseUserInfo(response, successMsg, errorMsg);
     }
 }

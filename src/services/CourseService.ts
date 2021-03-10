@@ -11,50 +11,47 @@ export default class CourseService {
 
     /**
      * This Method returns an course with all its Chapters and Contents
-     * @param id of the course to be fetched
+     * @param courseId of the course to be fetched
      */
-    public getCourse(id: string): Promise<ICourse> {
+    public getCourse(courseId: string): Promise<ICourse> {
         return new Promise((resolve) => {
             const request: RequestInit = RequestFactory.createGetRequest();
 
             const courseEndpoint = new EndpointsCourse();
             const chapterEndpoint = new EndpointsChapter();
 
-            courseEndpoint.getCourse(request, id).then((course) => {
+            courseEndpoint.getCourse(request, courseId, undefined, i18n.t("itrex.getCourseError")).then((course) => {
                 if (course.chapters !== undefined) {
                     // Do something after all promises are "finished"
                     Promise.all(
                         course.chapters?.map((chapterId) => {
                             return new Promise((resolve) => {
                                 chapterEndpoint
-                                    .getChapter(request, chapterId)
+                                    .getChapter(request, chapterId, undefined, i18n.t("itrex.getChapterError"))
                                     .then((chapter) => {
                                         course.chapterObjects?.push(chapter);
                                         resolve(chapter);
-                                    })
-                                    .catch(() => this.toast.error(i18n.t("itrex.getChapterError")));
+                                    });
                             });
                         })
-                    )
-                        .then(() => {
-                            // Push the Chapter to the right index
-                            // Promises may resolve in a different order
-                            const order: { [id: string]: number } = {};
-                            if (course.chapters !== undefined && course.chapterObjects != undefined) {
-                                course.chapters.forEach(function (a, i) {
-                                    order[a] = i;
-                                });
-                                course.chapterObjects.sort(function (a, b) {
-                                    if (a.id !== undefined && b.id !== undefined) {
-                                        return order[a.id] - order[b.id];
-                                    }
-                                    return 0;
-                                });
-                            }
+                    ).then(() => {
+                        // Push the Chapter to the right index
+                        // Promises may resolve in a different order
+                        const order: { [id: string]: number } = {};
+                        if (course.chapters !== undefined && course.chapterObjects != undefined) {
+                            course.chapters.forEach(function (a, i) {
+                                order[a] = i;
+                            });
+                            course.chapterObjects.sort(function (a, b) {
+                                if (a.id !== undefined && b.id !== undefined) {
+                                    return order[a.id] - order[b.id];
+                                }
+                                return 0;
+                            });
+                        }
 
-                            resolve(course);
-                        })
-                        .catch(() => this.toast.error(i18n.t("itrex.getCourseError")));
+                        resolve(course);
+                    });
                 }
             });
         });
@@ -69,9 +66,9 @@ export default class CourseService {
         const postRequest: RequestInit = RequestFactory.createPostRequestWithBody(chapter);
         const chapterEndpoint = new EndpointsChapter();
         const courseEndpoint = new EndpointsCourse();
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             chapterEndpoint
-                .createChapter(postRequest)
+                .createChapter(postRequest, undefined, i18n.t("itrex.createUpdateChapterError"))
                 .then((chapter) => {
                     // Chapter created successfully
                     // ONYL for DEMO, linking should apply automatically on the backend
@@ -90,16 +87,12 @@ export default class CourseService {
 
                     const patchRequest: RequestInit = RequestFactory.createPatchRequest(partialCourse);
                     courseEndpoint
-                        .patchCourse(patchRequest)
-                        .then(() => {
-                            this.toast.success(i18n.t("itrex.chapterCreatedSuccess"));
-                            resolve(chapter);
-                        })
-                        .catch(() => this.toast.error(i18n.t("itrex.createChapterError")));
-                })
-                .catch(() => {
-                    this.toast.error(i18n.t("itrex.createUpdateChapterError"));
-                    reject;
+                        .patchCourse(
+                            patchRequest,
+                            i18n.t("itrex.chapterCreatedSuccess"),
+                            i18n.t("itrex.createChapterError")
+                        )
+                        .then(() => resolve(chapter));
                 });
         });
     }
@@ -112,9 +105,8 @@ export default class CourseService {
 
         const deleteRequest: RequestInit = RequestFactory.createDeleteRequest();
 
-        const response = chapterEndpoint
-            .deleteChapter(deleteRequest, chapterId)
-            .catch(() => this.toast.error(i18n.t("itrex.deleteChapterError")));
-        console.log(response);
+        chapterEndpoint
+            .deleteChapter(deleteRequest, chapterId, undefined, i18n.t("itrex.deleteChapterError"))
+            .then((response) => console.log(response));
     }
 }

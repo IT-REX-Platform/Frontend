@@ -117,14 +117,10 @@ export const VideoComponent: React.FC = () => {
 
         const postRequest: RequestInit = RequestFactory.createPatchRequest(videoUpdate);
         await endpointsVideo
-            .patchVideo(postRequest)
+            .patchVideo(postRequest, i18n.t("itrex.videoUpdated"), i18n.t("itrex.updateVideoError"))
             .then((response) => {
                 console.log(response);
-                toast.success(i18n.t("itrex.videoUpdated"));
                 navigation.navigate("VIDEO_POOL");
-            })
-            .catch(() => {
-                toast.error(i18n.t("itrex.updateVideoError"));
             });
     }
 
@@ -135,12 +131,8 @@ export const VideoComponent: React.FC = () => {
 
         const deleteRequest: RequestInit = RequestFactory.createDeleteRequest();
         endpointsVideo
-            .deleteVideo(deleteRequest, video.id)
-            .then(() => {
-                toast.success(i18n.t("itrex.videoDeleted"));
-                navigation.navigate("VIDEO_POOL");
-            })
-            .catch(() => toast.error(i18n.t("itrex.deleteVideoError")));
+            .deleteVideo(deleteRequest, video.id, i18n.t("itrex.videoDeleted"), i18n.t("itrex.deleteVideoError"))
+            .then(() => navigation.navigate("VIDEO_POOL"));
     }
 };
 

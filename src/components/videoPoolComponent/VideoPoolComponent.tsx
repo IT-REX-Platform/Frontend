@@ -214,17 +214,12 @@ export const VideoPoolComponent: React.FC = () => {
         const videoFormData: FormData = await buildVideoAsFormData(selectedVideo, course.id);
         const postRequest: RequestInit = RequestFactory.createPostRequestWithFormData(videoFormData);
         await endpointsVideo
-            .uploadVideo(postRequest)
-            .then((video) => {
-                const msg: string = i18n.t("itrex.uploadSuccessful") + video.title;
-                toast.success(msg, false);
-                loggerService.trace("Upload sucessful: " + video.title);
-            })
-            .catch(() => {
-                const msg: string = i18n.t("itrex.uploadFailed") + selectedVideo.name;
-                toast.error(msg, false);
-                loggerService.error("Upload failed: " + selectedVideo.name);
-            });
+            .uploadVideo(
+                postRequest,
+                i18n.t("itrex.uploadSuccessful") + selectedVideo.name,
+                i18n.t("itrex.uploadFailed") + selectedVideo.name
+            )
+            .then((video) => loggerService.trace("Upload sucessful: " + video.title));
     }
 
     function _resetAnimBeforeGetAllVideos() {
@@ -245,19 +240,13 @@ export const VideoPoolComponent: React.FC = () => {
 
         const request: RequestInit = RequestFactory.createGetRequest();
         endpointsVideo
-            .getAllVideos(request, course.id)
+            .getAllVideos(request, course.id, undefined, i18n.t("itrex.getVideosError"))
             .then((videosReceived: IVideo[]) => {
                 setVideos(videosReceived);
                 loggerService.trace("Received videos in next line:");
                 console.log(videosReceived);
             })
-            .catch((error) => {
-                toast.error(i18n.t("itrex.getVideosError"));
-                loggerService.error("An error has occurred while getting videos.", error);
-            })
-            .finally(async () => {
-                setVideoListLoading(false);
-            });
+            .finally(async () => setVideoListLoading(false));
     }
 
     async function _deleteVideo(videoId?: string): Promise<void> {
@@ -267,11 +256,8 @@ export const VideoPoolComponent: React.FC = () => {
 
         const deleteRequest: RequestInit = RequestFactory.createDeleteRequest();
         endpointsVideo
-            .deleteVideo(deleteRequest, videoId)
-            .then(() => {
-                _getAllVideos();
-            })
-            .catch(() => toast.error(i18n.t("itrex.deleteVideoError")));
+            .deleteVideo(deleteRequest, videoId, undefined, i18n.t("itrex.deleteVideoError"))
+            .then(() => _getAllVideos());
     }
 
     function _resetAllStates(): void {

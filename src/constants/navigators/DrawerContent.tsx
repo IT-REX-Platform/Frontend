@@ -114,7 +114,9 @@ export const DrawerContent: React.FC<DrawerContentComponentProps> = (props: Draw
     function _getAllCourses(): void {
         loggerService.trace("Getting all courses.");
         const request: RequestInit = RequestFactory.createGetRequest();
-        endpointsCourse.getUserCourses(request).then((receivedCourses) => setCourses(receivedCourses));
+        endpointsCourse
+            .getUserCourses(request, undefined, undefined, i18n.t("itrex.getCoursesError"))
+            .then((receivedCourses) => setCourses(receivedCourses));
     }
 
     function _displayNoCourses() {

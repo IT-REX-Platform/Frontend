@@ -117,10 +117,7 @@ export default class AuthenticationService {
      */
     public getUserInfo(consumer: (userInfo: IUser) => void): void {
         const request: RequestInit = RequestFactory.createGetRequest();
-        this.endpointsUserInfo
-            .getUserInfo(request)
-            .then(consumer)
-            .catch(() => this.toast.error(i18n.t("itrex.getUserInfoError")));
+        this.endpointsUserInfo.getUserInfo(request, undefined, i18n.t("itrex.getUserInfoError")).then(consumer);
     }
 
     public getRoles(): string[] {

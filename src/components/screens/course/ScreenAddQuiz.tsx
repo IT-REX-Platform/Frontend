@@ -12,7 +12,6 @@ import i18n from "../../../locales";
 import { RequestFactory } from "../../../api/requests/RequestFactory";
 import { EndpointsChapter } from "../../../api/endpoints/EndpointsChapter";
 import { ScreenCourseTabsRouteProp } from "./ScreenCourseTabs";
-import { IQuiz } from "../../../types/IQuiz";
 import { ScreenCourseOverviewNavigationProp } from "./ScreenCourseOverview";
 import { QuestionCard } from "../../QuestionCard";
 import { ScrollView } from "react-native-gesture-handler";
@@ -51,12 +50,11 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
             if (chapterId != undefined) {
                 const request: RequestInit = RequestFactory.createGetRequest();
                 chapterEndpoint
-                    .getChapter(request, chapterId)
+                    .getChapter(request, chapterId, undefined, i18n.t("itrex.getChapterError"))
                     .then((chapter) => {
                         setQuizName(chapter.title + " - Quiz ");
                         console.log(quizList);
-                    })
-                    .catch(() => toast.error(i18n.t("itrex.getChapterError")));
+                    });
             } else {
                 setQuizName("My new Quiz");
             }

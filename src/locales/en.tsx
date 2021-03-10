@@ -103,12 +103,13 @@ export const en = {
 
         chapterCreatedSuccess: "The chapter was created successfully.",
         chapterUpdateSuccess: "The chapter was updated successfully.",
-        publishedSuccessfully: "The course was published successfully.",
+        publishCourseSuccess: "The course was published successfully.",
         courseDeletedSuccessfully: "The course was deleted successfully.",
         confirmPublishCourse:
             "Publishing the course will make it possible for students to join the course. Start- and end-date will also be fixed when publishing the course.",
         confirmDeleteCourse: "Do you really want to delete this course?",
 
+        getCoursesError: "An error occurred while getting courses.",
         getCourseError: "An error occurred while getting the course.",
         createCourseError: "An error occurred while creating the course.",
         publishCourseError: "An error occurred while publishing the course.",

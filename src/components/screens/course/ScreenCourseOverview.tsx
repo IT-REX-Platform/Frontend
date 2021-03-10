@@ -20,11 +20,9 @@ import { RequestFactory } from "../../../api/requests/RequestFactory";
 import { EndpointsCourse } from "../../../api/endpoints/EndpointsCourse";
 import { loggerFactory } from "../../../../logger/LoggerConfig";
 import AuthenticationService from "../../../services/AuthenticationService";
-import { ITREXRoles } from "../../../constants/ITREXRoles";
 import { TextButton } from "../../uiElements/TextButton";
 import { CourseRoles } from "../../../constants/CourseRoles";
 import { IUser } from "../../../types/IUser";
-import { ToastService } from "../../../services/toasts/ToastService";
 
 export type ScreenCourseOverviewNavigationProp = CompositeNavigationProp<
     MaterialTopTabNavigationProp<CourseTabParamList, "OVERVIEW">,
@@ -36,8 +34,6 @@ export type ScreenCourseOverviewNavigationProp = CompositeNavigationProp<
 
 export const ScreenCourseOverview: React.FC = () => {
     const navigation = useNavigation<ScreenCourseOverviewNavigationProp>();
-
-    const toast: ToastService = new ToastService();
 
     React.useContext(LocalizationContext);
     const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");
@@ -182,12 +178,8 @@ export const ScreenCourseOverview: React.FC = () => {
         loggerService.trace(`Updating course: name=${courses.name}, publishedState=${CoursePublishState.PUBLISHED}.`);
         const putRequest: RequestInit = RequestFactory.createPatchRequest(course);
         endpointsCourse
-            .patchCourse(putRequest)
-            .then((data) => {
-                console.log(data);
-                toast.success(i18n.t("itrex.publishedSuccessfully"));
-            })
-            .catch(() => toast.error(i18n.t("itrex.publishCourseError")));
+            .patchCourse(putRequest, i18n.t("itrex.publishCourseSuccess"), i18n.t("itrex.publishCourseError"))
+            .then((data) => console.log(data));
     }
 
     function deleteCourse(courses: ICourse): void {
@@ -197,12 +189,13 @@ export const ScreenCourseOverview: React.FC = () => {
 
         const request: RequestInit = RequestFactory.createDeleteRequest();
         endpointsCourse
-            .deleteCourse(request, courses.id)
-            .then(() => {
-                toast.success(i18n.t("itrex.courseDeletedSuccessfully"));
-                navigation.navigate("ROUTE_HOME");
-            })
-            .catch(() => toast.error(i18n.t("itrex.deleteCourseError")));
+            .deleteCourse(
+                request,
+                courses.id,
+                i18n.t("itrex.courseDeletedSuccessfully"),
+                i18n.t("itrex.deleteCourseError")
+            )
+            .then(() => navigation.navigate("ROUTE_HOME"));
     }
 
     function goToVideoPool() {
@@ -214,16 +207,11 @@ export const ScreenCourseOverview: React.FC = () => {
     function leaveCourse() {
         if (course.id !== undefined) {
             const request: RequestInit = RequestFactory.createPostRequestWithoutBody();
-            endpointsCourse
-                .leaveCourse(request, course.id)
-                .then(() => {
-                    AuthenticationService.getInstance()
-                        .refreshToken()
-                        .then(() => {
-                            navigation.navigate("ROUTE_HOME");
-                        });
-                })
-                .catch(() => toast.error(i18n.t("itrex.leaveCourseError")));
+            endpointsCourse.leaveCourse(request, course.id, undefined, i18n.t("itrex.leaveCourseError")).then(() => {
+                AuthenticationService.getInstance()
+                    .refreshToken()
+                    .then(() => navigation.navigate("ROUTE_HOME"));
+            });
         }
     }
 };
