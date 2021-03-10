@@ -206,7 +206,7 @@ export class ResponseParser {
                 .catch((error) => {
                     this.loggerApi.error("An error occurred while parsing quiz.", error);
                     this._toastError(errorMsg);
-                    resolve({});
+                    // resolve({}); // TODO
                 });
         });
     }
@@ -242,19 +242,19 @@ export class ResponseParser {
     private _checkResponseCode(response: Response): void {
         switch (response.status) {
             case 400:
-                this.toast.error(i18n.t("itrex.badRequest"));
+                // this.toast.error(i18n.t("itrex.badRequest"));
                 throw new Error("Bad request error: " + response.status);
             case 404:
-                this.toast.error(i18n.t("itrex.notFound"));
+                // this.toast.error(i18n.t("itrex.notFound"));
                 throw new Error("Not found error: " + response.status);
             case 500:
-                this.toast.error(i18n.t("itrex.internalServerError"));
+                // this.toast.error(i18n.t("itrex.internalServerError"));
                 throw new Error("Internal server error: " + response.status);
             case 504:
-                this.toast.error(i18n.t("itrex.timeoutRequest"));
+                // this.toast.error(i18n.t("itrex.timeoutRequest"));
                 throw new Error("Request timeout error: " + response.status);
             default:
-                this.toast.error(i18n.t("itrex.errorOccured"));
+                // this.toast.error(i18n.t("itrex.errorOccured"));
                 throw new Error("HTTP error: " + response.status);
         }
     }
