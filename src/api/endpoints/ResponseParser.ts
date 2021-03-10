@@ -5,7 +5,6 @@ import { IUser } from "../../types/IUser";
 import { IChapter } from "../../types/IChapter";
 import { ToastService } from "../../services/toasts/ToastService";
 import { IQuiz } from "../../types/IQuiz";
-import i18n from "../../locales";
 
 export class ResponseParser {
     private loggerApi;
