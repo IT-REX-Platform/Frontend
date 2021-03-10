@@ -140,7 +140,7 @@ export const ScreenCourseOverview: React.FC = () => {
         }
     }
     function getPublishedSate(isPublished: string | undefined) {
-        if (isPublished === "UNPUBLISHED") {
+        if (isPublished === CoursePublishState.UNPUBLISHED) {
             return (
                 <>
                     <View style={styles.unpublishedCard}>
@@ -152,7 +152,7 @@ export const ScreenCourseOverview: React.FC = () => {
                     {checkOwnerSettings()}
                 </>
             );
-        } else if (isPublished === "PUBLISHED") {
+        } else if (isPublished === CoursePublishState.PUBLISHED) {
             return (
                 <>
                     <View style={styles.publishedCard}>
