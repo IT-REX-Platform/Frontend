@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import { useFocusEffect } from "@react-navigation/native";
 import React, { useState } from "react";
 import { ImageBackground, StyleSheet, View, TextInput, Text } from "react-native";
@@ -8,9 +9,9 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { TextButton } from "../../uiElements/TextButton";
 import { createAlert } from "../../../helperScripts/createAlert";
 import i18n from "../../../locales";
-import { IQuestionMultipleChoice, IQuestionNumeric, IQuestionSingleChoice } from "../../../types/IQuestion";
-import { IUser } from "../../../types/IUser";
+import { IQuestionNumeric, IQuestionSingleChoice } from "../../../types/IQuestion";
 import { QuestionTypes } from "../../../constants/QuestionTypes";
+import * as NumericInput from "react-numeric-input";
 
 import Select from "react-select";
 import { ISolutionMultipleChoice, ISolutionNumeric } from "../../../types/ISolution";
@@ -24,10 +25,6 @@ interface ChapterComponentProps {
 
 export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
     React.useContext(LocalizationContext);
-    const [user, setUserInfo] = useState<IUser>({});
-    const [question, setQuestion] = useState<
-        Array<IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric>
-    >();
     const [questionText, setQuestionText] = useState<string>("Please add your question here.");
 
     const kindOfQuestionOptions = [
@@ -35,6 +32,9 @@ export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
         { value: QuestionTypes.SINGLE_CHOICE, label: "Single Choice" },
         { value: QuestionTypes.NUMERIC, label: "Numeric" },
     ];
+
+    const [numberSolution, setNumberSolution] = useState<number | null>(5);
+    const [epsilonSolution, setEpsilonSolution] = useState<number | null>(0.1);
 
     const [solutionNum, setSolutionNum] = useState<ISolutionNumeric>();
     const [solutionMultiChoice, setsolutionMultiChoice] = useState<ISolutionMultipleChoice>();
@@ -104,21 +104,37 @@ export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
         if (selectedKindOfQuestion === QuestionTypes.NUMERIC) {
             return (
                 <>
-                    <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "center", marginTop: 90 }}>
-                        <View
-                            style={{
-                                flexDirection: "row",
-                                flexWrap: "wrap",
-                                justifyContent: "center",
-                                width: "80%",
-                            }}>
-                            <Text style={styles.textStyle}>Add your Answer right here</Text>
-                            <TextInput
-                                editable
-                                style={[styles.descriptionInput, styles.separator]}
-                                onChangeText={(text: string) => setSolutionNum({ result: Number(text), epsilon: 54 })}
-                                multiline={true}
-                                testID="courseDescriptionInput"
+                    <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "center", marginTop: 100 }}>
+                        <View style={styles.contentContainer}>
+                            <Text style={styles.textStyle}>Specify the numeric answer right here: </Text>
+                            <NumericInput
+                                step={0.1}
+                                precision={2}
+                                onChange={(number) => setNumberOfSolution(number)}
+                                style={{
+                                    input: {
+                                        color: "white",
+                                        background: dark.Opacity.darkBlue1,
+                                        borderColor: dark.Opacity.darkBlue1,
+                                        borderBlockColor: dark.Opacity.darkBlue1,
+                                    },
+                                }}
+                            />
+                        </View>
+                        <View style={styles.contentContainer}>
+                            <Text style={styles.textStyle}>Specify the epsilon value right here: </Text>
+                            <NumericInput
+                                step={0.1}
+                                precision={2}
+                                onChange={(number) => setEpsilonSolution(number)}
+                                style={{
+                                    input: {
+                                        color: "white",
+                                        background: dark.Opacity.darkBlue1,
+                                        borderColor: dark.Opacity.darkBlue1,
+                                        borderBlockColor: dark.Opacity.darkBlue1,
+                                    },
+                                }}
                             />
                         </View>
                     </View>
@@ -173,6 +189,10 @@ export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
         }
     }
 
+    function setNumberOfSolution(solutionNumber: number | null) {
+        setNumberSolution(solutionNumber);
+    }
+
     function addSolutionEntry(index: string, text: string) {
         setSolutionSingleChoice((solutionSingleChoice) => ({ ...solutionSingleChoice, [index]: text }));
     }
@@ -183,16 +203,28 @@ export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
         // TODO: Verify if use added an other question text & answers & solutions & selected a answer type
         // TODO: confirm save
 
-        if (solutionSingleChoice === undefined || selectedKindOfQuestion === undefined) {
-            return;
-        }
-
         if (selectedKindOfQuestion == QuestionTypes.SINGLE_CHOICE) {
+            if (solutionSingleChoice === undefined || selectedKindOfQuestion === undefined) {
+                return;
+            }
             const myNewQuestion: IQuestionSingleChoice = {
                 type: selectedKindOfQuestion,
                 question: questionText,
                 choices: solutionSingleChoice,
                 solution: "3",
+            };
+            console.log(myNewQuestion);
+        } else if (selectedKindOfQuestion == QuestionTypes.NUMERIC) {
+            if (epsilonSolution === null || numberSolution === null) {
+                return;
+            }
+            const myNewQuestion: IQuestionNumeric = {
+                type: selectedKindOfQuestion,
+                question: questionText,
+                solution: {
+                    epsilon: epsilonSolution,
+                    result: numberSolution,
+                },
             };
             console.log(myNewQuestion);
         }
@@ -278,5 +310,12 @@ const styles = StyleSheet.create({
     textStyle: {
         color: "white",
         fontSize: 18,
+    },
+    contentContainer: {
+        flexDirection: "row",
+        flexWrap: "wrap",
+        justifyContent: "center",
+        width: "80%",
+        marginTop: 20,
     },
 });
