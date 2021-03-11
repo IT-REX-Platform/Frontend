@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import React from "react";
 import i18n from "../locales";
 import { LocalizationContext } from "./Context";
@@ -11,11 +12,14 @@ import { InfoPublished } from "./uiElements/InfoPublished";
 import { InfoUnpublished } from "./uiElements/InfoUnpublished";
 import { TextButton } from "./uiElements/TextButton";
 import { CoursePublishState } from "../constants/CoursePublishState";
+import Select from "react-select";
+import { ICourse } from "../types/ICourse";
 
 interface ChapterComponentProps {
     chapter?: IChapter;
     chapterId?: string;
     editMode?: boolean;
+    course: ICourse;
 }
 
 export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
@@ -23,6 +27,15 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
     const navigation = useNavigation();
 
     const chapter = props.chapter;
+    const course = props.course;
+
+    const timePeriods = course.timePeriods?.map((timePeriod) => {
+        return {
+            value: timePeriod.id,
+            label: timePeriod.startDate + " - " + timePeriod.endDate,
+        };
+    });
+
     return (
         <View style={styles.chapterContainer}>
             <View style={styles.chapterTopRow}>
@@ -33,14 +46,59 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
             <View style={styles.chapterBottomRow}>
                 <Text style={styles.chapterMaterialHeader}>{i18n.t("itrex.chapterMaterial")}</Text>
                 <View style={styles.chapterMaterialElements}>
-                    {chapter?.contentReferences?.map((contentReference) => {
-                        return (
-                            <View style={styles.chapterMaterialElement}>
-                                <MaterialIcons name="attach-file" size={28} color="white" style={styles.icon} />
-                                <Text style={styles.chapterMaterialElementText}>{contentReference.contentId}</Text>
-                            </View>
-                        );
-                    })}
+                    {timePeriods !== undefined &&
+                        chapter?.contentReferences?.map((contentReference) => {
+                            return (
+                                <View style={styles.chapterMaterialElement}>
+                                    <MaterialIcons name="attach-file" size={28} color="white" style={styles.icon} />
+
+                                    <View
+                                        style={{
+                                            flex: 1,
+                                            flexDirection: "row",
+                                            justifyContent: "space-between",
+                                            alignItems: "center",
+                                        }}>
+                                        <Text style={styles.chapterMaterialElementText}>
+                                            {contentReference.contentId}
+                                        </Text>
+                                        {props.editMode ? (
+                                            <Select
+                                                options={timePeriods}
+                                                defaultValue={timePeriods.find(
+                                                    (timePeriod) => timePeriod.value === contentReference.timePeriodId
+                                                )}
+                                                theme={(theme) => ({
+                                                    ...theme,
+                                                    borderRadius: 5,
+                                                    colors: {
+                                                        ...theme.colors,
+                                                        primary25: dark.Opacity.darkBlue1,
+                                                        primary: dark.Opacity.pink,
+                                                        backgroundColor: dark.Opacity.darkBlue1,
+                                                    },
+                                                })}
+                                                menuPortalTarget={document.body}
+                                                menuPosition={"fixed"}
+                                                styles={{
+                                                    container: () => ({
+                                                        width: 300,
+                                                    }),
+                                                }}></Select>
+                                        ) : (
+                                            <Text style={styles.chapterMaterialElementText}>
+                                                {
+                                                    timePeriods.find(
+                                                        (timePeriod) =>
+                                                            timePeriod.value === contentReference.timePeriodId
+                                                    )?.label
+                                                }
+                                            </Text>
+                                        )}
+                                    </View>
+                                </View>
+                            );
+                        })}
                 </View>
                 <View style={styles.break} />
                 <Text style={styles.chapterMaterialHeader}>Chapter Quiz</Text>
@@ -177,12 +235,13 @@ const styles = StyleSheet.create({
         marginBottom: 5,
         paddingTop: "20px",
         flex: 1,
-        flexDirection: "row",
-        alignSelf: "center",
+        flexDirection: "column",
+        width: "100%",
     },
     chapterMaterialElement: {
         flex: 1,
         flexDirection: "row",
+
         color: "white",
         fontWeight: "bold",
         alignItems: "center",
