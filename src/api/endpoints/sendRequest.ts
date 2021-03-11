@@ -1,5 +1,5 @@
-import { createAlert } from "../../helperScripts/createAlert";
 import i18n from "../../locales";
+import { ToastService } from "../../services/toasts/ToastService";
 
 /**
  * Function for sending requests to backend and receiving responses from backend.
@@ -9,6 +9,7 @@ import i18n from "../../locales";
  * @returns Response wrapped in promise.
  */
 export function sendRequest(url: string, request: RequestInit): Promise<Response> {
+    const toast: ToastService = new ToastService();
     return new Promise((resolve, reject) => {
         fetch(url, request)
             .then((response) => {
@@ -16,7 +17,7 @@ export function sendRequest(url: string, request: RequestInit): Promise<Response
             })
             // This does not catch HTTP error responses, e.g. 404, 500, etc.
             .catch((error) => {
-                createAlert(i18n.t("itrex.serviceError"));
+                toast.error(i18n.t("itrex.serviceError"));
                 reject(error);
             });
     });

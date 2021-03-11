@@ -227,34 +227,36 @@ export const ScreenAddChapter: React.FC = () => {
                 loggerService.trace("Getting all videos of course: " + course.id);
 
                 const request: RequestInit = RequestFactory.createGetRequest();
-                chapterEndpoint.getChapter(request, chapterId).then((chapter) => {
-                    setChapter(chapter);
-                    setChapterName(chapter.title);
-                    setStartDate(chapter.startDate);
-                    setEndDate(chapter.endDate);
+                chapterEndpoint
+                    .getChapter(request, chapterId, undefined, i18n.t("itrex.getChapterError"))
+                    .then((chapter) => {
+                        setChapter(chapter);
+                        setChapterName(chapter.title);
+                        setStartDate(chapter.startDate);
+                        setEndDate(chapter.endDate);
 
-                    getAllVideos(course.id).then((videos) => {
-                        // Are there already contents in this chapter ?
-                        if (chapter.contents !== undefined) {
-                            const newContentList: IVideo[] = [];
-                            // Remove assigned contents from the pool, and add those to the "contentList"
-                            for (const contentId of chapter.contents) {
-                                const videoInPool = videos.findIndex((content) => content.id === contentId);
+                        _getAllVideos(course.id).then((videos) => {
+                            // Are there already contents in this chapter ?
+                            if (chapter.contents !== undefined) {
+                                const newContentList: IVideo[] = [];
+                                // Remove assigned contents from the pool, and add those to the "contentList"
+                                for (const contentId of chapter.contents) {
+                                    const videoInPool = videos.findIndex((content) => content.id === contentId);
 
-                                if (videoInPool !== -1) {
-                                    // Add To Content-List
-                                    newContentList.push(videos[videoInPool]);
-                                    // Remove from Pool-List
-                                    videos.splice(videoInPool, 1);
+                                    if (videoInPool !== -1) {
+                                        // Add To Content-List
+                                        newContentList.push(videos[videoInPool]);
+                                        // Remove from Pool-List
+                                        videos.splice(videoInPool, 1);
+                                    }
                                 }
+                                setContentList(newContentList);
+                                setVideoPoolList([...videos]);
                             }
-                            setContentList(newContentList);
-                            setVideoPoolList([...videos]);
-                        }
+                        });
                     });
-                });
             } else {
-                getAllVideos(course.id);
+                _getAllVideos(course.id);
             }
         }, [chapterId])
     );
@@ -348,7 +350,11 @@ export const ScreenAddChapter: React.FC = () => {
             chapter.contents = currContentList;
 
             const patchRequest: RequestInit = RequestFactory.createPatchRequest(chapter);
-            chapterEndpoint.patchChapter(patchRequest);
+            chapterEndpoint.patchChapter(
+                patchRequest,
+                i18n.t("itrex.chapterUpdateSuccess"),
+                i18n.t("itrex.updateChapterError")
+            );
         }
     }
 
@@ -367,23 +373,22 @@ export const ScreenAddChapter: React.FC = () => {
      *
      * @param courseId ID of the course to which the videos belong.
      */
-    async function getAllVideos(courseId?: string): Promise<IVideo[]> {
-        const request: RequestInit = RequestFactory.createGetRequest();
-        const response: Promise<IVideo[]> = endpointsVideo.getAllVideos(request, courseId);
+    async function _getAllVideos(courseId?: string): Promise<IVideo[]> {
+        if (course.id == undefined) {
+            loggerService.warn("Course ID undefined, can't get videos.");
+            setLoading(false);
+            return [];
+        }
+        loggerService.trace("Getting all videos of course: " + course.id);
 
-        return new Promise((resolve) => {
-            response
-                .then((videosReceived: IVideo[]) => {
-                    setVideoPoolList(videosReceived);
-                    resolve(videosReceived);
-                })
-                .catch((error) => {
-                    loggerService.error("An error has occured while getting videos.", error);
-                })
-                .finally(() => {
-                    setLoading(false);
-                });
-        });
+        const request: RequestInit = RequestFactory.createGetRequest();
+        return endpointsVideo
+            .getAllVideos(request, courseId, undefined, i18n.t("itrex.getVideosError"))
+            .then((videosReceived: IVideo[]) => {
+                setVideoPoolList(videosReceived);
+                return videosReceived;
+            })
+            .finally(() => setLoading(false));
     }
 };
 

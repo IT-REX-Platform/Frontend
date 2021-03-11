@@ -63,9 +63,9 @@ export const ScreenHome: React.FC<ScreenHomeProps> = (props) => {
     useEffect(() => {
         if (isFocused) {
             const request: RequestInit = RequestFactory.createGetRequest();
-            endpointsCourse.getUserCourses(request).then((receivedCourses: ICourse[]) => {
-                setAllCourses(receivedCourses);
-            });
+            endpointsCourse
+                .getUserCourses(request, undefined, undefined, i18n.t("itrex.getCoursesError"))
+                .then((receivedCourses: ICourse[]) => setAllCourses(receivedCourses));
         }
     }, [isFocused]);
 
@@ -85,9 +85,9 @@ export const ScreenHome: React.FC<ScreenHomeProps> = (props) => {
 
         const filterParams: ICourse = { publishState, activeOnly };
 
-        endpointsCourse.getUserCourses(request, filterParams).then((receivedCourses: ICourse[]) => {
-            setFilteredCourses(receivedCourses);
-        });
+        endpointsCourse
+            .getUserCourses(request, filterParams, undefined, i18n.t("itrex.getCoursesError"))
+            .then((receivedCourses: ICourse[]) => setFilteredCourses(receivedCourses));
     }
 
     function renderFilters() {

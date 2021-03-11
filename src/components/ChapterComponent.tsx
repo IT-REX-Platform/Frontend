@@ -10,6 +10,7 @@ import { useNavigation } from "@react-navigation/native";
 import { TextButton } from "./uiElements/TextButton";
 import { createAlert } from "../helperScripts/createAlert";
 import { quizList } from "../constants/fixtures/quizzes.fixture";
+import { CoursePublishState } from "../constants/CoursePublishState";
 
 interface ChapterComponentProps {
     chapter?: IChapter;
@@ -27,7 +28,7 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
             <View style={styles.chapterTopRow}>
                 <Text style={styles.chapterHeader}>{chapter?.title}</Text>
                 {/* TODO: add real publish/unpublished state to the chapterss*/}
-                <View style={styles.chapterStatus}>{getPublishedSate("PUBLISHED")}</View>
+                <View style={styles.chapterStatus}>{getPublishedSate(CoursePublishState.PUBLISHED)}</View>
             </View>
             <View style={styles.chapterBottomRow}>
                 <Text style={styles.chapterMaterialHeader}>{i18n.t("itrex.chapterMaterial")}</Text>
@@ -109,7 +110,7 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
     }
 
     function getPublishedSate(isPublished: string | undefined) {
-        if (isPublished === "UNPUBLISHED") {
+        if (isPublished === CoursePublishState.UNPUBLISHED) {
             return (
                 <>
                     <View style={styles.unpublishedCard}>
@@ -118,7 +119,7 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                     </View>
                 </>
             );
-        } else if (isPublished === "PUBLISHED") {
+        } else if (isPublished === CoursePublishState.PUBLISHED) {
             return (
                 <>
                     <View style={styles.publishedCard}>

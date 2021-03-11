@@ -13,20 +13,24 @@ import { IUser } from "../../types/IUser";
 export class EndpointsUserInfo implements IEndpointsUserInfo {
     private loggerApi = loggerFactory.getLogger("API.EndpointsUserInfo");
     private url: string;
+    private responseParser: ResponseParser;
 
     public constructor() {
         this.url = itRexVars().apiUrl + ApiUrls.URL_USERINFO;
+        this.responseParser = new ResponseParser();
     }
 
     /**
      * Gets the user info from its endpoint.
      *
      * @param getRequest GET request.
+     * @param successMsg A success message.
+     * @param errorMsg An error message.
      * @returns a promise containing information about the requesting user.
      */
-    public getUserInfo(getRequest: RequestInit): Promise<IUser> {
+    public getUserInfo(getRequest: RequestInit, successMsg?: string, errorMsg?: string): Promise<IUser> {
         this.loggerApi.trace("Sending GET request to URL: " + this.url);
         const response: Promise<Response> = sendRequest(this.url, getRequest);
-        return ResponseParser.parseUserInfo(response);
+        return this.responseParser.parseUserInfo(response, successMsg, errorMsg);
     }
 }

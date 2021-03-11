@@ -45,9 +45,9 @@ export const ScreenCourse: React.FC = () => {
     useEffect(() => {
         AuthenticationService.getInstance().getUserInfo(setUserInfo);
         const request: RequestInit = RequestFactory.createGetRequest();
-        endpointsCourse.getCourse(request, courseId).then((receivedCourse) => {
-            setCourse(receivedCourse);
-        });
+        endpointsCourse
+            .getCourse(request, courseId, undefined, i18n.t("itrex.getCourseError"))
+            .then((receivedCourse) => setCourse(receivedCourse));
     }, [courseId]);
 
     return (

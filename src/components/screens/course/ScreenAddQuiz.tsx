@@ -12,13 +12,12 @@ import i18n from "../../../locales";
 import { RequestFactory } from "../../../api/requests/RequestFactory";
 import { EndpointsChapter } from "../../../api/endpoints/EndpointsChapter";
 import { ScreenCourseTabsRouteProp } from "./ScreenCourseTabs";
-import { IQuiz } from "../../../types/IQuiz";
-import { toast } from "react-toastify";
 import { ScreenCourseOverviewNavigationProp } from "./ScreenCourseOverview";
 import { QuestionCard } from "../../QuestionCard";
 import { ScrollView } from "react-native-gesture-handler";
 import { IQuestionMultipleChoice, IQuestionNumeric, IQuestionSingleChoice } from "../../../types/IQuestion";
 import { IUser } from "../../../types/IUser";
+import { ToastService } from "../../../services/toasts/ToastService";
 
 interface ChapterComponentProps {
     chapter?: IChapter;
@@ -30,6 +29,9 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
     React.useContext(LocalizationContext);
     const route = useRoute<ScreenCourseTabsRouteProp>();
     const navigation = useNavigation<ScreenCourseOverviewNavigationProp>();
+
+    const toast: ToastService = new ToastService();
+
     let chapterId = route.params.chapterId;
 
     if (chapterId == "undefined") {
@@ -47,10 +49,12 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
         React.useCallback(() => {
             if (chapterId != undefined) {
                 const request: RequestInit = RequestFactory.createGetRequest();
-                chapterEndpoint.getChapter(request, chapterId).then((chapter) => {
-                    setQuizName(chapter.title + " - Quiz ");
-                    console.log(quizList);
-                });
+                chapterEndpoint
+                    .getChapter(request, chapterId, undefined, i18n.t("itrex.getChapterError"))
+                    .then((chapter) => {
+                        setQuizName(chapter.title + " - Quiz ");
+                        console.log(quizList);
+                    });
             } else {
                 setQuizName("My new Quiz");
             }
