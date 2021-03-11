@@ -10,11 +10,11 @@ import { createAlert } from "../../../helperScripts/createAlert";
 import i18n from "../../../locales";
 import { IQuestionMultipleChoice, IQuestionNumeric, IQuestionSingleChoice } from "../../../types/IQuestion";
 import { IUser } from "../../../types/IUser";
-import { create } from "react-test-renderer";
 import { QuestionTypes } from "../../../constants/QuestionTypes";
-import { ITREXRoles } from "../../../constants/ITREXRoles";
 
 import Select from "react-select";
+import { ISolutionMultipleChoice, ISolutionNumeric } from "../../../types/ISolution";
+import { IChoices } from "../../../types/IChoices";
 
 interface ChapterComponentProps {
     chapter?: IChapter;
@@ -28,13 +28,17 @@ export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
     const [question, setQuestion] = useState<
         Array<IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric>
     >();
-    const [questionText, setQuestionText] = useState<string | undefined>("Please add your question here.");
+    const [questionText, setQuestionText] = useState<string>("Please add your question here.");
 
     const kindOfQuestionOptions = [
         { value: QuestionTypes.MULTIPLE_CHOICE, label: "Multiple Choice" },
         { value: QuestionTypes.SINGLE_CHOICE, label: "Single Choice" },
         { value: QuestionTypes.NUMERIC, label: "Numeric" },
     ];
+
+    const [solutionNum, setSolutionNum] = useState<ISolutionNumeric>();
+    const [solutionMultiChoice, setsolutionMultiChoice] = useState<ISolutionMultipleChoice>();
+    const [solutionSingleChoice, setSolutionSingleChoice] = useState<IChoices>();
 
     // Make Single Choice default
     const defaultKindOfQuestionValue = kindOfQuestionOptions[1];
@@ -46,7 +50,7 @@ export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
         React.useCallback(() => {
             setKindOfQuestion(selectedKindOfQuestion);
             // AuthenticationService.getInstance().getUserInfo(setUserInfo);
-        }, [selectedKindOfQuestion])
+        }, [selectedKindOfQuestion, solutionNum, solutionMultiChoice, solutionSingleChoice])
     );
 
     return (
@@ -97,20 +101,26 @@ export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
     }
 
     function setInputFields() {
-        console.log("-----------------------------------------------");
-        console.log("Kind of Question: " + selectedKindOfQuestion);
         if (selectedKindOfQuestion === QuestionTypes.NUMERIC) {
             return (
                 <>
                     <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "center", marginTop: 90 }}>
-                        <Text style={styles.textStyle}>Add your Answer right here</Text>
-                        <TextInput
-                            style={[styles.descriptionInput, styles.separator]}
-                            value={"Numeric Answer"}
-                            onChangeText={(text: string) => console.log(text)}
-                            multiline={true}
-                            testID="courseDescriptionInput"
-                        />
+                        <View
+                            style={{
+                                flexDirection: "row",
+                                flexWrap: "wrap",
+                                justifyContent: "center",
+                                width: "80%",
+                            }}>
+                            <Text style={styles.textStyle}>Add your Answer right here</Text>
+                            <TextInput
+                                editable
+                                style={[styles.descriptionInput, styles.separator]}
+                                onChangeText={(text: string) => setSolutionNum({ result: Number(text), epsilon: 54 })}
+                                multiline={true}
+                                testID="courseDescriptionInput"
+                            />
+                        </View>
                     </View>
                 </>
             );
@@ -121,12 +131,14 @@ export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
             return (
                 <>
                     <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "center", marginTop: 90 }}>
+                        <Text style={styles.textStyle}>Specify the different choices here:</Text>
+                    </View>
+                    <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "center" }}>
                         <View style={styles.cardChoicesRight}>
                             <TextInput
                                 editable
                                 style={[styles.descriptionInput, styles.separator]}
-                                value={"Answer"}
-                                onChangeText={(text: string) => addChoice(text)}
+                                onChangeText={(text: string) => addSolutionEntry("0", text)}
                                 multiline={true}
                             />
                         </View>
@@ -134,8 +146,7 @@ export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
                             <TextInput
                                 editable
                                 style={[styles.descriptionInput, styles.separator]}
-                                value={"Answer"}
-                                onChangeText={(text: string) => addChoice(text)}
+                                onChangeText={(text: string) => addSolutionEntry("1", text)}
                                 multiline={true}
                             />
                         </View>
@@ -143,17 +154,16 @@ export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
                             <TextInput
                                 editable
                                 style={[styles.descriptionInput, styles.separator]}
-                                value={"Answer"}
-                                onChangeText={(text: string) => addChoice(text)}
+                                onChangeText={(text: string) => addSolutionEntry("2", text)}
                                 multiline={true}
                             />
                         </View>
                         <View style={styles.cardChoicesRight}>
                             <TextInput
                                 editable
+                                allowFontScaling={true}
                                 style={[styles.descriptionInput, styles.separator]}
-                                value={"Answer"}
-                                onChangeText={(text: string) => addChoice(text)}
+                                onChangeText={(text: string) => addSolutionEntry("3", text)}
                                 multiline={true}
                             />
                         </View>
@@ -162,15 +172,30 @@ export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
             );
         }
     }
+
+    function addSolutionEntry(index: string, text: string) {
+        setSolutionSingleChoice((solutionSingleChoice) => ({ ...solutionSingleChoice, [index]: text }));
+    }
+
     function saveQuestion() {
         createAlert("Save Question, Navigate back to Add-Quiz page and add this question to the list of questions ");
         // TODO: Save Question, Navigate back, show this question in add Quiz View
         // TODO: Verify if use added an other question text & answers & solutions & selected a answer type
         // TODO: confirm save
-    }
 
-    function addChoice(answerText: string) {
-        // Add question text to questions
+        if (solutionSingleChoice === undefined || selectedKindOfQuestion === undefined) {
+            return;
+        }
+
+        if (selectedKindOfQuestion == QuestionTypes.SINGLE_CHOICE) {
+            const myNewQuestion: IQuestionSingleChoice = {
+                type: selectedKindOfQuestion,
+                question: questionText,
+                choices: solutionSingleChoice,
+                solution: "3",
+            };
+            console.log(myNewQuestion);
+        }
     }
 };
 
@@ -207,7 +232,7 @@ const styles = StyleSheet.create({
         maxHeight: 150,
         width: "40%",
         backgroundColor: dark.Opacity.grey,
-        borderColor: dark.theme.darkGreen,
+        borderColor: dark.theme.lightBlue,
         borderWidth: 5,
         flexDirection: "row",
         justifyContent: "center",
@@ -222,6 +247,8 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: "white",
         borderColor: "white",
+        borderStyle: "dotted",
+        textAlign: "center",
         borderWidth: 1,
         borderRadius: 5,
     },
