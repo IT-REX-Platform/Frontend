@@ -2,11 +2,11 @@ import { IChapter } from "./IChapter";
 
 export type ITimePeriod = {
     id?: string;
-    title?: string;
+    courseId?: string;
     startDate?: Date;
     endDate?: Date;
-    chapterObjects?: IChapter[];
     publishState?: TimePeriodPublishState;
+    contentReferenceIds?: string[];
 };
 
 //???

@@ -1,4 +1,9 @@
+import { IVideo } from "./IVideo";
+
 export type IContent = {
-    index?: number;
+    id?: string;
+    chapterId?: string;
+    timePeriodId?: string;
     contentId?: string;
+    video?: IVideo;
 };

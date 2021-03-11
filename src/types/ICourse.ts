@@ -11,7 +11,7 @@ export type ICourse = {
     maxFoodSum?: number;
     publishState?: CoursePublishState;
     activeOnly?: boolean;
-    chapters?: string[];
-    chapterObjects?: IChapter[];
-    timePeriodObjects?: ITimePeriod[];
+    chapters?: IChapter[];
+    timePeriods?: ITimePeriod[];
+    remainActiveOffset?: number;
 };
