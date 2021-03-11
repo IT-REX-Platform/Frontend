@@ -58,9 +58,10 @@ export const TimelineComponent: React.FC<TimelineComponentProps> = (props) => {
                         ]}></View>
                 </View>
             </View>
-            {props.timePeriod?.chapterObjects?.map((chapter) => (
-                <ChapterComponent key={chapter.id} chapter={chapter} editMode={props.edit}></ChapterComponent>
-            ))}
+            {props.timePeriod?.chapters !== undefined &&
+                props.timePeriod?.chapters.map((chapter) => (
+                    <ChapterComponent key={chapter.id} chapter={chapter} editMode={props.edit}></ChapterComponent>
+                ))}
             {props.edit && (
                 <View style={styles.addChapterContainer}>
                     <TouchableOpacity

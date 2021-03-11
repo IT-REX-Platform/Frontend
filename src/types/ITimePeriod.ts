@@ -7,6 +7,8 @@ export type ITimePeriod = {
     endDate?: Date;
     publishState?: TimePeriodPublishState;
     contentReferenceIds?: string[];
+    // Temporary
+    chapters?: IChapter[];
 };
 
 //???
