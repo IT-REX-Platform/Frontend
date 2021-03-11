@@ -26,18 +26,18 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
     return (
         <View style={styles.chapterContainer}>
             <View style={styles.chapterTopRow}>
-                <Text style={styles.chapterHeader}>{chapter?.title}</Text>
+                <Text style={styles.chapterHeader}>{chapter?.name}</Text>
                 {/* TODO: add real publish/unpublished state to the chapterss*/}
                 <View style={styles.chapterStatus}>{getPublishedSate(CoursePublishState.PUBLISHED)}</View>
             </View>
             <View style={styles.chapterBottomRow}>
                 <Text style={styles.chapterMaterialHeader}>{i18n.t("itrex.chapterMaterial")}</Text>
                 <View style={styles.chapterMaterialElements}>
-                    {chapter?.contents?.map((contentId) => {
+                    {chapter?.contentReferences?.map((contentReference) => {
                         return (
                             <View style={styles.chapterMaterialElement}>
                                 <MaterialIcons name="attach-file" size={28} color="white" style={styles.icon} />
-                                <Text style={styles.chapterMaterialElementText}>{contentId}</Text>
+                                <Text style={styles.chapterMaterialElementText}>{contentReference.contentId}</Text>
                             </View>
                         );
                     })}

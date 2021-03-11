@@ -25,7 +25,9 @@ export const TimelineComponent: React.FC<TimelineComponentProps> = (props) => {
     return (
         <>
             <View style={styles.circleContainer}>
-                <Text style={styles.periodText}>{props.timePeriod?.title}</Text>
+                <Text style={styles.periodText}>
+                    {props.timePeriod?.startDate}-{props.timePeriod?.endDate}
+                </Text>
                 <View
                     style={[
                         styles.mainCircle,
@@ -38,6 +40,7 @@ export const TimelineComponent: React.FC<TimelineComponentProps> = (props) => {
                         props.timePeriod?.publishState === TimePeriodPublishState.NOTSTARTED
                             ? styles.mainCircleNotStarted
                             : {},
+                        props.timePeriod?.publishState === undefined ? styles.mainCircleNotStarted : {},
                     ]}>
                     <View
                         style={[
@@ -51,6 +54,7 @@ export const TimelineComponent: React.FC<TimelineComponentProps> = (props) => {
                             props.timePeriod?.publishState === TimePeriodPublishState.NOTSTARTED
                                 ? styles.innerCircleNotStarted
                                 : {},
+                            props.timePeriod?.publishState === undefined ? styles.innerCircleNotStarted : {},
                         ]}></View>
                 </View>
             </View>

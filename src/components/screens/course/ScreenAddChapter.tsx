@@ -35,6 +35,8 @@ import { Event } from "@react-native-community/datetimepicker";
 import DraggableFlatList from "react-native-draggable-flatlist";
 import { TextButton } from "../../uiElements/TextButton";
 import { validateCourseDates } from "../../../helperScripts/validateCourseDates";
+import { IContent } from "../../../types/IContent";
+import { EndpointsContentReference } from "../../../api/endpoints/EndpointsContentReference";
 
 type ScreenCourseTabsNavigationProp = CompositeNavigationProp<
     StackNavigationProp<CourseStackParamList, "CHAPTER">,
@@ -54,9 +56,6 @@ export const ScreenAddChapter: React.FC = () => {
     if (chapterId == "undefined") {
         chapterId = undefined;
     }
-    // Start- and Enddate for a chapter
-    const [startDate, setStartDate] = useState<Date | undefined>(undefined);
-    const [endDate, setEndDate] = useState<Date | undefined>(undefined);
     //const [image, setImage] = useState(null);
 
     // Loading icon state.
@@ -66,36 +65,15 @@ export const ScreenAddChapter: React.FC = () => {
 
     const initialCourseName = chapterId == undefined ? i18n.t("itrex.myNewChapter") : "";
     const chapterEndpoint = new EndpointsChapter();
+    const contentReferenceEndpoint = new EndpointsContentReference();
     const courseService = new CourseService();
     const [chapter, setChapter] = useState<IChapter>({} as IChapter);
 
     const [chapterName, setChapterName] = useState<string | undefined>(initialCourseName);
 
-    const [contentList, setContentList] = useState<IVideo[]>([]);
+    const [contentList, setContentList] = useState<IContent[]>([]);
 
     const [videoPoolList, setVideoPoolList] = useState<IVideo[]>([]);
-
-    const startDateChanged = (event: ChangeEvent | Event, selectedDate?: Date) => {
-        if (Platform.OS === ("android" || "ios")) {
-            const currentDate = selectedDate || startDate;
-            setStartDate(currentDate);
-        } else {
-            const target: HTMLInputElement = event.target as HTMLInputElement;
-            const currdate: Date = new Date(target.value);
-            setStartDate(currdate);
-        }
-    };
-
-    const endDateChanged = (event: ChangeEvent | Event, selectedDate?: Date) => {
-        if (Platform.OS === ("android" || "ios")) {
-            const currentDate = selectedDate || endDate;
-            setEndDate(currentDate);
-        } else {
-            const target: HTMLInputElement = event.target as HTMLInputElement;
-            const currdate: Date = new Date(target.value);
-            setEndDate(currdate);
-        }
-    };
 
     // Render UI according to un-/available videos data.
     const renderUi = () => {
@@ -125,7 +103,7 @@ export const ScreenAddChapter: React.FC = () => {
     };
 
     // Creates a list for the left side, so that videos can be removed
-    const listRemoveItem = ({ item, drag }: { item: IVideo; drag: undefined }) => (
+    const listRemoveItem = ({ item, drag }: { item: IContent; drag: undefined }) => (
         <View>
             <ListItem
                 containerStyle={{
@@ -143,10 +121,10 @@ export const ScreenAddChapter: React.FC = () => {
                 <ListItem.Content>
                     <TouchableOpacity onLongPress={drag}>
                         <ListItem.Title style={styles.listItemTitle} numberOfLines={1} lineBreakMode="tail">
-                            {item.title}
+                            {item.video?.title}
                         </ListItem.Title>
                         <ListItem.Subtitle style={styles.listItemSubtitle}>
-                            {calculateVideoSize(item.length)}
+                            {calculateVideoSize(item.video?.length)}
                         </ListItem.Subtitle>
                     </TouchableOpacity>
                 </ListItem.Content>
@@ -204,20 +182,29 @@ export const ScreenAddChapter: React.FC = () => {
         if (index > -1) {
             videoPoolList.splice(index, 1);
         }
-        setContentList([...contentList, video]);
+
+        // Create new ContentReference
+        const contentRef: IContent = {
+            chapterId: chapterId,
+            contentId: video.id,
+            video: video,
+        };
+        setContentList([...contentList, contentRef]);
     }
 
     /**
      * Remove Video from Chapter List
      * @param video
      */
-    function removeContent(video: IVideo) {
-        const index = contentList.indexOf(video);
+    function removeContent(content: IContent) {
+        const index = contentList.indexOf(content);
         if (index > -1) {
             contentList.splice(index, 1);
         }
         setContentList([...contentList]);
-        setVideoPoolList([...videoPoolList, video]);
+        if (content.video !== undefined) {
+            setVideoPoolList([...videoPoolList, content.video]);
+        }
     }
 
     // Use the whole structure from the context ??
@@ -231,21 +218,27 @@ export const ScreenAddChapter: React.FC = () => {
                     .getChapter(request, chapterId, undefined, i18n.t("itrex.getChapterError"))
                     .then((chapter) => {
                         setChapter(chapter);
-                        setChapterName(chapter.title);
-                        setStartDate(chapter.startDate);
-                        setEndDate(chapter.endDate);
+                        setChapterName(chapter.name);
 
                         _getAllVideos(course.id).then((videos) => {
                             // Are there already contents in this chapter ?
-                            if (chapter.contents !== undefined) {
+                            if (chapter.contentReferences !== undefined) {
                                 const newContentList: IVideo[] = [];
                                 // Remove assigned contents from the pool, and add those to the "contentList"
-                                for (const contentId of chapter.contents) {
-                                    const videoInPool = videos.findIndex((content) => content.id === contentId);
+                                for (const contentReference of chapter.contentReferences) {
+                                    const videoInPool = videos.findIndex(
+                                        (video) => video.id === contentReference.contentId
+                                    );
 
                                     if (videoInPool !== -1) {
                                         // Add To Content-List
-                                        newContentList.push(videos[videoInPool]);
+                                        // Create new ContentReference
+                                        const contentRef: IContent = {
+                                            chapterId: chapterId,
+                                            contentId: videos[videoInPool].id,
+                                            video: videos[videoInPool],
+                                        };
+                                        newContentList.push(contentRef);
                                         // Remove from Pool-List
                                         videos.splice(videoInPool, 1);
                                     }
@@ -279,22 +272,7 @@ export const ScreenAddChapter: React.FC = () => {
                     </View>
                 </View>
 
-                <View style={styles.headContainer}>
-                    <View style={styles.datePicker}>
-                        <DatePickerComponent
-                            title={i18n.t("itrex.startDate")}
-                            date={startDate}
-                            onDateChanged={startDateChanged}
-                        />
-                    </View>
-                    <View style={styles.datePicker}>
-                        <DatePickerComponent
-                            title={i18n.t("itrex.endDate")}
-                            date={endDate}
-                            onDateChanged={endDateChanged}
-                        />
-                    </View>
-                </View>
+                <View style={styles.headContainer}></View>
 
                 <View style={styles.videoContainer}>
                     <View style={styles.sequenceArea}>
@@ -318,9 +296,6 @@ export const ScreenAddChapter: React.FC = () => {
     function saveChapter() {
         // Validate start/end Date
         // Check if start and Enddate are set
-        if (!validateCourseDates(startDate, endDate)) {
-            return;
-        }
 
         const currContentList = [];
         for (const content of contentList) {
@@ -332,22 +307,34 @@ export const ScreenAddChapter: React.FC = () => {
         // Create new Chapter
         if (chapterId == undefined) {
             const myNewChapter: IChapter = {
-                title: chapterName,
-                startDate: startDate,
-                endDate: endDate,
+                name: chapterName,
                 courseId: course.id,
-                contents: currContentList,
             };
-            courseService.createNewChapter(myNewChapter, course).then((chapter) => {
-                navigation.navigate("CHAPTER", { chapterId: chapter.id });
+
+            const postRequest: RequestInit = RequestFactory.createPostRequestWithBody(myNewChapter);
+
+            chapterEndpoint.createChapter(postRequest).then((chapter) => {
+                // Assign the Videos
+                Promise.all(
+                    contentList.map((content) => {
+                        content.chapterId = chapter.id;
+                        const postRequest: RequestInit = RequestFactory.createPostRequestWithBody(content);
+                        return new Promise((resolve) => {
+                            contentReferenceEndpoint.createContentReference(postRequest).then((contentRef) => {
+                                resolve(contentRef);
+                            });
+                        });
+                    })
+                ).then(() => {
+                    // Navigate to the new Chapter
+                    navigation.navigate("CHAPTER", { chapterId: chapter.id }); // Navigate to the new Chapter
+                });
             });
         } else {
             // Update an existing chapter
-            chapter.title = chapterName;
-            chapter.startDate = startDate;
-            chapter.endDate = endDate;
+            chapter.name = chapterName;
 
-            chapter.contents = currContentList;
+            //How to reorder the contents ?
 
             const patchRequest: RequestInit = RequestFactory.createPatchRequest(chapter);
             chapterEndpoint.patchChapter(
@@ -409,10 +396,6 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         borderBottomColor: "rgba(70,74,91,0.5)",
         borderBottomWidth: 3,
-    },
-    datePicker: {
-        marginRight: "3%",
-        position: "relative",
     },
     videoContainer: {
         flex: 2,

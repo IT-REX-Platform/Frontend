@@ -21,6 +21,9 @@ import { TimelineComponent } from "../../TimelineComponent";
 import { CoursePublishState } from "../../../constants/CoursePublishState";
 import { TimePeriodPublishState } from "../../../types/ITimePeriod";
 import { ScrollView } from "react-native-gesture-handler";
+import { EndpointsCourse } from "../../../api/endpoints/EndpointsCourse";
+import { EndpointsChapter } from "../../../api/endpoints/EndpointsChapter";
+import { RequestFactory } from "../../../api/requests/RequestFactory";
 
 export type ScreenCourseTimelineNavigationProp = CompositeNavigationProp<
     MaterialTopTabNavigationProp<CourseTabParamList, "TIMELINE">,
@@ -30,6 +33,9 @@ export type ScreenCourseTimelineNavigationProp = CompositeNavigationProp<
 export const ScreenCourseTimeline: React.FC = () => {
     const navigation = useNavigation<ScreenCourseTimelineNavigationProp>();
     const courseService: CourseService = new CourseService();
+
+    const courseEndpoint = new EndpointsCourse();
+    const chapterEndpoint = new EndpointsChapter();
 
     const [edit, setEdit] = useState(false);
 
@@ -42,8 +48,10 @@ export const ScreenCourseTimeline: React.FC = () => {
     const isFocused = useIsFocused();
     useEffect(() => {
         if (isFocused && course.id !== undefined) {
-            setMyCourse(fakeData);
-            // courseService.getCourse(course.id).then((receivedCourse) => setMyCourse(receivedCourse));
+            //setMyCourse(fakeData);
+            //courseService.getCourse(course.id).then((receivedCourse) => setMyCourse(receivedCourse));
+            const request: RequestInit = RequestFactory.createGetRequest();
+            courseEndpoint.getCourse(request, course.id).then((receivedCourse) => setMyCourse(receivedCourse));
         }
     }, [isFocused]);
 
@@ -55,22 +63,28 @@ export const ScreenCourseTimeline: React.FC = () => {
             {lecturerEditMode()}
 
             <ScrollView contentContainerStyle={styles.scrollContainer}>
-                {myCourse.timePeriodObjects?.length === 0 ? (
+                {myCourse.chapters?.length === 0 ? (
                     <View>{!edit && <Text style={styles.textStyle}>{i18n.t("itrex.noChapters")}</Text>}</View>
                 ) : (
-                    myCourse.timePeriodObjects?.map((timePeriod) => (
-                        <TimelineComponent key={timePeriod.id} edit={edit} timePeriod={timePeriod}></TimelineComponent>
+                    myCourse.chapters?.map((chapter) => (
+                        <ChapterComponent key={chapter.id} editMode={edit} chapter={chapter}></ChapterComponent>
                     ))
                 )}
-
+                {/* myCourse.timePeriods?.length === 0 ? (
+                    <View>{!edit && <Text style={styles.textStyle}>{i18n.t("itrex.noChapters")}</Text>}</View>
+                ) : (
+                    myCourse.timePeriods?.map((timePeriod) => (
+                        <TimelineComponent key={timePeriod.id} edit={edit} timePeriod={timePeriod}></TimelineComponent>
+                    ))
+                    )*/}
                 {edit && (
                     <View style={styles.addChapterContainer}>
                         <TouchableOpacity
                             style={styles.btnAdd}
                             onPress={() => {
-                                console.log("New Time Period");
+                                navigation.navigate("CHAPTER", { chapterId: undefined });
                             }}>
-                            <Text style={styles.txtAddChapter}>Add TimePeriod</Text>
+                            <Text style={styles.txtAddChapter}>{i18n.t("itrex.addChapter")}</Text>
                         </TouchableOpacity>
                     </View>
                 )}
