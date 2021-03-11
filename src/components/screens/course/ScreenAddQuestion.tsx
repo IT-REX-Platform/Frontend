@@ -11,6 +11,10 @@ import i18n from "../../../locales";
 import { IQuestionMultipleChoice, IQuestionNumeric, IQuestionSingleChoice } from "../../../types/IQuestion";
 import { IUser } from "../../../types/IUser";
 import { create } from "react-test-renderer";
+import { QuestionTypes } from "../../../constants/QuestionTypes";
+import { ITREXRoles } from "../../../constants/ITREXRoles";
+
+import Select from "react-select";
 
 interface ChapterComponentProps {
     chapter?: IChapter;
@@ -26,10 +30,23 @@ export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
     >();
     const [questionText, setQuestionText] = useState<string | undefined>("Please add your question here.");
 
+    const kindOfQuestionOptions = [
+        { value: QuestionTypes.MULTIPLE_CHOICE, label: "Multiple Choice" },
+        { value: QuestionTypes.SINGLE_CHOICE, label: "Single Choice" },
+        { value: QuestionTypes.NUMERIC, label: "Numeric" },
+    ];
+
+    // Make Single Choice default
+    const defaultKindOfQuestionValue = kindOfQuestionOptions[1];
+    const [selectedKindOfQuestion, setKindOfQuestion] = useState<QuestionTypes | undefined>(
+        defaultKindOfQuestionValue.value
+    );
+
     useFocusEffect(
         React.useCallback(() => {
+            setKindOfQuestion(selectedKindOfQuestion);
             // AuthenticationService.getInstance().getUserInfo(setUserInfo);
-        }, [])
+        }, [selectedKindOfQuestion])
     );
 
     return (
@@ -47,53 +64,104 @@ export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
                     <TextButton title={i18n.t("itrex.save")} onPress={() => saveQuestion()} />
                 </View>
             </View>
-            <View>
-                <Text style={{ color: "white", marginLeft: 30 }}>
-                    Selection: Single Choice / Multiple Choice / Numeric Answer (Dropdown? Add Solution Possibility
-                    regading to the Question/Answer Type )
-                </Text>
-            </View>
-            <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "center" }}>
-                <View style={styles.cardChoicesRight}>
-                    <TextInput
-                        editable
-                        style={[styles.descriptionInput, styles.separator]}
-                        value={"Answer"}
-                        onChangeText={(text: string) => addChoice(text)}
-                        multiline={true}
-                    />
-                </View>
-                <View style={styles.cardChoicesRight}>
-                    <TextInput
-                        editable
-                        style={[styles.descriptionInput, styles.separator]}
-                        value={"Answer"}
-                        onChangeText={(text: string) => addChoice(text)}
-                        multiline={true}
-                    />
-                </View>
-                <View style={styles.cardChoicesRight}>
-                    <TextInput
-                        editable
-                        style={[styles.descriptionInput, styles.separator]}
-                        value={"Answer"}
-                        onChangeText={(text: string) => addChoice(text)}
-                        multiline={true}
-                    />
-                </View>
-                <View style={styles.cardChoicesRight}>
-                    <TextInput
-                        editable
-                        style={[styles.descriptionInput, styles.separator]}
-                        value={"Answer"}
-                        onChangeText={(text: string) => addChoice(text)}
-                        multiline={true}
-                    />
-                </View>
-            </View>
+            {selectKindOfQuestion()}
+            {setInputFields()}
         </ImageBackground>
     );
 
+    function selectKindOfQuestion() {
+        return (
+            <View style={styles.card}>
+                <Text style={styles.cardHeader}>Kind of Question</Text>
+                <View style={styles.filterContainer}>
+                    <View style={{ padding: 8, flex: 1 }}>
+                        <Select
+                            options={kindOfQuestionOptions}
+                            defaultValue={defaultKindOfQuestionValue}
+                            onChange={(option) => setKindOfQuestion(option?.value)}
+                            theme={(theme) => ({
+                                ...theme,
+                                borderRadius: 5,
+                                colors: {
+                                    ...theme.colors,
+                                    primary25: dark.Opacity.darkBlue1,
+                                    primary: dark.Opacity.pink,
+                                    backgroundColor: dark.Opacity.darkBlue1,
+                                },
+                            })}
+                        />
+                    </View>
+                </View>
+            </View>
+        );
+    }
+
+    function setInputFields() {
+        console.log("-----------------------------------------------");
+        console.log("Kind of Question: " + selectedKindOfQuestion);
+        if (selectedKindOfQuestion === QuestionTypes.NUMERIC) {
+            return (
+                <>
+                    <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "center", marginTop: 90 }}>
+                        <Text style={styles.textStyle}>Add your Answer right here</Text>
+                        <TextInput
+                            style={[styles.descriptionInput, styles.separator]}
+                            value={"Numeric Answer"}
+                            onChangeText={(text: string) => console.log(text)}
+                            multiline={true}
+                            testID="courseDescriptionInput"
+                        />
+                    </View>
+                </>
+            );
+        } else if (
+            selectedKindOfQuestion === QuestionTypes.SINGLE_CHOICE ||
+            selectedKindOfQuestion === QuestionTypes.MULTIPLE_CHOICE
+        ) {
+            return (
+                <>
+                    <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "center", marginTop: 90 }}>
+                        <View style={styles.cardChoicesRight}>
+                            <TextInput
+                                editable
+                                style={[styles.descriptionInput, styles.separator]}
+                                value={"Answer"}
+                                onChangeText={(text: string) => addChoice(text)}
+                                multiline={true}
+                            />
+                        </View>
+                        <View style={styles.cardChoicesRight}>
+                            <TextInput
+                                editable
+                                style={[styles.descriptionInput, styles.separator]}
+                                value={"Answer"}
+                                onChangeText={(text: string) => addChoice(text)}
+                                multiline={true}
+                            />
+                        </View>
+                        <View style={styles.cardChoicesRight}>
+                            <TextInput
+                                editable
+                                style={[styles.descriptionInput, styles.separator]}
+                                value={"Answer"}
+                                onChangeText={(text: string) => addChoice(text)}
+                                multiline={true}
+                            />
+                        </View>
+                        <View style={styles.cardChoicesRight}>
+                            <TextInput
+                                editable
+                                style={[styles.descriptionInput, styles.separator]}
+                                value={"Answer"}
+                                onChangeText={(text: string) => addChoice(text)}
+                                multiline={true}
+                            />
+                        </View>
+                    </View>
+                </>
+            );
+        }
+    }
     function saveQuestion() {
         createAlert("Save Question, Navigate back to Add-Quiz page and add this question to the list of questions ");
         // TODO: Save Question, Navigate back, show this question in add Quiz View
@@ -129,14 +197,6 @@ const styles = StyleSheet.create({
         position: "relative",
         alignItems: "flex-start",
     },
-
-    rootContainer: {
-        paddingTop: "3%",
-        flex: 4,
-        flexDirection: "column",
-        justifyContent: "center",
-        backgroundColor: dark.theme.darkBlue1,
-    },
     image: {
         flex: 1,
         resizeMode: "stretch",
@@ -167,5 +227,29 @@ const styles = StyleSheet.create({
     },
     separator: {
         marginBottom: 20,
+    },
+    card: {
+        maxWidth: "50%",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "flex-start",
+        backgroundColor: dark.Opacity.grey,
+    },
+    cardHeader: {
+        padding: 16,
+        fontSize: 20,
+        fontWeight: "bold",
+        color: "white",
+        textAlign: "center",
+        flexGrow: 1,
+    },
+    filterContainer: {
+        flexGrow: 4,
+        flexDirection: "row",
+        flexWrap: "nowrap",
+    },
+    textStyle: {
+        color: "white",
+        fontSize: 18,
     },
 });
