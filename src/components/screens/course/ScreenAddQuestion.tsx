@@ -33,67 +33,65 @@ export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
     );
 
     return (
-        <View style={styles.rootContainer}>
-            <ImageBackground source={require("../../../constants/images/Background1-1.png")} style={styles.image}>
-                <View style={[styles.headContainer]}>
-                    <View style={styles.borderContainer}>
-                        <TextInput
-                            style={styles.quizHeader}
-                            value={questionText}
-                            onChangeText={(text) => setQuestionText(text)}
-                        />
-                        <MaterialCommunityIcons name="pen" size={24} color={dark.theme.darkGreen} style={styles.icon} />
-                    </View>
-                    <View>
-                        <TextButton title={i18n.t("itrex.save")} onPress={() => saveQuestion()} />
-                    </View>
+        <ImageBackground source={require("../../../constants/images/Background1-1.png")} style={styles.image}>
+            <View style={[styles.headContainer]}>
+                <View style={styles.borderContainer}>
+                    <TextInput
+                        style={styles.quizHeader}
+                        value={questionText}
+                        onChangeText={(text) => setQuestionText(text)}
+                    />
+                    <MaterialCommunityIcons name="pen" size={24} color={dark.theme.darkGreen} style={styles.icon} />
                 </View>
                 <View>
-                    <Text style={{ color: "white", marginLeft: 30 }}>
-                        Selection: Single Choice / Multiple Choice / Numeric Answer (Dropdown? Add Solution Possibility
-                        regading to the Question/Answer Type )
-                    </Text>
+                    <TextButton title={i18n.t("itrex.save")} onPress={() => saveQuestion()} />
                 </View>
-                <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "center" }}>
-                    <View style={styles.cardChoicesRight}>
-                        <TextInput
-                            editable
-                            style={[styles.descriptionInput, styles.separator]}
-                            value={"Answer"}
-                            onChangeText={(text: string) => addChoice(text)}
-                            multiline={true}
-                        />
-                    </View>
-                    <View style={styles.cardChoicesRight}>
-                        <TextInput
-                            editable
-                            style={[styles.descriptionInput, styles.separator]}
-                            value={"Answer"}
-                            onChangeText={(text: string) => addChoice(text)}
-                            multiline={true}
-                        />
-                    </View>
-                    <View style={styles.cardChoicesRight}>
-                        <TextInput
-                            editable
-                            style={[styles.descriptionInput, styles.separator]}
-                            value={"Answer"}
-                            onChangeText={(text: string) => addChoice(text)}
-                            multiline={true}
-                        />
-                    </View>
-                    <View style={styles.cardChoicesRight}>
-                        <TextInput
-                            editable
-                            style={[styles.descriptionInput, styles.separator]}
-                            value={"Answer"}
-                            onChangeText={(text: string) => addChoice(text)}
-                            multiline={true}
-                        />
-                    </View>
+            </View>
+            <View>
+                <Text style={{ color: "white", marginLeft: 30 }}>
+                    Selection: Single Choice / Multiple Choice / Numeric Answer (Dropdown? Add Solution Possibility
+                    regading to the Question/Answer Type )
+                </Text>
+            </View>
+            <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "center" }}>
+                <View style={styles.cardChoicesRight}>
+                    <TextInput
+                        editable
+                        style={[styles.descriptionInput, styles.separator]}
+                        value={"Answer"}
+                        onChangeText={(text: string) => addChoice(text)}
+                        multiline={true}
+                    />
                 </View>
-            </ImageBackground>
-        </View>
+                <View style={styles.cardChoicesRight}>
+                    <TextInput
+                        editable
+                        style={[styles.descriptionInput, styles.separator]}
+                        value={"Answer"}
+                        onChangeText={(text: string) => addChoice(text)}
+                        multiline={true}
+                    />
+                </View>
+                <View style={styles.cardChoicesRight}>
+                    <TextInput
+                        editable
+                        style={[styles.descriptionInput, styles.separator]}
+                        value={"Answer"}
+                        onChangeText={(text: string) => addChoice(text)}
+                        multiline={true}
+                    />
+                </View>
+                <View style={styles.cardChoicesRight}>
+                    <TextInput
+                        editable
+                        style={[styles.descriptionInput, styles.separator]}
+                        value={"Answer"}
+                        onChangeText={(text: string) => addChoice(text)}
+                        multiline={true}
+                    />
+                </View>
+            </View>
+        </ImageBackground>
     );
 
     function saveQuestion() {
@@ -103,7 +101,7 @@ export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
         // TODO: confirm save
     }
 
-    function addChoice(anserText: string) {
+    function addChoice(answerText: string) {
         // Add question text to questions
     }
 };

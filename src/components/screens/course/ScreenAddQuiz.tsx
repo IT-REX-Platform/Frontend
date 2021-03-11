@@ -97,15 +97,11 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
             return;
         } else {
             return (
-                <View style={styles.containerTop}>
-                    <ScrollView>
-                        {questions.map(
-                            (question: IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric) => {
-                                return <QuestionCard question={question} />;
-                            }
-                        )}
-                    </ScrollView>
-                </View>
+                <ScrollView style={styles.scrollContainer}>
+                    {questions.map((question: IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric) => {
+                        return <QuestionCard question={question} />;
+                    })}
+                </ScrollView>
             );
         }
     }
@@ -127,6 +123,10 @@ const styles = StyleSheet.create({
         alignItems: "flex-start",
         paddingTop: "3%",
         paddingLeft: "3%",
+    },
+    scrollContainer: {
+        width: "screenWidth",
+        paddingBottom: 20,
     },
     borderContainer: {
         flex: 3,
@@ -185,12 +185,5 @@ const styles = StyleSheet.create({
     contentContainer: {
         flex: 2,
         paddingLeft: "3%",
-    },
-    containerTop: {
-        width: "90%",
-        flex: 1,
-        alignItems: "center",
-        flexDirection: "column",
-        flexWrap: "wrap",
     },
 });
