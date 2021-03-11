@@ -62,34 +62,28 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
     );
 
     return (
-        <View style={styles.rootContainer}>
-            <ImageBackground source={require("../../../constants/images/Background1-1.png")} style={styles.image}>
-                <View style={[styles.headContainer]}>
-                    <View style={styles.borderContainer}>
-                        <TextInput
-                            style={styles.quizHeader}
-                            value={quizName}
-                            onChangeText={(text) => setQuizName(text)}
-                        />
-                        <MaterialCommunityIcons name="pen" size={24} color={dark.theme.darkGreen} style={styles.icon} />
-                    </View>
-                    <View>
-                        <TextButton title={i18n.t("itrex.save")} onPress={() => saveQuiz()} />
-                    </View>
+        <ImageBackground source={require("../../../constants/images/Background1-1.png")} style={styles.image}>
+            <View style={[styles.headContainer]}>
+                <View style={styles.borderContainer}>
+                    <TextInput style={styles.quizHeader} value={quizName} onChangeText={(text) => setQuizName(text)} />
+                    <MaterialCommunityIcons name="pen" size={24} color={dark.theme.darkGreen} style={styles.icon} />
                 </View>
+                <View>
+                    <TextButton title={i18n.t("itrex.save")} onPress={() => saveQuiz()} />
+                </View>
+            </View>
 
-                <View style={styles.contentContainer}>
-                    {displayQuestions()}
-                    <View style={[styles.addQuizContainer]}>
-                        <TouchableOpacity
-                            style={styles.btnAdd}
-                            onPress={() => (console.log(questions), navigation.navigate("CREATE_QUESTION"))}>
-                            <Text style={styles.txtAddQuestion}>+ Add Question</Text>
-                        </TouchableOpacity>
-                    </View>
+            <View style={styles.contentContainer}>
+                {displayQuestions()}
+                <View style={[styles.addQuizContainer]}>
+                    <TouchableOpacity
+                        style={styles.btnAdd}
+                        onPress={() => (console.log(questions), navigation.navigate("CREATE_QUESTION"))}>
+                        <Text style={styles.txtAddQuestion}>+ Add Question</Text>
+                    </TouchableOpacity>
                 </View>
-            </ImageBackground>
-        </View>
+            </View>
+        </ImageBackground>
     );
 
     function displayQuestions() {
@@ -143,14 +137,6 @@ const styles = StyleSheet.create({
     icon: {
         position: "relative",
         alignItems: "flex-start",
-    },
-
-    rootContainer: {
-        paddingTop: "3%",
-        flex: 4,
-        flexDirection: "column",
-        justifyContent: "center",
-        backgroundColor: dark.theme.darkBlue1,
     },
     image: {
         flex: 1,
