@@ -1,6 +1,6 @@
 /* eslint-disable complexity */
 import React, { useEffect, useState } from "react";
-import { Text, StyleSheet } from "react-native";
+import { Text, StyleSheet, ScaledSize, useWindowDimensions } from "react-native";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { dark } from "../../constants/themes/dark";
 import { RequestFactory } from "../../api/requests/RequestFactory";
@@ -31,6 +31,7 @@ const CourseStack = createStackNavigator<CourseStackParamList>();
 export const ScreenCourse: React.FC = () => {
     const navigation: ScreenCourseNavigationProp = useNavigation<ScreenCourseNavigationProp>();
     const route: ScreenCourseRouteProp = useRoute<ScreenCourseRouteProp>();
+    const dimensions: ScaledSize = useWindowDimensions();
 
     const courseId = route.params.courseId;
 
@@ -57,13 +58,7 @@ export const ScreenCourse: React.FC = () => {
                 screenOptions={{
                     // Hamburder button.
                     // headerLeft: () => (
-                    //     <MaterialCommunityIcons
-                    //         style={styles.icon}
-                    //         name="menu"
-                    //         size={28}
-                    //         color="white"
-                    //         onPress={() => navigation.openDrawer()}
-                    //     />
+                    //    showHamburger(dimensions)
                     // ),
 
                     // Back button.
@@ -98,6 +93,22 @@ export const ScreenCourse: React.FC = () => {
             </CourseStack.Navigator>
         </CourseContext.Provider>
     );
+
+    function showHamburger(dimensions: ScaledSize) {
+        if (dimensions.width < 1280) {
+            return (
+                <MaterialCommunityIcons
+                    style={styles.icon}
+                    name="menu"
+                    size={28}
+                    color="white"
+                    onPress={() => navigation.openDrawer()}
+                />
+            );
+        } else {
+            return null;
+        }
+    }
 
     function getUploadVideoScreen() {
         if (AuthenticationService.getInstance().isLecturerOrAdmin()) {
