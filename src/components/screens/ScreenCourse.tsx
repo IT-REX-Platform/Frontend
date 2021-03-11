@@ -75,15 +75,18 @@ export const ScreenCourse: React.FC = () => {
                     },
 
                     // Home button.
-                    headerRight: () => (
-                        <MaterialCommunityIcons
-                            style={styles.icon}
-                            name="home-outline"
-                            size={28}
-                            color="white"
-                            onPress={() => navigation.navigate("ROUTE_HOME")}
-                        />
-                    ),
+                    // headerRight: () => (
+                    //    <MaterialCommunityIcons
+                    //        style={styles.icon}
+                    //        name="home-outline"
+                    //        size={28}
+                    //        color="white"
+                    //        onPress={() => navigation.navigate("ROUTE_HOME")}
+                    //    />
+                    //),
+
+                    // Hamburder button.
+                    headerRight: () => showHamburger(dimensions),
                 }}>
                 <CourseStack.Screen name="INFO" component={ScreenCourseTabs}></CourseStack.Screen>
 
