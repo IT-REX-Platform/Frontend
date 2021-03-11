@@ -98,13 +98,14 @@ const styles = StyleSheet.create({
         margin: 8,
         minWidth: "40%",
         marginRight: 20,
-        backgroundColor: dark.Opacity.grey,
+        backgroundColor: dark.Opacity.darkBlue1,
+        textAlign: "center",
     },
     cardChoicesRight: {
         margin: 8,
         minHeight: 40,
         width: "40%",
-        backgroundColor: dark.Opacity.grey,
+        backgroundColor: dark.Opacity.darkGreen,
         borderColor: dark.theme.darkGreen,
         borderWidth: 5,
         flexDirection: "row",
@@ -115,7 +116,7 @@ const styles = StyleSheet.create({
         minHeight: 40,
         margin: 8,
         width: "40%",
-        backgroundColor: dark.Opacity.grey,
+        backgroundColor: dark.Opacity.pink,
         borderColor: dark.theme.pink,
         borderWidth: 5,
         flexDirection: "row",
@@ -130,7 +131,6 @@ const styles = StyleSheet.create({
         color: "white",
         textAlignVertical: "center",
     },
-
     break: {
         backgroundColor: "white",
         opacity: 0.5,
