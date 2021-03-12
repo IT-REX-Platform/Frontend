@@ -2,6 +2,7 @@ import { IQuestionMultipleChoice, IQuestionNumeric, IQuestionSingleChoice } from
 
 export type IQuiz = {
     id?: string;
+    courseId: string;
     name: string;
-    questionObjects: Array<IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric>;
+    questions: (IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric)[];
 };
