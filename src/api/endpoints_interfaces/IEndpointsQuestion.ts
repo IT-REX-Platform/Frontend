@@ -21,5 +21,5 @@ export interface IEndpointsQuestion {
     updateQuestion(
         putRequest: RequestInit
     ): Promise<IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric>;
-    deletequestion(deleteRequest: RequestInit, questionId: string): Promise<void>;
+    deleteQuestion(deleteRequest: RequestInit, questionId: string): Promise<void>;
 }

@@ -5,6 +5,7 @@ import { IUser } from "../../types/IUser";
 import { IChapter } from "../../types/IChapter";
 import { ToastService } from "../../services/toasts/ToastService";
 import { IQuiz } from "../../types/IQuiz";
+import { IQuestionMultipleChoice, IQuestionNumeric, IQuestionSingleChoice } from "../../types/IQuestion";
 
 export class ResponseParser {
     private loggerApi;
@@ -196,6 +197,46 @@ export class ResponseParser {
                 })
                 .catch((error) => {
                     this.loggerApi.error("An error occurred while parsing quiz.", error);
+                    this._toastError(errorMsg);
+                    reject();
+                });
+        });
+    }
+
+    public parseQuestions(
+        response: Promise<Response>,
+        successMsg?: string,
+        errorMsg?: string
+    ): Promise<(IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric)[]> {
+        return new Promise((resolve) => {
+            response
+                .then((response) => {
+                    const questions = this._parseAsJson(response);
+                    this._toastSuccess(successMsg);
+                    resolve(questions);
+                })
+                .catch((error) => {
+                    this.loggerApi.error("An error occurred while parsing questions.", error);
+                    this._toastError(errorMsg);
+                    resolve([]);
+                });
+        });
+    }
+
+    public parseQuestion(
+        response: Promise<Response>,
+        successMsg?: string,
+        errorMsg?: string
+    ): Promise<IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric> {
+        return new Promise((resolve, reject) => {
+            response
+                .then((response) => {
+                    const question = this._parseAsJson(response);
+                    this._toastSuccess(successMsg);
+                    resolve(question);
+                })
+                .catch((error) => {
+                    this.loggerApi.error("An error occurred while parsing question.", error);
                     this._toastError(errorMsg);
                     reject();
                 });

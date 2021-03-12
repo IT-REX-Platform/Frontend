@@ -33,7 +33,7 @@ export class EndpointsQuiz implements IEndpointsQuiz {
         successMsg?: string,
         errorMsg?: string
     ): Promise<IQuiz[]> {
-        const urlUpdated: string = this.url + "/" + courseId;
+        const urlUpdated: string = this.url + "?" + QuizParams.COURSE_ID + "=" + courseId;
 
         this.loggerApi.trace("Sending GET request to URL: " + urlUpdated);
         const response: Promise<Response> = sendRequest(urlUpdated, getRequest);
@@ -67,7 +67,7 @@ export class EndpointsQuiz implements IEndpointsQuiz {
         successMsg?: string,
         errorMsg?: string
     ): Promise<void> {
-        let urlUpdated = this.url + "/" + quizId;
+        let urlUpdated: string = this.url + "/" + quizId;
         if (withQuestions != undefined) {
             urlUpdated = urlUpdated + "?" + QuizParams.WITH_QUESTIONS + "=" + withQuestions;
         }

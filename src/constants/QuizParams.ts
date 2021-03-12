@@ -1,3 +1,4 @@
 export enum QuizParams {
-    WITH_QUESTIONS = "withQuestions",
+    COURSE_ID = "course_id",
+    WITH_QUESTIONS = "with_questions",
 }
