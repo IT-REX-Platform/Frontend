@@ -6,11 +6,10 @@
 
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { Video } from "expo-av";
-import { useState } from "react";
+import React, { useState } from "react";
 import { ActivityIndicator, FlatList, TouchableOpacity, View } from "react-native";
 import { ListItem } from "react-native-elements";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import React from "react-native/node_modules/@types/react";
 import { toast } from "react-toastify";
 import { EndpointsVideo } from "../../api/endpoints/EndpointsVideo";
 import { RootDrawerParamList } from "../../constants/navigators/NavigationRoutes";
@@ -39,7 +38,7 @@ export const ScreenChapterStudent: React.FC = () => {
     const route = useRoute<ChapterContentRouteProp>();
     //const navigation = useNavigation<ScreenCourseTabsNavigationProp>();
     //const loggerService = loggerFactory.getLogger("service.VideoPoolComponent");
-    let chapterId = route.params.chapterId;
+    const chapterId = route.params.chapterId;
 
     // Render UI for video list according to un-/available video data.
     const renderVideoList = () => {
