@@ -1,4 +1,4 @@
-import { useFocusEffect } from "@react-navigation/native";
+import { CompositeNavigationProp, RouteProp, useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
 import React, { useState } from "react";
 import { ImageBackground, StyleSheet, View, TextInput, Text } from "react-native";
 import { dark } from "../../../../constants/themes/dark";
@@ -14,16 +14,35 @@ import { IChoices } from "../../../../types/IChoices";
 import { NumericQuestion } from "./NumericQuestion";
 import { SingleChoiceQuestion } from "./SingleChoiceQuestion";
 import { MultipleChoiceQuestion } from "./MultipleChoiceQuestion";
+import { IQuiz } from "../../../../types/IQuiz";
+import { CourseStackParamList, RootDrawerParamList } from "../../../../constants/navigators/NavigationRoutes";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { DrawerNavigationProp } from "@react-navigation/drawer";
 
 interface ChapterComponentProps {
     chapter?: IChapter;
     chapterId?: string;
     editMode?: boolean;
+    quiz: IQuiz;
 }
+
+type ScreenCourseTabsNavigationProp = CompositeNavigationProp<
+    StackNavigationProp<CourseStackParamList, "CREATE_QUESTION">,
+    DrawerNavigationProp<RootDrawerParamList>
+>;
+
+type ScreenCourseTabsRouteProp = RouteProp<CourseStackParamList, "CREATE_QUESTION">;
 
 export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
     React.useContext(LocalizationContext);
+    const navigation = useNavigation<ScreenCourseTabsNavigationProp>();
+
     const [questionText, setQuestionText] = useState<string>(i18n.t("itrex.addQuestionText"));
+    const route = useRoute<ScreenCourseTabsRouteProp>();
+    const quizTemp = route.params.quiz;
+    const [quiz, setQuiz] = useState<IQuiz | undefined>(quizTemp);
+
+    console.log(quiz);
 
     const kindOfQuestionOptions = [
         { value: QuestionTypes.MULTIPLE_CHOICE, label: "Multiple Choice" },
@@ -95,11 +114,12 @@ export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
 
     function setInputFields() {
         if (selectedKindOfQuestion === QuestionTypes.NUMERIC) {
-            return <NumericQuestion question={questionText} />;
+            console.log(quiz);
+            return <NumericQuestion question={questionText} quiz={quiz} />;
         } else if (selectedKindOfQuestion === QuestionTypes.SINGLE_CHOICE) {
-            return <SingleChoiceQuestion question={questionText} />;
+            return <SingleChoiceQuestion question={questionText} quiz={quiz} />;
         } else if (selectedKindOfQuestion === QuestionTypes.MULTIPLE_CHOICE) {
-            return <MultipleChoiceQuestion question={questionText} />;
+            return <MultipleChoiceQuestion question={questionText} quiz={quiz} />;
         }
     }
 };

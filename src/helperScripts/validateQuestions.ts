@@ -11,7 +11,7 @@ export function validateNumericQuestion(
     questionText: string | undefined,
     epsilonSolution: number | undefined,
     numberSolution: number | undefined
-): boolean | IQuestionNumeric | undefined {
+): boolean | IQuestionNumeric {
     const toast: ToastService = new ToastService();
 
     if (questionText === undefined || questionText === i18n.t("itrex.addQuestionText")) {
@@ -45,7 +45,7 @@ export function validateSingleChoiceQuestion(
     questionText: string | undefined,
     choices: IChoices | undefined,
     solution: string | undefined
-): boolean | IQuestionSingleChoice | undefined {
+): boolean | IQuestionSingleChoice {
     if (questionText === undefined || questionText === i18n.t("itrex.addQuestionText")) {
         toast.warn(i18n.t("itrex.invalidQuestion"));
         return false;

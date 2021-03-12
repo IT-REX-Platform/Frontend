@@ -234,6 +234,7 @@ export const ScreenAddChapter: React.FC = () => {
                         setChapterName(chapter.title);
                         setStartDate(chapter.startDate);
                         setEndDate(chapter.endDate);
+                        console.log(chapterName);
 
                         _getAllVideos(course.id).then((videos) => {
                             // Are there already contents in this chapter ?
@@ -338,6 +339,7 @@ export const ScreenAddChapter: React.FC = () => {
                 courseId: course.id,
                 contents: currContentList,
             };
+            console.log(chapterName);
             courseService.createNewChapter(myNewChapter, course).then((chapter) => {
                 navigation.navigate("CHAPTER", { chapterId: chapter.id });
             });

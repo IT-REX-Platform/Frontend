@@ -1,4 +1,4 @@
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
 import { StyleSheet, View, TextInput, Text } from "react-native";
 import { dark } from "../../../../constants/themes/dark";
@@ -10,17 +10,24 @@ import i18n from "../../../../locales";
 import { IChoices } from "../../../../types/IChoices";
 import { validateSingleChoiceQuestion } from "../../../../helperScripts/validateQuestions";
 import { toast } from "react-toastify";
+import { IQuiz } from "../../../../types/IQuiz";
+import { ScreenCourseTabsNavigationProp } from "../../course/ScreenCourseTabs";
+import { IQuestionSingleChoice } from "../../../../types/IQuestion";
 
 interface QuizProps {
-    question?: string;
+    question: string;
+    quiz: IQuiz;
 }
 
 export const SingleChoiceQuestion: React.FC<QuizProps> = (props) => {
     const questionText = props.question;
+    const quiz = props.quiz;
     console.log("--------------------------------------");
     console.log(questionText);
+    console.log(quiz);
 
     React.useContext(LocalizationContext);
+    const navigation = useNavigation<ScreenCourseTabsNavigationProp>();
 
     const [choicesSingleChoice, setChoicesSingleChoice] = useState<IChoices>();
 
@@ -89,7 +96,13 @@ export const SingleChoiceQuestion: React.FC<QuizProps> = (props) => {
         // TODO: confirm save
 
         if (validateSingleChoiceQuestion(questionText, choicesSingleChoice, "3")) {
-            const myNewQuestion = validateSingleChoiceQuestion(questionText, choicesSingleChoice, "3");
+            const myNewQuestion: IQuestionSingleChoice = validateSingleChoiceQuestion(
+                questionText,
+                choicesSingleChoice,
+                "3"
+            );
+            quiz.questionObjects.push(myNewQuestion);
+            navigation.navigate("CREATE_QUIZ", { quiz: quiz });
             toast.success("Jetzt nur noch speichern");
         }
     }

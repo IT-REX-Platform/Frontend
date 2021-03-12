@@ -1,4 +1,4 @@
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { dark } from "../../../../constants/themes/dark";
@@ -6,24 +6,27 @@ import { LocalizationContext } from "../../../Context";
 import { TextButton } from "../../../uiElements/TextButton";
 import { createAlert } from "../../../../helperScripts/createAlert";
 import i18n from "../../../../locales";
-import { IQuestionNumeric } from "../../../../types/IQuestion";
+import { IQuestionMultipleChoice, IQuestionNumeric, IQuestionSingleChoice } from "../../../../types/IQuestion";
 import { QuestionTypes } from "../../../../constants/QuestionTypes";
 import * as NumericInput from "react-numeric-input";
 import { validateNumericQuestion } from "../../../../helperScripts/validateQuestions";
 import { ISolutionNumeric } from "../../../../types/ISolution";
 import { toast } from "react-toastify";
+import { IQuiz } from "../../../../types/IQuiz";
+import { ScreenCourseTabsNavigationProp } from "../../course/ScreenCourseTabs";
 
 interface QuizProps {
     question: string;
+    quiz: IQuiz;
 }
 
 export const NumericQuestion: React.FC<QuizProps> = (props) => {
     const questionText = props.question;
-    console.log("--------------------------------------");
-    console.log(questionText);
+    const quiz = props.quiz;
 
     React.useContext(LocalizationContext);
 
+    const navigation = useNavigation<ScreenCourseTabsNavigationProp>();
     const [numberSolution, setNumberSolution] = useState<number>();
     const [epsilonSolution, setEpsilonSolution] = useState<number>();
 
@@ -96,11 +99,18 @@ export const NumericQuestion: React.FC<QuizProps> = (props) => {
         createAlert("Save Question, Navigate back to Add-Quiz page and add this question to the list of questions ");
 
         if (validateNumericQuestion(questionText, epsilonSolution, numberSolution)) {
-            const myNewQuestion = validateNumericQuestion(questionText, epsilonSolution, numberSolution);
+            const myNewQuestion: IQuestionNumeric = validateNumericQuestion(
+                questionText,
+                epsilonSolution,
+                numberSolution
+            );
             console.log(myNewQuestion);
-
             //TODO: ENPOINT REQUEST TO SAVE QUESTION
+
+            quiz.questionObjects.push(myNewQuestion);
+
             toast.success("Jetzt noch speichern!");
+            navigation.navigate("CREATE_QUIZ", { quiz: quiz });
         }
     }
 };
