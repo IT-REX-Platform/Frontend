@@ -35,7 +35,7 @@ export const MultipleChoiceQuestion: React.FC<QuizProps> = (props) => {
     return (
         <>
             <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "center", marginTop: 90 }}>
-                <Text style={styles.textStyle}>Specify the different choices here:</Text>
+                <Text style={styles.textStyle}>{i18n.t("itrex.specifyChoices")}</Text>
             </View>
             <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "center" }}>
                 <View style={styles.cardChoicesRight}>

@@ -137,6 +137,9 @@ export const de = {
         invalidAnswers: "Bitte definiere die möglichen Antwortmöglichkeiten.",
         missingAnswers: "Bitte definiere alle möglichen Antwortmöglichkeiten.",
         invalidSingleSolution: "Bitte definiere die richtige Antwort.",
-        addQuestion: "Bitte definiere deine Frage hier.",
+        addQuestionText: "Bitte definiere deine Frage hier.",
+        kindOfQuestion: "Art der Frage: ",
+        addQuestion: "+ Frage hinzufügen",
+        specifyChoices: "Definiere hier die verschiedenen Antwortmöglichkeiten: ",
     },
 };

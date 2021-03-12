@@ -14,7 +14,7 @@ export function validateNumericQuestion(
 ): boolean | IQuestionNumeric | undefined {
     const toast: ToastService = new ToastService();
 
-    if (questionText === undefined || questionText === i18n.t("itrex.addQuestion")) {
+    if (questionText === undefined || questionText === i18n.t("itrex.addQuestionText")) {
         toast.warn(i18n.t("itrex.invalidQuestion"));
         return false;
     }
@@ -46,7 +46,7 @@ export function validateSingleChoiceQuestion(
     choices: IChoices | undefined,
     solution: string | undefined
 ): boolean | IQuestionSingleChoice | undefined {
-    if (questionText === undefined || questionText === i18n.t("itrex.addQuestion")) {
+    if (questionText === undefined || questionText === i18n.t("itrex.addQuestionText")) {
         toast.warn(i18n.t("itrex.invalidQuestion"));
         return false;
     }
@@ -85,7 +85,7 @@ export function validateMultipleChoiceQuestion(
     choices: IChoices | undefined,
     solution: ISolutionMultipleChoice | undefined
 ): boolean | IQuestionMultipleChoice | undefined {
-    if (questionText === undefined || questionText === i18n.t("itrex.addQuestion")) {
+    if (questionText === undefined || questionText === i18n.t("itrex.addQuestionText")) {
         toast.warn(i18n.t("itrex.invalidQuestion"));
         return false;
     }

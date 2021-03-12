@@ -23,7 +23,7 @@ interface ChapterComponentProps {
 
 export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
     React.useContext(LocalizationContext);
-    const [questionText, setQuestionText] = useState<string>(i18n.t("itrex.addQuestion"));
+    const [questionText, setQuestionText] = useState<string>(i18n.t("itrex.addQuestionText"));
 
     const kindOfQuestionOptions = [
         { value: QuestionTypes.MULTIPLE_CHOICE, label: "Multiple Choice" },
@@ -69,7 +69,7 @@ export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
     function selectKindOfQuestion() {
         return (
             <View style={styles.card}>
-                <Text style={styles.cardHeader}>Kind of Question</Text>
+                <Text style={styles.cardHeader}>{i18n.t("itrex.kindOfQuestion")}</Text>
                 <View style={styles.filterContainer}>
                     <View style={{ padding: 8, flex: 1 }}>
                         <Select

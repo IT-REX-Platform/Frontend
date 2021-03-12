@@ -42,6 +42,7 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
     const [chapter, setChapter] = useState<IChapter>({} as IChapter);
     const [user, setUserInfo] = useState<IUser>({});
     const [quizName, setQuizName] = useState<string>("");
+    // TODO:
     const [questions, setQuestions] = useState<
         Array<IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric>
     >(quizList[0].questionObjects);
@@ -80,7 +81,7 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
                     <TouchableOpacity
                         style={styles.btnAdd}
                         onPress={() => (console.log(questions), navigation.navigate("CREATE_QUESTION"))}>
-                        <Text style={styles.txtAddQuestion}>+ Add Question</Text>
+                        <Text style={styles.txtAddQuestion}>{i18n.t("itrex.addQuestion")}</Text>
                     </TouchableOpacity>
                 </View>
             </View>
