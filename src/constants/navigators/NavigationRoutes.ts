@@ -45,6 +45,7 @@ export type RootDrawerParamList = {
     ROUTE_CREATE_COURSE: undefined;
     ROUTE_JOIN_COURSE: { courseId?: string };
     ROUTE_COURSE_DETAILS: { courseId: string; screen?: string };
+    ROUTE_CHAPTER_CONTENT: { chapterId: string };
 };
 
 export type CourseStackParamList = {
@@ -77,6 +78,7 @@ export class NavigationRoutes {
     static ROUTE_VIDEO = "ROUTE_VIDEO";
     static ROUTE_CREATE_QUIZ = "ROUTE_CREATE_QUIZ";
     static ROUTE_CREATE_QUESTION = "ROUTE_CREATE_QUESTION";
+    static ROUTE_CHAPTER_CONTENT = "ROUTE_CHAPTER_CONTENT";
 
     static linking: LinkingOptions = {
         prefixes: [prefix],
