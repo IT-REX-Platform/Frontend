@@ -2,10 +2,7 @@ import { IContent } from "./IContent";
 
 export type IChapter = {
     id?: string;
-    title?: string;
-    startDate?: Date;
-    endDate?: Date;
+    name?: string;
     courseId?: string;
-    contents?: string[];
-    contentObjects?: IContent[];
+    contentReferences?: IContent[];
 };

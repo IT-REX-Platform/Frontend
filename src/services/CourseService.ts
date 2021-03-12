@@ -12,6 +12,7 @@ export default class CourseService {
     /**
      * This Method returns an course with all its Chapters and Contents
      * @param courseId of the course to be fetched
+     * @deprecated
      */
     public getCourse(courseId: string): Promise<ICourse> {
         return new Promise((resolve) => {
@@ -61,6 +62,7 @@ export default class CourseService {
      * This Methode creates an new chapter and create a link to the existing course
      * @param chapter the chapter to be created
      * @param course the course which the chapter should by linked
+     * @deprecated
      */
     public createNewChapter(chapter: IChapter, course: ICourse): Promise<IChapter> {
         const postRequest: RequestInit = RequestFactory.createPostRequestWithBody(chapter);

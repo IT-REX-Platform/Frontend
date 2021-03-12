@@ -7,6 +7,7 @@ import { ToastService } from "../../services/toasts/ToastService";
 import { IContentProgressTracker } from "../../types/IContentProgressTracker";
 import { ICourseProgressTracker } from "../../types/ICourseProgressTracker";
 import { IQuiz } from "../../types/IQuiz";
+import { IContent } from "../../types/IContent";
 
 export class ResponseParser {
     private loggerApi;
@@ -50,7 +51,6 @@ export class ResponseParser {
                 .then((course: ICourse) => {
                     course.startDate = course.startDate ? new Date(course.startDate) : undefined;
                     course.endDate = course.endDate ? new Date(course.endDate) : undefined;
-                    course.chapterObjects = [];
 
                     this._toastSuccess(successMsg);
                     resolve(course);
@@ -70,11 +70,6 @@ export class ResponseParser {
                     return this._parseAsJson(response);
                 })
                 .then((chapters: IChapter[]) => {
-                    chapters.forEach((chapter: IChapter) => {
-                        chapter.startDate = chapter.startDate ? new Date(chapter.startDate) : undefined;
-                        chapter.endDate = chapter.endDate ? new Date(chapter.endDate) : undefined;
-                    });
-
                     this._toastSuccess(successMsg);
                     resolve(chapters);
                 })
@@ -93,9 +88,6 @@ export class ResponseParser {
                     return this._parseAsJson(response);
                 })
                 .then((chapter: IChapter) => {
-                    chapter.startDate = chapter.startDate ? new Date(chapter.startDate) : undefined;
-                    chapter.endDate = chapter.endDate ? new Date(chapter.endDate) : undefined;
-
                     this._toastSuccess(successMsg);
                     resolve(chapter);
                 })
@@ -103,6 +95,50 @@ export class ResponseParser {
                     this.loggerApi.error("An error occurred while parsing chapter.", error);
                     this._toastError(errorMsg);
                     resolve({});
+                });
+        });
+    }
+
+    public parseContentReference(
+        response: Promise<Response>,
+        successMsg?: string,
+        errorMsg?: string
+    ): Promise<IContent> {
+        return new Promise((resolve) => {
+            response
+                .then((response) => {
+                    return this._parseAsJson(response);
+                })
+                .then((content: IContent) => {
+                    this._toastSuccess(successMsg);
+                    resolve(content);
+                })
+                .catch((error) => {
+                    this.loggerApi.error("An error occurred while parsing content.", error);
+                    this._toastError(errorMsg);
+                    resolve({});
+                });
+        });
+    }
+
+    public parseContentReferences(
+        response: Promise<Response>,
+        successMsg?: string,
+        errorMsg?: string
+    ): Promise<IContent[]> {
+        return new Promise((resolve) => {
+            response
+                .then((response) => {
+                    return this._parseAsJson(response);
+                })
+                .then((contents: IContent[]) => {
+                    this._toastSuccess(successMsg);
+                    resolve(contents);
+                })
+                .catch((error) => {
+                    this.loggerApi.error("An error occurred while parsing contents.", error);
+                    this._toastError(errorMsg);
+                    resolve([]);
                 });
         });
     }
