@@ -3,5 +3,5 @@ import { IQuestionMultipleChoice, IQuestionNumeric, IQuestionSingleChoice } from
 export type IQuiz = {
     id?: string;
     name: string;
-    questionObjects: Array<IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric>;
+    questionObjects: (IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric)[];
 };

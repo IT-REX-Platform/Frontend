@@ -174,11 +174,7 @@ export class ResponseParser {
         return new Promise((resolve) => {
             response
                 .then((response) => {
-                    return this._parseAsJson(response);
-                })
-                .then((quizzes) => {
-                    // TODO
-
+                    const quizzes = this._parseAsJson(response);
                     this._toastSuccess(successMsg);
                     resolve(quizzes);
                 })
@@ -191,21 +187,17 @@ export class ResponseParser {
     }
 
     public parseQuiz(response: Promise<Response>, successMsg?: string, errorMsg?: string): Promise<IQuiz> {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             response
                 .then((response) => {
-                    return this._parseAsJson(response);
-                })
-                .then((quiz) => {
-                    // TODO
-
+                    const quiz = this._parseAsJson(response);
                     this._toastSuccess(successMsg);
                     resolve(quiz);
                 })
                 .catch((error) => {
                     this.loggerApi.error("An error occurred while parsing quiz.", error);
                     this._toastError(errorMsg);
-                    // resolve({}); // TODO
+                    reject();
                 });
         });
     }
