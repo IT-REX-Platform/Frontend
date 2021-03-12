@@ -24,7 +24,9 @@ export class EndpointsChapter implements IEndpointsChapter {
      * Get one or more chapters.
      *
      * @param getRequest GET request.
-     * @param params Optional parameters for GET request URL to filter all existing courses.
+     * @param successMsg A success message.
+     * @param errorMsg An error message.
+     * @returns
      */
     public getChapters(getRequest: RequestInit, successMsg?: string, errorMsg?: string): Promise<IChapter[]> {
         this.loggerApi.trace("Sending GET request to URL: " + this.url);
@@ -37,6 +39,9 @@ export class EndpointsChapter implements IEndpointsChapter {
      *
      * @param getRequest GET request.
      * @param chapterId Chapter ID for URL parameter.
+     * @param successMsg A success message.
+     * @param errorMsg An error message.
+     * @returns
      */
     public getChapter(
         getRequest: RequestInit,
@@ -55,6 +60,9 @@ export class EndpointsChapter implements IEndpointsChapter {
      * Create a new course.
      *
      * @param postRequest POST request with course JSON body containing no course ID.
+     * @param successMsg A success message.
+     * @param errorMsg An error message.
+     * @returns
      */
     public createChapter(postRequest: RequestInit, successMsg?: string, errorMsg?: string): Promise<IChapter> {
         this.loggerApi.trace("Sending POST request to URL: " + this.url);
@@ -66,6 +74,9 @@ export class EndpointsChapter implements IEndpointsChapter {
      * Update all fields of a course.
      *
      * @param postRequest PUT request with course JSON body containing a course ID and all available course fields.
+     * @param successMsg A success message.
+     * @param errorMsg An error message.
+     * @returns
      */
     public updateChapter(putRequest: RequestInit, successMsg?: string, errorMsg?: string): Promise<IChapter> {
         this.loggerApi.trace("Sending PUT request to URL: " + this.url);
@@ -77,6 +88,9 @@ export class EndpointsChapter implements IEndpointsChapter {
      * Update one or more course fields.
      *
      * @param postRequest PATCH request with course JSON body containing a course ID and one or more course fields.
+     * @param successMsg A success message.
+     * @param errorMsg An error message.
+     * @returns
      */
     public patchChapter(patchRequest: RequestInit, successMsg?: string, errorMsg?: string): Promise<IChapter> {
         this.loggerApi.trace("Sending PATCH request to URL: " + this.url);
@@ -89,6 +103,9 @@ export class EndpointsChapter implements IEndpointsChapter {
      *
      * @param deleteRequest DELETE request.
      * @param id Course ID for URL parameter.
+     * @param successMsg A success message.
+     * @param errorMsg An error message.
+     * @returns
      */
     public deleteChapter(
         deleteRequest: RequestInit,
