@@ -45,6 +45,7 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                 <View style={styles.break} />
                 <Text style={styles.chapterMaterialHeader}>Chapter Quiz</Text>
                 {props.editMode && chapterQuiz()}
+                {chapterContent()}
             </View>
             {props.editMode && AuthenticationService.getInstance().isLecturer() && (
                 <View style={styles.chapterEditRow}>
@@ -107,6 +108,19 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                 </View>
             );
         } */
+    }
+
+    function chapterContent() {
+        return (
+            <View style={styles.chapterMaterialElements}>
+                <TextButton
+                    title="Go to chapter contents"
+                    onPress={() => {
+                        navigation.navigate("CHAPTER_CONTENT", { chapterId: chapter?.id });
+                    }}
+                />
+            </View>
+        );
     }
 
     function getPublishedSate(isPublished: string | undefined) {

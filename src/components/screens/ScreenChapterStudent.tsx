@@ -45,7 +45,7 @@ export const ScreenAddQuiz: React.FC = () => {
     const route = useRoute<ChapterContentRouteProp>();
     //const navigation = useNavigation<ScreenCourseTabsNavigationProp>();
     //const loggerService = loggerFactory.getLogger("service.VideoPoolComponent");
-    let chapterId = route.params.chapterId;
+    const chapterId = route.params.chapterId;
 
     // Render UI for video list according to un-/available video data.
     const renderVideoList = () => {

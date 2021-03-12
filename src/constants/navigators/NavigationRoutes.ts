@@ -27,6 +27,10 @@ export const config = {
                     path: "chapter/:chapterId",
                     screens: {},
                 },
+                CHAPTER_CONTENT: {
+                    path: "chapter/:chapterId/content",
+                    screens: {},
+                },
                 CREATE_QUIZ: {
                     path: "chapter/createQuiz/:chapterId/",
                     screens: {},
@@ -55,6 +59,7 @@ export type CourseStackParamList = {
         video: IVideo;
     };
     CHAPTER_CREATE: undefined;
+    CHAPTER_CONTENT: { chapterId: string };
     CREATE_QUIZ: { chapterId: string | undefined; questionId?: string | undefined };
     CREATE_QUESTION: undefined;
     CHAPTER: { chapterId: string | undefined };
