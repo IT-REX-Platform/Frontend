@@ -49,7 +49,7 @@ export class EndpointsQuestion implements IEndpointsQuestion {
         questionId: string,
         successMsg?: string,
         errorMsg?: string
-    ): Promise<IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric> {
+    ): Promise<IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric | undefined> {
         const urlUpdated: string = this.url + "/" + questionId;
 
         this.loggerApi.trace("Sending GET request to URL: " + urlUpdated);
@@ -61,7 +61,7 @@ export class EndpointsQuestion implements IEndpointsQuestion {
         postRequest: RequestInit,
         successMsg?: string,
         errorMsg?: string
-    ): Promise<IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric> {
+    ): Promise<IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric | undefined> {
         this.loggerApi.trace("Sending POST request to URL: " + this.url);
         const response: Promise<Response> = sendRequest(this.url, postRequest);
         return this.responseParser.parseQuestion(response, successMsg, errorMsg);
@@ -71,7 +71,7 @@ export class EndpointsQuestion implements IEndpointsQuestion {
         putRequest: RequestInit,
         successMsg?: string,
         errorMsg?: string
-    ): Promise<IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric> {
+    ): Promise<IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric | undefined> {
         this.loggerApi.trace("Sending PUT request to URL: " + this.url);
         const response: Promise<Response> = sendRequest(this.url, putRequest);
         return this.responseParser.parseQuestion(response, successMsg, errorMsg);

@@ -5,9 +5,8 @@ import { ISolutionMultipleChoice, ISolutionNumeric } from "./ISolution";
 interface IQuestion {
     id?: string;
     courseId: string;
-    quizIds: string[];
+    quizIds?: string[];
     question: string;
-    // type: QuestionTypes;
 }
 
 export interface IQuestionSingleChoice extends IQuestion {

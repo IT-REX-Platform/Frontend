@@ -14,12 +14,12 @@ export interface IEndpointsQuestion {
     getQuestion(
         getRequest: RequestInit,
         questionId: string
-    ): Promise<IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric>;
+    ): Promise<IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric | undefined>;
     createQuestion(
         postRequest: RequestInit
-    ): Promise<IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric>;
+    ): Promise<IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric | undefined>;
     updateQuestion(
         putRequest: RequestInit
-    ): Promise<IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric>;
+    ): Promise<IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric | undefined>;
     deleteQuestion(deleteRequest: RequestInit, questionId: string): Promise<void>;
 }

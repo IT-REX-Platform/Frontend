@@ -40,7 +40,12 @@ export class EndpointsQuiz implements IEndpointsQuiz {
         return this.responseParser.parseQuizzes(response, successMsg, errorMsg);
     }
 
-    getQuiz(getRequest: RequestInit, quizId: string, successMsg?: string, errorMsg?: string): Promise<IQuiz> {
+    getQuiz(
+        getRequest: RequestInit,
+        quizId: string,
+        successMsg?: string,
+        errorMsg?: string
+    ): Promise<IQuiz | undefined> {
         const urlUpdated: string = this.url + "/" + quizId;
 
         this.loggerApi.trace("Sending GET request to URL: " + urlUpdated);
@@ -48,13 +53,13 @@ export class EndpointsQuiz implements IEndpointsQuiz {
         return this.responseParser.parseQuiz(response, successMsg, errorMsg);
     }
 
-    createQuiz(postRequest: RequestInit, successMsg?: string, errorMsg?: string): Promise<IQuiz> {
+    createQuiz(postRequest: RequestInit, successMsg?: string, errorMsg?: string): Promise<IQuiz | undefined> {
         this.loggerApi.trace("Sending POST request to URL: " + this.url);
         const response: Promise<Response> = sendRequest(this.url, postRequest);
         return this.responseParser.parseQuiz(response, successMsg, errorMsg);
     }
 
-    updateQuiz(putRequest: RequestInit, successMsg?: string, errorMsg?: string): Promise<IQuiz> {
+    updateQuiz(putRequest: RequestInit, successMsg?: string, errorMsg?: string): Promise<IQuiz | undefined> {
         this.loggerApi.trace("Sending PUT request to URL: " + this.url);
         const response: Promise<Response> = sendRequest(this.url, putRequest);
         return this.responseParser.parseQuiz(response, successMsg, errorMsg);
