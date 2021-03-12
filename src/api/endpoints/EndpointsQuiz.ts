@@ -19,7 +19,11 @@ export class EndpointsQuiz implements IEndpointsQuiz {
         this.responseParser = new ResponseParser();
     }
 
-    getAllQuizzes(
+    getAllQuizzes(getRequest: RequestInit, successMsg?: string, errorMsg?: string): Promise<IQuiz[]> {
+        throw new Error("Method not implemented.");
+    }
+
+    getCourseQuizzes(
         getRequest: RequestInit,
         chapterId: string,
         successMsg?: string,
@@ -44,7 +48,13 @@ export class EndpointsQuiz implements IEndpointsQuiz {
         throw new Error("Method not implemented.");
     }
 
-    deleteQuiz(deleteRequest: RequestInit, quizId: string, successMsg?: string, errorMsg?: string): Promise<void> {
+    deleteQuiz(
+        deleteRequest: RequestInit,
+        quizId: string,
+        withQuestions?: boolean,
+        successMsg?: string,
+        errorMsg?: string
+    ): Promise<void> {
         throw new Error("Method not implemented.");
     }
 }
