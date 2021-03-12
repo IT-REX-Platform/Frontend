@@ -1,9 +1,9 @@
 /* eslint-disable complexity */
 import React from "react";
 import { View, StyleSheet, Text } from "react-native";
-import { QuestionTypes } from "../constants/QuestionTypes";
-import { dark } from "../constants/themes/dark";
-import { IQuestionMultipleChoice, IQuestionNumeric, IQuestionSingleChoice } from "../types/IQuestion";
+import { QuestionTypes } from "../../constants/QuestionTypes";
+import { dark } from "../../constants/themes/dark";
+import { IQuestionMultipleChoice, IQuestionNumeric, IQuestionSingleChoice } from "../../types/IQuestion";
 
 interface QuestionCardProps {
     question: IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric;
