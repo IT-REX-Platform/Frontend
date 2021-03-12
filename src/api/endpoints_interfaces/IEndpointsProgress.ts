@@ -10,4 +10,5 @@ export interface IEndpointsProgress {
     setContentStateComplete(putRequest: RequestInit, trackerId: string): Promise<IContentProgressTracker>;
     updateContentProgress(putRequest: RequestInit, trackerId: string): Promise<IContentProgressTracker>;
     getCourseProgress(getRequest: RequestInit, courseId: string): Promise<ICourseProgressTracker>;
+    updateLastAccessedContentProgress(putRequest: RequestInit, crsTrackerId: string): Promise<IContentProgressTracker>;
 }

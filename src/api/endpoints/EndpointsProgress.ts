@@ -129,4 +129,26 @@ export class EndpointsProgress implements IEndpointsProgress {
         const response: Promise<Response> = sendRequest(urlToUse, getRequest);
         return this.responseParser.parseCourseProgressTracker(response, successMsg, errorMsg);
     }
+
+    /**
+     * Update the last accessed content progress for a course tracker.
+     *
+     * @param putRequest PUT request.
+     * @param crsTrackerId the course tracker id to update the last accessed ref of.
+     * @param successMsg the success message.
+     * @param errorMsg the error message.
+     * @returns
+     */
+    public updateLastAccessedContentProgress(
+        putRequest: RequestInit,
+        crsTrackerId: string,
+        successMsg?: string,
+        errorMsg?: string
+    ): Promise<ICourseProgressTracker> {
+        const urlToUse = `${this.url}/${ProgressUrlPart.MID_COURSES}/${crsTrackerId}/${ProgressUrlPart.SUF_CONTENTREF}`;
+
+        this.loggerApi.trace("Sending PUT request to URL: " + urlToUse);
+        const response: Promise<Response> = sendRequest(urlToUse, putRequest);
+        return this.responseParser.parseCourseProgressTracker(response, successMsg, errorMsg);
+    }
 }

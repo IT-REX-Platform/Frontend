@@ -183,12 +183,6 @@ export class ResponseParser {
                     return this._parseAsJson(response);
                 })
                 .then((contentProgressTracker: IContentProgressTracker) => {
-                    if (contentProgressTracker.contentReference !== undefined) {
-                        const ref = contentProgressTracker.contentReference;
-                        ref.startDate = ref.startDate ? new Date(ref.startDate) : undefined;
-                        ref.endDate = ref.endDate ? new Date(ref.endDate) : undefined;
-                    }
-
                     this._toastSuccess(successMsg);
                     resolve(contentProgressTracker);
                 })
@@ -210,19 +204,7 @@ export class ResponseParser {
                 .then((response) => {
                     return this._parseAsJson(response);
                 })
-                // Still sorry, but..
-                // eslint-disable-next-line complexity
                 .then((courseProgressTracker: ICourseProgressTracker) => {
-                    if (courseProgressTracker.contentProgressTrackers !== undefined) {
-                        for (const curTracker of courseProgressTracker.contentProgressTrackers) {
-                            if (curTracker.contentReference !== undefined) {
-                                const ref = curTracker.contentReference;
-                                ref.startDate = ref.startDate ? new Date(ref.startDate) : undefined;
-                                ref.endDate = ref.endDate ? new Date(ref.endDate) : undefined;
-                            }
-                        }
-                    }
-
                     this._toastSuccess(successMsg);
                     resolve(courseProgressTracker);
                 })

@@ -4,4 +4,5 @@ export enum ProgressUrlPart {
 
     SUF_COMPLETE = "complete",
     SUF_PROGRESS = "progress",
+    SUF_CONTENTREF = "contentReference",
 }
