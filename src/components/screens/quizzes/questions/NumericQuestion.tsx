@@ -16,8 +16,8 @@ import { IQuiz } from "../../../../types/IQuiz";
 import { ScreenCourseTabsNavigationProp } from "../../course/ScreenCourseTabs";
 
 interface QuizProps {
-    question: string;
-    quiz: IQuiz;
+    question: string | undefined;
+    quiz?: IQuiz;
 }
 
 export const NumericQuestion: React.FC<QuizProps> = (props) => {
@@ -99,15 +99,14 @@ export const NumericQuestion: React.FC<QuizProps> = (props) => {
         createAlert("Save Question, Navigate back to Add-Quiz page and add this question to the list of questions ");
 
         if (validateNumericQuestion(questionText, epsilonSolution, numberSolution)) {
-            const myNewQuestion: IQuestionNumeric = validateNumericQuestion(
-                questionText,
-                epsilonSolution,
-                numberSolution
-            );
+            const myNewQuestion = validateNumericQuestion(questionText, epsilonSolution, numberSolution);
             console.log(myNewQuestion);
             //TODO: ENPOINT REQUEST TO SAVE QUESTION
 
-            quiz.questionObjects.push(myNewQuestion);
+            if (myNewQuestion === undefined || quiz === undefined) {
+                return;
+            }
+            quiz.questions.push(myNewQuestion);
 
             toast.success("Jetzt noch speichern!");
             navigation.navigate("CREATE_QUIZ", { quiz: quiz });

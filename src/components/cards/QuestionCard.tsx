@@ -4,6 +4,7 @@ import { View, StyleSheet, Text } from "react-native";
 import { QuestionTypes } from "../../constants/QuestionTypes";
 import { dark } from "../../constants/themes/dark";
 import { IQuestionMultipleChoice, IQuestionNumeric, IQuestionSingleChoice } from "../../types/IQuestion";
+import { ISolutionNumeric } from "../../types/ISolution";
 
 interface QuestionCardProps {
     question: IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric;
@@ -28,7 +29,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = (props) => {
                     <>
                         {question.solution === "0" || question.solution[0] === true ? (
                             <View style={styles.cardChoicesRight}>
-                                <Text style={styles.textChoice}>{question.choices[0]}</Text>
+                                <Text style={styles.textChoice}>{question.solution}</Text>
                             </View>
                         ) : (
                             <View style={styles.cardChoicesWrong}>
@@ -68,10 +69,12 @@ export const QuestionCard: React.FC<QuestionCardProps> = (props) => {
                     </>
                 );
             case QuestionTypes.NUMERIC:
+                // eslint-disable-next-line no-case-declarations
+                const solution: ISolutionNumeric = question.solution;
                 return (
                     <View style={{ borderColor: "white" }}>
-                        <Text style={styles.textChoice}> Result: {question.solution.result}</Text>
-                        <Text style={styles.textChoice}> Epsilon: {question.solution.epsilon}</Text>
+                        <Text style={styles.textChoice}> Result: {solution.result}</Text>
+                        <Text style={styles.textChoice}> Epsilon: {solution.epsilon}</Text>
                     </View>
                 );
             default:

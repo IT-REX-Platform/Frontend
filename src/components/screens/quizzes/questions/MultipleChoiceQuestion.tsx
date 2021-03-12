@@ -6,15 +6,15 @@ import { LocalizationContext } from "../../../Context";
 import { TextButton } from "../../../uiElements/TextButton";
 import { createAlert } from "../../../../helperScripts/createAlert";
 import i18n from "../../../../locales";
-import { IQuestionMultipleChoice } from "../../../../types/IQuestion";
-import { QuestionTypes } from "../../../../constants/QuestionTypes";
 import { IChoices } from "../../../../types/IChoices";
 import { validateMultipleChoiceQuestion } from "../../../../helperScripts/validateQuestions";
 import { ISolutionMultipleChoice } from "../../../../types/ISolution";
 import { toast } from "react-toastify";
+import { IQuiz } from "../../../../types/IQuiz";
 
 interface QuizProps {
     question?: string;
+    quiz?: IQuiz;
 }
 
 export const MultipleChoiceQuestion: React.FC<QuizProps> = (props) => {

@@ -16,7 +16,7 @@ import { IQuestionSingleChoice } from "../../../../types/IQuestion";
 
 interface QuizProps {
     question: string;
-    quiz: IQuiz;
+    quiz?: IQuiz;
 }
 
 export const SingleChoiceQuestion: React.FC<QuizProps> = (props) => {
@@ -96,12 +96,11 @@ export const SingleChoiceQuestion: React.FC<QuizProps> = (props) => {
         // TODO: confirm save
 
         if (validateSingleChoiceQuestion(questionText, choicesSingleChoice, "3")) {
-            const myNewQuestion: IQuestionSingleChoice = validateSingleChoiceQuestion(
-                questionText,
-                choicesSingleChoice,
-                "3"
-            );
-            quiz.questionObjects.push(myNewQuestion);
+            const myNewQuestion = validateSingleChoiceQuestion(questionText, choicesSingleChoice, "3");
+            if (myNewQuestion === undefined || quiz === undefined) {
+                return;
+            }
+            quiz.questions.push(myNewQuestion);
             navigation.navigate("CREATE_QUIZ", { quiz: quiz });
             toast.success("Jetzt nur noch speichern");
         }

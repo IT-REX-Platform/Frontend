@@ -11,25 +11,26 @@ export function validateNumericQuestion(
     questionText: string | undefined,
     epsilonSolution: number | undefined,
     numberSolution: number | undefined
-): boolean | IQuestionNumeric {
+): IQuestionNumeric | undefined {
     const toast: ToastService = new ToastService();
 
     if (questionText === undefined || questionText === i18n.t("itrex.addQuestionText")) {
         toast.warn(i18n.t("itrex.invalidQuestion"));
-        return false;
+        return;
     }
 
     if (numberSolution == null || numberSolution === undefined) {
         toast.warn(i18n.t("itrex.invalidNumericSolution"));
-        return false;
+        return;
     }
 
     if (epsilonSolution == null || epsilonSolution === undefined) {
         toast.warn(i18n.t("itrex.invalidEpsilon"));
-        return false;
+        return;
     }
 
     const myNewQuestion: IQuestionNumeric = {
+        courseId: "",
         type: QuestionTypes.NUMERIC,
         question: questionText,
         solution: {
@@ -45,15 +46,15 @@ export function validateSingleChoiceQuestion(
     questionText: string | undefined,
     choices: IChoices | undefined,
     solution: string | undefined
-): boolean | IQuestionSingleChoice {
+): IQuestionSingleChoice | undefined {
     if (questionText === undefined || questionText === i18n.t("itrex.addQuestionText")) {
         toast.warn(i18n.t("itrex.invalidQuestion"));
-        return false;
+        return;
     }
 
     if (choices === undefined) {
         toast.warn(i18n.t("itrex.invalidAnswers"));
-        return false;
+        return;
     }
     if (
         choices["0"] === undefined ||
@@ -62,15 +63,16 @@ export function validateSingleChoiceQuestion(
         choices["3"] === undefined
     ) {
         toast.warn(i18n.t("itrex.missingAnswers"));
-        return false;
+        return;
     }
 
     if (solution === undefined || solution === null) {
         toast.warn(i18n.t("itrex.invalidSingleSolution"));
-        return false;
+        return;
     }
 
     const myNewQuestion: IQuestionSingleChoice = {
+        courseId: "",
         type: QuestionTypes.SINGLE_CHOICE,
         question: questionText,
         choices: choices,
@@ -110,6 +112,7 @@ export function validateMultipleChoiceQuestion(
     }
 
     const myNewQuestion: IQuestionMultipleChoice = {
+        courseId: "",
         type: QuestionTypes.MULTIPLE_CHOICE,
         question: questionText,
         choices: choices,

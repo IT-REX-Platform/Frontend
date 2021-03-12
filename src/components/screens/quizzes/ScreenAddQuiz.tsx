@@ -11,7 +11,6 @@ import { createAlert } from "../../../helperScripts/createAlert";
 import i18n from "../../../locales";
 import { RequestFactory } from "../../../api/requests/RequestFactory";
 import { EndpointsChapter } from "../../../api/endpoints/EndpointsChapter";
-import { ScreenCourseTabsRouteProp } from "../course/ScreenCourseTabs";
 import { ScreenCourseOverviewNavigationProp } from "../course/ScreenCourseOverview";
 import { QuestionCard } from "../../cards/QuestionCard";
 import { ScrollView } from "react-native-gesture-handler";
@@ -38,7 +37,7 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
     const toast: ToastService = new ToastService();
 
     let chapterId = route.params.chapterId;
-    let quizR = route.params.quiz;
+    const quizR = route.params.quiz;
 
     console.log(quizR);
 
@@ -55,7 +54,7 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
     // TODO:
     const [questions, setQuestions] = useState<
         Array<IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric>
-    >(quizList[0].questionObjects);
+    >(quizList[0].questions);
 
     useFocusEffect(
         React.useCallback(() => {
@@ -82,7 +81,7 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
                 console.log("--------------------------------------------");
                 console.log("Params");
                 console.log("--------------------------------------------");
-                setQuestions(quizR.questionObjects);
+                setQuestions(quizR.questions);
                 setQuizName(quizR.name);
                 console.log(questions);
             }
@@ -114,8 +113,9 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
 
     function navigateTo() {
         const myNewQuiz: IQuiz = {
+            courseId: "",
             name: quizName,
-            questionObjects: questions,
+            questions: questions,
         };
 
         console.log(myNewQuiz);

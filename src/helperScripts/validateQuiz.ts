@@ -19,8 +19,10 @@ export function validateQuiz(
     }
 
     const myNewQuiz: IQuiz = {
+        // TODO Add ID
+        courseId: "",
         name: quizName,
-        questionObjects: quizQuestionObjects,
+        questions: quizQuestionObjects,
     };
 
     return myNewQuiz;
