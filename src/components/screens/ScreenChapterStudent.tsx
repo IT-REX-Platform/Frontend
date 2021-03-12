@@ -4,13 +4,13 @@
 //TODO: on click on video, load it to media player
 //3. Videoplayer der ausgewähltes  Video spielt
 
-import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import { RouteProp, useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
 import { Video } from "expo-av";
 import { useState } from "react";
-import { ActivityIndicator, FlatList, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, FlatList, TouchableOpacity, View, StyleSheet, Text } from "react-native";
 import { ListItem } from "react-native-elements";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import React from "react-native/node_modules/@types/react";
+import React from "react";
 import { toast } from "react-toastify";
 import { EndpointsVideo } from "../../api/endpoints/EndpointsVideo";
 import { RootDrawerParamList } from "../../constants/navigators/NavigationRoutes";
@@ -21,15 +21,21 @@ import { ICourse } from "../../types/ICourse";
 import { IVideo } from "../../types/IVideo";
 import { CourseContext, LocalizationContext } from "../Context";
 import { createVideoUrl } from "../../services/createVideoUrl";
-import { ScreenCourseTabsNavigationProp, ScreenCourseTabsRouteProp } from "./course/ScreenCourseTabs";
+//import { ScreenCourseTabsNavigationProp, ScreenCourseTabsRouteProp } from "../../course/ScreenCourseTabs";
 import { RequestFactory } from "../../api/requests/RequestFactory";
+import { ImageBackground } from "react-native";
+import { IContent } from "../../types/IContent";
+import { EndpointsChapter } from "../../api/endpoints/EndpointsChapter";
 
 const endpointsVideo = new EndpointsVideo();
+const endpointsChapter = new EndpointsChapter();
 
 export type ChapterContentRouteProp = RouteProp<RootDrawerParamList, "ROUTE_CHAPTER_CONTENT">;
 
-export const ScreenChapterStudent: React.FC = () => {
+export const ScreenAddQuiz: React.FC = () => {
     const course: ICourse = React.useContext(CourseContext);
+    const [chapter, setChapter] = useState<IChapter>({});
+    const [chapterPlaylist, setChapterPlaylist] = useState<IContent[]>([]);
 
     const initialVideoState: IVideo[] = [];
     const [videos, setVideos] = useState<IVideo[]>([]);
@@ -45,19 +51,26 @@ export const ScreenChapterStudent: React.FC = () => {
     const renderVideoList = () => {
         if (isVideoListLoading) {
             return (
-                <View style={videoPoolStyles.videoListDownloadingContainer}>
-                    <ActivityIndicator style={videoPoolStyles.loadingIcon} size="large" color="white" />
+                <View style={styles.videoListDownloadingContainer}>
+                    <ActivityIndicator style={styles.loadingIcon} size="large" color="white" />
                 </View>
             );
         }
     };
+
+    // Call following function/s only once when this screen is shown.
+    useFocusEffect(
+        React.useCallback(() => {
+            _getAllVideos();
+        }, [course])
+    );
 
     const playlistlistItem = ({ item }: { item: IVideo }) => (
         <ListItem
             containerStyle={{
                 marginBottom: 5,
                 borderRadius: 2,
-                backgroundColor: dark.theme.darkBlue2,
+                backgroundColor: dark.theme.pink,
                 borderColor: dark.theme.darkBlue4,
                 borderWidth: 2,
             }}>
@@ -66,9 +79,7 @@ export const ScreenChapterStudent: React.FC = () => {
                     <ListItem.Title style={styles.listItemTitle} numberOfLines={1} lineBreakMode="tail">
                         {item.title}
                     </ListItem.Title>
-                    <ListItem.Subtitle style={styles.listItemSubtitle}>
-                        {calculateVideoSize(item.length)}
-                    </ListItem.Subtitle>
+                    <ListItem.Subtitle style={styles.listItemSubtitle}>Subtitle</ListItem.Subtitle>
                 </ListItem.Content>
             </TouchableOpacity>
         </ListItem>
@@ -76,23 +87,31 @@ export const ScreenChapterStudent: React.FC = () => {
 
     return (
         <View style={styles.container}>
-            <FlatList data={videos} renderItem={playlistlistItem} keyExtractor={(item, index) => index.toString()} />
-            <Video
-                source={{ uri: _getVideoUrl(videos[0]) }}
-                style={[
-                    styles.video,
-                    {
-                        opacity: this.state.showVideo ? 1.0 : 0.0,
-                        width: this.state.videoWidth,
-                        height: this.state.videoHeight,
-                    },
-                ]}
+            <Text style={styles.textStyle}>Lovely Playlist:</Text>
+            <FlatList
+                data={videos}
+                renderItem={playlistlistItem}
+                keyExtractor={(item, index) => index.toString()}
+                ListEmptyComponent={<Text>Videos here</Text>}
             />
+            <Video style={[styles.video, {}]} />
         </View>
     );
 
+    function _getChapter() {
+        const request: RequestInit = RequestFactory.createGetRequest();
+        endpointsChapter
+            .getChapter(request, chapterId, undefined, i18n.t("itrex.getChapterError"))
+            .then((chapterReceived: IChapter) => {
+                setChapter(chapterReceived);
+                if (chapterReceived.contentObjects !== undefined) {
+                    setChapterPlaylist(chapterReceived.contentObjects);
+                }
+            });
+    }
+
     function _getVideoUrl(vid: IVideo): string {
-        if (vid.id == undefined || null) {
+        if (vid == undefined || vid.id == undefined || null) {
             toast.error(i18n.t("itrex.videoNotFound"));
             return "";
         }
@@ -112,10 +131,84 @@ export const ScreenChapterStudent: React.FC = () => {
         endpointsVideo
             .getAllVideos(request, course.id, undefined, i18n.t("itrex.getVideosError"))
             .then((videosReceived: IVideo[]) => {
-                setVideos(videosReceived.filter((video) => video.chapterId == chapterId));
+                setVideos(
+                    videosReceived.filter((video) => {
+                        video.chapterId == chapterId;
+                        console.log(video.chapterId);
+                    })
+                );
+                console.log(chapterId);
+                console.log(videos);
                 console.log(videosReceived);
             })
-
             .finally(async () => setVideoListLoading(false));
     }
 };
+
+const styles = StyleSheet.create({
+    container: {
+        backgroundColor: dark.theme.darkBlue1,
+        flex: 1,
+    },
+    video: {
+        backgroundColor: dark.theme.pink,
+        height: "100 px",
+        width: "100px",
+    },
+    videoListDownloadingContainer: {},
+    loadingIcon: {},
+    imageContainer: {
+        flex: 1,
+        paddingTop: "3%",
+        backgroundColor: dark.theme.darkBlue1,
+    },
+    scrollContainer: {
+        width: "screenWidth",
+        alignItems: "center",
+        paddingBottom: 20,
+    },
+    editMode: {
+        alignSelf: "flex-end",
+        flexDirection: "row",
+        paddingRight: "20px",
+        paddingTop: "20px",
+    },
+    editModeText: {
+        color: "white",
+        fontSize: 18,
+        fontWeight: "bold",
+        paddingRight: "20px",
+    },
+    addChapterContainer: {
+        backgroundColor: "rgba(0,0,0,0.3)",
+        height: "100px",
+        width: "80%",
+        marginTop: "1%",
+        padding: "0.5%",
+        borderWidth: 3,
+        borderColor: dark.theme.lightBlue,
+    },
+    txtAddChapter: {
+        alignSelf: "center",
+        color: "white",
+        fontSize: 18,
+        fontWeight: "bold",
+    },
+    btnAdd: {
+        width: "100%",
+        height: "100%",
+        borderWidth: 2,
+        borderColor: "rgba(79,175,165,1.0)",
+        borderRadius: 25,
+        borderStyle: "dotted",
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    textStyle: {
+        margin: 10,
+        color: "white",
+        fontWeight: "bold",
+    },
+    listItemTitle: {},
+    listItemSubtitle: {},
+});
