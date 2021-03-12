@@ -128,6 +128,9 @@ export const en = {
 
         getUserInfoError: "An error occurred while getting user info.",
 
+        invalidQuizName: "Please define a quiz name.",
+        invalidQuestionsObject: "Please add at least one question  to the quiz.",
+
         invalidQuestion: "Please define a question.",
         invalidEpsilon: "Please define an epsilon value.",
         invalidNumericSolution: "Please define a numeric answer.",

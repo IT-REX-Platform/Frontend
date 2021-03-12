@@ -18,6 +18,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import { IQuestionMultipleChoice, IQuestionNumeric, IQuestionSingleChoice } from "../../../types/IQuestion";
 import { IUser } from "../../../types/IUser";
 import { ToastService } from "../../../services/toasts/ToastService";
+import { validateQuiz } from "../../../helperScripts/validateQuiz";
 
 interface ChapterComponentProps {
     chapter?: IChapter;
@@ -103,9 +104,10 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
     function saveQuiz() {
         createAlert("Save the quiz");
 
-        if (questions === undefined || questions.length < 1) {
-            toast.error("Add at least 1 question!");
-            return;
+        if (validateQuiz(quizName, questions)) {
+            const myNewQuiz = validateQuiz(quizName, questions);
+            toast.success("Jetzt nur noch speichern");
+            console.log(myNewQuiz);
         }
         // TODO: Create new IQuiz Element with the user infromation & send Request to save
     }
