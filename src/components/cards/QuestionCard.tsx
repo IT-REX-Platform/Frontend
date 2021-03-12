@@ -70,7 +70,8 @@ export const QuestionCard: React.FC<QuestionCardProps> = (props) => {
             case QuestionTypes.NUMERIC:
                 return (
                     <View style={{ borderColor: "white" }}>
-                        <Text>TextInput here</Text>
+                        <Text style={styles.textChoice}> Result: {question.solution.result}</Text>
+                        <Text style={styles.textChoice}> Epsilon: {question.solution.epsilon}</Text>
                     </View>
                 );
             default:
