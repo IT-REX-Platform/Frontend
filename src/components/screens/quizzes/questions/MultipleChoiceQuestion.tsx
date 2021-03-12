@@ -9,6 +9,9 @@ import i18n from "../../../../locales";
 import { IQuestionMultipleChoice } from "../../../../types/IQuestion";
 import { QuestionTypes } from "../../../../constants/QuestionTypes";
 import { IChoices } from "../../../../types/IChoices";
+import { validateMultipleChoiceQuestion } from "../../../../helperScripts/validateQuestions";
+import { ISolutionMultipleChoice } from "../../../../types/ISolution";
+import { toast } from "react-toastify";
 
 interface QuizProps {
     question?: string;
@@ -21,12 +24,12 @@ export const MultipleChoiceQuestion: React.FC<QuizProps> = (props) => {
 
     React.useContext(LocalizationContext);
 
-    const [solutionMultipleChoice, setsolutionMultipleChoice] = useState<IChoices>();
+    const [choicesMultipleChoice, setchoicesMultipleChoice] = useState<IChoices>();
 
     useFocusEffect(
         React.useCallback(() => {
             // AuthenticationService.getInstance().getUserInfo(setUserInfo);
-        }, [solutionMultipleChoice])
+        }, [choicesMultipleChoice])
     );
 
     return (
@@ -78,7 +81,7 @@ export const MultipleChoiceQuestion: React.FC<QuizProps> = (props) => {
     );
 
     function addSolutionEntry(index: string, text: string) {
-        setsolutionMultipleChoice((solutionMultipleChoice) => ({ ...solutionMultipleChoice, [index]: text }));
+        setchoicesMultipleChoice((choicesMultipleChoice) => ({ ...choicesMultipleChoice, [index]: text }));
     }
 
     function saveMultipleChoiceQuestion() {
@@ -87,16 +90,12 @@ export const MultipleChoiceQuestion: React.FC<QuizProps> = (props) => {
         // TODO: Verify if use added an other question text & answers & solutions & selected a answer type
         // TODO: confirm save
 
-        if (solutionMultipleChoice === undefined || questionText === undefined) {
-            return;
+        const solution: ISolutionMultipleChoice = { "0": true, "1": true, "2": false, "3": false };
+        if (validateMultipleChoiceQuestion(questionText, choicesMultipleChoice, solution)) {
+            const myNewQuestion = validateMultipleChoiceQuestion(questionText, choicesMultipleChoice, solution);
+            toast.success("Jetzt nur noch speichern");
+            console.log(myNewQuestion);
         }
-        const myNewQuestion: IQuestionMultipleChoice = {
-            type: QuestionTypes.MULTIPLE_CHOICE,
-            question: questionText,
-            choices: solutionMultipleChoice,
-            solution: { "0": true, "1": true, "2": false, "3": false },
-        };
-        console.log(myNewQuestion);
     }
 };
 

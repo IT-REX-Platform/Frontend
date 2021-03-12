@@ -127,5 +127,13 @@ export const de = {
         deleteChapterError: "Ein Fehler ist beim Löschen des Kapitels aufgetreten.",
 
         getUserInfoError: "Ein Fehler ist beim Zugriff auf Benutzerinformationen aufgetreten.",
+
+        invalidQuestion: "Bitte definiere eine Frage.",
+        invalidEpsilon: "Bitte definiere einen Epsilonwert.",
+        invalidNumericSolution: "Bitte definiere eine Numerische Antwort.",
+        invalidAnswers: "Bitte definiere die möglichen Antwortmöglichkeiten.",
+        missingAnswers: "Bitte definiere alle möglichen Antwortmöglichkeiten.",
+        invalidSingleSolution: "Bitte definiere die richtige Antwort.",
+        addQuestion: "Bitte definiere deine Frage hier.",
     },
 };

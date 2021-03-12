@@ -6,10 +6,10 @@ import { LocalizationContext } from "../../../Context";
 import { TextButton } from "../../../uiElements/TextButton";
 import { createAlert } from "../../../../helperScripts/createAlert";
 import i18n from "../../../../locales";
-import { IQuestionSingleChoice } from "../../../../types/IQuestion";
-import { QuestionTypes } from "../../../../constants/QuestionTypes";
 
 import { IChoices } from "../../../../types/IChoices";
+import { validateSingleChoiceQuestion } from "../../../../helperScripts/validateQuestions";
+import { toast } from "react-toastify";
 
 interface QuizProps {
     question?: string;
@@ -22,12 +22,12 @@ export const SingleChoiceQuestion: React.FC<QuizProps> = (props) => {
 
     React.useContext(LocalizationContext);
 
-    const [solutionSingleChoice, setSolutionSingleChoice] = useState<IChoices>();
+    const [choicesSingleChoice, setChoicesSingleChoice] = useState<IChoices>();
 
     useFocusEffect(
         React.useCallback(() => {
             // AuthenticationService.getInstance().getUserInfo(setUserInfo);
-        }, [solutionSingleChoice])
+        }, [choicesSingleChoice])
     );
 
     return (
@@ -79,7 +79,7 @@ export const SingleChoiceQuestion: React.FC<QuizProps> = (props) => {
     );
 
     function addSolutionEntry(index: string, text: string) {
-        setSolutionSingleChoice((solutionSingleChoice) => ({ ...solutionSingleChoice, [index]: text }));
+        setChoicesSingleChoice((choicesSingleChoice) => ({ ...choicesSingleChoice, [index]: text }));
     }
 
     function saveSingeChoiceQuestion() {
@@ -88,16 +88,10 @@ export const SingleChoiceQuestion: React.FC<QuizProps> = (props) => {
         // TODO: Verify if use added an other question text & answers & solutions & selected a answer type
         // TODO: confirm save
 
-        if (solutionSingleChoice === undefined || questionText === undefined) {
-            return;
+        if (validateSingleChoiceQuestion(questionText, choicesSingleChoice, "3")) {
+            const myNewQuestion = validateSingleChoiceQuestion(questionText, choicesSingleChoice, "3");
+            toast.success("Jetzt nur noch speichern");
         }
-        const myNewQuestion: IQuestionSingleChoice = {
-            type: QuestionTypes.SINGLE_CHOICE,
-            question: questionText,
-            choices: solutionSingleChoice,
-            solution: "3",
-        };
-        console.log(myNewQuestion);
     }
 };
 

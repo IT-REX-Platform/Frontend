@@ -9,9 +9,12 @@ import i18n from "../../../../locales";
 import { IQuestionNumeric } from "../../../../types/IQuestion";
 import { QuestionTypes } from "../../../../constants/QuestionTypes";
 import * as NumericInput from "react-numeric-input";
+import { validateNumericQuestion } from "../../../../helperScripts/validateQuestions";
+import { ISolutionNumeric } from "../../../../types/ISolution";
+import { toast } from "react-toastify";
 
 interface QuizProps {
-    question?: string;
+    question: string;
 }
 
 export const NumericQuestion: React.FC<QuizProps> = (props) => {
@@ -21,8 +24,8 @@ export const NumericQuestion: React.FC<QuizProps> = (props) => {
 
     React.useContext(LocalizationContext);
 
-    const [numberSolution, setNumberSolution] = useState<number | null>(5);
-    const [epsilonSolution, setEpsilonSolution] = useState<number | null>(0.1);
+    const [numberSolution, setNumberSolution] = useState<number>();
+    const [epsilonSolution, setEpsilonSolution] = useState<number>();
 
     useFocusEffect(
         React.useCallback(() => {
@@ -55,7 +58,7 @@ export const NumericQuestion: React.FC<QuizProps> = (props) => {
                     <NumericInput
                         step={0.1}
                         precision={2}
-                        onChange={(number) => setEpsilonSolution(number)}
+                        onChange={(number) => setNumberOfEpsilon(number)}
                         style={{
                             input: {
                                 color: "white",
@@ -75,25 +78,30 @@ export const NumericQuestion: React.FC<QuizProps> = (props) => {
         </>
     );
 
+    function setNumberOfEpsilon(solutionEpsilon: number | null) {
+        if (solutionEpsilon === null) {
+            return;
+        }
+        setEpsilonSolution(solutionEpsilon);
+    }
+
     function setNumberOfSolution(solutionNumber: number | null) {
+        if (solutionNumber === null) {
+            return;
+        }
         setNumberSolution(solutionNumber);
     }
 
     function saveNumericQuestion() {
         createAlert("Save Question, Navigate back to Add-Quiz page and add this question to the list of questions ");
 
-        if (epsilonSolution === null || numberSolution === null || questionText === undefined) {
-            return;
+        if (validateNumericQuestion(questionText, epsilonSolution, numberSolution)) {
+            const myNewQuestion = validateNumericQuestion(questionText, epsilonSolution, numberSolution);
+            console.log(myNewQuestion);
+
+            //TODO: ENPOINT REQUEST TO SAVE QUESTION
+            toast.success("Jetzt noch speichern!");
         }
-        const myNewQuestion: IQuestionNumeric = {
-            type: QuestionTypes.NUMERIC,
-            question: questionText,
-            solution: {
-                epsilon: epsilonSolution,
-                result: numberSolution,
-            },
-        };
-        console.log(myNewQuestion);
     }
 };
 

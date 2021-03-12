@@ -127,5 +127,13 @@ export const en = {
         deleteChapterError: "An error occurred while deleting the chapter.",
 
         getUserInfoError: "An error occurred while getting user info.",
+
+        invalidQuestion: "Please define a question.",
+        invalidEpsilon: "Please define an epsilon value.",
+        invalidNumericSolution: "Please define a numeric answer.",
+        invalidAnswers: "Please define the possible answers.",
+        missingAnswers: "Please define every possible answers.",
+        invalidSingleSolution: "Please define the correct solution",
+        addQuestion: "Please define your question here.",
     },
 };
