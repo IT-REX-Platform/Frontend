@@ -19,6 +19,7 @@ import { ToastService } from "../../../services/toasts/ToastService";
 import { validateQuiz } from "../../../helperScripts/validateQuiz";
 import { IQuiz } from "../../../types/IQuiz";
 import { CourseStackParamList } from "../../../constants/navigators/NavigationRoutes";
+import { EndpointsQuiz } from "../../../api/endpoints/EndpointsQuiz";
 
 interface ChapterComponentProps {
     chapter?: IChapter;
@@ -49,7 +50,6 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
     const chapterEndpoint = new EndpointsChapter();
     const [quizName, setQuizName] = useState<string>(initialQuizName);
 
-    // TODO:
     const [questions, setQuestions] = useState<(IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric)[]>(
         []
     );
@@ -101,8 +101,11 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
     );
 
     function navigateTo() {
+        if (courseId === undefined) {
+            return;
+        }
         const myNewQuiz: IQuiz = {
-            courseId: "",
+            courseId: courseId,
             name: quizName,
             questions: questions,
         };
@@ -113,8 +116,8 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
     function displayQuestions() {
         if (questions === undefined || questions.length === 0) {
             return (
-                <View style={{ minHeight: "80%" }}>
-                    <Text>Please add questions to the quiz</Text>
+                <View style={{ minHeight: "85%", alignItems: "center" }}>
+                    <Text style={styles.txtAddQuestion}>{i18n.t("itrex.noQuestions")}</Text>
                 </View>
             );
         } else {
@@ -129,11 +132,17 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
     }
 
     function saveQuiz() {
-        createAlert("Save the quiz");
+        const endpointsQuiz: EndpointsQuiz = new EndpointsQuiz();
 
-        if (validateQuiz(quizName, questions)) {
-            const myNewQuiz = validateQuiz(quizName, questions);
-            toast.success("Jetzt nur noch speichern");
+        if (validateQuiz(courseId, quizName, questions)) {
+            const myNewQuiz = validateQuiz(courseId, quizName, questions);
+            if (myNewQuiz === undefined || quiz === undefined) {
+                return;
+            }
+
+            const request: RequestInit = RequestFactory.createPostRequestWithBody(myNewQuiz);
+            const response = endpointsQuiz.createQuiz(request, "OK", "ERROR");
+            response.then((question) => console.log(question));
         }
         // TODO: Create new IQuiz Element with the user infromation & send Request to save
     }

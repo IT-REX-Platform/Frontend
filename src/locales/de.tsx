@@ -130,7 +130,9 @@ export const de = {
 
         invalidQuizName: "Bitte definieren sie einen Quiz-Name.",
         invalidQuestionsObject: "Bitte füge mindestens eine Frage zum Quiz hinzu",
+        noQuestions: "Bisher wurden keine Fragen hinzugefügt!",
 
+        invalidQuizCourseID: "Ungültiger Kurs",
         invalidQuestion: "Bitte definiere eine Frage.",
         invalidEpsilon: "Bitte definiere einen Epsilonwert.",
         invalidNumericSolution: "Bitte definiere eine Numerische Antwort.",
