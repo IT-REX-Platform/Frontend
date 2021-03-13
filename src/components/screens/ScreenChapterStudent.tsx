@@ -32,10 +32,10 @@ const endpointsChapter = new EndpointsChapter();
 
 export type ChapterContentRouteProp = RouteProp<RootDrawerParamList, "ROUTE_CHAPTER_CONTENT">;
 
-export const ScreenAddQuiz: React.FC = () => {
+export const ScreenChapterStudent: React.FC = () => {
     const course: ICourse = React.useContext(CourseContext);
     const [chapter, setChapter] = useState<IChapter>({});
-    const [chapterPlaylist, setChapterPlaylist] = useState<IContent[]>([]);
+    const [chapterPlaylist, setChapterPlaylist] = useState<string[]>([]);
 
     const initialVideoState: IVideo[] = [];
     const [videos, setVideos] = useState<IVideo[]>([]);
@@ -61,23 +61,23 @@ export const ScreenAddQuiz: React.FC = () => {
     // Call following function/s only once when this screen is shown.
     useFocusEffect(
         React.useCallback(() => {
-            _getAllVideos();
+            _getChapter();
         }, [course])
     );
 
-    const playlistlistItem = ({ item }: { item: IVideo }) => (
+    const playlistlistItem = ({ item }: { item: string }) => (
         <ListItem
             containerStyle={{
                 marginBottom: 5,
                 borderRadius: 2,
-                backgroundColor: dark.theme.pink,
-                borderColor: dark.theme.darkBlue4,
+                backgroundColor: "rgba(0,0,0,0.3)",
+                borderColor: dark.theme.darkBlue3,
                 borderWidth: 2,
             }}>
             <TouchableOpacity onPress={() => _getVideoUrl(item)}>
                 <ListItem.Content>
                     <ListItem.Title style={styles.listItemTitle} numberOfLines={1} lineBreakMode="tail">
-                        {item.title}
+                        {item}
                     </ListItem.Title>
                     <ListItem.Subtitle style={styles.listItemSubtitle}>Subtitle</ListItem.Subtitle>
                 </ListItem.Content>
@@ -86,15 +86,23 @@ export const ScreenAddQuiz: React.FC = () => {
     );
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.textStyle}>Lovely Playlist:</Text>
-            <FlatList
-                data={videos}
-                renderItem={playlistlistItem}
-                keyExtractor={(item, index) => index.toString()}
-                ListEmptyComponent={<Text>Videos here</Text>}
-            />
-            <Video style={[styles.video, {}]} />
+        <View style={styles.rootContainer}>
+            <View style={styles.contentContainer}>
+                <View style={styles.videoContainer}>
+                    <Text style={styles.videoTitle}>Ch1.: My Video</Text>
+                    <Video style={[styles.video, {}]} />
+                </View>
+                <View style={styles.playlistContainer}>
+                    <Text style={styles.videoTitle}>Playlist</Text>
+                    <FlatList
+                        style={styles.flatList}
+                        data={chapterPlaylist}
+                        renderItem={playlistlistItem}
+                        keyExtractor={(item, index) => index.toString()}
+                        ListEmptyComponent={<Text>Videos here</Text>}
+                    />
+                </View>
+            </View>
         </View>
     );
 
@@ -104,19 +112,20 @@ export const ScreenAddQuiz: React.FC = () => {
             .getChapter(request, chapterId, undefined, i18n.t("itrex.getChapterError"))
             .then((chapterReceived: IChapter) => {
                 setChapter(chapterReceived);
-                if (chapterReceived.contentObjects !== undefined) {
-                    setChapterPlaylist(chapterReceived.contentObjects);
+                console.log(chapterReceived);
+                if (chapterReceived.contents !== undefined) {
+                    setChapterPlaylist(chapterReceived.contents);
+                    console.log(chapterPlaylist);
                 }
             });
     }
 
-    function _getVideoUrl(vid: IVideo): string {
-        if (vid == undefined || vid.id == undefined || null) {
+    function _getVideoUrl(vid: string): string {
+        if (vid == undefined || vid == undefined || null) {
             toast.error(i18n.t("itrex.videoNotFound"));
             return "";
         }
-
-        return createVideoUrl(vid.id);
+        return createVideoUrl(vid);
     }
 
     async function _getAllVideos(): Promise<void> {
@@ -146,14 +155,25 @@ export const ScreenAddQuiz: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-    container: {
+    rootContainer: {
         backgroundColor: dark.theme.darkBlue1,
         flex: 1,
+        flexDirection: "column",
+        justifyContent: "center",
+        padding: "3%",
     },
+
+    contentContainer: {
+        flexDirection: "column",
+        justifyContent: "flex-start",
+    },
+
     video: {
-        backgroundColor: dark.theme.pink,
-        height: "100 px",
-        width: "100px",
+        borderColor: dark.theme.darkBlue2,
+        borderWidth: 3,
+        width: "75%",
+        alignSelf: "flex-start",
+        marginTop: "0.5%",
     },
     videoListDownloadingContainer: {},
     loadingIcon: {},
@@ -162,18 +182,18 @@ const styles = StyleSheet.create({
         paddingTop: "3%",
         backgroundColor: dark.theme.darkBlue1,
     },
+    flatList: {
+        alignSelf: "flex-end",
+        position: "absolute",
+        width: "22%",
+    },
     scrollContainer: {
         width: "screenWidth",
         alignItems: "center",
         paddingBottom: 20,
     },
-    editMode: {
-        alignSelf: "flex-end",
-        flexDirection: "row",
-        paddingRight: "20px",
-        paddingTop: "20px",
-    },
-    editModeText: {
+
+    videoTitle: {
         color: "white",
         fontSize: 18,
         fontWeight: "bold",
