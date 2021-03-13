@@ -1,5 +1,4 @@
 /* eslint-disable complexity */
-import { toast } from "react-toastify";
 import { QuestionTypes } from "../constants/QuestionTypes";
 import i18n from "../locales";
 import { ToastService } from "../services/toasts/ToastService";
@@ -14,17 +13,17 @@ export function validateNumericQuestion(
 ): IQuestionNumeric | undefined {
     const toast: ToastService = new ToastService();
 
-    if (questionText === undefined || questionText === i18n.t("itrex.addQuestionText")) {
+    if (questionText == undefined || questionText === i18n.t("itrex.addQuestionText")) {
         toast.warn(i18n.t("itrex.invalidQuestion"));
         return;
     }
 
-    if (numberSolution == null || numberSolution === undefined) {
+    if (numberSolution == undefined) {
         toast.warn(i18n.t("itrex.invalidNumericSolution"));
         return;
     }
 
-    if (epsilonSolution == null || epsilonSolution === undefined) {
+    if (epsilonSolution == undefined) {
         toast.warn(i18n.t("itrex.invalidEpsilon"));
         return;
     }
@@ -47,26 +46,28 @@ export function validateSingleChoiceQuestion(
     choices: IChoices | undefined,
     solution: string | undefined
 ): IQuestionSingleChoice | undefined {
+    const toast: ToastService = new ToastService();
+
     if (questionText === undefined || questionText === i18n.t("itrex.addQuestionText")) {
         toast.warn(i18n.t("itrex.invalidQuestion"));
         return;
     }
 
-    if (choices === undefined) {
+    if (choices == undefined) {
         toast.warn(i18n.t("itrex.invalidAnswers"));
         return;
     }
     if (
-        choices["0"] === undefined ||
-        choices["1"] === undefined ||
-        choices["2"] === undefined ||
-        choices["3"] === undefined
+        choices["0"] == undefined ||
+        choices["1"] == undefined ||
+        choices["2"] == undefined ||
+        choices["3"] == undefined
     ) {
         toast.warn(i18n.t("itrex.missingAnswers"));
         return;
     }
 
-    if (solution === undefined || solution === null) {
+    if (solution == undefined) {
         toast.warn(i18n.t("itrex.invalidSingleSolution"));
         return;
     }
@@ -87,26 +88,28 @@ export function validateMultipleChoiceQuestion(
     choices: IChoices | undefined,
     solution: ISolutionMultipleChoice | undefined
 ): IQuestionMultipleChoice | undefined {
-    if (questionText === undefined || questionText === i18n.t("itrex.addQuestionText")) {
+    const toast: ToastService = new ToastService();
+
+    if (questionText == undefined || questionText === i18n.t("itrex.addQuestionText")) {
         toast.warn(i18n.t("itrex.invalidQuestion"));
         return;
     }
 
-    if (choices === undefined) {
+    if (choices == undefined) {
         toast.warn(i18n.t("itrex.invalidAnswers"));
         return;
     }
     if (
-        choices["0"] === undefined ||
-        choices["1"] === undefined ||
-        choices["2"] === undefined ||
-        choices["3"] === undefined
+        choices["0"] == undefined ||
+        choices["1"] == undefined ||
+        choices["2"] == undefined ||
+        choices["3"] == undefined
     ) {
         toast.warn(i18n.t("itrex.missingAnswers"));
         return;
     }
 
-    if (solution === undefined || solution === null) {
+    if (solution == undefined) {
         toast.warn(i18n.t("itrex.invalidSingleSolution"));
         return;
     }

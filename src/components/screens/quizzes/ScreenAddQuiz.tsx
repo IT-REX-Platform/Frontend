@@ -48,9 +48,9 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
     const chapterEndpoint = new EndpointsChapter();
     const [quizName, setQuizName] = useState<string>(initialQuizName);
     // TODO:
-    const [questions, setQuestions] = useState<
-        Array<IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric>
-    >(quizList[0].questions);
+    const [questions, setQuestions] = useState<(IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric)[]>(
+        quizList[0].questions
+    );
 
     useFocusEffect(
         React.useCallback(() => {

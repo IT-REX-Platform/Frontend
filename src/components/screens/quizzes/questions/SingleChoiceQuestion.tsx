@@ -10,10 +10,10 @@ import i18n from "../../../../locales";
 
 import { IChoices } from "../../../../types/IChoices";
 import { validateSingleChoiceQuestion } from "../../../../helperScripts/validateQuestions";
-import { toast } from "react-toastify";
 import { IQuiz } from "../../../../types/IQuiz";
 import { ScreenCourseTabsNavigationProp } from "../../course/ScreenCourseTabs";
 import Checkbox from "expo-checkbox";
+import { ToastService } from "../../../../services/toasts/ToastService";
 
 interface QuizProps {
     question: string;
@@ -24,16 +24,18 @@ export const SingleChoiceQuestion: React.FC<QuizProps> = (props) => {
     React.useContext(LocalizationContext);
     const navigation = useNavigation<ScreenCourseTabsNavigationProp>();
 
+    const toast: ToastService = new ToastService();
+
     const questionText = props.question;
     const quiz = props.quiz;
 
     const [choicesSingleChoice, setChoicesSingleChoice] = useState<IChoices>();
 
     // Checkbox states to define the correct solution
-    const [checkboxZero, setcheckboxZero] = useState(true);
-    const [checkboxOne, setcheckboxOne] = useState(false);
-    const [checkboxTwo, setcheckboxTwo] = useState(false);
-    const [checkboxThree, setcheckboxThree] = useState(false);
+    const [checkboxZero, setCheckboxZero] = useState(true);
+    const [checkboxOne, setCheckboxOne] = useState(false);
+    const [checkboxTwo, setCheckboxTwo] = useState(false);
+    const [checkboxThree, setCheckboxThree] = useState(false);
 
     const [solution, setSolution] = useState<string>("0");
 
@@ -129,28 +131,28 @@ export const SingleChoiceQuestion: React.FC<QuizProps> = (props) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     function changeChecked(index: string): void {
         if (index === "0") {
-            setcheckboxZero(true);
-            setcheckboxOne(false);
-            setcheckboxTwo(false);
-            setcheckboxThree(false);
+            setCheckboxZero(true);
+            setCheckboxOne(false);
+            setCheckboxTwo(false);
+            setCheckboxThree(false);
             setSolution("0");
         } else if (index === "1") {
-            setcheckboxZero(false);
-            setcheckboxOne(true);
-            setcheckboxTwo(false);
-            setcheckboxThree(false);
+            setCheckboxZero(false);
+            setCheckboxOne(true);
+            setCheckboxTwo(false);
+            setCheckboxThree(false);
             setSolution("1");
         } else if (index === "2") {
-            setcheckboxZero(false);
-            setcheckboxOne(false);
-            setcheckboxTwo(true);
-            setcheckboxThree(false);
+            setCheckboxZero(false);
+            setCheckboxOne(false);
+            setCheckboxTwo(true);
+            setCheckboxThree(false);
             setSolution("2");
         } else if (index === "3") {
-            setcheckboxZero(false);
-            setcheckboxOne(false);
-            setcheckboxTwo(false);
-            setcheckboxThree(true);
+            setCheckboxZero(false);
+            setCheckboxOne(false);
+            setCheckboxTwo(false);
+            setCheckboxThree(true);
             setSolution("3");
         }
     }

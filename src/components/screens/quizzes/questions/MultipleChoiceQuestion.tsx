@@ -9,10 +9,10 @@ import i18n from "../../../../locales";
 import { IChoices } from "../../../../types/IChoices";
 import { validateMultipleChoiceQuestion } from "../../../../helperScripts/validateQuestions";
 import { ISolutionMultipleChoice } from "../../../../types/ISolution";
-import { toast } from "react-toastify";
 import { IQuiz } from "../../../../types/IQuiz";
 import Checkbox from "expo-checkbox";
 import { ScreenCourseTabsNavigationProp } from "../../course/ScreenCourseTabs";
+import { ToastService } from "../../../../services/toasts/ToastService";
 
 interface QuizProps {
     question?: string;
@@ -22,6 +22,8 @@ interface QuizProps {
 export const MultipleChoiceQuestion: React.FC<QuizProps> = (props) => {
     const questionText = props.question;
     const quiz = props.quiz;
+
+    const toast: ToastService = new ToastService();
 
     React.useContext(LocalizationContext);
     const navigation = useNavigation<ScreenCourseTabsNavigationProp>();

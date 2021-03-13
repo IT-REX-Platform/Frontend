@@ -1,4 +1,3 @@
-/* eslint-disable complexity */
 import React, { ChangeEvent, useState } from "react";
 import { ImageBackground, Platform, StyleSheet, Text, TextInput, View } from "react-native";
 import { ICourse } from "../types/ICourse";
