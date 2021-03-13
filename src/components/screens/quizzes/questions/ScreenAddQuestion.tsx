@@ -31,9 +31,7 @@ export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
     const [questionText, setQuestionText] = useState<string>(i18n.t("itrex.addQuestionText"));
     const route = useRoute<ScreenCourseTabsRouteProp>();
     const quizTemp = route.params.quiz;
-    const [quiz, setQuiz] = useState<IQuiz | undefined>(quizTemp);
-
-    console.log(quiz);
+    const [quiz] = useState<IQuiz | undefined>(quizTemp);
 
     const kindOfQuestionOptions = [
         { value: QuestionTypes.MULTIPLE_CHOICE, label: "Multiple Choice" },
@@ -41,9 +39,9 @@ export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
         { value: QuestionTypes.NUMERIC, label: "Numeric" },
     ];
 
-    const [solutionNum, setSolutionNum] = useState<ISolutionNumeric>();
-    const [solutionMultiChoice, setsolutionMultiChoice] = useState<ISolutionMultipleChoice>();
-    const [solutionSingleChoice, setSolutionSingleChoice] = useState<IChoices>();
+    const [solutionNum] = useState<ISolutionNumeric>();
+    const [solutionMultiChoice] = useState<ISolutionMultipleChoice>();
+    const [solutionSingleChoice] = useState<IChoices>();
 
     // Make Single Choice default
     const defaultKindOfQuestionValue = kindOfQuestionOptions[1];
@@ -104,7 +102,6 @@ export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
 
     function setInputFields() {
         if (selectedKindOfQuestion === QuestionTypes.NUMERIC) {
-            console.log(quiz);
             return <NumericQuestion question={questionText} quiz={quiz} />;
         } else if (selectedKindOfQuestion === QuestionTypes.SINGLE_CHOICE) {
             return <SingleChoiceQuestion question={questionText} quiz={quiz} />;

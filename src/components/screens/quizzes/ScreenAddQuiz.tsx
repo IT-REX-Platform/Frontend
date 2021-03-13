@@ -38,8 +38,6 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
     let chapterId = route.params.chapterId;
     const quizWithQuestions = route.params.quiz;
 
-    console.log(quizWithQuestions);
-
     if (chapterId == "undefined") {
         chapterId = undefined;
     }
@@ -107,7 +105,6 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
             questions: questions,
         };
 
-        console.log(myNewQuiz);
         navigation.navigate("CREATE_QUESTION", { quiz: myNewQuiz });
     }
 
@@ -131,7 +128,6 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
         if (validateQuiz(quizName, questions)) {
             const myNewQuiz = validateQuiz(quizName, questions);
             toast.success("Jetzt nur noch speichern");
-            console.log(myNewQuiz);
         }
         // TODO: Create new IQuiz Element with the user infromation & send Request to save
     }

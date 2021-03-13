@@ -39,10 +39,7 @@ export const MultipleChoiceQuestion: React.FC<QuizProps> = (props) => {
     useFocusEffect(
         React.useCallback(() => {
             // AuthenticationService.getInstance().getUserInfo(setUserInfo);
-            console.log(checkboxZero, checkboxOne, checkboxTwo, checkboxThree);
-            console.log(solution);
             setSolution({ "0": checkboxZero, "1": checkboxOne, "2": checkboxTwo, "3": checkboxThree });
-            console.log(solution);
         }, [choicesMultipleChoice, checkboxZero, checkboxOne, checkboxTwo, checkboxThree])
     );
 
@@ -135,14 +132,11 @@ export const MultipleChoiceQuestion: React.FC<QuizProps> = (props) => {
         // TODO: Save Question, Navigate back, show this question in add Quiz View
         // TODO: Verify if use added an other question text & answers & solutions & selected a answer type
         // TODO: confirm save
-        console.log(solution);
         if (validateMultipleChoiceQuestion(questionText, choicesMultipleChoice, solution)) {
             const myNewQuestion = validateMultipleChoiceQuestion(questionText, choicesMultipleChoice, solution);
             if (myNewQuestion === undefined || quiz === undefined) {
                 return;
             }
-            console.log(myNewQuestion);
-
             quiz?.questions.push(myNewQuestion);
             navigation.navigate("CREATE_QUIZ", { quiz: quiz });
             toast.success("Jetzt nur noch speichern");

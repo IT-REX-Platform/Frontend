@@ -96,7 +96,6 @@ export const NumericQuestion: React.FC<QuizProps> = (props) => {
 
         if (validateNumericQuestion(questionText, epsilonSolution, numberSolution)) {
             const myNewQuestion = validateNumericQuestion(questionText, epsilonSolution, numberSolution);
-            console.log(myNewQuestion);
             //TODO: ENPOINT REQUEST TO SAVE QUESTION
 
             if (myNewQuestion === undefined || quiz === undefined) {

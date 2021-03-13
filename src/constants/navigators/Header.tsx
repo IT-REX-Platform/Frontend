@@ -12,7 +12,6 @@ interface Title {
 
 export const Header: React.FC<Title> = (props) => {
     const title = props.title;
-    console.log(props.title);
     React.useContext(LocalizationContext);
     const navigation = useNavigation();
 

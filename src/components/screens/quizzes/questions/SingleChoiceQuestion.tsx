@@ -40,7 +40,6 @@ export const SingleChoiceQuestion: React.FC<QuizProps> = (props) => {
     useFocusEffect(
         React.useCallback(() => {
             // AuthenticationService.getInstance().getUserInfo(setUserInfo);
-            console.log(solution);
         }, [choicesSingleChoice, checkboxZero, checkboxOne, checkboxTwo, checkboxThree])
     );
 
