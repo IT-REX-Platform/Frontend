@@ -55,8 +55,13 @@ export type CourseStackParamList = {
         video: IVideo;
     };
     CHAPTER_CREATE: undefined;
-    CREATE_QUIZ: { chapterId?: string | undefined; questionId?: string | undefined; quiz?: IQuiz | undefined };
-    CREATE_QUESTION: { quiz: IQuiz | undefined };
+    CREATE_QUIZ: {
+        courseId?: string;
+        chapterId?: string | undefined;
+        questionId?: string | undefined;
+        quiz?: IQuiz | undefined;
+    };
+    CREATE_QUESTION: { quiz: IQuiz | undefined; courseId: string | undefined };
     CHAPTER: { chapterId: string | undefined };
 };
 

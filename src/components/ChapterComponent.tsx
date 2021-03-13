@@ -14,6 +14,7 @@ interface ChapterComponentProps {
     chapter?: IChapter;
     chapterId?: string;
     editMode?: boolean;
+    courseId?: string;
 }
 
 export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
@@ -21,6 +22,7 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
     const navigation = useNavigation();
 
     const chapter = props.chapter;
+    const courseId = props.courseId;
     return (
         <View style={styles.chapterContainer}>
             <View style={styles.chapterTopRow}>
@@ -64,12 +66,13 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
     );
 
     function chapterQuiz() {
+        console.log(courseId);
         return (
             <View style={styles.chapterMaterialElements}>
                 <TextButton
                     title="Create a Quiz"
                     onPress={() => {
-                        navigation.navigate("CREATE_QUIZ", { chapterId: chapter?.id });
+                        navigation.navigate("CREATE_QUIZ", { chapterId: chapter?.id, courseId: courseId });
                     }}
                 />
             </View>

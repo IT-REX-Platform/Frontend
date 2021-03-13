@@ -52,7 +52,11 @@ export const ScreenCourseTimeline: React.FC = () => {
                     <View>{!edit && <Text style={styles.textStyle}>{i18n.t("itrex.noChapters")}</Text>}</View>
                 ) : (
                     myCourse.chapterObjects?.map((chapter) => (
-                        <ChapterComponent key={chapter.id} chapter={chapter} editMode={edit}></ChapterComponent>
+                        <ChapterComponent
+                            key={chapter.id}
+                            chapter={chapter}
+                            editMode={edit}
+                            courseId="3108aa2f-d298-4e04-ad95-b44433175033"></ChapterComponent>
                     ))
                 )}
 

@@ -43,10 +43,14 @@ export function validateNumericQuestion(
 }
 
 export function validateSingleChoiceQuestion(
+    courseId: string,
     questionText: string | undefined,
     choices: IChoices | undefined,
     solution: string | undefined
 ): IQuestionSingleChoice | undefined {
+    if (courseId === undefined) {
+        return;
+    }
     if (questionText === undefined || questionText === i18n.t("itrex.addQuestionText")) {
         toast.warn(i18n.t("itrex.invalidQuestion"));
         return;

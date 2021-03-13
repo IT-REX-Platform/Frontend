@@ -14,10 +14,13 @@ import { toast } from "react-toastify";
 import { IQuiz } from "../../../../types/IQuiz";
 import { ScreenCourseTabsNavigationProp } from "../../course/ScreenCourseTabs";
 import Checkbox from "expo-checkbox";
+import { EndpointsQuestion } from "../../../../api/endpoints/EndpointsQuestion";
+import { RequestFactory } from "../../../../api/requests/RequestFactory";
 
 interface QuizProps {
     question: string;
     quiz?: IQuiz;
+    courseId?: string;
 }
 
 export const SingleChoiceQuestion: React.FC<QuizProps> = (props) => {
@@ -26,6 +29,8 @@ export const SingleChoiceQuestion: React.FC<QuizProps> = (props) => {
 
     const questionText = props.question;
     const quiz = props.quiz;
+    const courseId = props.courseId;
+    console.log(props);
 
     const [choicesSingleChoice, setChoicesSingleChoice] = useState<IChoices>();
 
@@ -160,19 +165,24 @@ export const SingleChoiceQuestion: React.FC<QuizProps> = (props) => {
     }
 
     function saveSingeChoiceQuestion() {
-        createAlert("Save Question, Navigate back to Add-Quiz page and add this question to the list of questions ");
         // TODO: Save Question, Navigate back, show this question in add Quiz View
         // TODO: Verify if use added an other question text & answers & solutions & selected a answer type
         // TODO: confirm save
-
-        if (validateSingleChoiceQuestion(questionText, choicesSingleChoice, solution)) {
-            const myNewQuestion = validateSingleChoiceQuestion(questionText, choicesSingleChoice, solution);
+        console.log("courseId");
+        if (validateSingleChoiceQuestion(courseId, questionText, choicesSingleChoice, solution)) {
+            const myNewQuestion = validateSingleChoiceQuestion(courseId, questionText, choicesSingleChoice, solution);
             if (myNewQuestion === undefined || quiz === undefined) {
                 return;
             }
             quiz.questions.push(myNewQuestion);
-            navigation.navigate("CREATE_QUIZ", { quiz: quiz });
             toast.success("Jetzt nur noch speichern");
+            const endpointsQuestion: EndpointsQuestion = new EndpointsQuestion();
+            const request: RequestInit = RequestFactory.createPostRequestWithBody(myNewQuestion);
+            console.log(request);
+            const response = endpointsQuestion.createQuestion(request, "OK", "ERROR").then(function () {
+                navigation.navigate("CREATE_QUIZ", { quiz: quiz });
+            });
+            response.then((question) => console.log(question));
         }
     }
 };

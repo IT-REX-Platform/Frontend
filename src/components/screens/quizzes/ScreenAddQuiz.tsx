@@ -37,6 +37,7 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
 
     let chapterId = route.params.chapterId;
     const quizWithQuestions = route.params.quiz;
+    const courseId = route.params.courseId;
 
     if (chapterId == "undefined") {
         chapterId = undefined;
@@ -47,10 +48,10 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
     const [quiz] = useState<IQuiz>({} as IQuiz);
     const chapterEndpoint = new EndpointsChapter();
     const [quizName, setQuizName] = useState<string>(initialQuizName);
-    // TODO:
+
     const [questions, setQuestions] = useState<
         Array<IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric>
-    >(quizList[0].questions);
+    >([]);
 
     useFocusEffect(
         React.useCallback(() => {
@@ -105,12 +106,16 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
             questions: questions,
         };
 
-        navigation.navigate("CREATE_QUESTION", { quiz: myNewQuiz });
+        navigation.navigate("CREATE_QUESTION", { quiz: myNewQuiz, courseId: courseId });
     }
 
     function displayQuestions() {
-        if (quizList === undefined || quizList.length === 0) {
-            return;
+        if (questions === undefined || questions.length === 0) {
+            return (
+                <View style={{ minHeight: "80%" }}>
+                    <Text>Please add questions to the quiz</Text>
+                </View>
+            );
         } else {
             return (
                 <ScrollView style={styles.scrollContainer}>

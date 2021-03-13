@@ -22,6 +22,7 @@ interface ChapterComponentProps {
     chapterId?: string;
     editMode?: boolean;
     quiz: IQuiz;
+    courseId?: string;
 }
 
 type ScreenCourseTabsRouteProp = RouteProp<CourseStackParamList, "CREATE_QUESTION">;
@@ -30,6 +31,7 @@ export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
     React.useContext(LocalizationContext);
     const [questionText, setQuestionText] = useState<string>(i18n.t("itrex.addQuestionText"));
     const route = useRoute<ScreenCourseTabsRouteProp>();
+    const courseId = route.params.courseId;
     const quizTemp = route.params.quiz;
     const [quiz] = useState<IQuiz | undefined>(quizTemp);
 
@@ -104,7 +106,8 @@ export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
         if (selectedKindOfQuestion === QuestionTypes.NUMERIC) {
             return <NumericQuestion question={questionText} quiz={quiz} />;
         } else if (selectedKindOfQuestion === QuestionTypes.SINGLE_CHOICE) {
-            return <SingleChoiceQuestion question={questionText} quiz={quiz} />;
+            console.log(courseId);
+            return <SingleChoiceQuestion question={questionText} quiz={quiz} courseId={courseId} />;
         } else if (selectedKindOfQuestion === QuestionTypes.MULTIPLE_CHOICE) {
             return <MultipleChoiceQuestion question={questionText} quiz={quiz} />;
         }
