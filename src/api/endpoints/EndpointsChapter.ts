@@ -30,7 +30,6 @@ export class EndpointsChapter implements IEndpointsChapter {
      */
     public getChapters(getRequest: RequestInit, successMsg?: string, errorMsg?: string): Promise<IChapter[]> {
         this.loggerApi.trace("Sending GET request to URL: " + this.url);
-        console.log(this.url);
         const response: Promise<Response> = sendRequest(this.url, getRequest);
         return this.responseParser.parseChapters(response, successMsg, errorMsg);
     }

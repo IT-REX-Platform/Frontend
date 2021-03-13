@@ -8,9 +8,9 @@ import { createAlert } from "../../../../helperScripts/createAlert";
 import i18n from "../../../../locales";
 import * as NumericInput from "react-numeric-input";
 import { validateNumericQuestion } from "../../../../helperScripts/validateQuestions";
-import { toast } from "react-toastify";
 import { IQuiz } from "../../../../types/IQuiz";
 import { ScreenCourseTabsNavigationProp } from "../../course/ScreenCourseTabs";
+import { ToastService } from "../../../../services/toasts/ToastService";
 
 interface QuizProps {
     question: string | undefined;
@@ -20,6 +20,8 @@ interface QuizProps {
 export const NumericQuestion: React.FC<QuizProps> = (props) => {
     const questionText = props.question;
     const quiz = props.quiz;
+
+    const toast: ToastService = new ToastService();
 
     React.useContext(LocalizationContext);
     const navigation = useNavigation<ScreenCourseTabsNavigationProp>();
