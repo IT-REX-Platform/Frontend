@@ -17,9 +17,7 @@ import { Event } from "@react-native-community/datetimepicker";
 import { TextButton } from "./uiElements/TextButton";
 import AuthenticationService from "../services/AuthenticationService";
 import { NavigationRoutes } from "../constants/navigators/NavigationRoutes";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import Checkbox from "expo-checkbox";
-import { dark } from "../constants/themes/dark";
+import { useNavigation } from "@react-navigation/native";
 
 const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");
 const endpointsCourse: EndpointsCourse = new EndpointsCourse();

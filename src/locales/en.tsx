@@ -138,7 +138,7 @@ export const en = {
         missingAnswers: "Please define every possible answers.",
         invalidSingleSolution: "Please define the correct solution",
         addQuestionText: "Please define your question here.",
-        kindOfQuestion: "Kind of question: ",
+        kindOfQuestion: "Kind of answer: ",
         addQuestion: "+ Add question",
         specifyChoices: "Specify the different choices here:",
         specifyNumericAnswer: "Specify the numeric answer right here: ",

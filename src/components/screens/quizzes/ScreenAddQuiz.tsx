@@ -19,9 +19,6 @@ import { ToastService } from "../../../services/toasts/ToastService";
 import { validateQuiz } from "../../../helperScripts/validateQuiz";
 import { IQuiz } from "../../../types/IQuiz";
 import { CourseStackParamList } from "../../../constants/navigators/NavigationRoutes";
-import { EndpointsQuiz } from "../../../api/endpoints/EndpointsQuiz";
-
-const endpointsQuiz = new EndpointsQuiz();
 
 interface ChapterComponentProps {
     chapter?: IChapter;
@@ -49,9 +46,8 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
 
     const initialQuizName = chapterId == undefined ? "My new Quiz" : "";
 
-    const [quiz, setQuiz] = useState<IQuiz>({} as IQuiz);
+    const [quiz] = useState<IQuiz>({} as IQuiz);
     const chapterEndpoint = new EndpointsChapter();
-    const [chapter, setChapter] = useState<IChapter>({} as IChapter);
     const [quizName, setQuizName] = useState<string>(initialQuizName);
     // TODO:
     const [questions, setQuestions] = useState<
@@ -66,7 +62,6 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
                     chapterEndpoint
                         .getChapter(request, chapterId, undefined, i18n.t("itrex.getChapterError"))
                         .then((chapter) => {
-                            setChapter(chapter);
                             setQuizName(chapter.title + " - Quiz");
                         });
                 } else {

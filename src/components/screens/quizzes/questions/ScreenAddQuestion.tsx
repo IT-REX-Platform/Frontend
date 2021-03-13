@@ -1,4 +1,4 @@
-import { CompositeNavigationProp, RouteProp, useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
+import { RouteProp, useFocusEffect, useRoute } from "@react-navigation/native";
 import React, { useState } from "react";
 import { ImageBackground, StyleSheet, View, TextInput, Text } from "react-native";
 import { dark } from "../../../../constants/themes/dark";
@@ -15,9 +15,7 @@ import { NumericQuestion } from "./NumericQuestion";
 import { SingleChoiceQuestion } from "./SingleChoiceQuestion";
 import { MultipleChoiceQuestion } from "./MultipleChoiceQuestion";
 import { IQuiz } from "../../../../types/IQuiz";
-import { CourseStackParamList, RootDrawerParamList } from "../../../../constants/navigators/NavigationRoutes";
-import { StackNavigationProp } from "@react-navigation/stack";
-import { DrawerNavigationProp } from "@react-navigation/drawer";
+import { CourseStackParamList } from "../../../../constants/navigators/NavigationRoutes";
 
 interface ChapterComponentProps {
     chapter?: IChapter;
@@ -154,7 +152,7 @@ const styles = StyleSheet.create({
     },
     card: {
         marginTop: 20,
-        maxWidth: "50%",
+        maxWidth: "35%",
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "flex-start",

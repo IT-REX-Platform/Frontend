@@ -39,7 +39,6 @@ export const ScreenCourseTimeline: React.FC = () => {
     useEffect(() => {
         if (isFocused && course.id !== undefined) {
             courseService.getCourse(course.id).then((receivedCourse) => setMyCourse(receivedCourse));
-            console.log(course);
         }
     }, [isFocused]);
     return (
@@ -49,10 +48,10 @@ export const ScreenCourseTimeline: React.FC = () => {
             imageStyle={{ opacity: 0.5, position: "absolute", resizeMode: "contain" }}>
             {lecturerEditMode()}
             <ScrollView contentContainerStyle={styles.scrollContainer}>
-                {course.chapters?.length === 0 ? (
+                {myCourse.chapters?.length === 0 ? (
                     <View>{!edit && <Text style={styles.textStyle}>{i18n.t("itrex.noChapters")}</Text>}</View>
                 ) : (
-                    course.chapterObjects?.map((chapter) => (
+                    myCourse.chapterObjects?.map((chapter) => (
                         <ChapterComponent key={chapter.id} chapter={chapter} editMode={edit}></ChapterComponent>
                     ))
                 )}

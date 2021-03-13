@@ -70,7 +70,7 @@ export const NumericQuestion: React.FC<QuizProps> = (props) => {
                 </View>
             </View>
             <View>
-                <View style={{ marginTop: 150, alignSelf: "center" }}>
+                <View style={{ marginTop: 187, alignSelf: "center" }}>
                     <TextButton title={i18n.t("itrex.save")} onPress={() => saveNumericQuestion()} />
                 </View>
             </View>
