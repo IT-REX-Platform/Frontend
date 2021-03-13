@@ -56,7 +56,7 @@ export const ScreenCourseTimeline: React.FC = () => {
                             key={chapter.id}
                             chapter={chapter}
                             editMode={edit}
-                            courseId="3108aa2f-d298-4e04-ad95-b44433175033"></ChapterComponent>
+                            courseId={course.id}></ChapterComponent>
                     ))
                 )}
 

@@ -1,14 +1,17 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import i18n from "../locales";
 import { LocalizationContext } from "./Context";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { dark } from "../constants/themes/dark";
 import { IChapter } from "../types/IChapter";
-import { MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import AuthenticationService from "../services/AuthenticationService";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { TextButton } from "./uiElements/TextButton";
 import { CoursePublishState } from "../constants/CoursePublishState";
+import { EndpointsQuiz } from "../api/endpoints/EndpointsQuiz";
+import { RequestFactory } from "../api/requests/RequestFactory";
+import { IQuiz } from "../types/IQuiz";
 
 interface ChapterComponentProps {
     chapter?: IChapter;
@@ -23,6 +26,21 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
 
     const chapter = props.chapter;
     const courseId = props.courseId;
+    const [courseQuizzes, setCourseQuizzes] = useState<IQuiz[]>();
+    const [quiz] = useState<IQuiz>({} as IQuiz);
+    useFocusEffect(
+        React.useCallback(() => {
+            const endpointsQuiz: EndpointsQuiz = new EndpointsQuiz();
+
+            const request: RequestInit = RequestFactory.createGetRequest();
+            const response = endpointsQuiz.getCourseQuizzes(request, courseId, "OK", "ERROR");
+            response.then(async (questions) => {
+                console.log(questions);
+                setCourseQuizzes(await response);
+            });
+        }, [])
+    );
+
     return (
         <View style={styles.chapterContainer}>
             <View style={styles.chapterTopRow}>
@@ -44,6 +62,21 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                 </View>
                 <View style={styles.break} />
                 <Text style={styles.chapterMaterialHeader}>Chapter Quiz</Text>
+                <View style={styles.chapterMaterialElements}>
+                    {courseQuizzes?.map((contentId) => {
+                        return (
+                            <View style={styles.chapterMaterialElement}>
+                                <MaterialCommunityIcons
+                                    name="head-question-outline"
+                                    size={28}
+                                    color="white"
+                                    style={styles.icon}
+                                />
+                                <Text style={styles.chapterMaterialElementText}>{contentId.name}</Text>
+                            </View>
+                        );
+                    })}
+                </View>
                 {props.editMode && chapterQuiz()}
             </View>
             {props.editMode && AuthenticationService.getInstance().isLecturer() && (
