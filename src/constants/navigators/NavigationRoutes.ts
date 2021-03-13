@@ -1,6 +1,7 @@
 import * as Linking from "expo-linking";
 import { LinkingOptions, NavigatorScreenParams } from "@react-navigation/native";
 import { IVideo } from "../../types/IVideo";
+import { IQuiz } from "../../types/IQuiz";
 
 const prefix = Linking.makeUrl("it-rex://");
 
@@ -54,8 +55,8 @@ export type CourseStackParamList = {
         video: IVideo;
     };
     CHAPTER_CREATE: undefined;
-    CREATE_QUIZ: { chapterId: string | undefined; questionId?: string | undefined };
-    CREATE_QUESTION: undefined;
+    CREATE_QUIZ: { chapterId?: string | undefined; questionId?: string | undefined; quiz?: IQuiz | undefined };
+    CREATE_QUESTION: { quiz: IQuiz | undefined };
     CHAPTER: { chapterId: string | undefined };
 };
 

@@ -234,6 +234,7 @@ export const ScreenAddChapter: React.FC = () => {
                         setChapterName(chapter.title);
                         setStartDate(chapter.startDate);
                         setEndDate(chapter.endDate);
+                        loggerService.trace("Chater name: " + chapterName);
 
                         _getAllVideos(course.id).then((videos) => {
                             // Are there already contents in this chapter ?

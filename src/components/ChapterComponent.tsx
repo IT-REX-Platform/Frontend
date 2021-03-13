@@ -4,12 +4,10 @@ import { LocalizationContext } from "./Context";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { dark } from "../constants/themes/dark";
 import { IChapter } from "../types/IChapter";
-import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 import AuthenticationService from "../services/AuthenticationService";
 import { useNavigation } from "@react-navigation/native";
 import { TextButton } from "./uiElements/TextButton";
-import { createAlert } from "../helperScripts/createAlert";
-import { quizList } from "../constants/fixtures/quizzes.fixture";
 import { CoursePublishState } from "../constants/CoursePublishState";
 
 interface ChapterComponentProps {

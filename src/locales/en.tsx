@@ -127,5 +127,26 @@ export const en = {
         deleteChapterError: "An error occurred while deleting the chapter.",
 
         getUserInfoError: "An error occurred while getting user info.",
+
+        invalidQuizName: "Please define a quiz name.",
+        invalidQuestionsObject: "Please add at least one question  to the quiz.",
+
+        invalidQuestion: "Please define a question.",
+        invalidEpsilon: "Please define an epsilon value.",
+        invalidNumericSolution: "Please define a numeric answer.",
+        invalidAnswers: "Please define the possible answers.",
+        missingAnswers: "Please define every possible answers.",
+        invalidSingleSolution: "Please define the correct solution",
+        addQuestionText: "Please define your question here.",
+        kindOfQuestion: "Kind of answer: ",
+        addQuestion: "+ Add question",
+        specifyChoices: "Specify the different choices here:",
+        specifyNumericAnswer: "Specify the numeric answer right here: ",
+        specifyNumericEpsilon: "Specify the epsilon value for the answer right here: ",
+
+        category: "Category",
+        value: "Value",
+        result: "Result",
+        epsilon: "Epsilon value",
     },
 };

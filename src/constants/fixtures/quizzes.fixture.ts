@@ -12,6 +12,7 @@ const choicesSingleChoice: IChoices = {
     "3": "4",
 };
 const questionSingleChoice: IQuestionSingleChoice = {
+    courseId: "",
     id: "uuid_1",
     type: QuestionTypes.SINGLE_CHOICE,
     question: "Was ist 2+2?",
@@ -33,6 +34,7 @@ const solutionMultipleChoice: ISolutionMultipleChoice = {
     "3": false,
 };
 const questionMultipleChoice: IQuestionMultipleChoice = {
+    courseId: "",
     id: "uuid_2",
     type: QuestionTypes.MULTIPLE_CHOICE,
     question: "Welche Monate haben ein r im Namen?",
@@ -41,6 +43,7 @@ const questionMultipleChoice: IQuestionMultipleChoice = {
 };
 
 const question3: IQuestionSingleChoice = {
+    courseId: "",
     id: "uuid4",
     type: QuestionTypes.SINGLE_CHOICE,
     question: "Was ist 21+21?",
@@ -49,6 +52,7 @@ const question3: IQuestionSingleChoice = {
 };
 
 const question4: IQuestionSingleChoice = {
+    courseId: "",
     id: "uuid5",
     type: QuestionTypes.SINGLE_CHOICE,
     question: "Was ist 50+6?",
@@ -57,6 +61,7 @@ const question4: IQuestionSingleChoice = {
 };
 
 const question5: IQuestionSingleChoice = {
+    courseId: "",
     id: "uuid6",
     type: QuestionTypes.SINGLE_CHOICE,
     question: "Das ist eine gaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanz lange Fraaaaaaaage",
@@ -70,6 +75,7 @@ const solutionNumeric: ISolutionNumeric = {
     epsilon: 0.1,
 };
 const questionNumeric: IQuestionNumeric = {
+    courseId: "",
     id: "uuid_3",
     type: QuestionTypes.NUMERIC,
     question: "What is pi?",
@@ -88,7 +94,8 @@ questions.push(questionNumeric);
 //================= QUIZ ===================================
 const testQuiz: IQuiz = {
     id: "TEST01",
+    courseId: "",
     name: "Chapter 01 - Quiz",
-    questionObjects: questions,
+    questions: questions,
 };
 export const quizList: IQuiz[] = [testQuiz];

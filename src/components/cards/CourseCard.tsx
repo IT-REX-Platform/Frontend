@@ -1,12 +1,12 @@
 import React from "react";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
-import { ICourse } from "../types/ICourse";
-import { dark } from "../constants/themes/dark";
-import { dateConverter } from "../helperScripts/validateCourseDates";
-import { NavigationRoutes } from "../constants/navigators/NavigationRoutes";
+import { ICourse } from "../../types/ICourse";
+import { dark } from "../../constants/themes/dark";
+import { dateConverter } from "../../helperScripts/validateCourseDates";
+import { NavigationRoutes } from "../../constants/navigators/NavigationRoutes";
 import { useNavigation } from "@react-navigation/native";
-import i18n from "./../locales";
-import { CoursePublishState } from "../constants/CoursePublishState";
+import i18n from "../../locales";
+import { CoursePublishState } from "../../constants/CoursePublishState";
 
 interface CourseCardProps {
     course: ICourse;
