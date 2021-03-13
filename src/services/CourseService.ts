@@ -19,8 +19,11 @@ export default class CourseService {
 
             const courseEndpoint = new EndpointsCourse();
             const chapterEndpoint = new EndpointsChapter();
+            console.log(courseId);
 
             courseEndpoint.getCourse(request, courseId, undefined, i18n.t("itrex.getCourseError")).then((course) => {
+                console.log("--------------------------------------------------------------------------");
+                console.log(course);
                 if (course.chapters !== undefined) {
                     // Do something after all promises are "finished"
                     Promise.all(

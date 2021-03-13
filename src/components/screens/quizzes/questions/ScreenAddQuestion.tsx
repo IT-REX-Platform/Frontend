@@ -26,17 +26,10 @@ interface ChapterComponentProps {
     quiz: IQuiz;
 }
 
-type ScreenCourseTabsNavigationProp = CompositeNavigationProp<
-    StackNavigationProp<CourseStackParamList, "CREATE_QUESTION">,
-    DrawerNavigationProp<RootDrawerParamList>
->;
-
 type ScreenCourseTabsRouteProp = RouteProp<CourseStackParamList, "CREATE_QUESTION">;
 
 export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
     React.useContext(LocalizationContext);
-    const navigation = useNavigation<ScreenCourseTabsNavigationProp>();
-
     const [questionText, setQuestionText] = useState<string>(i18n.t("itrex.addQuestionText"));
     const route = useRoute<ScreenCourseTabsRouteProp>();
     const quizTemp = route.params.quiz;
@@ -63,7 +56,6 @@ export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
     useFocusEffect(
         React.useCallback(() => {
             setKindOfQuestion(selectedKindOfQuestion);
-            // AuthenticationService.getInstance().getUserInfo(setUserInfo);
         }, [selectedKindOfQuestion, solutionNum, solutionMultiChoice, solutionSingleChoice])
     );
 

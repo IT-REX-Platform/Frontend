@@ -5,6 +5,8 @@ import { QuestionTypes } from "../../constants/QuestionTypes";
 import { dark } from "../../constants/themes/dark";
 import { IQuestionMultipleChoice, IQuestionNumeric, IQuestionSingleChoice } from "../../types/IQuestion";
 import { ISolutionNumeric } from "../../types/ISolution";
+import { DataTable } from "react-native-paper";
+import i18n from "../../locales";
 
 interface QuestionCardProps {
     question: IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric;
@@ -27,9 +29,9 @@ export const QuestionCard: React.FC<QuestionCardProps> = (props) => {
             case QuestionTypes.MULTIPLE_CHOICE:
                 return (
                     <>
-                        {question.solution === "0" || question.solution[0] === true ? (
+                        {question.solution === "0" || question.solution["0"] === true ? (
                             <View style={styles.cardChoicesRight}>
-                                <Text style={styles.textChoice}>{question.solution}</Text>
+                                <Text style={styles.textChoice}>{question.choices[0]}</Text>
                             </View>
                         ) : (
                             <View style={styles.cardChoicesWrong}>
@@ -72,27 +74,41 @@ export const QuestionCard: React.FC<QuestionCardProps> = (props) => {
                 // eslint-disable-next-line no-case-declarations
                 const solution: ISolutionNumeric = question.solution;
                 return (
-                    <View style={{ borderColor: "white" }}>
-                        <Text style={styles.textChoice}> Result: {solution.result}</Text>
-                        <Text style={styles.textChoice}> Epsilon: {solution.epsilon}</Text>
+                    <View style={{ borderColor: "white", width: "50%" }}>
+                        <DataTable>
+                            <DataTable.Header>
+                                <DataTable.Title>
+                                    <Text style={styles.textChoice}>{i18n.t("itrex.category")}</Text>
+                                </DataTable.Title>
+                                <DataTable.Title numeric>
+                                    <Text style={styles.textChoice}>{i18n.t("itrex.value")}</Text>
+                                </DataTable.Title>
+                            </DataTable.Header>
+
+                            <DataTable.Row>
+                                <DataTable.Cell>
+                                    <Text style={{ color: "white" }}>{i18n.t("itrex.result")}</Text>
+                                </DataTable.Cell>
+                                <DataTable.Cell numeric>
+                                    <Text style={{ color: "white" }}>{solution.result}</Text>
+                                </DataTable.Cell>
+                            </DataTable.Row>
+
+                            <DataTable.Row>
+                                <DataTable.Cell>
+                                    <Text style={{ color: "white" }}>{i18n.t("itrex.epsilon")}</Text>
+                                </DataTable.Cell>
+                                <DataTable.Cell numeric>
+                                    <Text style={{ color: "white" }}>{solution.epsilon}</Text>
+                                </DataTable.Cell>
+                            </DataTable.Row>
+                        </DataTable>
                     </View>
                 );
             default:
                 return <></>;
         }
-        // TODO:  View Elemente für jeden Durchlauf in eine Arraylist pushen
-        // Object.entries(question.choices).forEach(([key, value]) => {
-        //     return renderAnswers2(key, value);
-        // });
     }
-
-    // function renderAnswers2(key: string, value: string) {
-    //     return (
-    //         <View style={{ borderColor: "white" }}>
-    //             <Text>{value}</Text>
-    //         </View>
-    //     );
-    // }
 };
 
 const styles = StyleSheet.create({

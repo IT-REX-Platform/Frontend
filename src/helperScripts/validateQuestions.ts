@@ -76,7 +76,7 @@ export function validateSingleChoiceQuestion(
         type: QuestionTypes.SINGLE_CHOICE,
         question: questionText,
         choices: choices,
-        solution: "3",
+        solution: solution,
     };
 
     return myNewQuestion;
@@ -86,15 +86,15 @@ export function validateMultipleChoiceQuestion(
     questionText: string | undefined,
     choices: IChoices | undefined,
     solution: ISolutionMultipleChoice | undefined
-): boolean | IQuestionMultipleChoice | undefined {
+): IQuestionMultipleChoice | undefined {
     if (questionText === undefined || questionText === i18n.t("itrex.addQuestionText")) {
         toast.warn(i18n.t("itrex.invalidQuestion"));
-        return false;
+        return;
     }
 
     if (choices === undefined) {
         toast.warn(i18n.t("itrex.invalidAnswers"));
-        return false;
+        return;
     }
     if (
         choices["0"] === undefined ||
@@ -103,12 +103,12 @@ export function validateMultipleChoiceQuestion(
         choices["3"] === undefined
     ) {
         toast.warn(i18n.t("itrex.missingAnswers"));
-        return false;
+        return;
     }
 
     if (solution === undefined || solution === null) {
         toast.warn(i18n.t("itrex.invalidSingleSolution"));
-        return false;
+        return;
     }
 
     const myNewQuestion: IQuestionMultipleChoice = {

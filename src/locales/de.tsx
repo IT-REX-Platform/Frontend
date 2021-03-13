@@ -141,5 +141,12 @@ export const de = {
         kindOfQuestion: "Art der Frage: ",
         addQuestion: "+ Frage hinzufügen",
         specifyChoices: "Definiere hier die verschiedenen Antwortmöglichkeiten: ",
+        specifyNumericAnswer: "Definiere hier die korrekte Numerische Antwort: ",
+        specifyNumericEpsilon: "Definiere hier den Epsilon-Wert der Antwort: ",
+
+        category: "Kategorie",
+        value: "Wert",
+        result: "Ergebnis",
+        epsilon: "Epsilon-Wert",
     },
 };

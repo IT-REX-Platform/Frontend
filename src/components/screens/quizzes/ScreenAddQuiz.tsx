@@ -15,11 +15,13 @@ import { ScreenCourseOverviewNavigationProp } from "../course/ScreenCourseOvervi
 import { QuestionCard } from "../../cards/QuestionCard";
 import { ScrollView } from "react-native-gesture-handler";
 import { IQuestionMultipleChoice, IQuestionNumeric, IQuestionSingleChoice } from "../../../types/IQuestion";
-import { IUser } from "../../../types/IUser";
 import { ToastService } from "../../../services/toasts/ToastService";
 import { validateQuiz } from "../../../helperScripts/validateQuiz";
 import { IQuiz } from "../../../types/IQuiz";
 import { CourseStackParamList } from "../../../constants/navigators/NavigationRoutes";
+import { EndpointsQuiz } from "../../../api/endpoints/EndpointsQuiz";
+
+const endpointsQuiz = new EndpointsQuiz();
 
 interface ChapterComponentProps {
     chapter?: IChapter;
@@ -37,9 +39,9 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
     const toast: ToastService = new ToastService();
 
     let chapterId = route.params.chapterId;
-    const quizR = route.params.quiz;
+    const quizWithQuestions = route.params.quiz;
 
-    console.log(quizR);
+    console.log(quizWithQuestions);
 
     if (chapterId == "undefined") {
         chapterId = undefined;
@@ -60,9 +62,6 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
         React.useCallback(() => {
             if (route.params.quiz === undefined) {
                 if (chapterId != undefined) {
-                    console.log("--------------------------------------------");
-                    console.log("Keine Params");
-                    console.log("--------------------------------------------");
                     const request: RequestInit = RequestFactory.createGetRequest();
                     chapterEndpoint
                         .getChapter(request, chapterId, undefined, i18n.t("itrex.getChapterError"))
@@ -74,16 +73,11 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
                     quiz.name = "My new Quiz";
                 }
             } else {
-                if (quizR === undefined) {
+                if (quizWithQuestions === undefined) {
                     return;
                 }
-
-                console.log("--------------------------------------------");
-                console.log("Params");
-                console.log("--------------------------------------------");
-                setQuestions(quizR.questions);
-                setQuizName(quizR.name);
-                console.log(questions);
+                setQuestions(quizWithQuestions.questions);
+                setQuizName(quizWithQuestions.name);
             }
         }, [])
     );
@@ -188,7 +182,7 @@ const styles = StyleSheet.create({
     addQuizContainer: {
         flexDirection: "column",
         backgroundColor: "rgba(0,0,0,0.3)",
-        height: "100px",
+        height: "50px",
         width: "90%",
         padding: "0.5%",
         margin: 20,

@@ -141,5 +141,12 @@ export const en = {
         kindOfQuestion: "Kind of question: ",
         addQuestion: "+ Add question",
         specifyChoices: "Specify the different choices here:",
+        specifyNumericAnswer: "Specify the numeric answer right here: ",
+        specifyNumericEpsilon: "Specify the epsilon value for the answer right here: ",
+
+        category: "Category",
+        value: "Value",
+        result: "Result",
+        epsilon: "Epsilon value",
     },
 };

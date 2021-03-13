@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import React, { ChangeEvent, useState } from "react";
 import { ImageBackground, Platform, StyleSheet, Text, TextInput, View } from "react-native";
 import { ICourse } from "../types/ICourse";
@@ -16,7 +17,9 @@ import { Event } from "@react-native-community/datetimepicker";
 import { TextButton } from "./uiElements/TextButton";
 import AuthenticationService from "../services/AuthenticationService";
 import { NavigationRoutes } from "../constants/navigators/NavigationRoutes";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import Checkbox from "expo-checkbox";
+import { dark } from "../constants/themes/dark";
 
 const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");
 const endpointsCourse: EndpointsCourse = new EndpointsCourse();

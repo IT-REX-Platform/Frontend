@@ -6,11 +6,8 @@ import { LocalizationContext } from "../../../Context";
 import { TextButton } from "../../../uiElements/TextButton";
 import { createAlert } from "../../../../helperScripts/createAlert";
 import i18n from "../../../../locales";
-import { IQuestionMultipleChoice, IQuestionNumeric, IQuestionSingleChoice } from "../../../../types/IQuestion";
-import { QuestionTypes } from "../../../../constants/QuestionTypes";
 import * as NumericInput from "react-numeric-input";
 import { validateNumericQuestion } from "../../../../helperScripts/validateQuestions";
-import { ISolutionNumeric } from "../../../../types/ISolution";
 import { toast } from "react-toastify";
 import { IQuiz } from "../../../../types/IQuiz";
 import { ScreenCourseTabsNavigationProp } from "../../course/ScreenCourseTabs";
@@ -25,15 +22,14 @@ export const NumericQuestion: React.FC<QuizProps> = (props) => {
     const quiz = props.quiz;
 
     React.useContext(LocalizationContext);
-
     const navigation = useNavigation<ScreenCourseTabsNavigationProp>();
+
     const [numberSolution, setNumberSolution] = useState<number>();
     const [epsilonSolution, setEpsilonSolution] = useState<number>();
 
     useFocusEffect(
         React.useCallback(() => {
             console.log(questionText);
-            // AuthenticationService.getInstance().getUserInfo(setUserInfo);
         }, [numberSolution, questionText])
     );
 
@@ -41,7 +37,7 @@ export const NumericQuestion: React.FC<QuizProps> = (props) => {
         <>
             <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "center", marginTop: 100 }}>
                 <View style={styles.contentContainer}>
-                    <Text style={styles.textStyle}>Specify the numeric answer right here: </Text>
+                    <Text style={styles.textStyle}>{i18n.t("itrex.specifyNumericAnswer")} </Text>
                     <NumericInput
                         step={0.1}
                         precision={2}
@@ -57,7 +53,7 @@ export const NumericQuestion: React.FC<QuizProps> = (props) => {
                     />
                 </View>
                 <View style={styles.contentContainer}>
-                    <Text style={styles.textStyle}>Specify the epsilon value right here: </Text>
+                    <Text style={styles.textStyle}>{i18n.t("itrex.specifyNumericEpsilon")}</Text>
                     <NumericInput
                         step={0.1}
                         precision={2}

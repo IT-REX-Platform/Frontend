@@ -63,6 +63,8 @@ export class ResponseParser {
     }
 
     public parseChapters(response: Promise<Response>, successMsg?: string, errorMsg?: string): Promise<IChapter[]> {
+        console.log("-----------------------------------------------------------------------------");
+        console.log(response);
         return new Promise((resolve) => {
             response
                 .then((response) => {
