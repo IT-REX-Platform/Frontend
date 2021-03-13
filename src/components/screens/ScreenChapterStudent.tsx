@@ -4,12 +4,11 @@
 //TODO: on click on video, load it to media player
 //3. Videoplayer der ausgewähltes  Video spielt
 
-import { RouteProp, useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
+import { DarkTheme, RouteProp, useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
 import { Video } from "expo-av";
 import { useState } from "react";
 import { ActivityIndicator, FlatList, TouchableOpacity, View, StyleSheet, Text } from "react-native";
 import { ListItem } from "react-native-elements";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import React from "react";
 import { toast } from "react-toastify";
 import { EndpointsVideo } from "../../api/endpoints/EndpointsVideo";
@@ -20,12 +19,14 @@ import { IChapter } from "../../types/IChapter";
 import { ICourse } from "../../types/ICourse";
 import { IVideo } from "../../types/IVideo";
 import { CourseContext, LocalizationContext } from "../Context";
+import { MaterialCommunityIcons, MaterialIcons, Foundation } from "@expo/vector-icons";
 import { createVideoUrl } from "../../services/createVideoUrl";
 //import { ScreenCourseTabsNavigationProp, ScreenCourseTabsRouteProp } from "../../course/ScreenCourseTabs";
 import { RequestFactory } from "../../api/requests/RequestFactory";
 import { ImageBackground } from "react-native";
 import { IContent } from "../../types/IContent";
 import { EndpointsChapter } from "../../api/endpoints/EndpointsChapter";
+import { Icon } from "react-native-vector-icons/Icon";
 
 const endpointsVideo = new EndpointsVideo();
 const endpointsChapter = new EndpointsChapter();
@@ -68,11 +69,8 @@ export const ScreenChapterStudent: React.FC = () => {
     const playlistlistItem = ({ item }: { item: string }) => (
         <ListItem
             containerStyle={{
-                marginBottom: 5,
-                borderRadius: 2,
-                backgroundColor: "rgba(0,0,0,0.3)",
-                borderColor: dark.theme.darkBlue3,
-                borderWidth: 2,
+                marginBottom: "2.5%",
+                backgroundColor: dark.theme.darkBlue2,
             }}>
             <TouchableOpacity onPress={() => _getVideoUrl(item)}>
                 <ListItem.Content>
@@ -87,16 +85,45 @@ export const ScreenChapterStudent: React.FC = () => {
 
     return (
         <View style={styles.rootContainer}>
+            <Text style={styles.chapterHeading}>Ch 1. Some Chaptername</Text>
             <View style={styles.contentContainer}>
                 <View style={styles.videoContainer}>
                     <Text style={styles.videoTitle}>Ch1.: My Video</Text>
                     <Video style={[styles.video, {}]} />
+                    <View style={styles.iconContainer}>
+                        <TouchableOpacity style={[styles.iconBox, { paddingRight: 0 }]}>
+                            <MaterialIcons name="file-download" size={28} color="rgba(255,255,255,0.8)" />
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.iconBox}>
+                            <MaterialIcons
+                                name="favorite-border"
+                                size={28}
+                                color="rgba(255,255,255,0.8)"
+                                style={styles.icon}
+                            />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={styles.iconBox}>
+                            <Foundation name="dislike" size={28} color="rgba(255,255,255,0.8)" style={styles.icon} />
+                            <Text style={styles.textIcon}>12</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.iconBox}>
+                            <Foundation
+                                name="like"
+                                size={28}
+                                color="rgba(255,255,255,0.8)"
+                                style={[styles.icon, { transform: [{ rotateY: "180deg" }] }]}
+                            />
+                            <Text style={styles.textIcon}>365</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
                 <View style={styles.playlistContainer}>
                     <Text style={styles.videoTitle}>Playlist</Text>
                     <FlatList
-                        style={styles.flatList}
+                        style={styles.playlist}
                         data={chapterPlaylist}
+                        showsVerticalScrollIndicator={true}
                         renderItem={playlistlistItem}
                         keyExtractor={(item, index) => index.toString()}
                         ListEmptyComponent={<Text>Videos here</Text>}
@@ -159,38 +186,24 @@ const styles = StyleSheet.create({
         backgroundColor: dark.theme.darkBlue1,
         flex: 1,
         flexDirection: "column",
-        justifyContent: "center",
+        justifyContent: "flex-start",
         padding: "3%",
     },
 
     contentContainer: {
-        flexDirection: "column",
-        justifyContent: "flex-start",
+        flexDirection: "row",
+        alignContent: "center",
     },
 
-    video: {
-        borderColor: dark.theme.darkBlue2,
-        borderWidth: 3,
-        width: "75%",
+    videoContainer: {
+        flex: 3,
         alignSelf: "flex-start",
-        marginTop: "0.5%",
     },
-    videoListDownloadingContainer: {},
-    loadingIcon: {},
-    imageContainer: {
+
+    playlistContainer: {
         flex: 1,
-        paddingTop: "3%",
-        backgroundColor: dark.theme.darkBlue1,
-    },
-    flatList: {
-        alignSelf: "flex-end",
-        position: "absolute",
-        width: "22%",
-    },
-    scrollContainer: {
-        width: "screenWidth",
-        alignItems: "center",
-        paddingBottom: 20,
+        alignSelf: "flex-start",
+        paddingStart: "1.5%",
     },
 
     videoTitle: {
@@ -199,21 +212,41 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         paddingRight: "20px",
     },
-    addChapterContainer: {
-        backgroundColor: "rgba(0,0,0,0.3)",
-        height: "100px",
-        width: "80%",
-        marginTop: "1%",
-        padding: "0.5%",
+    video: {
+        borderColor: dark.theme.darkBlue2,
         borderWidth: 3,
-        borderColor: dark.theme.lightBlue,
+        marginTop: 20,
     },
-    txtAddChapter: {
-        alignSelf: "center",
-        color: "white",
-        fontSize: 18,
-        fontWeight: "bold",
+
+    videoListDownloadingContainer: {},
+    loadingIcon: {},
+
+    iconContainer: {
+        flex: 1,
+        flexDirection: "row-reverse",
+        borderColor: dark.theme.grey,
+        borderBottomWidth: 1.5,
+        padding: "0.5%",
     },
+
+    iconBox: {
+        flexDirection: "row",
+        paddingLeft: "1%",
+    },
+
+    icon: {
+        position: "relative",
+    },
+
+    playlist: {
+        marginTop: 20,
+    },
+    scrollContainer: {
+        width: "screenWidth",
+        alignItems: "center",
+        paddingBottom: 20,
+    },
+
     btnAdd: {
         width: "100%",
         height: "100%",
@@ -224,11 +257,34 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
     },
+
+    chapterHeading: {
+        alignSelf: "flex-start",
+        color: "white",
+        fontSize: 24,
+        fontWeight: "bold",
+        marginBottom: "1.5%",
+    },
+
+    textIcon: {
+        color: "rgba(255,255,255,0.66)",
+        textAlign: "left",
+        alignSelf: "center",
+        margin: 5,
+    },
+
     textStyle: {
         margin: 10,
         color: "white",
         fontWeight: "bold",
     },
-    listItemTitle: {},
-    listItemSubtitle: {},
+    listItemTitle: {
+        color: "white",
+        textAlign: "left",
+        marginBottom: 5,
+    },
+    listItemSubtitle: {
+        color: "rgba(255,255,255,0.66)",
+        textAlign: "left",
+    },
 });
