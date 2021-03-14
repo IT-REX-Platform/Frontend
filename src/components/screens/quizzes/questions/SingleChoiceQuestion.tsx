@@ -5,7 +5,6 @@ import { StyleSheet, View, TextInput, Text } from "react-native";
 import { dark } from "../../../../constants/themes/dark";
 import { LocalizationContext } from "../../../Context";
 import { TextButton } from "../../../uiElements/TextButton";
-import { createAlert } from "../../../../helperScripts/createAlert";
 import i18n from "../../../../locales";
 
 import { IChoices } from "../../../../types/IChoices";
@@ -15,24 +14,27 @@ import { ScreenCourseTabsNavigationProp } from "../../course/ScreenCourseTabs";
 import Checkbox from "expo-checkbox";
 import { EndpointsQuestion } from "../../../../api/endpoints/EndpointsQuestion";
 import { RequestFactory } from "../../../../api/requests/RequestFactory";
-import { ToastService } from "../../../../services/toasts/ToastService";
+import { IQuestionSingleChoice } from "../../../../types/IQuestion";
+import { QuestionTypes } from "../../../../constants/QuestionTypes";
 
 interface QuizProps {
-    question: string;
+    question?: IQuestionSingleChoice;
+    questionText: string;
     quiz?: IQuiz;
     courseId?: string;
 }
 
+const endpointsQuestion: EndpointsQuestion = new EndpointsQuestion();
 export const SingleChoiceQuestion: React.FC<QuizProps> = (props) => {
     React.useContext(LocalizationContext);
     const navigation = useNavigation<ScreenCourseTabsNavigationProp>();
 
-    const toast: ToastService = new ToastService();
-
-    const questionText = props.question;
+    const question = props.question;
+    const questionId = question?.id;
+    console.log(questionId);
+    const questionText = props.questionText;
     const quiz = props.quiz;
     const courseId = props.courseId;
-    console.log(props);
 
     const [choicesSingleChoice, setChoicesSingleChoice] = useState<IChoices>();
 
@@ -46,8 +48,12 @@ export const SingleChoiceQuestion: React.FC<QuizProps> = (props) => {
 
     useFocusEffect(
         React.useCallback(() => {
-            // AuthenticationService.getInstance().getUserInfo(setUserInfo);
-        }, [choicesSingleChoice, checkboxZero, checkboxOne, checkboxTwo, checkboxThree])
+            if (question !== undefined) {
+                setChoicesSingleChoice(question.choices);
+                setSolution(question.solution);
+                changeChecked(question.solution);
+            }
+        }, [])
     );
 
     return (
@@ -67,6 +73,7 @@ export const SingleChoiceQuestion: React.FC<QuizProps> = (props) => {
                     <View style={styles.cardChoicesRight}>
                         <TextInput
                             editable
+                            defaultValue={choicesSingleChoice !== undefined ? choicesSingleChoice["0"] : ""}
                             style={[styles.answerInput]}
                             onChangeText={(text: string) => addSolutionEntry("0", text)}
                             multiline={true}
@@ -84,6 +91,7 @@ export const SingleChoiceQuestion: React.FC<QuizProps> = (props) => {
                     <View style={styles.cardChoicesRight}>
                         <TextInput
                             editable
+                            defaultValue={choicesSingleChoice !== undefined ? choicesSingleChoice["1"] : ""}
                             style={[styles.answerInput]}
                             onChangeText={(text: string) => addSolutionEntry("1", text)}
                             multiline={true}
@@ -101,6 +109,7 @@ export const SingleChoiceQuestion: React.FC<QuizProps> = (props) => {
                     <View style={styles.cardChoicesRight}>
                         <TextInput
                             editable
+                            defaultValue={choicesSingleChoice !== undefined ? choicesSingleChoice["2"] : ""}
                             style={[styles.answerInput]}
                             onChangeText={(text: string) => addSolutionEntry("2", text)}
                             multiline={true}
@@ -117,6 +126,7 @@ export const SingleChoiceQuestion: React.FC<QuizProps> = (props) => {
                     <View style={styles.cardChoicesRight}>
                         <TextInput
                             editable
+                            defaultValue={choicesSingleChoice !== undefined ? choicesSingleChoice["3"] : ""}
                             allowFontScaling={true}
                             style={[styles.answerInput]}
                             onChangeText={(text: string) => addSolutionEntry("3", text)}
@@ -126,8 +136,11 @@ export const SingleChoiceQuestion: React.FC<QuizProps> = (props) => {
                 </View>
             </View>
             <View>
-                <View style={{ marginTop: 5, alignSelf: "center" }}>
-                    <TextButton title={i18n.t("itrex.save")} onPress={() => saveSingeChoiceQuestion()} />
+                <View style={{ marginTop: 5, alignSelf: "center", flexDirection: "row" }}>
+                    {questionId !== undefined && (
+                        <TextButton color="pink" title={i18n.t("itrex.delete")} onPress={() => deleteQuestion()} />
+                    )}
+                    <TextButton title={i18n.t("itrex.save")} onPress={() => saveSingleChoiceQuestion()} />
                 </View>
             </View>
         </>
@@ -166,26 +179,78 @@ export const SingleChoiceQuestion: React.FC<QuizProps> = (props) => {
         setChoicesSingleChoice((choicesSingleChoice) => ({ ...choicesSingleChoice, [index]: text }));
     }
 
-    function saveSingeChoiceQuestion() {
-        // TODO: Save Question, Navigate back, show this question in add Quiz View
-        // TODO: Verify if use added an other question text & answers & solutions & selected a answer type
-        // TODO: confirm save
-        console.log("courseId");
+    function saveSingleChoiceQuestion() {
         if (validateSingleChoiceQuestion(courseId, questionText, choicesSingleChoice, solution)) {
             const myNewQuestion = validateSingleChoiceQuestion(courseId, questionText, choicesSingleChoice, solution);
             if (myNewQuestion === undefined || quiz === undefined) {
                 return;
             }
-            quiz.questions.push(myNewQuestion);
-            toast.success("Jetzt nur noch speichern");
-            const endpointsQuestion: EndpointsQuestion = new EndpointsQuestion();
-            const request: RequestInit = RequestFactory.createPostRequestWithBody(myNewQuestion);
-            console.log(request);
-            const response = endpointsQuestion.createQuestion(request, "OK", "ERROR").then(function () {
-                navigation.navigate("CREATE_QUIZ", { quiz: quiz });
-            });
-            response.then((question) => console.log(question));
+            if (questionId === undefined) {
+                const request: RequestInit = RequestFactory.createPostRequestWithBody(myNewQuestion);
+                const response = endpointsQuestion.createQuestion(
+                    request,
+                    i18n.t("itrex.saveQuestionSuccess"),
+                    i18n.t("itrex.saveQuestionError")
+                );
+                response.then((question) => {
+                    if (question === undefined) {
+                        return;
+                    }
+                    quiz.questions.push(question);
+                    console.log(question);
+                    navigation.navigate("CREATE_QUIZ", { quiz: quiz });
+                });
+            } else {
+                updateQuestion();
+            }
         }
+    }
+
+    function updateQuestion() {
+        if (quiz === undefined) {
+            return;
+        }
+
+        if (validateSingleChoiceQuestion(courseId, questionText, choicesSingleChoice, solution)) {
+            const index = quiz.questions.findIndex((questionToUpdate) => questionToUpdate.id === questionId);
+            const question = quiz.questions[index];
+
+            if (question.type !== QuestionTypes.SINGLE_CHOICE || choicesSingleChoice === undefined) {
+                return;
+            }
+
+            question.question = questionText;
+            question.solution = solution;
+            question.choices = choicesSingleChoice;
+
+            const request: RequestInit = RequestFactory.createPutRequest(question);
+            endpointsQuestion
+                .updateQuestion(request, i18n.t("itrex.updateQuestionSuccess"), i18n.t("itrex.updateQuestionError"))
+                .then(function (question) {
+                    console.log(question);
+                    navigation.navigate("CREATE_QUIZ", { quiz: quiz });
+                });
+        }
+    }
+
+    function deleteQuestion() {
+        if (quiz == undefined || questionId == undefined) {
+            return;
+        }
+
+        const index = quiz.questions.findIndex((questionToUpdate) => questionToUpdate.id === questionId);
+
+        const request: RequestInit = RequestFactory.createDeleteRequest();
+        const response = endpointsQuestion.deleteQuestion(
+            request,
+            questionId,
+            i18n.t("itrex.deleteQuestionSuccess"),
+            i18n.t("itrex.deleteQuestionError")
+        );
+        response.then(() => {
+            quiz.questions.splice(index, 1);
+            navigation.navigate("CREATE_QUIZ", { quiz: quiz });
+        });
     }
 };
 

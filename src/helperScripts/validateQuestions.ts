@@ -42,7 +42,7 @@ export function validateNumericQuestion(
 }
 
 export function validateSingleChoiceQuestion(
-    courseId: string,
+    courseId: string | undefined,
     questionText: string | undefined,
     choices: IChoices | undefined,
     solution: string | undefined

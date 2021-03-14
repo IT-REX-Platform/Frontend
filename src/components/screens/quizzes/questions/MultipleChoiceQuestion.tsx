@@ -13,14 +13,18 @@ import { IQuiz } from "../../../../types/IQuiz";
 import Checkbox from "expo-checkbox";
 import { ScreenCourseTabsNavigationProp } from "../../course/ScreenCourseTabs";
 import { ToastService } from "../../../../services/toasts/ToastService";
+import { IQuestionMultipleChoice } from "../../../../types/IQuestion";
 
 interface QuizProps {
-    question?: string;
+    question?: IQuestionMultipleChoice;
+    questionText: string;
+    courseId?: string;
     quiz?: IQuiz;
 }
 
 export const MultipleChoiceQuestion: React.FC<QuizProps> = (props) => {
-    const questionText = props.question;
+    const question = props.question;
+    const questionText = question?.question;
     const quiz = props.quiz;
 
     const toast: ToastService = new ToastService();
