@@ -218,9 +218,7 @@ export const ScreenAddChapter: React.FC = () => {
                     .getChapter(request, chapterId, undefined, i18n.t("itrex.getChapterError"))
                     .then((chapter) => {
                         setChapter(chapter);
-                        setChapterName(chapter.title);
-                        setStartDate(chapter.startDate);
-                        setEndDate(chapter.endDate);
+                        setChapterName(chapter.name);
                         loggerService.trace("Chater name: " + chapterName);
 
                         _getAllVideos(course.id).then((videos) => {
