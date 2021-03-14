@@ -31,7 +31,6 @@ export const SingleChoiceQuestion: React.FC<QuizProps> = (props) => {
 
     const question = props.question;
     const questionId = question?.id;
-    console.log(questionId);
     const questionText = props.questionText;
     const quiz = props.quiz;
     const courseId = props.courseId;
@@ -197,7 +196,6 @@ export const SingleChoiceQuestion: React.FC<QuizProps> = (props) => {
                         return;
                     }
                     quiz.questions.push(question);
-                    console.log(question);
                     navigation.navigate("CREATE_QUIZ", { quiz: quiz });
                 });
             } else {

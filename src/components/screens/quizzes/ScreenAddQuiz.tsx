@@ -23,6 +23,7 @@ interface ChapterComponentProps {
     chapter?: IChapter;
     chapterId?: string;
     editMode?: boolean;
+    quiz?: IQuiz;
 }
 
 const endpointsQuiz: EndpointsQuiz = new EndpointsQuiz();
@@ -35,13 +36,14 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
 
     let chapterId = route.params.chapterId;
     const quizWithQuestions = route.params.quiz;
+
     const courseId = route.params.courseId;
 
     if (chapterId == "undefined") {
         chapterId = undefined;
     }
 
-    const initialQuizName = chapterId == undefined ? "My new Quiz" : "";
+    const initialQuizName = quizWithQuestions?.name == undefined ? "My new Quiz" : quizWithQuestions.name;
 
     const [quiz] = useState<IQuiz>({} as IQuiz);
     const chapterEndpoint = new EndpointsChapter();
@@ -69,7 +71,6 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
                     return;
                 }
                 setQuestions(quizWithQuestions.questions);
-                setQuizName(quizWithQuestions.name);
             }
         }, [])
     );
