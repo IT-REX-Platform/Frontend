@@ -61,7 +61,7 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
                     chapterEndpoint
                         .getChapter(request, chapterId, undefined, i18n.t("itrex.getChapterError"))
                         .then((chapter) => {
-                            setQuizName(chapter.title + " - Quiz");
+                            setQuizName(chapter.name + " - Quiz");
                         });
                 } else {
                     quiz.name = "My new Quiz";
