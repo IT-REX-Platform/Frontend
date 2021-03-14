@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { ICourse } from "../types/ICourse";
 import { dark } from "../constants/themes/dark";
@@ -9,6 +9,10 @@ import i18n from "./../locales";
 import { CoursePublishState } from "../constants/CoursePublishState";
 import { InfoPublished } from "./uiElements/InfoPublished";
 import { InfoUnpublished } from "./uiElements/InfoUnpublished";
+import { ICourseProgressTracker } from "../types/ICourseProgressTracker";
+import { RequestFactory } from "../api/requests/RequestFactory";
+import { EndpointsProgress } from "../api/endpoints/EndpointsProgress";
+import { TextButton } from "./uiElements/TextButton";
 
 interface CourseCardProps {
     course: ICourse;
@@ -17,6 +21,19 @@ interface CourseCardProps {
 export const CourseCard: React.FC<CourseCardProps> = (props) => {
     const { course } = props;
     const navigation = useNavigation();
+
+    const endpointsProgress = new EndpointsProgress();
+    const [courseProgress, setCourseProgress] = useState<ICourseProgressTracker>({});
+    useEffect(() => {
+        if (course.id === undefined) {
+            return;
+        }
+
+        const progressRequest: RequestInit = RequestFactory.createGetRequest();
+        endpointsProgress
+            .getCourseProgress(progressRequest, course.id, undefined, i18n.t("itrex.getCourseProgressError"))
+            .then((receivedProgress) => setCourseProgress(receivedProgress));
+    }, []);
 
     function getPublishedSate(isPublished: CoursePublishState | undefined) {
         if (isPublished === CoursePublishState.UNPUBLISHED) {
@@ -40,6 +57,26 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
         );
     }
 
+    function getNavToLastContent() {
+        if (courseProgress.lastContentReference == null) {
+            return <></>;
+        }
+
+        return (
+            <View style={styles.cardContent}>
+                <TextButton
+                    title={i18n.t("itrex.courseProgressLastAccessed")}
+                    onPress={() => {
+                        // TODO: Navigate to the content page.
+                        navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS_TIMELINE, {
+                            courseId: course.id,
+                        });
+                    }}
+                />
+            </View>
+        );
+    }
+
     function navigateToCourse(course: ICourse) {
         navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, {
             courseId: course.id,
@@ -55,6 +92,7 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
 
             {getDate(course.startDate, i18n.t("itrex.startDate"))}
             {getDate(course.endDate, i18n.t("itrex.endDate"))}
+            {getNavToLastContent()}
         </TouchableOpacity>
     );
 };

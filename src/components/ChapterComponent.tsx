@@ -1,5 +1,5 @@
 /* eslint-disable complexity */
-import React from "react";
+import React, { useEffect, useState } from "react";
 import i18n from "../locales";
 import { LocalizationContext } from "./Context";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -14,6 +14,11 @@ import { TextButton } from "./uiElements/TextButton";
 import { CoursePublishState } from "../constants/CoursePublishState";
 import Select from "react-select";
 import { ICourse } from "../types/ICourse";
+import { IContent } from "../types/IContent";
+import { RequestFactory } from "../api/requests/RequestFactory";
+import { EndpointsProgress } from "../api/endpoints/EndpointsProgress";
+import { ICourseProgressTracker } from "../types/ICourseProgressTracker";
+import { IContentProgressTracker } from "../types/IContentProgressTracker";
 
 interface ChapterComponentProps {
     chapter?: IChapter;
@@ -26,6 +31,8 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
     React.useContext(LocalizationContext);
     const navigation = useNavigation();
 
+    const endpointsProgress = new EndpointsProgress();
+
     const chapter = props.chapter;
     const course = props.course;
 
@@ -35,6 +42,18 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
             label: timePeriod.startDate + " - " + timePeriod.endDate,
         };
     });
+
+    const [courseProgress, setCourseProgress] = useState<ICourseProgressTracker>({});
+    useEffect(() => {
+        if (course.id === undefined) {
+            return;
+        }
+
+        const progressRequest: RequestInit = RequestFactory.createGetRequest();
+        endpointsProgress
+            .getCourseProgress(progressRequest, course.id, undefined, i18n.t("itrex.getCourseProgressError"))
+            .then((receivedProgress) => setCourseProgress(receivedProgress));
+    }, []);
 
     return (
         <View style={styles.chapterContainer}>
@@ -49,7 +68,9 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                     {timePeriods !== undefined &&
                         chapter?.contentReferences?.map((contentReference) => {
                             return (
-                                <View style={styles.chapterMaterialElement}>
+                                <TouchableOpacity
+                                    style={styles.chapterMaterialElement}
+                                    onPress={() => markProgress(contentReference)}>
                                     <MaterialIcons name="attach-file" size={28} color="white" style={styles.icon} />
 
                                     <View
@@ -96,7 +117,7 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                                             </Text>
                                         )}
                                     </View>
-                                </View>
+                                </TouchableOpacity>
                             );
                         })}
                 </View>
@@ -165,6 +186,55 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                 </View>
             );
         } */
+    }
+
+    function markProgress(contentRef: IContent) {
+        // TODO: Adjust and/or reuse this for actual progress.
+        // For now it just touches the content once or completes it when touched.
+
+        // No course progress, no content refs or the given one is invalid.
+        if (
+            courseProgress.id === undefined ||
+            courseProgress.contentProgressTrackers === undefined ||
+            contentRef.id === undefined
+        ) {
+            return;
+        }
+
+        const contentProgress = courseProgress.contentProgressTrackers[contentRef.id];
+        if (contentProgress === undefined || contentProgress.id === undefined) {
+            // Touch the content ref once.
+            const postReq = RequestFactory.createPostRequestWithBody(contentRef);
+            endpointsProgress.createContentProgress(postReq, courseProgress.id).then((receivedContentProgress) => {
+                console.log("Created content progress:");
+                console.log(receivedContentProgress);
+
+                updateLastAccessedContent(contentRef);
+            });
+        } else {
+            // Update the status to complete.
+            const putReq = RequestFactory.createPutRequest({});
+            endpointsProgress.setContentStateComplete(putReq, contentProgress.id).then((receivedContentProgress) => {
+                console.log("Set content progress to complete:");
+                console.log(receivedContentProgress);
+
+                updateLastAccessedContent(contentRef);
+            });
+        }
+    }
+
+    function updateLastAccessedContent(contentRef: IContent): void {
+        if (courseProgress.id === undefined) {
+            return;
+        }
+
+        const putReq = RequestFactory.createPutRequest(contentRef);
+        endpointsProgress
+            .updateLastAccessedContentProgress(putReq, courseProgress.id)
+            .then((receivedCourseProgress) => {
+                console.log("Updated last accessed content:");
+                console.log(receivedCourseProgress);
+            });
     }
 
     function getPublishedSate(isPublished: string | undefined) {
