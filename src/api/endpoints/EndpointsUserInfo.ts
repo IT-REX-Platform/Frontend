@@ -24,6 +24,8 @@ export class EndpointsUserInfo implements IEndpointsUserInfo {
      * Gets the user info from its endpoint.
      *
      * @param getRequest GET request.
+     * @param successMsg A success message.
+     * @param errorMsg An error message.
      * @returns a promise containing information about the requesting user.
      */
     public getUserInfo(getRequest: RequestInit, successMsg?: string, errorMsg?: string): Promise<IUser> {

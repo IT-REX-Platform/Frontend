@@ -129,5 +129,26 @@ export const de = {
         deleteChapterError: "Ein Fehler ist beim Löschen des Kapitels aufgetreten.",
 
         getUserInfoError: "Ein Fehler ist beim Zugriff auf Benutzerinformationen aufgetreten.",
+
+        invalidQuizName: "Bitte definieren sie einen Quiz-Name.",
+        invalidQuestionsObject: "Bitte füge mindestens eine Frage zum Quiz hinzu",
+
+        invalidQuestion: "Bitte definiere eine Frage.",
+        invalidEpsilon: "Bitte definiere einen Epsilonwert.",
+        invalidNumericSolution: "Bitte definiere eine Numerische Antwort.",
+        invalidAnswers: "Bitte definiere die möglichen Antwortmöglichkeiten.",
+        missingAnswers: "Bitte definiere alle möglichen Antwortmöglichkeiten.",
+        invalidSingleSolution: "Bitte definiere die richtige Antwort.",
+        addQuestionText: "Bitte definiere deine Frage hier.",
+        kindOfQuestion: "Art der Antwort: ",
+        addQuestion: "+ Frage hinzufügen",
+        specifyChoices: "Definiere hier die verschiedenen Antwortmöglichkeiten: ",
+        specifyNumericAnswer: "Definiere hier die korrekte Numerische Antwort: ",
+        specifyNumericEpsilon: "Definiere hier den Epsilon-Wert der Antwort: ",
+
+        category: "Kategorie",
+        value: "Wert",
+        result: "Ergebnis",
+        epsilon: "Epsilon-Wert",
     },
 };

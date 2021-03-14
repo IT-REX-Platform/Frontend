@@ -4,6 +4,8 @@ import { ISolutionMultipleChoice, ISolutionNumeric } from "./ISolution";
 
 interface IQuestion {
     id?: string;
+    courseId: string;
+    quizIds?: string[];
     question: string;
 }
 
