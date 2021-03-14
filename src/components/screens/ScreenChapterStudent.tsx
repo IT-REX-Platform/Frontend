@@ -1,13 +1,7 @@
-//How do I know, which Chapter to Show? Is this managed by Context?
-//1. Import Endpoint for Chapter?
-//2. Übersicht über alle Videos als Playlist: Flatlist mit Videoname und Link zur Resource
-//TODO: on click on video, load it to media player
-//3. Videoplayer der ausgewähltes  Video spielt
-
 import { DarkTheme, RouteProp, useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
 import { Video } from "expo-av";
 import { useState } from "react";
-import { ActivityIndicator, FlatList, TouchableOpacity, View, StyleSheet, Text } from "react-native";
+import { ActivityIndicator, FlatList, TouchableOpacity, View, StyleSheet, Text, Animated } from "react-native";
 import { ListItem } from "react-native-elements";
 import React from "react";
 import { toast } from "react-toastify";
@@ -27,9 +21,12 @@ import { ImageBackground } from "react-native";
 import { IContent } from "../../types/IContent";
 import { EndpointsChapter } from "../../api/endpoints/EndpointsChapter";
 import { Icon } from "react-native-vector-icons/Icon";
+import { EndpointsCourse } from "../../api/endpoints/EndpointsCourse";
+import useStateWithCallback from "use-state-with-callback";
 
 const endpointsVideo = new EndpointsVideo();
 const endpointsChapter = new EndpointsChapter();
+const endpointsCourse = new EndpointsCourse();
 
 export type ChapterContentRouteProp = RouteProp<RootDrawerParamList, "ROUTE_CHAPTER_CONTENT">;
 
@@ -39,8 +36,21 @@ export const ScreenChapterStudent: React.FC = () => {
     const [chapterPlaylist, setChapterPlaylist] = useState<string[]>([]);
 
     const initialVideoState: IVideo[] = [];
-    const [videos, setVideos] = useState<IVideo[]>([]);
     const [isVideoListLoading, setVideoListLoading] = useState(true);
+    const videoList: IVideo[] = [];
+    //Store URL of Current Video here:
+    let [currentVideo, setCurrentVideo] = useState<string>(chapterPlaylist[0]);
+    //let currentVideo: string;
+    //const [chapterPlaylist2, setChapterPlaylist2] = useState<string[]>([]);
+    const [videos, setVideos] = useState<IVideo[]>([]);
+    //let video: IVideo
+
+    let [likeCounter, setLikeCounter] = useState(0);
+    let [dislikeCounter, setDislikeCounter] = useState(0);
+
+    //Vertical slide animation for FlatList.
+    let translateY = new Animated.Value(100);
+    Animated.timing(translateY, { toValue: 0, duration: 500, useNativeDriver: false }).start();
 
     React.useContext(LocalizationContext);
     const route = useRoute<ChapterContentRouteProp>();
@@ -62,20 +72,23 @@ export const ScreenChapterStudent: React.FC = () => {
     // Call following function/s only once when this screen is shown.
     useFocusEffect(
         React.useCallback(() => {
+            console.log("In Callback");
             _getChapter();
+            _getAllVideos();
+            setCurrentVideo(chapterPlaylist[0]);
         }, [course])
     );
 
-    const playlistlistItem = ({ item }: { item: string }) => (
+    const playlistlistItem = ({ item }: { item: IVideo }) => (
         <ListItem
             containerStyle={{
                 marginBottom: "2.5%",
                 backgroundColor: dark.theme.darkBlue2,
             }}>
-            <TouchableOpacity onPress={() => _getVideoUrl(item)}>
+            <TouchableOpacity onPress={() => changeCurrentState(item.id)}>
                 <ListItem.Content>
                     <ListItem.Title style={styles.listItemTitle} numberOfLines={1} lineBreakMode="tail">
-                        {item}
+                        {item.title}
                     </ListItem.Title>
                     <ListItem.Subtitle style={styles.listItemSubtitle}>Subtitle</ListItem.Subtitle>
                 </ListItem.Content>
@@ -89,7 +102,16 @@ export const ScreenChapterStudent: React.FC = () => {
             <View style={styles.contentContainer}>
                 <View style={styles.videoContainer}>
                     <Text style={styles.videoTitle}>Ch1.: My Video</Text>
-                    <Video style={[styles.video, {}]} />
+                    <Video
+                        style={styles.video}
+                        source={{ uri: _getVideoUrl() }}
+                        rate={1.0}
+                        volume={1.0}
+                        isMuted={false}
+                        resizeMode="contain"
+                        shouldPlay={false}
+                        useNativeControls={true}
+                    />
                     <View style={styles.iconContainer}>
                         <TouchableOpacity style={[styles.iconBox, { paddingRight: 0 }]}>
                             <MaterialIcons name="file-download" size={28} color="rgba(255,255,255,0.8)" />
@@ -103,31 +125,33 @@ export const ScreenChapterStudent: React.FC = () => {
                             />
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={styles.iconBox}>
+                        <TouchableOpacity onPress={() => setDislikeCounter(dislikeCounter++)} style={styles.iconBox}>
                             <Foundation name="dislike" size={28} color="rgba(255,255,255,0.8)" style={styles.icon} />
-                            <Text style={styles.textIcon}>12</Text>
+                            <Text style={styles.textIcon}>{dislikeCounter}</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.iconBox}>
+                        <TouchableOpacity onPress={() => setLikeCounter(likeCounter++)} style={styles.iconBox}>
                             <Foundation
                                 name="like"
                                 size={28}
                                 color="rgba(255,255,255,0.8)"
                                 style={[styles.icon, { transform: [{ rotateY: "180deg" }] }]}
                             />
-                            <Text style={styles.textIcon}>365</Text>
+                            <Text style={styles.textIcon}>{likeCounter}</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
                 <View style={styles.playlistContainer}>
                     <Text style={styles.videoTitle}>Playlist</Text>
-                    <FlatList
-                        style={styles.playlist}
-                        data={chapterPlaylist}
-                        showsVerticalScrollIndicator={true}
-                        renderItem={playlistlistItem}
-                        keyExtractor={(item, index) => index.toString()}
-                        ListEmptyComponent={<Text>Videos here</Text>}
-                    />
+                    <Animated.View style={{ transform: [{ translateY }], flex: 1, maxWidth: "95%" }}>
+                        <FlatList
+                            style={styles.playlist}
+                            data={videos}
+                            showsVerticalScrollIndicator={true}
+                            renderItem={playlistlistItem}
+                            keyExtractor={(item, index) => index.toString()}
+                            ListEmptyComponent={<Text>Videos here</Text>}
+                        />
+                    </Animated.View>
                 </View>
             </View>
         </View>
@@ -141,19 +165,32 @@ export const ScreenChapterStudent: React.FC = () => {
                 setChapter(chapterReceived);
                 console.log(chapterReceived);
                 if (chapterReceived.contents !== undefined) {
+                    console.log(chapterReceived.contents);
                     setChapterPlaylist(chapterReceived.contents);
-                    console.log(chapterPlaylist);
                 }
             });
     }
 
-    function _getVideoUrl(vid: string): string {
-        if (vid == undefined || vid == undefined || null) {
+    function _getVideoUrl(): string {
+        let vidId: string = " ";
+        //vidId = chapterPlaylist[1]
+        vidId = currentVideo;
+        console.log("Vid Id:");
+        console.log(vidId);
+
+        if (videos == undefined || videos == undefined || null) {
             toast.error(i18n.t("itrex.videoNotFound"));
             return "";
         }
-        return createVideoUrl(vid);
+        return createVideoUrl(vidId);
     }
+
+    function changeCurrentState(vidId: string) {
+        setCurrentVideo(vidId);
+        _getVideoUrl();
+    }
+
+    // function setVideos(): IVideo[]{}
 
     async function _getAllVideos(): Promise<void> {
         if (course.id == undefined) {
@@ -161,22 +198,36 @@ export const ScreenChapterStudent: React.FC = () => {
         }
 
         setVideoListLoading(true);
-        setVideos(initialVideoState);
+        //setVideos(initialVideoState);
 
         const request: RequestInit = RequestFactory.createGetRequest();
         endpointsVideo
             .getAllVideos(request, course.id, undefined, i18n.t("itrex.getVideosError"))
-            .then((videosReceived: IVideo[]) => {
+            .then((videoReceived: IVideo[]) => {
+                //videoList.push(videoReceived.filter(((vid: IVideo) => {
+                //          if (vid.id !== undefined && chapterPlaylist.includes(vid.id)) {return vid} })));
+
                 setVideos(
-                    videosReceived.filter((video) => {
-                        video.chapterId == chapterId;
-                        console.log(video.chapterId);
+                    videoReceived.filter((video: IVideo) => {
+                        if (video.id !== undefined && chapterPlaylist.includes(video.id)) {
+                            return video;
+                        }
                     })
                 );
-                console.log(chapterId);
+
+                console.log("Result of Filter:");
                 console.log(videos);
-                console.log(videosReceived);
+
+                //setChapterPlaylist2(["asdf", "asdf2"]);
+
+                //console.log("gsicht" + chapterPlaylist2 + " asdf");
+
+                console.log("Content ID in get all videos: ");
+                console.log(chapterPlaylist);
+                //console.log("Videos Received in get all videos: " );
+                //console.log(videoReceived)
             })
+
             .finally(async () => setVideoListLoading(false));
     }
 };
@@ -282,6 +333,7 @@ const styles = StyleSheet.create({
         color: "white",
         textAlign: "left",
         marginBottom: 5,
+        marginRight: 5,
     },
     listItemSubtitle: {
         color: "rgba(255,255,255,0.66)",
