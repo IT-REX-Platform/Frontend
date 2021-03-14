@@ -17,7 +17,6 @@ export function validateQuiz(
     }
 
     if (quizName == undefined || quizName.length === 0) {
-        toast.success("dskfhsjf ");
         toast.error(i18n.t("itrex.invalidQuizName"));
         return;
     }

@@ -59,14 +59,14 @@ export type CourseStackParamList = {
     CHAPTER_CREATE: undefined;
     CREATE_QUIZ: {
         courseId?: string;
-        chapterId?: string | undefined;
-        questionId?: string | undefined;
-        quiz?: IQuiz | undefined;
+        chapterId?: string;
+        questionId?: string;
+        quiz?: IQuiz;
     };
     CREATE_QUESTION: {
-        quiz: IQuiz | undefined;
-        courseId: string | undefined;
-        question?: IQuestionMultipleChoice | IQuestionNumeric | IQuestionSingleChoice | undefined;
+        quiz?: IQuiz;
+        courseId?: string;
+        question?: IQuestionMultipleChoice | IQuestionNumeric | IQuestionSingleChoice;
     };
     CHAPTER: { chapterId: string | undefined };
 };
