@@ -54,7 +54,6 @@ export const ScreenCourseTimeline: React.FC = () => {
             //courseService.getCourse(course.id).then((receivedCourse) => setMyCourse(receivedCourse));
             const request: RequestInit = RequestFactory.createGetRequest();
             courseEndpoint.getCourse(request, course.id).then((receivedCourse) => {
-                setMyCourse(receivedCourse);
                 if (receivedCourse.chapters !== undefined) {
                     for (const chapter of receivedCourse.chapters) {
                         if (chapter.contentReferences !== undefined) {
@@ -88,6 +87,7 @@ export const ScreenCourseTimeline: React.FC = () => {
                         }
                     }
                     console.log(receivedCourse);
+                    setMyCourse(receivedCourse);
                 }
             });
         }
@@ -116,7 +116,11 @@ export const ScreenCourseTimeline: React.FC = () => {
                     <View>{!edit && <Text style={styles.textStyle}>{i18n.t("itrex.noChapters")}</Text>}</View>
                 ) : (
                     myCourse.timePeriods?.map((timePeriod) => (
-                        <TimelineComponent key={timePeriod.id} edit={edit} timePeriod={timePeriod}></TimelineComponent>
+                        <TimelineComponent
+                            key={timePeriod.id}
+                            edit={edit}
+                            timePeriod={timePeriod}
+                            course={myCourse}></TimelineComponent>
                     ))
                     )*/}
                 {edit && (

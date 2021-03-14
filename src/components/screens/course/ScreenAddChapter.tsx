@@ -34,9 +34,10 @@ import { calculateVideoSize } from "../../../services/calculateVideoSize";
 import { Event } from "@react-native-community/datetimepicker";
 import DraggableFlatList from "react-native-draggable-flatlist";
 import { TextButton } from "../../uiElements/TextButton";
-import { validateCourseDates } from "../../../helperScripts/validateCourseDates";
+import { dateConverter, validateCourseDates } from "../../../helperScripts/validateCourseDates";
 import { IContent } from "../../../types/IContent";
 import { EndpointsContentReference } from "../../../api/endpoints/EndpointsContentReference";
+import Select from "react-select";
 
 type ScreenCourseTabsNavigationProp = CompositeNavigationProp<
     StackNavigationProp<CourseStackParamList, "CHAPTER">,
@@ -74,6 +75,20 @@ export const ScreenAddChapter: React.FC = () => {
     const [contentList, setContentList] = useState<IContent[]>([]);
 
     const [videoPoolList, setVideoPoolList] = useState<IVideo[]>([]);
+
+    const timePeriods = course.timePeriods?.map((timePeriod, idx) => {
+        return {
+            value: timePeriod.id,
+            label:
+                "Week " +
+                (idx + 1) +
+                " (" +
+                dateConverter(timePeriod.startDate) +
+                " - " +
+                dateConverter(timePeriod.endDate) +
+                ")",
+        };
+    });
 
     // Render UI according to un-/available videos data.
     const renderUi = () => {
@@ -121,7 +136,33 @@ export const ScreenAddChapter: React.FC = () => {
                 <ListItem.Content>
                     <TouchableOpacity onLongPress={drag}>
                         <ListItem.Title style={styles.listItemTitle} numberOfLines={1} lineBreakMode="tail">
-                            {item.video?.title}
+                            <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
+                                {item.video?.title}
+                                {timePeriods !== undefined && (
+                                    <Select
+                                        options={timePeriods}
+                                        defaultValue={timePeriods.find(
+                                            (timePeriod) => timePeriod.value === item.timePeriodId
+                                        )}
+                                        theme={(theme) => ({
+                                            ...theme,
+                                            borderRadius: 5,
+                                            colors: {
+                                                ...theme.colors,
+                                                primary25: dark.Opacity.darkBlue1,
+                                                primary: dark.Opacity.pink,
+                                                backgroundColor: dark.Opacity.darkBlue1,
+                                            },
+                                        })}
+                                        menuPortalTarget={document.body}
+                                        menuPosition={"fixed"}
+                                        styles={{
+                                            container: () => ({
+                                                width: 300,
+                                            }),
+                                        }}></Select>
+                                )}
+                            </View>
                         </ListItem.Title>
                         <ListItem.Subtitle style={styles.listItemSubtitle}>
                             {calculateVideoSize(item.video?.length)}

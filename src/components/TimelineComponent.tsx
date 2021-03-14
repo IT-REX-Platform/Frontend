@@ -11,11 +11,13 @@ import AuthenticationService from "../services/AuthenticationService";
 import { useNavigation } from "@react-navigation/native";
 import { ITimePeriod, TimePeriodPublishState } from "../types/ITimePeriod";
 import { ChapterComponent } from "./ChapterComponent";
+import { ICourse } from "../types/ICourse";
 
 interface TimelineComponentProps {
     isLast?: boolean;
     timePeriod?: ITimePeriod;
     edit: boolean;
+    course: ICourse;
 }
 
 export const TimelineComponent: React.FC<TimelineComponentProps> = (props) => {
@@ -60,7 +62,11 @@ export const TimelineComponent: React.FC<TimelineComponentProps> = (props) => {
             </View>
             {props.timePeriod?.chapters !== undefined &&
                 props.timePeriod?.chapters.map((chapter) => (
-                    <ChapterComponent key={chapter.id} chapter={chapter} editMode={props.edit}></ChapterComponent>
+                    <ChapterComponent
+                        key={chapter.id}
+                        chapter={chapter}
+                        editMode={props.edit}
+                        course={props.course}></ChapterComponent>
                 ))}
             {props.edit && (
                 <View style={styles.addChapterContainer}>

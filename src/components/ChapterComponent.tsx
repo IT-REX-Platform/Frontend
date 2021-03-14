@@ -17,6 +17,7 @@ import { CoursePublishState } from "../constants/CoursePublishState";
 import { EndpointsQuiz } from "../api/endpoints/EndpointsQuiz";
 import { RequestFactory } from "../api/requests/RequestFactory";
 import { IQuiz } from "../types/IQuiz";
+import { dateConverter } from "../helperScripts/validateCourseDates";
 
 interface ChapterComponentProps {
     chapter?: IChapter;
@@ -34,10 +35,17 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
     const course = props.course;
     const courseId = course.id;
 
-    const timePeriods = course.timePeriods?.map((timePeriod) => {
+    const timePeriods = course.timePeriods?.map((timePeriod, idx) => {
         return {
             value: timePeriod.id,
-            label: timePeriod.startDate + " - " + timePeriod.endDate,
+            label:
+                "Week " +
+                (idx + 1) +
+                " (" +
+                dateConverter(timePeriod.startDate) +
+                " - " +
+                dateConverter(timePeriod.endDate) +
+                ")",
         };
     });
     const [courseQuizzes, setCourseQuizzes] = useState<IQuiz[]>();
