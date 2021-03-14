@@ -130,6 +130,7 @@ export const de = {
 
         getUserInfoError: "Ein Fehler ist beim Zugriff auf Benutzerinformationen aufgetreten.",
 
+        createQuiz: "Quiz erstellen",
         invalidQuizName: "Bitte definieren sie einen Quiz-Name.",
         invalidQuestionsObject: "Bitte füge mindestens eine Frage zum Quiz hinzu.",
         noQuestions: "Bisher wurden keine Fragen hinzugefügt!",

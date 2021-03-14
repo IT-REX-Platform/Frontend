@@ -130,6 +130,7 @@ export const en = {
 
         getUserInfoError: "An error occurred while getting user info.",
 
+        createQuiz: "Create a Quiz",
         invalidQuizName: "Please define a quiz name.",
         invalidQuestionsObject: "Please add at least one question  to the quiz.",
         noQuestions: "No questions have been added yet!",

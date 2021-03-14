@@ -189,7 +189,7 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                 </View>
                 <View style={styles.chapterMaterialElements}>
                     <TextButton
-                        title="Create a Quiz"
+                        title={i18n.t("itrex.createQuiz")}
                         onPress={() => {
                             navigation.navigate("CREATE_QUIZ", { chapterId: chapter?.id, courseId: courseId });
                         }}
@@ -267,13 +267,12 @@ const styles = StyleSheet.create({
         marginBottom: 5,
         paddingTop: "20px",
         flex: 1,
-        flexDirection: "column",
-        width: "100%",
+        flexDirection: "row",
+        alignSelf: "center",
     },
     chapterMaterialElement: {
         flex: 1,
         flexDirection: "row",
-
         color: "white",
         fontWeight: "bold",
         alignItems: "center",
