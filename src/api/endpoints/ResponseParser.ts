@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import { loggerFactory } from "../../../logger/LoggerConfig";
 import { ICourse } from "../../types/ICourse";
 import { IVideo } from "../../types/IVideo";
@@ -27,7 +28,6 @@ export class ResponseParser {
                     for (const course of courses) {
                         course.startDate = course.startDate ? new Date(course.startDate) : undefined;
                         course.endDate = course.endDate ? new Date(course.endDate) : undefined;
-                        course.chapterObjects = [];
                     }
 
                     this._toastSuccess(successMsg);
@@ -50,6 +50,14 @@ export class ResponseParser {
                 .then((course: ICourse) => {
                     course.startDate = course.startDate ? new Date(course.startDate) : undefined;
                     course.endDate = course.endDate ? new Date(course.endDate) : undefined;
+
+                    // Convert date of the TimePeriods
+                    if (course.timePeriods !== undefined) {
+                        for (const timePeriod of course.timePeriods) {
+                            timePeriod.startDate = timePeriod.startDate ? new Date(timePeriod.startDate) : undefined;
+                            timePeriod.endDate = timePeriod.endDate ? new Date(timePeriod.endDate) : undefined;
+                        }
+                    }
 
                     this._toastSuccess(successMsg);
                     resolve(course);
