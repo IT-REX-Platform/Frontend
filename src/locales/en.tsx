@@ -110,6 +110,7 @@ export const en = {
         confirmPublishCourse:
             "Publishing the course will make it possible for students to join the course. Start- and end-date will also be fixed when publishing the course.",
         confirmDeleteCourse: "Do you really want to delete this course?",
+        week: "Week",
 
         getCoursesError: "An error occurred while getting courses.",
         getCourseError: "An error occurred while getting the course.",

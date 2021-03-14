@@ -39,7 +39,8 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
         return {
             value: timePeriod.id,
             label:
-                "Week " +
+                i18n.t("itrex.week") +
+                " " +
                 (idx + 1) +
                 " (" +
                 dateConverter(timePeriod.startDate) +
