@@ -35,7 +35,7 @@ import { Event } from "@react-native-community/datetimepicker";
 import DraggableFlatList from "react-native-draggable-flatlist";
 import { TextButton } from "../../uiElements/TextButton";
 import { dateConverter, validateCourseDates } from "../../../helperScripts/validateCourseDates";
-import { IContent } from "../../../types/IContent";
+import { CONTENTREFERENCETYPE, IContent } from "../../../types/IContent";
 import { EndpointsContentReference } from "../../../api/endpoints/EndpointsContentReference";
 import Select from "react-select";
 
@@ -75,6 +75,9 @@ export const ScreenAddChapter: React.FC = () => {
     const [contentList, setContentList] = useState<IContent[]>([]);
 
     const [videoPoolList, setVideoPoolList] = useState<IVideo[]>([]);
+
+    const initialSelection: { [id: string]: string } = {};
+    const [selectedValues, setSelectedValues] = useState(initialSelection);
 
     const timePeriods = course.timePeriods?.map((timePeriod, idx) => {
         return {
@@ -136,14 +139,17 @@ export const ScreenAddChapter: React.FC = () => {
                 <ListItem.Content>
                     <TouchableOpacity onLongPress={drag}>
                         <ListItem.Title style={styles.listItemTitle} numberOfLines={1} lineBreakMode="tail">
-                            <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
-                                {item.video?.title}
+                            <View
+                                style={{
+                                    flex: 1,
+                                    flexDirection: "row",
+                                    alignItems: "center",
+                                    justifyContent: "space-between",
+                                }}>
+                                <Text>{item.video?.title}</Text>
                                 {timePeriods !== undefined && (
                                     <Select
                                         options={timePeriods}
-                                        defaultValue={timePeriods.find(
-                                            (timePeriod) => timePeriod.value === item.timePeriodId
-                                        )}
                                         theme={(theme) => ({
                                             ...theme,
                                             borderRadius: 5,
@@ -154,11 +160,26 @@ export const ScreenAddChapter: React.FC = () => {
                                                 backgroundColor: dark.Opacity.darkBlue1,
                                             },
                                         })}
+                                        defaultValue={timePeriods.find(
+                                            (timePeriod) => timePeriod.value === item.timePeriodId
+                                        )}
                                         menuPortalTarget={document.body}
                                         menuPosition={"fixed"}
+                                        onChange={(option) => {
+                                            if (item.id !== undefined) {
+                                                const itemId = item.id;
+                                                const value = option?.value;
+                                                if (itemId !== undefined && value !== undefined) {
+                                                    selectedValues[itemId] = value;
+                                                    setSelectedValues(selectedValues);
+                                                    console.log(selectedValues);
+                                                }
+                                            }
+                                        }}
                                         styles={{
                                             container: () => ({
                                                 width: 300,
+                                                marginLeft: "5px",
                                             }),
                                         }}></Select>
                                 )}
@@ -229,6 +250,9 @@ export const ScreenAddChapter: React.FC = () => {
             chapterId: chapterId,
             contentId: video.id,
             video: video,
+            id: video.id,
+            isPersistent: false,
+            contentReferenceType: CONTENTREFERENCETYPE.QUIZ,
         };
         setContentList([...contentList, contentRef]);
     }
@@ -279,6 +303,9 @@ export const ScreenAddChapter: React.FC = () => {
                                             chapterId: chapterId,
                                             contentId: videos[videoInPool].id,
                                             video: videos[videoInPool],
+                                            id: contentReference.id,
+                                            timePeriodId: contentReference.timePeriodId,
+                                            contentReferenceType: CONTENTREFERENCETYPE.QUIZ,
                                         };
                                         newContentList.push(contentRef);
                                         // Remove from Pool-List
@@ -360,9 +387,20 @@ export const ScreenAddChapter: React.FC = () => {
                 Promise.all(
                     contentList.map((content) => {
                         content.chapterId = chapter.id;
-                        const postRequest: RequestInit = RequestFactory.createPostRequestWithBody(content);
+
                         return new Promise((resolve) => {
+                            if (content.id !== undefined) {
+                                // Search for TimePeriod
+                                if (selectedValues[content.id] !== undefined) {
+                                    content.timePeriodId = selectedValues[content.id];
+                                    content.id = undefined;
+                                }
+                            }
+
+                            const postRequest: RequestInit = RequestFactory.createPostRequestWithBody(content);
+
                             contentReferenceEndpoint.createContentReference(postRequest).then((contentRef) => {
+                                contentRef.isPersistent = true;
                                 resolve(contentRef);
                             });
                         });
@@ -377,13 +415,43 @@ export const ScreenAddChapter: React.FC = () => {
             chapter.name = chapterName;
 
             //How to reorder the contents ?
+            Promise.all(
+                contentList.map((content) => {
+                    return new Promise((resolve) => {
+                        content.chapterId = chapter.id;
 
-            const patchRequest: RequestInit = RequestFactory.createPatchRequest(chapter);
-            chapterEndpoint.patchChapter(
-                patchRequest,
-                i18n.t("itrex.chapterUpdateSuccess"),
-                i18n.t("itrex.updateChapterError")
-            );
+                        if (content.id !== undefined) {
+                            // Search for TimePeriod
+                            if (selectedValues[content.id] !== undefined) {
+                                content.timePeriodId = selectedValues[content.id];
+                            }
+                        }
+
+                        // Create new Content
+                        if (content.isPersistent == false) {
+                            content.id = undefined;
+
+                            const postRequest: RequestInit = RequestFactory.createPostRequestWithBody(content);
+
+                            contentReferenceEndpoint.createContentReference(postRequest).then((contentRef) => {
+                                contentRef.isPersistent = true;
+                                content.id = contentRef.id;
+                                resolve(contentRef);
+                            });
+                        }
+
+                        resolve(true);
+                    });
+                })
+            ).then(() => {
+                chapter.contentReferences = contentList;
+                const patchRequest: RequestInit = RequestFactory.createPatchRequest(chapter);
+                chapterEndpoint.patchChapter(
+                    patchRequest,
+                    i18n.t("itrex.chapterUpdateSuccess"),
+                    i18n.t("itrex.updateChapterError")
+                );
+            });
         }
     }
 

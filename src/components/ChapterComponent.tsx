@@ -89,7 +89,14 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                                         <Text style={styles.chapterMaterialElementText}>
                                             {contentReference.contentId}
                                         </Text>
-                                        {props.editMode ? (
+                                        <Text style={styles.chapterMaterialElementText}>
+                                            {
+                                                timePeriods.find(
+                                                    (timePeriod) => timePeriod.value === contentReference.timePeriodId
+                                                )?.label
+                                            }
+                                        </Text>
+                                        {/*props.editMode ? (
                                             <Select
                                                 options={timePeriods}
                                                 defaultValue={timePeriods.find(
@@ -113,15 +120,8 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                                                     }),
                                                 }}></Select>
                                         ) : (
-                                            <Text style={styles.chapterMaterialElementText}>
-                                                {
-                                                    timePeriods.find(
-                                                        (timePeriod) =>
-                                                            timePeriod.value === contentReference.timePeriodId
-                                                    )?.label
-                                                }
-                                            </Text>
-                                        )}
+                                            
+                                        )*/}
                                     </View>
                                 </View>
                             );
