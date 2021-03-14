@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import { RouteProp, useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
 import React, { useState } from "react";
 import { Text, ImageBackground, StyleSheet, View, TextInput, TouchableOpacity } from "react-native";
@@ -38,6 +39,7 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
 
     let chapterId = route.params.chapterId;
     const quizWithQuestions = route.params.quiz;
+    console.log(quizWithQuestions);
     const courseId = route.params.courseId;
 
     if (chapterId == "undefined") {
@@ -105,6 +107,7 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
             return;
         }
         const myNewQuiz: IQuiz = {
+            id: quizWithQuestions?.id,
             courseId: courseId,
             name: quizName,
             questions: questions,
@@ -133,6 +136,13 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
 
     function saveQuiz() {
         const endpointsQuiz: EndpointsQuiz = new EndpointsQuiz();
+        if (quizWithQuestions === undefined) {
+            return;
+        }
+        if (quizWithQuestions.id !== undefined) {
+            updateQuiz();
+            return;
+        }
 
         if (validateQuiz(courseId, quizName, questions)) {
             const myNewQuiz = validateQuiz(courseId, quizName, questions);
@@ -144,7 +154,22 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
             const response = endpointsQuiz.createQuiz(request, "OK", "ERROR");
             response.then((question) => console.log(question));
         }
-        // TODO: Create new IQuiz Element with the user infromation & send Request to save
+    }
+
+    function updateQuiz() {
+        const endpointsQuiz: EndpointsQuiz = new EndpointsQuiz();
+
+        if (validateQuiz(courseId, quizName, questions)) {
+            const quizToUpdate = validateQuiz(courseId, quizName, questions);
+
+            if (quizToUpdate === undefined || quiz === undefined) {
+                return;
+            }
+            quizToUpdate.id = quizWithQuestions?.id;
+            const request: RequestInit = RequestFactory.createPutRequest(quizToUpdate);
+            const response = endpointsQuiz.createQuiz(request, "OK", "ERROR");
+            response.then((question) => console.log(question));
+        }
     }
 };
 

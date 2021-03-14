@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import React, { useEffect, useState } from "react";
 import i18n from "../locales";
 import { LocalizationContext } from "./Context";
@@ -62,22 +63,26 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                 </View>
                 <View style={styles.break} />
                 <Text style={styles.chapterMaterialHeader}>Chapter Quiz</Text>
-                <View style={styles.chapterMaterialElements}>
-                    {courseQuizzes?.map((contentId) => {
-                        return (
-                            <View style={styles.chapterMaterialElement}>
-                                <MaterialCommunityIcons
-                                    name="head-question-outline"
-                                    size={28}
-                                    color="white"
-                                    style={styles.icon}
-                                />
-                                <Text style={styles.chapterMaterialElementText}>{contentId.name}</Text>
-                            </View>
-                        );
-                    })}
-                </View>
-                {props.editMode && chapterQuiz()}
+
+                {!props.editMode && AuthenticationService.getInstance().isLecturer() && (
+                    <View style={styles.chapterMaterialElements}>
+                        {courseQuizzes?.map((quiz) => {
+                            return (
+                                <View style={styles.chapterMaterialElement}>
+                                    <MaterialCommunityIcons
+                                        name="head-question-outline"
+                                        size={28}
+                                        color="white"
+                                        style={styles.icon}
+                                    />
+                                    <Text style={styles.chapterMaterialElementText}>{quiz.name}</Text>
+                                </View>
+                            );
+                        })}
+                    </View>
+                )}
+
+                {props.editMode && editChapterQuiz()}
             </View>
             {props.editMode && AuthenticationService.getInstance().isLecturer() && (
                 <View style={styles.chapterEditRow}>
@@ -98,18 +103,44 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
         </View>
     );
 
-    function chapterQuiz() {
+    function editChapterQuiz() {
         console.log(courseId);
         return (
-            <View style={styles.chapterMaterialElements}>
-                <TextButton
-                    title="Create a Quiz"
-                    onPress={() => {
-                        navigation.navigate("CREATE_QUIZ", { chapterId: chapter?.id, courseId: courseId });
-                    }}
-                />
-            </View>
+            <>
+                <View style={styles.chapterMaterialElements}>
+                    {courseQuizzes?.map((quiz) => {
+                        return (
+                            <TouchableOpacity
+                                style={styles.chapterMaterialElement}
+                                onPress={() =>
+                                    navigation.navigate("CREATE_QUIZ", {
+                                        quiz: quiz,
+                                        chapterId: chapter?.id,
+                                        courseId: courseId,
+                                    })
+                                }>
+                                <MaterialCommunityIcons
+                                    name="head-question-outline"
+                                    size={28}
+                                    color="white"
+                                    style={styles.icon}
+                                />
+                                <Text style={styles.chapterMaterialElementText}>{quiz.name}</Text>
+                            </TouchableOpacity>
+                        );
+                    })}
+                </View>
+                <View style={styles.chapterMaterialElements}>
+                    <TextButton
+                        title="Create a Quiz"
+                        onPress={() => {
+                            navigation.navigate("CREATE_QUIZ", { chapterId: chapter?.id, courseId: courseId });
+                        }}
+                    />
+                </View>
+            </>
         );
+
         /**if (quizList === undefined || quizList.length === 0) {
             return (
                 <View style={styles.chapterMaterialElements}>
