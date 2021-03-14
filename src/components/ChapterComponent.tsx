@@ -23,7 +23,6 @@ interface ChapterComponentProps {
     chapterId?: string;
     editMode?: boolean;
     course: ICourse;
-    courseId?: string;
 }
 
 const endpointsQuiz: EndpointsQuiz = new EndpointsQuiz();
@@ -33,6 +32,7 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
 
     const chapter = props.chapter;
     const course = props.course;
+    const courseId = course.id;
 
     const timePeriods = course.timePeriods?.map((timePeriod) => {
         return {
@@ -40,7 +40,6 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
             label: timePeriod.startDate + " - " + timePeriod.endDate,
         };
     });
-    const courseId = props.courseId;
     const [courseQuizzes, setCourseQuizzes] = useState<IQuiz[]>();
     useFocusEffect(
         React.useCallback(() => {
@@ -51,6 +50,7 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
             const response = endpointsQuiz.getCourseQuizzes(request, courseId);
             response.then(async () => {
                 setCourseQuizzes(await response);
+                console.log(courseQuizzes);
             });
         }, [])
     );
