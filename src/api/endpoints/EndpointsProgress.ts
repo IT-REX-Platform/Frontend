@@ -32,10 +32,11 @@ export class EndpointsProgress implements IEndpointsProgress {
      */
     public createContentProgress(
         postRequest: RequestInit,
+        courseTrackerId: string,
         successMsg?: string,
         errorMsg?: string
     ): Promise<IContentProgressTracker> {
-        const urlToUse = `${this.url}/${ProgressUrlPart.MID_CONTENT}`;
+        const urlToUse = `${this.url}/${ProgressUrlPart.MID_CONTENT}?courseTrackerId="${courseTrackerId}"`;
 
         this.loggerApi.trace("Sending POST request to URL: " + urlToUse);
         const response: Promise<Response> = sendRequest(urlToUse, postRequest);
@@ -98,10 +99,13 @@ export class EndpointsProgress implements IEndpointsProgress {
     public updateContentProgress(
         putRequest: RequestInit,
         trackerId: string,
+        progress: number,
         successMsg?: string,
         errorMsg?: string
     ): Promise<IContentProgressTracker> {
-        const urlToUse = `${this.url}/${ProgressUrlPart.MID_CONTENT}/${trackerId}/${ProgressUrlPart.SUF_PROGRESS}`;
+        const urlToUse =
+            `${this.url}/${ProgressUrlPart.MID_CONTENT}/${trackerId}/${ProgressUrlPart.SUF_PROGRESS}` +
+            `?progress=${progress}`;
 
         this.loggerApi.trace("Sending PUT request to URL: " + urlToUse);
         const response: Promise<Response> = sendRequest(urlToUse, putRequest);
