@@ -1,31 +1,51 @@
-import React from "react";
+/* eslint-disable complexity */
+import React, { useState } from "react";
 import i18n from "../locales";
 import { LocalizationContext } from "./Context";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { dark } from "../constants/themes/dark";
 import { IChapter } from "../types/IChapter";
-import { MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import AuthenticationService from "../services/AuthenticationService";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { TextButton } from "./uiElements/TextButton";
 import { CoursePublishState } from "../constants/CoursePublishState";
+import { EndpointsQuiz } from "../api/endpoints/EndpointsQuiz";
+import { RequestFactory } from "../api/requests/RequestFactory";
+import { IQuiz } from "../types/IQuiz";
 
 interface ChapterComponentProps {
     chapter?: IChapter;
     chapterId?: string;
     editMode?: boolean;
+    courseId?: string;
 }
 
+const endpointsQuiz: EndpointsQuiz = new EndpointsQuiz();
 export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
     React.useContext(LocalizationContext);
     const navigation = useNavigation();
 
     const chapter = props.chapter;
+    const courseId = props.courseId;
+    const [courseQuizzes, setCourseQuizzes] = useState<IQuiz[]>();
+    useFocusEffect(
+        React.useCallback(() => {
+            if (courseId == undefined) {
+                return;
+            }
+            const request: RequestInit = RequestFactory.createGetRequest();
+            const response = endpointsQuiz.getCourseQuizzes(request, courseId);
+            response.then(async () => {
+                setCourseQuizzes(await response);
+            });
+        }, [])
+    );
+
     return (
         <View style={styles.chapterContainer}>
             <View style={styles.chapterTopRow}>
                 <Text style={styles.chapterHeader}>{chapter?.title}</Text>
-                {/* TODO: add real publish/unpublished state to the chapterss*/}
                 <View style={styles.chapterStatus}>{getPublishedSate(CoursePublishState.PUBLISHED)}</View>
             </View>
             <View style={styles.chapterBottomRow}>
@@ -42,7 +62,26 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                 </View>
                 <View style={styles.break} />
                 <Text style={styles.chapterMaterialHeader}>Chapter Quiz</Text>
-                {props.editMode && chapterQuiz()}
+
+                {!props.editMode && AuthenticationService.getInstance().isLecturer() && (
+                    <View style={styles.chapterMaterialElements}>
+                        {courseQuizzes?.map((quiz) => {
+                            return (
+                                <View style={styles.chapterMaterialElement}>
+                                    <MaterialCommunityIcons
+                                        name="head-question-outline"
+                                        size={28}
+                                        color="white"
+                                        style={styles.icon}
+                                    />
+                                    <Text style={styles.chapterMaterialElementText}>{quiz.name}</Text>
+                                </View>
+                            );
+                        })}
+                    </View>
+                )}
+
+                {props.editMode && editChapterQuiz()}
             </View>
             {props.editMode && AuthenticationService.getInstance().isLecturer() && (
                 <View style={styles.chapterEditRow}>
@@ -63,48 +102,42 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
         </View>
     );
 
-    function chapterQuiz() {
+    function editChapterQuiz() {
         return (
-            <View style={styles.chapterMaterialElements}>
-                <TextButton
-                    title="Create a Quiz"
-                    onPress={() => {
-                        navigation.navigate("CREATE_QUIZ", { chapterId: chapter?.id });
-                    }}
-                />
-            </View>
-        );
-        /**if (quizList === undefined || quizList.length === 0) {
-            return (
+            <>
+                <View style={styles.chapterMaterialElements}>
+                    {courseQuizzes?.map((quiz) => {
+                        return (
+                            <TouchableOpacity
+                                style={styles.chapterMaterialElement}
+                                onPress={() =>
+                                    navigation.navigate("CREATE_QUIZ", {
+                                        quiz: quiz,
+                                        chapterId: chapter?.id,
+                                        courseId: courseId,
+                                    })
+                                }>
+                                <MaterialCommunityIcons
+                                    name="head-question-outline"
+                                    size={28}
+                                    color="white"
+                                    style={styles.icon}
+                                />
+                                <Text style={styles.chapterMaterialElementText}>{quiz.name}</Text>
+                            </TouchableOpacity>
+                        );
+                    })}
+                </View>
                 <View style={styles.chapterMaterialElements}>
                     <TextButton
                         title="Create a Quiz"
                         onPress={() => {
-                            navigation.navigate("CREATE_QUIZ", { chapterId: chapter?.id });
+                            navigation.navigate("CREATE_QUIZ", { chapterId: chapter?.id, courseId: courseId });
                         }}
                     />
                 </View>
-            );
-        } else {
-            return (
-                <View style={styles.chapterMaterialElements}>
-                    <View style={styles.chapterMaterialElement}>
-                        <MaterialCommunityIcons
-                            name="file-question-outline"
-                            size={28}
-                            color="white"
-                            style={styles.icon}
-                        />
-                        <TouchableOpacity
-                            onPress={() => {
-                                createAlert("Go to existing Quiz Page");
-                            }}>
-                            <Text style={styles.chapterMaterialElementText}>{quizList[0].name}</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            );
-        } */
+            </>
+        );
     }
 
     function getPublishedSate(isPublished: string | undefined) {

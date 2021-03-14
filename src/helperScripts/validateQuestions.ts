@@ -42,10 +42,14 @@ export function validateNumericQuestion(
 }
 
 export function validateSingleChoiceQuestion(
+    courseId: string | undefined,
     questionText: string | undefined,
     choices: IChoices | undefined,
     solution: string | undefined
 ): IQuestionSingleChoice | undefined {
+    if (courseId === undefined) {
+        return;
+    }
     const toast: ToastService = new ToastService();
 
     if (questionText === undefined || questionText === i18n.t("itrex.addQuestionText")) {

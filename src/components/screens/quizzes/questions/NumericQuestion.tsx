@@ -11,14 +11,18 @@ import { validateNumericQuestion } from "../../../../helperScripts/validateQuest
 import { IQuiz } from "../../../../types/IQuiz";
 import { ScreenCourseTabsNavigationProp } from "../../course/ScreenCourseTabs";
 import { ToastService } from "../../../../services/toasts/ToastService";
+import { IQuestionNumeric } from "../../../../types/IQuestion";
 
 interface QuizProps {
-    question: string | undefined;
+    question?: IQuestionNumeric;
     quiz?: IQuiz;
+    questionText: string;
+    courseId?: string;
 }
 
 export const NumericQuestion: React.FC<QuizProps> = (props) => {
-    const questionText = props.question;
+    const question = props.question;
+    const questionText = question?.question;
     const quiz = props.quiz;
 
     const toast: ToastService = new ToastService();
@@ -31,8 +35,8 @@ export const NumericQuestion: React.FC<QuizProps> = (props) => {
 
     useFocusEffect(
         React.useCallback(() => {
-            console.log(questionText);
-        }, [numberSolution, questionText])
+            console.log(question);
+        }, [numberSolution])
     );
 
     return (
@@ -98,7 +102,6 @@ export const NumericQuestion: React.FC<QuizProps> = (props) => {
 
         if (validateNumericQuestion(questionText, epsilonSolution, numberSolution)) {
             const myNewQuestion = validateNumericQuestion(questionText, epsilonSolution, numberSolution);
-            //TODO: ENPOINT REQUEST TO SAVE QUESTION
 
             if (myNewQuestion === undefined || quiz === undefined) {
                 return;

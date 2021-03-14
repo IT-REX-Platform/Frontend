@@ -129,8 +129,24 @@ export const de = {
         getUserInfoError: "Ein Fehler ist beim Zugriff auf Benutzerinformationen aufgetreten.",
 
         invalidQuizName: "Bitte definieren sie einen Quiz-Name.",
-        invalidQuestionsObject: "Bitte füge mindestens eine Frage zum Quiz hinzu",
+        invalidQuestionsObject: "Bitte füge mindestens eine Frage zum Quiz hinzu.",
+        noQuestions: "Bisher wurden keine Fragen hinzugefügt!",
 
+        deleteQuizSuccess: "Das Quiz wurde erfolgreich gelöscht.",
+        deleteQuizError: "Ein Fehler ist beim Löschen des Quizzes aufgetreten.",
+        saveQuizSuccess: "Das Quiz wurde erfolgreich gespeichert.",
+        saveQuizError: "Ein Fehler ist beim Speichern des Quizzes aufgetreten.",
+        updateQuizSuccess: "Das Quiz wurde erfolgreich aktualisiert.",
+        updateQuizError: "Ein Fehler ist beim Aktualisieren des Quizzes aufgetreten.",
+
+        deleteQuestionSuccess: "Die Frage wurde erfolgreich gelöscht.",
+        deleteQuestionError: "Ein Fehler ist beim Löschen der Frage aufgetreten.",
+        saveQuestionSuccess: "Die Frage wurde erfolgreich gespeichert.",
+        saveQuestionError: "Ein Fehler ist beim Speichern der Frage aufgetreten.",
+        updateQuestionSuccess: "Die Frage wurde erfolgreich aktualisiert.",
+        updateQuestionError: "Ein Fehler ist beim Aktualisieren der Frage aufgetreten.",
+
+        invalidQuizCourseID: "Ungültiger Kurs",
         invalidQuestion: "Bitte definiere eine Frage.",
         invalidEpsilon: "Bitte definiere einen Epsilonwert.",
         invalidNumericSolution: "Bitte definiere eine Numerische Antwort.",

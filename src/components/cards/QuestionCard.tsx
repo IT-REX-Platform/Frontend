@@ -1,26 +1,42 @@
 /* eslint-disable complexity */
 import React from "react";
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { QuestionTypes } from "../../constants/QuestionTypes";
 import { dark } from "../../constants/themes/dark";
 import { IQuestionMultipleChoice, IQuestionNumeric, IQuestionSingleChoice } from "../../types/IQuestion";
 import { ISolutionNumeric } from "../../types/ISolution";
 import { DataTable } from "react-native-paper";
 import i18n from "../../locales";
+import { LocalizationContext } from "../Context";
+import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import { EndpointsQuestion } from "../../api/endpoints/EndpointsQuestion";
+import { RequestFactory } from "../../api/requests/RequestFactory";
+import { IQuiz } from "../../types/IQuiz";
 
 interface QuestionCardProps {
     question: IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric;
+    quiz: IQuiz;
+    courseId: string;
 }
 
 export const QuestionCard: React.FC<QuestionCardProps> = (props) => {
-    const { question } = props;
+    React.useContext(LocalizationContext);
+    const navigation = useNavigation();
+    const question = props.question;
+    const quiz = props.quiz;
+    const courseId = props.courseId;
 
     return (
-        <View style={styles.card}>
+        <TouchableOpacity
+            style={styles.card}
+            onPress={() =>
+                navigation.navigate("CREATE_QUESTION", { courseId: courseId, quiz: quiz, question: question })
+            }>
             <Text style={styles.cardHeader}>{question.question}</Text>
             <View style={styles.break} />
             <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "center" }}>{renderAnswers()}</View>
-        </View>
+        </TouchableOpacity>
     );
 
     function renderAnswers() {
@@ -203,5 +219,10 @@ const styles = StyleSheet.create({
     textChoice: {
         color: "white",
         fontSize: 20,
+    },
+    chapterEditRow: {
+        width: "100%",
+        flex: 2,
+        flexDirection: "row-reverse",
     },
 });
