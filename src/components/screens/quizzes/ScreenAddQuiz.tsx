@@ -86,6 +86,7 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
                     <TextInput style={styles.quizHeader} value={quizName} onChangeText={(text) => setQuizName(text)} />
                     <MaterialCommunityIcons name="pen" size={24} color={dark.theme.darkGreen} style={styles.icon} />
                 </View>
+                <View>{possibilityDeleteQuiz()}</View>
                 <View>
                     <TextButton title={i18n.t("itrex.save")} onPress={() => saveQuiz()} />
                 </View>
@@ -132,6 +133,26 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
                 </ScrollView>
             );
         }
+    }
+
+    function possibilityDeleteQuiz() {
+        if (quizWithQuestions === undefined) {
+            return;
+        }
+        return <TextButton color="pink" title={i18n.t("itrex.delete")} onPress={() => deleteQuiz()} />;
+    }
+
+    function deleteQuiz() {
+        if (quizWithQuestions?.id === undefined) {
+            return;
+        }
+        const endpointsQuiz: EndpointsQuiz = new EndpointsQuiz();
+        const request: RequestInit = RequestFactory.createDeleteRequest();
+        const quizId = quizWithQuestions.id;
+        const response = endpointsQuiz.deleteQuiz(request, quizId, undefined, "OK", "ERROR");
+        response.then((questions) => {
+            console.log(questions), navigation.navigate("TIMELINE");
+        });
     }
 
     function saveQuiz() {
