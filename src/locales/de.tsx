@@ -4,6 +4,8 @@ export const de = {
         starter: "Starte direkt durch mit dem Lernen!",
         itrex: "IT-REX",
         home: "Startseite",
+        timeline: "Zeitplan",
+        overview: "Übersicht",
         login: "Einloggen",
         logout: "Ausloggen",
 
@@ -108,6 +110,7 @@ export const de = {
         confirmPublishCourse:
             "Durch das Veröffentlichen des Kurses wird es möglich, dass Teilnehmer dem Kurs beitreten können. Start- und Enddatum werden beim Veröffentlichen des Kurses ebenfalls festgelegt.",
         confirmDeleteCourse: "Wollen Sie diesen Kurs wirklich löschen?",
+        week: "Woche",
 
         getCoursesError: "Ein Fehler ist beim Zugriff auf die Kurse aufgetreten.",
         getCourseError: "Ein Fehler ist beim Zugriff auf einen Kurs aufgetreten.",
@@ -128,6 +131,7 @@ export const de = {
 
         getUserInfoError: "Ein Fehler ist beim Zugriff auf Benutzerinformationen aufgetreten.",
 
+        createQuiz: "Quiz erstellen",
         invalidQuizName: "Bitte definieren sie einen Quiz-Name.",
         invalidQuestionsObject: "Bitte füge mindestens eine Frage zum Quiz hinzu.",
         noQuestions: "Bisher wurden keine Fragen hinzugefügt!",

@@ -4,6 +4,8 @@ export const en = {
         starter: "Start learning right away!",
         itrex: "IT-REX",
         home: "Home",
+        timeline: "Timeline",
+        overview: "Overview",
         login: "Login",
         logout: "Logout",
 
@@ -108,6 +110,7 @@ export const en = {
         confirmPublishCourse:
             "Publishing the course will make it possible for students to join the course. Start- and end-date will also be fixed when publishing the course.",
         confirmDeleteCourse: "Do you really want to delete this course?",
+        week: "Week",
 
         getCoursesError: "An error occurred while getting courses.",
         getCourseError: "An error occurred while getting the course.",
@@ -128,6 +131,7 @@ export const en = {
 
         getUserInfoError: "An error occurred while getting user info.",
 
+        createQuiz: "Create a Quiz",
         invalidQuizName: "Please define a quiz name.",
         invalidQuestionsObject: "Please add at least one question  to the quiz.",
         noQuestions: "No questions have been added yet!",

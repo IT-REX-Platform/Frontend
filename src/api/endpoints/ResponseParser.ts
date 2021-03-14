@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import { loggerFactory } from "../../../logger/LoggerConfig";
 import { ICourse } from "../../types/ICourse";
 import { IVideo } from "../../types/IVideo";
@@ -5,6 +6,7 @@ import { IUser } from "../../types/IUser";
 import { IChapter } from "../../types/IChapter";
 import { ToastService } from "../../services/toasts/ToastService";
 import { IQuiz } from "../../types/IQuiz";
+import { IContent } from "../../types/IContent";
 import { IQuestionMultipleChoice, IQuestionNumeric, IQuestionSingleChoice } from "../../types/IQuestion";
 
 export class ResponseParser {
@@ -26,7 +28,6 @@ export class ResponseParser {
                     for (const course of courses) {
                         course.startDate = course.startDate ? new Date(course.startDate) : undefined;
                         course.endDate = course.endDate ? new Date(course.endDate) : undefined;
-                        course.chapterObjects = [];
                     }
 
                     this._toastSuccess(successMsg);
@@ -49,7 +50,14 @@ export class ResponseParser {
                 .then((course: ICourse) => {
                     course.startDate = course.startDate ? new Date(course.startDate) : undefined;
                     course.endDate = course.endDate ? new Date(course.endDate) : undefined;
-                    course.chapterObjects = [];
+
+                    // Convert date of the TimePeriods
+                    if (course.timePeriods !== undefined) {
+                        for (const timePeriod of course.timePeriods) {
+                            timePeriod.startDate = timePeriod.startDate ? new Date(timePeriod.startDate) : undefined;
+                            timePeriod.endDate = timePeriod.endDate ? new Date(timePeriod.endDate) : undefined;
+                        }
+                    }
 
                     this._toastSuccess(successMsg);
                     resolve(course);
@@ -69,11 +77,6 @@ export class ResponseParser {
                     return this._parseAsJson(response);
                 })
                 .then((chapters: IChapter[]) => {
-                    chapters.forEach((chapter: IChapter) => {
-                        chapter.startDate = chapter.startDate ? new Date(chapter.startDate) : undefined;
-                        chapter.endDate = chapter.endDate ? new Date(chapter.endDate) : undefined;
-                    });
-
                     this._toastSuccess(successMsg);
                     resolve(chapters);
                 })
@@ -92,9 +95,6 @@ export class ResponseParser {
                     return this._parseAsJson(response);
                 })
                 .then((chapter: IChapter) => {
-                    chapter.startDate = chapter.startDate ? new Date(chapter.startDate) : undefined;
-                    chapter.endDate = chapter.endDate ? new Date(chapter.endDate) : undefined;
-
                     this._toastSuccess(successMsg);
                     resolve(chapter);
                 })
@@ -102,6 +102,50 @@ export class ResponseParser {
                     this.loggerApi.error("An error occurred while parsing chapter.", error);
                     this._toastError(errorMsg);
                     resolve({});
+                });
+        });
+    }
+
+    public parseContentReference(
+        response: Promise<Response>,
+        successMsg?: string,
+        errorMsg?: string
+    ): Promise<IContent> {
+        return new Promise((resolve) => {
+            response
+                .then((response) => {
+                    return this._parseAsJson(response);
+                })
+                .then((content: IContent) => {
+                    this._toastSuccess(successMsg);
+                    resolve(content);
+                })
+                .catch((error) => {
+                    this.loggerApi.error("An error occurred while parsing content.", error);
+                    this._toastError(errorMsg);
+                    resolve({});
+                });
+        });
+    }
+
+    public parseContentReferences(
+        response: Promise<Response>,
+        successMsg?: string,
+        errorMsg?: string
+    ): Promise<IContent[]> {
+        return new Promise((resolve) => {
+            response
+                .then((response) => {
+                    return this._parseAsJson(response);
+                })
+                .then((contents: IContent[]) => {
+                    this._toastSuccess(successMsg);
+                    resolve(contents);
+                })
+                .catch((error) => {
+                    this.loggerApi.error("An error occurred while parsing contents.", error);
+                    this._toastError(errorMsg);
+                    resolve([]);
                 });
         });
     }
