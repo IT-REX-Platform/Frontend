@@ -1,13 +1,12 @@
+/* eslint-disable complexity */
 import { RouteProp, useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
 import React, { useState } from "react";
 import { Text, ImageBackground, StyleSheet, View, TextInput, TouchableOpacity } from "react-native";
 import { dark } from "../../../constants/themes/dark";
-import { quizList } from "../../../constants/fixtures/quizzes.fixture";
 import { LocalizationContext } from "../../Context";
 import { IChapter } from "../../../types/IChapter";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { TextButton } from "../../uiElements/TextButton";
-import { createAlert } from "../../../helperScripts/createAlert";
 import i18n from "../../../locales";
 import { RequestFactory } from "../../../api/requests/RequestFactory";
 import { EndpointsChapter } from "../../../api/endpoints/EndpointsChapter";
@@ -15,17 +14,19 @@ import { ScreenCourseOverviewNavigationProp } from "../course/ScreenCourseOvervi
 import { QuestionCard } from "../../cards/QuestionCard";
 import { ScrollView } from "react-native-gesture-handler";
 import { IQuestionMultipleChoice, IQuestionNumeric, IQuestionSingleChoice } from "../../../types/IQuestion";
-import { ToastService } from "../../../services/toasts/ToastService";
 import { validateQuiz } from "../../../helperScripts/validateQuiz";
 import { IQuiz } from "../../../types/IQuiz";
 import { CourseStackParamList } from "../../../constants/navigators/NavigationRoutes";
+import { EndpointsQuiz } from "../../../api/endpoints/EndpointsQuiz";
 
 interface ChapterComponentProps {
     chapter?: IChapter;
     chapterId?: string;
     editMode?: boolean;
+    quiz?: IQuiz;
 }
 
+const endpointsQuiz: EndpointsQuiz = new EndpointsQuiz();
 type ScreenCourseTabsRouteProp = RouteProp<CourseStackParamList, "CREATE_QUIZ">;
 
 export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
@@ -33,23 +34,23 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
     const route = useRoute<ScreenCourseTabsRouteProp>();
     const navigation = useNavigation<ScreenCourseOverviewNavigationProp>();
 
-    const toast: ToastService = new ToastService();
-
     let chapterId = route.params.chapterId;
     const quizWithQuestions = route.params.quiz;
+
+    const courseId = route.params.courseId;
 
     if (chapterId == "undefined") {
         chapterId = undefined;
     }
 
-    const initialQuizName = chapterId == undefined ? "My new Quiz" : "";
+    const initialQuizName = quizWithQuestions?.name == undefined ? "My new Quiz" : quizWithQuestions.name;
 
     const [quiz] = useState<IQuiz>({} as IQuiz);
     const chapterEndpoint = new EndpointsChapter();
     const [quizName, setQuizName] = useState<string>(initialQuizName);
-    // TODO:
+
     const [questions, setQuestions] = useState<(IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric)[]>(
-        quizList[0].questions
+        []
     );
 
     useFocusEffect(
@@ -70,7 +71,6 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
                     return;
                 }
                 setQuestions(quizWithQuestions.questions);
-                setQuizName(quizWithQuestions.name);
             }
         }, [])
     );
@@ -82,6 +82,12 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
                     <TextInput style={styles.quizHeader} value={quizName} onChangeText={(text) => setQuizName(text)} />
                     <MaterialCommunityIcons name="pen" size={24} color={dark.theme.darkGreen} style={styles.icon} />
                 </View>
+                <View>
+                    {quizWithQuestions?.id !== undefined && (
+                        <TextButton color="pink" title={i18n.t("itrex.delete")} onPress={() => deleteQuiz()} />
+                    )}
+                </View>
+
                 <View>
                     <TextButton title={i18n.t("itrex.save")} onPress={() => saveQuiz()} />
                 </View>
@@ -99,23 +105,41 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
     );
 
     function navigateTo() {
+        if (courseId === undefined) {
+            return;
+        }
         const myNewQuiz: IQuiz = {
-            courseId: "",
+            id: quizWithQuestions?.id,
+            courseId: courseId,
             name: quizName,
             questions: questions,
         };
 
-        navigation.navigate("CREATE_QUESTION", { quiz: myNewQuiz });
+        navigation.navigate("CREATE_QUESTION", { quiz: myNewQuiz, courseId: courseId });
     }
 
     function displayQuestions() {
-        if (quizList === undefined || quizList.length === 0) {
+        if (courseId === undefined) {
             return;
+        }
+        const myNewQuiz: IQuiz = {
+            id: quizWithQuestions?.id,
+            courseId: courseId,
+            name: quizName,
+            questions: questions,
+        };
+
+        if (questions === undefined || questions.length === 0) {
+            return (
+                <View style={{ minHeight: "85%", alignItems: "center" }}>
+                    <Text style={styles.txtAddQuestion}>{i18n.t("itrex.noQuestions")}</Text>
+                </View>
+            );
         } else {
             return (
                 <ScrollView style={styles.scrollContainer}>
                     {questions.map((question: IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric) => {
-                        return <QuestionCard question={question} />;
+                        return <QuestionCard question={question} quiz={myNewQuiz} courseId={courseId} />;
                     })}
                 </ScrollView>
             );
@@ -123,13 +147,67 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
     }
 
     function saveQuiz() {
-        createAlert("Save the quiz");
-
-        if (validateQuiz(quizName, questions)) {
-            const myNewQuiz = validateQuiz(quizName, questions);
-            toast.success("Jetzt nur noch speichern");
+        if (quizWithQuestions?.id !== undefined) {
+            updateQuiz();
+            return;
         }
-        // TODO: Create new IQuiz Element with the user infromation & send Request to save
+
+        if (validateQuiz(courseId, quizName, questions)) {
+            const myNewQuiz = validateQuiz(courseId, quizName, questions);
+            if (myNewQuiz === undefined || quiz === undefined) {
+                return;
+            }
+
+            const request: RequestInit = RequestFactory.createPostRequestWithBody(myNewQuiz);
+            const response = endpointsQuiz.createQuiz(
+                request,
+                i18n.t("itrex.saveQuizSuccess"),
+                i18n.t("itrex.saveQuizError")
+            );
+            response.then((quiz) => {
+                console.log(quiz);
+                navigation.navigate("TIMELINE");
+            });
+        }
+    }
+
+    function updateQuiz() {
+        if (validateQuiz(courseId, quizName, questions)) {
+            const quizToUpdate = validateQuiz(courseId, quizName, questions);
+
+            if (quizToUpdate === undefined || quiz === undefined) {
+                return;
+            }
+            quizToUpdate.id = quizWithQuestions?.id;
+            const request: RequestInit = RequestFactory.createPutRequest(quizToUpdate);
+            const response = endpointsQuiz.createQuiz(
+                request,
+                i18n.t("itrex.updateQuizSuccess"),
+                i18n.t("itrex.updateQuizError")
+            );
+            response.then((quiz) => {
+                console.log(quiz);
+                navigation.navigate("TIMELINE");
+            });
+        }
+    }
+
+    function deleteQuiz() {
+        if (quizWithQuestions?.id === undefined) {
+            return;
+        }
+        const request: RequestInit = RequestFactory.createDeleteRequest();
+        const quizId = quizWithQuestions.id;
+        const response = endpointsQuiz.deleteQuiz(
+            request,
+            quizId,
+            undefined,
+            i18n.t("itrex.deleteQuizSuccess"),
+            i18n.t("itrex.deleteQuizError")
+        );
+        response.then((questions) => {
+            console.log(questions), navigation.navigate("TIMELINE");
+        });
     }
 };
 

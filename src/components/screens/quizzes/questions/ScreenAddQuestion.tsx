@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import { RouteProp, useFocusEffect, useRoute } from "@react-navigation/native";
 import React, { useState } from "react";
 import { ImageBackground, StyleSheet, View, TextInput, Text } from "react-native";
@@ -10,7 +11,6 @@ import { QuestionTypes } from "../../../../constants/QuestionTypes";
 
 import Select from "react-select";
 import { ISolutionMultipleChoice, ISolutionNumeric } from "../../../../types/ISolution";
-import { IChoices } from "../../../../types/IChoices";
 import { NumericQuestion } from "./NumericQuestion";
 import { SingleChoiceQuestion } from "./SingleChoiceQuestion";
 import { MultipleChoiceQuestion } from "./MultipleChoiceQuestion";
@@ -22,6 +22,7 @@ interface ChapterComponentProps {
     chapterId?: string;
     editMode?: boolean;
     quiz: IQuiz;
+    courseId?: string;
 }
 
 type ScreenCourseTabsRouteProp = RouteProp<CourseStackParamList, "CREATE_QUESTION">;
@@ -30,7 +31,9 @@ export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
     React.useContext(LocalizationContext);
     const [questionText, setQuestionText] = useState<string>(i18n.t("itrex.addQuestionText"));
     const route = useRoute<ScreenCourseTabsRouteProp>();
+    const courseId = route.params.courseId;
     const quizTemp = route.params.quiz;
+    const question = route.params.question;
     const [quiz] = useState<IQuiz | undefined>(quizTemp);
 
     const kindOfQuestionOptions = [
@@ -39,9 +42,9 @@ export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
         { value: QuestionTypes.NUMERIC, label: "Numeric" },
     ];
 
-    const [solutionNum] = useState<ISolutionNumeric>();
-    const [solutionMultiChoice] = useState<ISolutionMultipleChoice>();
-    const [solutionSingleChoice] = useState<IChoices>();
+    const [solutionNum, setSolutionNum] = useState<ISolutionNumeric>();
+    const [solutionMultiChoice, setSolutionMutliChoice] = useState<ISolutionMultipleChoice>();
+    const [solutionSingleChoice, setSolutionSingleChoice] = useState<string>();
 
     // Make Single Choice default
     const defaultKindOfQuestionValue = kindOfQuestionOptions[1];
@@ -50,8 +53,26 @@ export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
     );
 
     useFocusEffect(
+        // eslint-disable-next-line complexity
         React.useCallback(() => {
+            if (question === undefined) {
+                return;
+            } else {
+                setQuestionText(question.question);
+                setKindOfQuestion(question.type);
+                switch (question.type) {
+                    case QuestionTypes.SINGLE_CHOICE:
+                        setSolutionSingleChoice(question.solution);
+                        break;
+                    case QuestionTypes.MULTIPLE_CHOICE:
+                        setSolutionMutliChoice(question.solution);
+                        break;
+                    case QuestionTypes.NUMERIC:
+                        setSolutionNum(question.solution);
+                }
+            }
             setKindOfQuestion(selectedKindOfQuestion);
+            console.log(questionText);
         }, [selectedKindOfQuestion, solutionNum, solutionMultiChoice, solutionSingleChoice])
     );
 
@@ -62,7 +83,9 @@ export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
                     <TextInput
                         style={styles.questionInput}
                         value={questionText}
-                        onChangeText={(text) => setQuestionText(text)}
+                        onChangeText={(text) => {
+                            console.log(text), setQuestionText(text);
+                        }}
                         multiline={true}
                     />
                     <MaterialCommunityIcons name="pen" size={24} color={dark.theme.darkGreen} style={styles.icon} />
@@ -101,12 +124,46 @@ export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
     }
 
     function setInputFields() {
-        if (selectedKindOfQuestion === QuestionTypes.NUMERIC) {
-            return <NumericQuestion question={questionText} quiz={quiz} />;
-        } else if (selectedKindOfQuestion === QuestionTypes.SINGLE_CHOICE) {
-            return <SingleChoiceQuestion question={questionText} quiz={quiz} />;
-        } else if (selectedKindOfQuestion === QuestionTypes.MULTIPLE_CHOICE) {
-            return <MultipleChoiceQuestion question={questionText} quiz={quiz} />;
+        switch (selectedKindOfQuestion) {
+            case QuestionTypes.NUMERIC:
+                if (question?.type === QuestionTypes.NUMERIC) {
+                    return (
+                        <NumericQuestion
+                            courseId={courseId}
+                            questionText={questionText}
+                            question={question}
+                            quiz={quiz}
+                        />
+                    );
+                } else {
+                    return <NumericQuestion courseId={courseId} questionText={questionText} quiz={quiz} />;
+                }
+            case QuestionTypes.SINGLE_CHOICE:
+                if (question?.type === QuestionTypes.SINGLE_CHOICE) {
+                    return (
+                        <SingleChoiceQuestion
+                            courseId={courseId}
+                            questionText={questionText}
+                            question={question}
+                            quiz={quiz}
+                        />
+                    );
+                } else {
+                    return <SingleChoiceQuestion courseId={courseId} questionText={questionText} quiz={quiz} />;
+                }
+            case QuestionTypes.MULTIPLE_CHOICE:
+                if (question?.type === QuestionTypes.MULTIPLE_CHOICE) {
+                    return (
+                        <MultipleChoiceQuestion
+                            courseId={courseId}
+                            questionText={questionText}
+                            question={question}
+                            quiz={quiz}
+                        />
+                    );
+                } else {
+                    return <MultipleChoiceQuestion courseId={courseId} questionText={questionText} quiz={quiz} />;
+                }
         }
     }
 };

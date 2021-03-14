@@ -132,7 +132,23 @@ export const en = {
 
         invalidQuizName: "Please define a quiz name.",
         invalidQuestionsObject: "Please add at least one question  to the quiz.",
+        noQuestions: "No questions have been added yet!",
 
+        deleteQuizSuccess: "The quiz was deleted successfully.",
+        deleteQuizError: "An error occurred while deleting the quiz.",
+        saveQuizSuccess: "The quiz was saved successfully.",
+        saveQuizError: "An error occurred while saving the quiz.",
+        updateQuizSuccess: "The quiz was updated successfully.",
+        updateQuizError: "An error occurred while updating the quiz.",
+
+        deleteQuestionSuccess: "The question was deleted successfully.",
+        deleteQuestionError: "An error occurred while deleting the question.",
+        saveQuestionSuccess: "The question was saved successfully.",
+        saveQuestionError: "An error occurred while saving the question.",
+        updateQuestionSuccess: "The question was updated successfully.",
+        updateQuestionError: "An error occurred while updating the question.",
+
+        invalidQuizCourseID: "Invalid Course",
         invalidQuestion: "Please define a question.",
         invalidEpsilon: "Please define an epsilon value.",
         invalidNumericSolution: "Please define a numeric answer.",

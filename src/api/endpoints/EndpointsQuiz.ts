@@ -54,6 +54,8 @@ export class EndpointsQuiz implements IEndpointsQuiz {
     }
 
     createQuiz(postRequest: RequestInit, successMsg?: string, errorMsg?: string): Promise<IQuiz | undefined> {
+        //TODO: ADD  QUIZ TO CONTENT TO THE CHAPTER;
+
         this.loggerApi.trace("Sending POST request to URL: " + this.url);
         const response: Promise<Response> = sendRequest(this.url, postRequest);
         return this.responseParser.parseQuiz(response, successMsg, errorMsg);
