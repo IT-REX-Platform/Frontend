@@ -79,6 +79,8 @@ export const de = {
         noEndDate: "Kein Enddatum eingegeben.",
         startDateInvalid: "Startdatum kann nicht dem Enddatum folgen.",
 
+        courseProgressLastAccessed: "Zum zuletzt genutzten Inhalt",
+
         unpublished: "Unveröffentlicht",
         published: "Veröffentlicht",
         all: "Alle",
@@ -114,6 +116,7 @@ export const de = {
 
         getCoursesError: "Ein Fehler ist beim Zugriff auf die Kurse aufgetreten.",
         getCourseError: "Ein Fehler ist beim Zugriff auf einen Kurs aufgetreten.",
+        getCourseProgressError: "Ein Fehler ist beim Zugriff auf den Fortschritt eines Kurses aufgetreten.",
         createCourseError: "Ein Fehler ist beim Erstellen eines Kurses aufgetreten.",
         publishCourseError: "Ein Fehler ist eim Veröffentlichen des Kurses aufgetreten.",
         joinCourseError: "Ein Fehler ist beim Beitrete zum Kurs aufgetreten.",

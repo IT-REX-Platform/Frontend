@@ -2,6 +2,8 @@ import { RequestAuthorization } from "./RequestAuthorization";
 import { ICourse } from "../../types/ICourse";
 import { IVideo } from "../../types/IVideo";
 import { IChapter } from "../../types/IChapter";
+import { IContent } from "../../types/IContent";
+
 import { IQuiz } from "../../types/IQuiz";
 import { IQuestionMultipleChoice, IQuestionNumeric, IQuestionSingleChoice } from "../../types/IQuestion";
 
@@ -29,13 +31,29 @@ export class RequestFactory {
     }
 
     public static createPostRequestWithBody(
-        object: ICourse | IVideo | IChapter | IQuiz | IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric
+        object:
+            | ICourse
+            | IVideo
+            | IChapter
+            | IContent
+            | IQuiz
+            | IQuestionSingleChoice
+            | IQuestionMultipleChoice
+            | IQuestionNumeric
     ): RequestInit {
         return RequestFactory.createRequestWithJson("POST", object);
     }
 
     public static createPutRequest(
-        object: ICourse | IVideo | IChapter | IQuiz | IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric
+        object:
+            | ICourse
+            | IVideo
+            | IChapter
+            | IContent
+            | IQuiz
+            | IQuestionSingleChoice
+            | IQuestionMultipleChoice
+            | IQuestionNumeric
     ): RequestInit {
         return RequestFactory.createRequestWithJson("PUT", object);
     }

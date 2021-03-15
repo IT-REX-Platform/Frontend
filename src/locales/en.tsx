@@ -79,6 +79,8 @@ export const en = {
         noEndDate: "No end date entered.",
         startDateInvalid: "Start date can't come after end date.",
 
+        courseProgressLastAccessed: "To last accessed content",
+
         unpublished: "Unpublished",
         published: "Published",
         active: "Active",
@@ -114,6 +116,7 @@ export const en = {
 
         getCoursesError: "An error occurred while getting courses.",
         getCourseError: "An error occurred while getting the course.",
+        getCourseProgressError: "An error occurred while getting the course progress.",
         createCourseError: "An error occurred while creating the course.",
         publishCourseError: "An error occurred while publishing the course.",
         joinCourseError: "An error occurred while joining the course.",

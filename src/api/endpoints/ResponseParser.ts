@@ -5,6 +5,8 @@ import { IVideo } from "../../types/IVideo";
 import { IUser } from "../../types/IUser";
 import { IChapter } from "../../types/IChapter";
 import { ToastService } from "../../services/toasts/ToastService";
+import { IContentProgressTracker } from "../../types/IContentProgressTracker";
+import { ICourseProgressTracker } from "../../types/ICourseProgressTracker";
 import { IQuiz } from "../../types/IQuiz";
 import { IContent } from "../../types/IContent";
 import { IQuestionMultipleChoice, IQuestionNumeric, IQuestionSingleChoice } from "../../types/IQuestion";
@@ -210,6 +212,50 @@ export class ResponseParser {
                 .catch((error) => {
                     this.loggerApi.error("An error occurred while parsing video.", error);
                     this._toastError(errorMsg, toastTimeout);
+                    resolve({});
+                });
+        });
+    }
+
+    public parseContentProgressTracker(
+        response: Promise<Response>,
+        successMsg?: string,
+        errorMsg?: string
+    ): Promise<IContentProgressTracker> {
+        return new Promise((resolve) => {
+            response
+                .then((response) => {
+                    return this._parseAsJson(response);
+                })
+                .then((contentProgressTracker: IContentProgressTracker) => {
+                    this._toastSuccess(successMsg);
+                    resolve(contentProgressTracker);
+                })
+                .catch((error) => {
+                    this.loggerApi.error("An error occurred while parsing content progress tracker.", error);
+                    this._toastError(errorMsg);
+                    resolve({});
+                });
+        });
+    }
+
+    public parseCourseProgressTracker(
+        response: Promise<Response>,
+        successMsg?: string,
+        errorMsg?: string
+    ): Promise<ICourseProgressTracker> {
+        return new Promise((resolve) => {
+            response
+                .then((response) => {
+                    return this._parseAsJson(response);
+                })
+                .then((courseProgressTracker: ICourseProgressTracker) => {
+                    this._toastSuccess(successMsg);
+                    resolve(courseProgressTracker);
+                })
+                .catch((error) => {
+                    this.loggerApi.error("An error occurred while parsing course data.", error);
+                    this._toastError(errorMsg);
                     resolve({});
                 });
         });
