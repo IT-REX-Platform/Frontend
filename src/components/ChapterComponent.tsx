@@ -22,6 +22,7 @@ import { EndpointsQuiz } from "../api/endpoints/EndpointsQuiz";
 import { RequestFactory } from "../api/requests/RequestFactory";
 import { IQuiz } from "../types/IQuiz";
 import { dateConverter } from "../helperScripts/validateCourseDates";
+import { ContentProgressInfo } from "./uiElements/ContentProgressInfo";
 
 interface ChapterComponentProps {
     chapter?: IChapter;
@@ -117,6 +118,7 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                                                 )?.label
                                             }
                                         </Text>
+                                        {getProgressInfo(contentReference)}
                                         {/*props.editMode ? (
                                             <Select
                                                 options={timePeriods}
@@ -275,6 +277,17 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                 console.log("Updated last accessed content:");
                 console.log(receivedCourseProgress);
             });
+    }
+
+    function getProgressInfo(contentRef: IContent) {
+        if (courseProgress.contentProgressTrackers === undefined) {
+            return;
+        }
+        if (contentRef.id === undefined) {
+            return;
+        }
+
+        return <ContentProgressInfo contentTracker={courseProgress.contentProgressTrackers[contentRef.id]} />;
     }
 
     function getPublishedSate(isPublished: string | undefined) {
