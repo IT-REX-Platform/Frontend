@@ -170,6 +170,7 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                 )}
 
                 {props.editMode && editChapterQuiz()}
+                {chapterContent()}
             </View>
             {props.editMode && AuthenticationService.getInstance().isLecturer() && (
                 <View style={styles.chapterEditRow}>
@@ -275,6 +276,19 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                 console.log("Updated last accessed content:");
                 console.log(receivedCourseProgress);
             });
+    }
+
+    function chapterContent() {
+        return (
+            <View style={styles.chapterMaterialElements}>
+                <TextButton
+                    title="Go to chapter contents"
+                    onPress={() => {
+                        navigation.navigate("CHAPTER_CONTENT", { chapterId: chapter?.id });
+                    }}
+                />
+            </View>
+        );
     }
 
     function getPublishedSate(isPublished: string | undefined) {
