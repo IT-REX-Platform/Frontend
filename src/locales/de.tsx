@@ -112,6 +112,7 @@ export const de = {
         confirmPublishCourse:
             "Durch das Veröffentlichen des Kurses wird es möglich, dass Teilnehmer dem Kurs beitreten können. Start- und Enddatum werden beim Veröffentlichen des Kurses ebenfalls festgelegt.",
         confirmDeleteCourse: "Wollen Sie diesen Kurs wirklich löschen?",
+        week: "Woche",
 
         getCoursesError: "Ein Fehler ist beim Zugriff auf die Kurse aufgetreten.",
         getCourseError: "Ein Fehler ist beim Zugriff auf einen Kurs aufgetreten.",
@@ -132,5 +133,43 @@ export const de = {
         deleteChapterError: "Ein Fehler ist beim Löschen des Kapitels aufgetreten.",
 
         getUserInfoError: "Ein Fehler ist beim Zugriff auf Benutzerinformationen aufgetreten.",
+
+        createQuiz: "Quiz erstellen",
+        invalidQuizName: "Bitte definieren sie einen Quiz-Name.",
+        invalidQuestionsObject: "Bitte füge mindestens eine Frage zum Quiz hinzu.",
+        noQuestions: "Bisher wurden keine Fragen hinzugefügt!",
+
+        deleteQuizSuccess: "Das Quiz wurde erfolgreich gelöscht.",
+        deleteQuizError: "Ein Fehler ist beim Löschen des Quizzes aufgetreten.",
+        saveQuizSuccess: "Das Quiz wurde erfolgreich gespeichert.",
+        saveQuizError: "Ein Fehler ist beim Speichern des Quizzes aufgetreten.",
+        updateQuizSuccess: "Das Quiz wurde erfolgreich aktualisiert.",
+        updateQuizError: "Ein Fehler ist beim Aktualisieren des Quizzes aufgetreten.",
+
+        deleteQuestionSuccess: "Die Frage wurde erfolgreich gelöscht.",
+        deleteQuestionError: "Ein Fehler ist beim Löschen der Frage aufgetreten.",
+        saveQuestionSuccess: "Die Frage wurde erfolgreich gespeichert.",
+        saveQuestionError: "Ein Fehler ist beim Speichern der Frage aufgetreten.",
+        updateQuestionSuccess: "Die Frage wurde erfolgreich aktualisiert.",
+        updateQuestionError: "Ein Fehler ist beim Aktualisieren der Frage aufgetreten.",
+
+        invalidQuizCourseID: "Ungültiger Kurs",
+        invalidQuestion: "Bitte definiere eine Frage.",
+        invalidEpsilon: "Bitte definiere einen Epsilonwert.",
+        invalidNumericSolution: "Bitte definiere eine Numerische Antwort.",
+        invalidAnswers: "Bitte definiere die möglichen Antwortmöglichkeiten.",
+        missingAnswers: "Bitte definiere alle möglichen Antwortmöglichkeiten.",
+        invalidSingleSolution: "Bitte definiere die richtige Antwort.",
+        addQuestionText: "Bitte definiere deine Frage hier.",
+        kindOfQuestion: "Art der Antwort: ",
+        addQuestion: "+ Frage hinzufügen",
+        specifyChoices: "Definiere hier die verschiedenen Antwortmöglichkeiten: ",
+        specifyNumericAnswer: "Definiere hier die korrekte Numerische Antwort: ",
+        specifyNumericEpsilon: "Definiere hier den Epsilon-Wert der Antwort: ",
+
+        category: "Kategorie",
+        value: "Wert",
+        result: "Ergebnis",
+        epsilon: "Epsilon-Wert",
     },
 };

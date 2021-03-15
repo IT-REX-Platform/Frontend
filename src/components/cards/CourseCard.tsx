@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
-import { ICourse } from "../types/ICourse";
-import { dark } from "../constants/themes/dark";
-import { dateConverter } from "../helperScripts/validateCourseDates";
-import { NavigationRoutes } from "../constants/navigators/NavigationRoutes";
+import { ICourse } from "../../types/ICourse";
+import { dark } from "../../constants/themes/dark";
+import { dateConverter } from "../../helperScripts/validateCourseDates";
+import { NavigationRoutes } from "../../constants/navigators/NavigationRoutes";
 import { useNavigation } from "@react-navigation/native";
-import i18n from "./../locales";
-import { CoursePublishState } from "../constants/CoursePublishState";
-import { InfoPublished } from "./uiElements/InfoPublished";
-import { InfoUnpublished } from "./uiElements/InfoUnpublished";
-import { ICourseProgressTracker } from "../types/ICourseProgressTracker";
-import { RequestFactory } from "../api/requests/RequestFactory";
-import { EndpointsProgress } from "../api/endpoints/EndpointsProgress";
-import { TextButton } from "./uiElements/TextButton";
+import i18n from "../../locales";
+import { CoursePublishState } from "../../constants/CoursePublishState";
+import { InfoUnpublished } from "../uiElements/InfoUnpublished";
+import { InfoPublished } from "../uiElements/InfoPublished";
+import { ICourseProgressTracker } from "../../types/ICourseProgressTracker";
+import { RequestFactory } from "../../api/requests/RequestFactory";
+import { EndpointsProgress } from "../../api/endpoints/EndpointsProgress";
+import { TextButton } from "../uiElements/TextButton";
 
 interface CourseCardProps {
     course: ICourse;

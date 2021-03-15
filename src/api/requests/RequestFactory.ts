@@ -3,6 +3,8 @@ import { ICourse } from "../../types/ICourse";
 import { IVideo } from "../../types/IVideo";
 import { IChapter } from "../../types/IChapter";
 import { IContent } from "../../types/IContent";
+import { IQuiz } from "../../types/IQuiz";
+import { IQuestionMultipleChoice, IQuestionNumeric, IQuestionSingleChoice } from "../../types/IQuestion";
 
 /**
  * Class for backend request creation.
@@ -27,19 +29,43 @@ export class RequestFactory {
         return request;
     }
 
-    public static createPostRequestWithBody(object: ICourse | IVideo | IChapter | IContent): RequestInit {
+    public static createPostRequestWithBody(
+        object:
+            | ICourse
+            | IVideo
+            | IChapter
+            | IContent
+            | IQuiz
+            | IQuestionSingleChoice
+            | IQuestionMultipleChoice
+            | IQuestionNumeric
+    ): RequestInit {
         return RequestFactory.createRequestWithJson("POST", object);
     }
 
-    public static createPutRequest(object: ICourse | IVideo | IContent): RequestInit {
+    public static createPutRequest(
+        object:
+            | ICourse
+            | IVideo
+            | IChapter
+            | IContent
+            | IQuiz
+            | IQuestionSingleChoice
+            | IQuestionMultipleChoice
+            | IQuestionNumeric
+    ): RequestInit {
         return RequestFactory.createRequestWithJson("PUT", object);
     }
 
+    // PATCH does not exist for following types: IQuiz, IQuestionSingleChoice, IQuestionMultipleChoice, IQuestionNumeric.
     public static createPatchRequest(object: ICourse | IVideo | IChapter): RequestInit {
         return RequestFactory.createRequestWithJson("PATCH", object);
     }
 
-    private static createRequestWithJson(httpMethod: string, object: ICourse | IVideo): RequestInit {
+    private static createRequestWithJson(
+        httpMethod: string,
+        object: ICourse | IVideo | IChapter | IQuiz | IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric
+    ): RequestInit {
         const request: RequestInit = RequestAuthorization.createAuthorizedRequest();
 
         request.method = httpMethod;

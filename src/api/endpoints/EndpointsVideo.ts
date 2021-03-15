@@ -26,6 +26,9 @@ export class EndpointsVideo implements IEndpointsVideo {
      *
      * @param getRequest GET request.
      * @param courseId Course ID to get all videos belonging to this course.
+     * @param successMsg A success message.
+     * @param errorMsg An error message.
+     * @returns
      */
     public getAllVideos(
         getRequest: RequestInit,
@@ -52,6 +55,9 @@ export class EndpointsVideo implements IEndpointsVideo {
      *
      * @param getRequest GET request.
      * @param id Video ID for URL parameter.
+     * @param successMsg A success message.
+     * @param errorMsg An error message.
+     * @returns
      */
     public downloadVideo(getRequest: RequestInit, id: string, successMsg?: string, errorMsg?: string): Promise<IVideo> {
         const url: string = this.url + "/" + id;
@@ -65,6 +71,9 @@ export class EndpointsVideo implements IEndpointsVideo {
      * Create a new video.
      *
      * @param postRequest POST request with video JSON body containing no video ID.
+     * @param successMsg A success message.
+     * @param errorMsg An error message.
+     * @returns
      */
     public uploadVideo(postRequest: RequestInit, successMsg?: string, errorMsg?: string): Promise<IVideo> {
         this.loggerApi.trace("Sending POST request to URL: " + this.url);
@@ -76,6 +85,9 @@ export class EndpointsVideo implements IEndpointsVideo {
      * Update one or more video fields.
      *
      * @param postRequest PATCH request with course JSON body containing a course ID and one or more course fields.
+     * @param successMsg A success message.
+     * @param errorMsg An error message.
+     * @returns
      */
     public patchVideo(patchRequest: RequestInit, successMsg?: string, errorMsg?: string): Promise<IVideo> {
         this.loggerApi.trace("Sending POST request to URL: " + this.url);
@@ -88,6 +100,9 @@ export class EndpointsVideo implements IEndpointsVideo {
      *
      * @param deleteRequest DELETE request.
      * @param id Video ID for URL parameter.
+     * @param successMsg A success message.
+     * @param errorMsg An error message.
+     * @returns
      */
     public deleteVideo(deleteRequest: RequestInit, id: string, successMsg?: string, errorMsg?: string): Promise<void> {
         const url: string = this.url + "/" + id;

@@ -17,10 +17,10 @@ import { VideoComponent } from "../VideoComponent";
 import AuthenticationService from "../../services/AuthenticationService";
 import i18n from "../../locales";
 import { ScreenAddChapter } from "./course/ScreenAddChapter";
-import { ScreenAddQuiz } from "./course/ScreenAddQuiz";
+import { ScreenAddQuiz } from "./quizzes/ScreenAddQuiz";
 import { CourseRoles } from "../../constants/CourseRoles";
 import { IUser } from "../../types/IUser";
-import { ScreenAddQuestion } from "./course/ScreenAddQuestion";
+import { ScreenAddQuestion } from "./quizzes/questions/ScreenAddQuestion";
 import { EndpointsProgress } from "../../api/endpoints/EndpointsProgress";
 import { ICourseProgressTracker } from "../../types/ICourseProgressTracker";
 

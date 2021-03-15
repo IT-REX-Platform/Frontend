@@ -1,6 +1,6 @@
 import React from "react";
 import { View, StyleSheet, Text } from "react-native";
-import { CourseCard } from "./CourseCard";
+import { CourseCard } from "./cards/CourseCard";
 import { ICourse } from "../types/ICourse";
 import i18n from "./../locales";
 
