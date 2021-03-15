@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
 import { StyleSheet, View, Text } from "react-native";
@@ -12,6 +13,9 @@ import { IQuiz } from "../../../../types/IQuiz";
 import { ScreenCourseTabsNavigationProp } from "../../course/ScreenCourseTabs";
 import { ToastService } from "../../../../services/toasts/ToastService";
 import { IQuestionNumeric } from "../../../../types/IQuestion";
+import { RequestFactory } from "../../../../api/requests/RequestFactory";
+import { EndpointsQuestion } from "../../../../api/endpoints/EndpointsQuestion";
+import { QuestionTypes } from "../../../../constants/QuestionTypes";
 
 interface QuizProps {
     question?: IQuestionNumeric;
@@ -20,18 +24,23 @@ interface QuizProps {
     courseId?: string;
 }
 
+const endpointsQuestion: EndpointsQuestion = new EndpointsQuestion();
+
 export const NumericQuestion: React.FC<QuizProps> = (props) => {
-    const question = props.question;
-    const questionText = question?.question;
-    const quiz = props.quiz;
-
-    const toast: ToastService = new ToastService();
-
     React.useContext(LocalizationContext);
     const navigation = useNavigation<ScreenCourseTabsNavigationProp>();
 
-    const [numberSolution, setNumberSolution] = useState<number>();
-    const [epsilonSolution, setEpsilonSolution] = useState<number>();
+    const question = props.question;
+    const questionId = question?.id;
+    const questionText = props.questionText;
+    const quiz = props.quiz;
+    const courseId = props.courseId;
+
+    const defaultSolution = question !== undefined ? question.solution.result : 0;
+    const [numberSolution, setNumberSolution] = useState<number>(defaultSolution);
+
+    const defaultEpsilon = question !== undefined ? question.solution.epsilon : 0;
+    const [epsilonSolution, setEpsilonSolution] = useState<number>(defaultEpsilon);
 
     useFocusEffect(
         React.useCallback(() => {
@@ -47,6 +56,7 @@ export const NumericQuestion: React.FC<QuizProps> = (props) => {
                     <NumericInput
                         step={0.1}
                         precision={2}
+                        defaultValue={defaultSolution}
                         onChange={(number) => setNumberOfSolution(number)}
                         style={{
                             input: {
@@ -63,6 +73,7 @@ export const NumericQuestion: React.FC<QuizProps> = (props) => {
                     <NumericInput
                         step={0.1}
                         precision={2}
+                        defaultValue={defaultEpsilon}
                         onChange={(number) => setNumberOfEpsilon(number)}
                         style={{
                             input: {
@@ -76,7 +87,10 @@ export const NumericQuestion: React.FC<QuizProps> = (props) => {
                 </View>
             </View>
             <View>
-                <View style={{ marginTop: 187, alignSelf: "center" }}>
+                <View style={{ marginTop: 187, alignSelf: "center", flexDirection: "row" }}>
+                    {questionId !== undefined && (
+                        <TextButton color="pink" title={i18n.t("itrex.delete")} onPress={() => deleteQuestion()} />
+                    )}
                     <TextButton title={i18n.t("itrex.save")} onPress={() => saveNumericQuestion()} />
                 </View>
             </View>
@@ -98,19 +112,76 @@ export const NumericQuestion: React.FC<QuizProps> = (props) => {
     }
 
     function saveNumericQuestion() {
-        createAlert("Save Question, Navigate back to Add-Quiz page and add this question to the list of questions ");
-
-        if (validateNumericQuestion(questionText, epsilonSolution, numberSolution)) {
-            const myNewQuestion = validateNumericQuestion(questionText, epsilonSolution, numberSolution);
-
+        if (validateNumericQuestion(courseId, questionText, epsilonSolution, numberSolution)) {
+            const myNewQuestion = validateNumericQuestion(courseId, questionText, epsilonSolution, numberSolution);
             if (myNewQuestion === undefined || quiz === undefined) {
                 return;
             }
-            quiz.questions.push(myNewQuestion);
-
-            toast.success("Jetzt noch speichern!");
-            navigation.navigate("CREATE_QUIZ", { quiz: quiz });
+            if (questionId === undefined) {
+                const request: RequestInit = RequestFactory.createPostRequestWithBody(myNewQuestion);
+                const response = endpointsQuestion.createQuestion(
+                    request,
+                    i18n.t("itrex.saveQuestionSuccess"),
+                    i18n.t("itrex.saveQuestionError")
+                );
+                response.then((question) => {
+                    if (question === undefined) {
+                        return;
+                    }
+                    quiz.questions.push(question);
+                    navigation.navigate("CREATE_QUIZ", { quiz: quiz });
+                });
+            } else {
+                updateQuestion();
+            }
         }
+    }
+
+    function updateQuestion() {
+        if (quiz === undefined) {
+            return;
+        }
+
+        if (validateNumericQuestion(courseId, questionText, epsilonSolution, numberSolution)) {
+            const index = quiz.questions.findIndex((questionToUpdate) => questionToUpdate.id === questionId);
+            const question = quiz.questions[index];
+
+            if (question.type !== QuestionTypes.NUMERIC) {
+                return;
+            }
+
+            question.question = questionText;
+            question.solution.result = numberSolution;
+            question.solution.epsilon = epsilonSolution;
+
+            const request: RequestInit = RequestFactory.createPutRequest(question);
+            endpointsQuestion
+                .updateQuestion(request, i18n.t("itrex.updateQuestionSuccess"), i18n.t("itrex.updateQuestionError"))
+                .then(function (question) {
+                    console.log(question);
+                    navigation.navigate("CREATE_QUIZ", { quiz: quiz });
+                });
+        }
+    }
+
+    function deleteQuestion() {
+        if (quiz == undefined || questionId == undefined) {
+            return;
+        }
+
+        const index = quiz.questions.findIndex((questionToUpdate) => questionToUpdate.id === questionId);
+
+        const request: RequestInit = RequestFactory.createDeleteRequest();
+        const response = endpointsQuestion.deleteQuestion(
+            request,
+            questionId,
+            i18n.t("itrex.deleteQuestionSuccess"),
+            i18n.t("itrex.deleteQuestionError")
+        );
+        response.then(() => {
+            quiz.questions.splice(index, 1);
+            navigation.navigate("CREATE_QUIZ", { quiz: quiz });
+        });
     }
 };
 

@@ -58,7 +58,6 @@ export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
                 return;
             } else {
                 setQuestionText(question.question);
-                setKindOfQuestion(question.type);
                 switch (question.type) {
                     case QuestionTypes.SINGLE_CHOICE:
                         setSolutionSingleChoice(question.solution);
