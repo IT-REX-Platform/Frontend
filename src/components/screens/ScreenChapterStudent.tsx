@@ -1,6 +1,6 @@
 import { DarkTheme, RouteProp, useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
 import { Video } from "expo-av";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ActivityIndicator, FlatList, TouchableOpacity, View, StyleSheet, Text, Animated } from "react-native";
 import { ListItem } from "react-native-elements";
 import React from "react";
@@ -23,30 +23,45 @@ import { EndpointsChapter } from "../../api/endpoints/EndpointsChapter";
 import { Icon } from "react-native-vector-icons/Icon";
 import { EndpointsCourse } from "../../api/endpoints/EndpointsCourse";
 import useStateWithCallback from "use-state-with-callback";
+import { EndpointsProgress } from "../../api/endpoints/EndpointsProgress";
+import { ICourseProgressTracker } from "../../types/ICourseProgressTracker";
+import { ContentProgressTrackerState } from "../../constants/ContentProgressTrackerState";
+import { IContentProgressTracker } from "../../types/IContentProgressTracker";
+import { render } from "react-dom";
+import { borderRadius } from "react-select/src/theme";
 
 const endpointsVideo = new EndpointsVideo();
 const endpointsChapter = new EndpointsChapter();
+const endpointsProgress = new EndpointsProgress();
 const endpointsCourse = new EndpointsCourse();
 
 export type ChapterContentRouteProp = RouteProp<RootDrawerParamList, "ROUTE_CHAPTER_CONTENT">;
 
 export const ScreenChapterStudent: React.FC = () => {
     const course: ICourse = React.useContext(CourseContext);
+    console.log("KursID:");
+    console.log(course.id);
+    const [courseProgress, setCourseProgress] = useState<ICourseProgressTracker>({});
+    useEffect(() => {
+        const request: RequestInit = RequestFactory.createGetRequest();
+    }, []);
+
     const [chapter, setChapter] = useState<IChapter>({});
-    const [chapterPlaylist, setChapterPlaylist] = useState<string[]>([]);
+    const [chapterPlaylist, setChapterPlaylist] = useState<IContent[]>([]);
 
     const initialVideoState: IVideo[] = [];
     const [isVideoListLoading, setVideoListLoading] = useState(true);
     const videoList: IVideo[] = [];
     //Store URL of Current Video here:
-    let [currentVideo, setCurrentVideo] = useState<string>(chapterPlaylist[0]);
+    let [currentVideo, setCurrentVideo] = useState<string>();
     //let currentVideo: string;
     //const [chapterPlaylist2, setChapterPlaylist2] = useState<string[]>([]);
-    const [videos, setVideos] = useState<IVideo[]>([]);
+    const [videos, setVideos] = useState<IContent[]>([]);
     //let video: IVideo
 
     let [likeCounter, setLikeCounter] = useState(0);
     let [dislikeCounter, setDislikeCounter] = useState(0);
+    let [clickedState, setClickedState] = useState(false);
 
     //Vertical slide animation for FlatList.
     let translateY = new Animated.Value(100);
@@ -73,22 +88,41 @@ export const ScreenChapterStudent: React.FC = () => {
     useFocusEffect(
         React.useCallback(() => {
             console.log("In Callback");
+
+            const progressRequest: RequestInit = RequestFactory.createGetRequest();
+            endpointsProgress
+                .getCourseProgress(progressRequest, course.id, undefined, i18n.t("itrex.getCourseProgressError"))
+                .then((receivedProgress) => {
+                    console.log("Progress of course Init:");
+                    console.log(receivedProgress);
+                    setCourseProgress(receivedProgress);
+                });
             _getChapter();
-            _getAllVideos();
-            setCurrentVideo(chapterPlaylist[0]);
+            //_getAllVideos();
+            setVideos(chapterPlaylist);
+            if (chapterPlaylist.length > 0) {
+                setCurrentVideo(chapterPlaylist[0].contentId);
+            }
         }, [course])
     );
 
-    const playlistlistItem = ({ item }: { item: IVideo }) => (
+    const playlistlistItem = ({ item }: { item: IContent }) => (
         <ListItem
             containerStyle={{
                 marginBottom: "2.5%",
                 backgroundColor: dark.theme.darkBlue2,
             }}>
-            <TouchableOpacity onPress={() => changeCurrentVideo(item.id)}>
+            {/* <TouchableOpacity onPress={() => {changeCurrentVideo(item.id); changeVideoProgress(item); renderListDummy(item)} }> */}
+
+            <TouchableOpacity
+                onPress={() => {
+                    changeCurrentVideo(item.contentId);
+                    changeVideoProgress(item);
+                }}>
                 <ListItem.Content>
+                    {renderListDummy(item)}
                     <ListItem.Title style={styles.listItemTitle} numberOfLines={1} lineBreakMode="tail">
-                        {item.title}
+                        {item?.id}
                     </ListItem.Title>
                     <ListItem.Subtitle style={styles.listItemSubtitle}>Subtitle</ListItem.Subtitle>
                 </ListItem.Content>
@@ -112,33 +146,6 @@ export const ScreenChapterStudent: React.FC = () => {
                         shouldPlay={false}
                         useNativeControls={true}
                     />
-                    <View style={styles.iconContainer}>
-                        <TouchableOpacity style={[styles.iconBox, { paddingRight: 0 }]}>
-                            <MaterialIcons name="file-download" size={28} color="rgba(255,255,255,0.8)" />
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.iconBox}>
-                            <MaterialIcons
-                                name="favorite-border"
-                                size={28}
-                                color="rgba(255,255,255,0.8)"
-                                style={styles.icon}
-                            />
-                        </TouchableOpacity>
-
-                        <TouchableOpacity onPress={() => setDislikeCounter(dislikeCounter++)} style={styles.iconBox}>
-                            <Foundation name="dislike" size={28} color="rgba(255,255,255,0.8)" style={styles.icon} />
-                            <Text style={styles.textIcon}>{dislikeCounter}</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => setLikeCounter(likeCounter++)} style={styles.iconBox}>
-                            <Foundation
-                                name="like"
-                                size={28}
-                                color="rgba(255,255,255,0.8)"
-                                style={[styles.icon, { transform: [{ rotateY: "180deg" }] }]}
-                            />
-                            <Text style={styles.textIcon}>{likeCounter}</Text>
-                        </TouchableOpacity>
-                    </View>
                 </View>
                 <View style={styles.playlistContainer}>
                     <Text style={styles.videoTitle}>Playlist</Text>
@@ -148,7 +155,7 @@ export const ScreenChapterStudent: React.FC = () => {
                             data={videos}
                             showsVerticalScrollIndicator={true}
                             renderItem={playlistlistItem}
-                            keyExtractor={(item, index) => index.toString()}
+                            keyExtractor={(item, index) => item.id ?? ""}
                             ListEmptyComponent={<Text>Videos here</Text>}
                         />
                     </Animated.View>
@@ -157,6 +164,155 @@ export const ScreenChapterStudent: React.FC = () => {
         </View>
     );
 
+    function renderListDummy(vidId: IContent) {
+        if (clickedState) {
+            return (
+                <ListItem.Content>
+                    <ListItem.Title style={styles.listItemTitleChanged} numberOfLines={1} lineBreakMode="tail">
+                        {vidId.video?.title}
+                    </ListItem.Title>
+                    <ListItem.Subtitle style={styles.listItemSubtitleChanged}>Subtitle</ListItem.Subtitle>
+                </ListItem.Content>
+            );
+        }
+    }
+
+    function renderListItem(vidId: IContent) {
+        console.log("ItemID");
+        console.log(vidId);
+        console.log(courseProgress);
+
+        if (
+            courseProgress.id !== undefined &&
+            courseProgress.contentProgressTrackers !== undefined &&
+            vidId.id !== undefined
+        ) {
+            const contentProgress: IContentProgressTracker = courseProgress.contentProgressTrackers[vidId.id];
+            console.log("progressTracker");
+            console.log(contentProgress);
+            if (contentProgress == undefined) {
+                return (
+                    <ListItem
+                        containerStyle={{
+                            marginBottom: "2.5%",
+                            backgroundColor: dark.theme.pink,
+                        }}>
+                        <TouchableOpacity
+                            onPress={() => {
+                                changeCurrentVideo(vidId.id);
+                                changeVideoProgress(vidId);
+                                renderListItem(vidId);
+                            }}>
+                            <ListItem.Content>
+                                <ListItem.Title style={styles.listItemTitle} numberOfLines={1} lineBreakMode="tail">
+                                    {vidId.video?.title}
+                                </ListItem.Title>
+                                <ListItem.Subtitle style={styles.listItemSubtitleChanged}>Subtitle</ListItem.Subtitle>
+                            </ListItem.Content>
+                        </TouchableOpacity>
+                    </ListItem>
+                );
+            } else if (contentProgress.state == ContentProgressTrackerState.COMPLETED) {
+                return (
+                    <ListItem
+                        containerStyle={{
+                            marginBottom: "2.5%",
+                            backgroundColor: dark.theme.lightGreen,
+                        }}>
+                        <TouchableOpacity
+                            onPress={() => {
+                                changeCurrentVideo(vidId.id);
+                                changeVideoProgress(vidId);
+                                renderListItem(vidId);
+                            }}>
+                            <ListItem.Content>
+                                <ListItem.Title style={styles.listItemTitle} numberOfLines={1} lineBreakMode="tail">
+                                    {vidId.video?.title}
+                                </ListItem.Title>
+                                <ListItem.Subtitle style={styles.listItemSubtitle}>Subtitle</ListItem.Subtitle>
+                            </ListItem.Content>
+                        </TouchableOpacity>
+                    </ListItem>
+                );
+            } else {
+                return (
+                    <ListItem
+                        containerStyle={{
+                            marginBottom: "2.5%",
+                            backgroundColor: dark.theme.darkBlue2,
+                        }}>
+                        <TouchableOpacity
+                            onPress={() => {
+                                changeCurrentVideo(vidId.id);
+                                changeVideoProgress(vidId);
+                                renderListItem(vidId);
+                            }}>
+                            <ListItem.Content>
+                                <ListItem.Title style={styles.listItemTitle} numberOfLines={1} lineBreakMode="tail">
+                                    {vidId.video?.title}
+                                </ListItem.Title>
+                                <ListItem.Subtitle style={styles.listItemSubtitle}>Subtitle</ListItem.Subtitle>
+                            </ListItem.Content>
+                        </TouchableOpacity>
+                    </ListItem>
+                );
+            }
+        }
+    }
+
+    function changeVideoProgress(contentRef: IContent) {
+        // TODO: Adjust and/or reuse this for actual progress.
+        // For now it just touches the content once or completes it when touched.
+
+        // No course progress, no content refs or the given one is invalid.
+        if (
+            courseProgress.id === undefined ||
+            courseProgress.contentProgressTrackers === undefined ||
+            contentRef.id === undefined
+        ) {
+            console.log("ContentRef: ");
+            console.log(contentRef);
+            return;
+        }
+
+        const contentProgress = courseProgress.contentProgressTrackers[contentRef.id];
+        if (contentProgress === undefined || contentProgress.id === undefined) {
+            // Touch the content ref once.
+            const postReq = RequestFactory.createPostRequestWithBody(contentRef);
+            console.log("Content Ref in changeProgress:");
+            console.log(contentRef);
+            endpointsProgress.createContentProgress(postReq, courseProgress.id).then((receivedContentProgress) => {
+                console.log("Created content progress:");
+                console.log(receivedContentProgress);
+
+                updateLastAccessedContent(contentRef);
+            });
+        } else {
+            // Update the status to complete.
+            const putReq = RequestFactory.createPutRequest({});
+            endpointsProgress.setContentStateComplete(putReq, contentProgress.id).then((receivedContentProgress) => {
+                console.log("Set content progress to complete:");
+                console.log(receivedContentProgress);
+
+                updateLastAccessedContent(contentRef);
+            });
+        }
+    }
+
+    function updateLastAccessedContent(contentRef: IContent): void {
+        if (courseProgress.id === undefined) {
+            return;
+        }
+
+        const putReq = RequestFactory.createPutRequest(contentRef);
+        endpointsProgress
+            .updateLastAccessedContentProgress(putReq, courseProgress.id)
+            .then((receivedCourseProgress) => {
+                console.log("Updated last accessed content:");
+                console.log(receivedCourseProgress);
+            });
+    }
+
     function _getChapter() {
         const request: RequestInit = RequestFactory.createGetRequest();
         endpointsChapter
@@ -164,9 +320,9 @@ export const ScreenChapterStudent: React.FC = () => {
             .then((chapterReceived: IChapter) => {
                 setChapter(chapterReceived);
                 console.log(chapterReceived);
-                if (chapterReceived.contents !== undefined) {
-                    console.log(chapterReceived.contents);
-                    setChapterPlaylist(chapterReceived.contents);
+                if (chapterReceived.contentReferences !== undefined) {
+                    console.log(chapterReceived.contentReferences);
+                    setChapterPlaylist(chapterReceived.contentReferences);
                 }
             });
     }
@@ -185,9 +341,11 @@ export const ScreenChapterStudent: React.FC = () => {
         return createVideoUrl(vidId);
     }
 
-    function changeCurrentVideo(vidId: string) {
-        setCurrentVideo(vidId);
-        _getVideoUrl();
+    function changeCurrentVideo(vidId?: string) {
+        if (vidId !== undefined) {
+            setCurrentVideo(vidId);
+            _getVideoUrl();
+        }
     }
 
     // function setVideos(): IVideo[]{}
@@ -206,14 +364,27 @@ export const ScreenChapterStudent: React.FC = () => {
             .then((videoReceived: IVideo[]) => {
                 //videoList.push(videoReceived.filter(((vid: IVideo) => {
                 //          if (vid.id !== undefined && chapterPlaylist.includes(vid.id)) {return vid} })));
-
-                setVideos(
-                    videoReceived.filter((video: IVideo) => {
-                        if (video.id !== undefined && chapterPlaylist.includes(video.id)) {
-                            return video;
+                let vidList: IContent[] = [];
+                for (const vid in videoReceived) {
+                    for (const cont in chapterPlaylist) {
+                        if (videoReceived[vid].id == chapterPlaylist[cont].id) {
+                            vidList.push(chapterPlaylist[cont]);
                         }
-                    })
-                );
+                    }
+                }
+                setVideos(vidList);
+
+                console.log("VidList:");
+                console.log(vidList);
+
+                //setVideos(
+
+                //    videoReceived.filter((video: IVideo) => {
+                //        if (video.id !== undefined && vidList.includes(video.id)) {
+                //            return video;
+                //        }
+                //    })
+                //);
 
                 console.log("Result of Filter:");
                 console.log(videos);
@@ -337,6 +508,18 @@ const styles = StyleSheet.create({
     },
     listItemSubtitle: {
         color: "rgba(255,255,255,0.66)",
+        textAlign: "left",
+    },
+
+    listItemTitleChanged: {
+        color: "white",
+        textAlign: "left",
+        marginBottom: 5,
+        marginRight: 5,
+    },
+
+    listItemSubtitleChanged: {
+        color: dark.theme.pink,
         textAlign: "left",
     },
 });
