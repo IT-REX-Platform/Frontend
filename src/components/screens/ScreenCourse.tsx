@@ -20,6 +20,7 @@ import { ScreenAddChapter } from "./course/ScreenAddChapter";
 import { ScreenAddQuiz } from "./quizzes/ScreenAddQuiz";
 import { CourseRoles } from "../../constants/CourseRoles";
 import { IUser } from "../../types/IUser";
+import { ScreenChapterStudent } from "./ScreenChapterStudent";
 import { ScreenAddQuestion } from "./quizzes/questions/ScreenAddQuestion";
 
 export type ScreenCourseNavigationProp = DrawerNavigationProp<RootDrawerParamList, "ROUTE_COURSE_DETAILS">;
@@ -91,6 +92,7 @@ export const ScreenCourse: React.FC = () => {
                 <CourseStack.Screen name="INFO" component={ScreenCourseTabs}></CourseStack.Screen>
 
                 {getUploadVideoScreen()}
+                <CourseStack.Screen name="CHAPTER_CONTENT" component={ScreenChapterStudent}></CourseStack.Screen>
                 {getCreateChapterScreen()}
                 {getQuizCreation()}
             </CourseStack.Navigator>

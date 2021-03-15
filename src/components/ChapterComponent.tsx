@@ -208,6 +208,19 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
         );
     }
 
+    function chapterContent() {
+        return (
+            <View style={styles.chapterMaterialElements}>
+                <TextButton
+                    title="Go to chapter contents"
+                    onPress={() => {
+                        navigation.navigate("CHAPTER_CONTENT", { chapterId: chapter?.id });
+                    }}
+                />
+            </View>
+        );
+    }
+
     function getPublishedSate(isPublished: string | undefined) {
         if (isPublished === CoursePublishState.UNPUBLISHED) {
             return (
