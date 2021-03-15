@@ -36,7 +36,7 @@ export class EndpointsProgress implements IEndpointsProgress {
         successMsg?: string,
         errorMsg?: string
     ): Promise<IContentProgressTracker> {
-        const urlToUse = `${this.url}/${ProgressUrlPart.MID_CONTENT}?courseTrackerId="${courseTrackerId}"`;
+        const urlToUse = `${this.url}/${ProgressUrlPart.MID_CONTENT}?courseTrackerId=${courseTrackerId}`;
 
         this.loggerApi.trace("Sending POST request to URL: " + urlToUse);
         const response: Promise<Response> = sendRequest(urlToUse, postRequest);
