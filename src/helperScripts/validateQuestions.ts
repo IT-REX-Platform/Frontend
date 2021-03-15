@@ -7,11 +7,16 @@ import { IQuestionMultipleChoice, IQuestionNumeric, IQuestionSingleChoice } from
 import { ISolutionMultipleChoice } from "../types/ISolution";
 
 export function validateNumericQuestion(
+    courseId: string | undefined,
     questionText: string | undefined,
     epsilonSolution: number | undefined,
     numberSolution: number | undefined
 ): IQuestionNumeric | undefined {
     const toast: ToastService = new ToastService();
+
+    if (courseId === undefined) {
+        return;
+    }
 
     if (questionText == undefined || questionText === i18n.t("itrex.addQuestionText")) {
         toast.warn(i18n.t("itrex.invalidQuestion"));
@@ -29,7 +34,7 @@ export function validateNumericQuestion(
     }
 
     const myNewQuestion: IQuestionNumeric = {
-        courseId: "",
+        courseId: courseId,
         type: QuestionTypes.NUMERIC,
         question: questionText,
         solution: {
@@ -47,10 +52,11 @@ export function validateSingleChoiceQuestion(
     choices: IChoices | undefined,
     solution: string | undefined
 ): IQuestionSingleChoice | undefined {
+    const toast: ToastService = new ToastService();
+
     if (courseId === undefined) {
         return;
     }
-    const toast: ToastService = new ToastService();
 
     if (questionText === undefined || questionText === i18n.t("itrex.addQuestionText")) {
         toast.warn(i18n.t("itrex.invalidQuestion"));
@@ -77,7 +83,7 @@ export function validateSingleChoiceQuestion(
     }
 
     const myNewQuestion: IQuestionSingleChoice = {
-        courseId: "",
+        courseId: courseId,
         type: QuestionTypes.SINGLE_CHOICE,
         question: questionText,
         choices: choices,
@@ -88,11 +94,16 @@ export function validateSingleChoiceQuestion(
 }
 
 export function validateMultipleChoiceQuestion(
+    courseId: string | undefined,
     questionText: string | undefined,
     choices: IChoices | undefined,
     solution: ISolutionMultipleChoice | undefined
 ): IQuestionMultipleChoice | undefined {
     const toast: ToastService = new ToastService();
+
+    if (courseId === undefined) {
+        return;
+    }
 
     if (questionText == undefined || questionText === i18n.t("itrex.addQuestionText")) {
         toast.warn(i18n.t("itrex.invalidQuestion"));

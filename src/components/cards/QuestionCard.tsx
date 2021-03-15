@@ -8,10 +8,7 @@ import { ISolutionNumeric } from "../../types/ISolution";
 import { DataTable } from "react-native-paper";
 import i18n from "../../locales";
 import { LocalizationContext } from "../Context";
-import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { EndpointsQuestion } from "../../api/endpoints/EndpointsQuestion";
-import { RequestFactory } from "../../api/requests/RequestFactory";
 import { IQuiz } from "../../types/IQuiz";
 
 interface QuestionCardProps {
@@ -219,10 +216,5 @@ const styles = StyleSheet.create({
     textChoice: {
         color: "white",
         fontSize: 20,
-    },
-    chapterEditRow: {
-        width: "100%",
-        flex: 2,
-        flexDirection: "row-reverse",
     },
 });
