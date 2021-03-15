@@ -73,14 +73,7 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
 
     const [courseProgress, setCourseProgress] = useState<ICourseProgressTracker>({});
     useEffect(() => {
-        if (course.id === undefined) {
-            return;
-        }
-
-        const progressRequest: RequestInit = RequestFactory.createGetRequest();
-        endpointsProgress
-            .getCourseProgress(progressRequest, course.id, undefined, i18n.t("itrex.getCourseProgressError"))
-            .then((receivedProgress) => setCourseProgress(receivedProgress));
+        updateCourseProgress();
     }, []);
 
     return (
@@ -230,6 +223,17 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
         );
     }
 
+    function updateCourseProgress() {
+        if (course.id === undefined) {
+            return;
+        }
+
+        const progressRequest: RequestInit = RequestFactory.createGetRequest();
+        endpointsProgress
+            .getCourseProgress(progressRequest, course.id, undefined, i18n.t("itrex.getCourseProgressError"))
+            .then((receivedProgress) => setCourseProgress(receivedProgress));
+    }
+
     function markProgress(contentRef: IContent) {
         // TODO: Adjust and/or reuse this for actual progress.
         // For now it just touches the content once or completes it when touched.
@@ -252,6 +256,7 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                 console.log(receivedContentProgress);
 
                 updateLastAccessedContent(contentRef);
+                updateCourseProgress();
             });
         } else {
             // Update the status to complete.
@@ -261,6 +266,7 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                 console.log(receivedContentProgress);
 
                 updateLastAccessedContent(contentRef);
+                updateCourseProgress();
             });
         }
     }
