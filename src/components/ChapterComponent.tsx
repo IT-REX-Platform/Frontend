@@ -1,4 +1,5 @@
-import React from "react";
+/* eslint-disable complexity */
+import React, { useState } from "react";
 import i18n from "../locales";
 import { LocalizationContext } from "./Context";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -6,46 +7,149 @@ import { dark } from "../constants/themes/dark";
 import { IChapter } from "../types/IChapter";
 import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import AuthenticationService from "../services/AuthenticationService";
-import { useNavigation } from "@react-navigation/native";
+import { InfoPublished } from "./uiElements/InfoPublished";
+import { InfoUnpublished } from "./uiElements/InfoUnpublished";
+import Select from "react-select";
+import { ICourse } from "../types/ICourse";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { TextButton } from "./uiElements/TextButton";
-import { createAlert } from "../helperScripts/createAlert";
-import { quizList } from "../constants/fixtures/quizzes.fixture";
 import { CoursePublishState } from "../constants/CoursePublishState";
+import { EndpointsQuiz } from "../api/endpoints/EndpointsQuiz";
+import { RequestFactory } from "../api/requests/RequestFactory";
+import { IQuiz } from "../types/IQuiz";
+import { dateConverter } from "../helperScripts/validateCourseDates";
 
 interface ChapterComponentProps {
     chapter?: IChapter;
     chapterId?: string;
     editMode?: boolean;
+    course: ICourse;
 }
 
+const endpointsQuiz: EndpointsQuiz = new EndpointsQuiz();
 export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
     React.useContext(LocalizationContext);
     const navigation = useNavigation();
 
     const chapter = props.chapter;
+    const course = props.course;
+    const courseId = course.id;
+
+    const timePeriods = course.timePeriods?.map((timePeriod, idx) => {
+        return {
+            value: timePeriod.id,
+            label:
+                i18n.t("itrex.week") +
+                " " +
+                (idx + 1) +
+                " (" +
+                dateConverter(timePeriod.startDate) +
+                " - " +
+                dateConverter(timePeriod.endDate) +
+                ")",
+        };
+    });
+    const [courseQuizzes, setCourseQuizzes] = useState<IQuiz[]>();
+    useFocusEffect(
+        React.useCallback(() => {
+            if (courseId == undefined) {
+                return;
+            }
+            const request: RequestInit = RequestFactory.createGetRequest();
+            const response = endpointsQuiz.getCourseQuizzes(request, courseId);
+            response.then(async () => {
+                setCourseQuizzes(await response);
+                console.log(courseQuizzes);
+            });
+        }, [])
+    );
+
     return (
         <View style={styles.chapterContainer}>
             <View style={styles.chapterTopRow}>
-                <Text style={styles.chapterHeader}>{chapter?.title}</Text>
+                <Text style={styles.chapterHeader}>{chapter?.name}</Text>
                 {/* TODO: add real publish/unpublished state to the chapterss*/}
                 <View style={styles.chapterStatus}>{getPublishedSate(CoursePublishState.PUBLISHED)}</View>
             </View>
             <View style={styles.chapterBottomRow}>
                 <Text style={styles.chapterMaterialHeader}>{i18n.t("itrex.chapterMaterial")}</Text>
                 <View style={styles.chapterMaterialElements}>
-                    {chapter?.contents?.map((contentId) => {
-                        return (
-                            <View style={styles.chapterMaterialElement}>
-                                <MaterialIcons name="attach-file" size={28} color="white" style={styles.icon} />
-                                <Text style={styles.chapterMaterialElementText}>{contentId}</Text>
-                            </View>
-                        );
-                    })}
+                    {timePeriods !== undefined &&
+                        chapter?.contentReferences?.map((contentReference) => {
+                            return (
+                                <View style={styles.chapterMaterialElement}>
+                                    <MaterialIcons name="attach-file" size={28} color="white" style={styles.icon} />
+
+                                    <View
+                                        style={{
+                                            flex: 1,
+                                            flexDirection: "row",
+                                            justifyContent: "space-between",
+                                            alignItems: "center",
+                                        }}>
+                                        <Text style={styles.chapterMaterialElementText}>
+                                            {contentReference.contentId}
+                                        </Text>
+                                        <Text style={styles.chapterMaterialElementText}>
+                                            {
+                                                timePeriods.find(
+                                                    (timePeriod) => timePeriod.value === contentReference.timePeriodId
+                                                )?.label
+                                            }
+                                        </Text>
+                                        {/*props.editMode ? (
+                                            <Select
+                                                options={timePeriods}
+                                                defaultValue={timePeriods.find(
+                                                    (timePeriod) => timePeriod.value === contentReference.timePeriodId
+                                                )}
+                                                theme={(theme) => ({
+                                                    ...theme,
+                                                    borderRadius: 5,
+                                                    colors: {
+                                                        ...theme.colors,
+                                                        primary25: dark.Opacity.darkBlue1,
+                                                        primary: dark.Opacity.pink,
+                                                        backgroundColor: dark.Opacity.darkBlue1,
+                                                    },
+                                                })}
+                                                menuPortalTarget={document.body}
+                                                menuPosition={"fixed"}
+                                                styles={{
+                                                    container: () => ({
+                                                        width: 300,
+                                                    }),
+                                                }}></Select>
+                                        ) : (
+                                            
+                                        )*/}
+                                    </View>
+                                </View>
+                            );
+                        })}
                 </View>
                 <View style={styles.break} />
                 <Text style={styles.chapterMaterialHeader}>Chapter Quiz</Text>
-                {props.editMode && chapterQuiz()}
-                {chapterContent()}
+
+                {!props.editMode && AuthenticationService.getInstance().isLecturer() && (
+                    <View style={styles.chapterMaterialElements}>
+                        {courseQuizzes?.map((quiz) => {
+                            return (
+                                <View style={styles.chapterMaterialElement}>
+                                    <MaterialCommunityIcons
+                                        name="head-question-outline"
+                                        size={28}
+                                        color="white"
+                                        style={styles.icon}
+                                    />
+                                    <Text style={styles.chapterMaterialElementText}>{quiz.name}</Text>
+                                </View>
+                            );
+                        })}
+                    </View>
+                )}
+
+                {props.editMode && editChapterQuiz()}
             </View>
             {props.editMode && AuthenticationService.getInstance().isLecturer() && (
                 <View style={styles.chapterEditRow}>
@@ -66,48 +170,42 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
         </View>
     );
 
-    function chapterQuiz() {
+    function editChapterQuiz() {
         return (
-            <View style={styles.chapterMaterialElements}>
-                <TextButton
-                    title="Create a Quiz"
-                    onPress={() => {
-                        navigation.navigate("CREATE_QUIZ", { chapterId: chapter?.id });
-                    }}
-                />
-            </View>
-        );
-        /**if (quizList === undefined || quizList.length === 0) {
-            return (
+            <>
+                <View style={styles.chapterMaterialElements}>
+                    {courseQuizzes?.map((quiz) => {
+                        return (
+                            <TouchableOpacity
+                                style={styles.chapterMaterialElement}
+                                onPress={() =>
+                                    navigation.navigate("CREATE_QUIZ", {
+                                        quiz: quiz,
+                                        chapterId: chapter?.id,
+                                        courseId: courseId,
+                                    })
+                                }>
+                                <MaterialCommunityIcons
+                                    name="head-question-outline"
+                                    size={28}
+                                    color="white"
+                                    style={styles.icon}
+                                />
+                                <Text style={styles.chapterMaterialElementText}>{quiz.name}</Text>
+                            </TouchableOpacity>
+                        );
+                    })}
+                </View>
                 <View style={styles.chapterMaterialElements}>
                     <TextButton
-                        title="Create a Quiz"
+                        title={i18n.t("itrex.createQuiz")}
                         onPress={() => {
-                            navigation.navigate("CREATE_QUIZ", { chapterId: chapter?.id });
+                            navigation.navigate("CREATE_QUIZ", { chapterId: chapter?.id, courseId: courseId });
                         }}
                     />
                 </View>
-            );
-        } else {
-            return (
-                <View style={styles.chapterMaterialElements}>
-                    <View style={styles.chapterMaterialElement}>
-                        <MaterialCommunityIcons
-                            name="file-question-outline"
-                            size={28}
-                            color="white"
-                            style={styles.icon}
-                        />
-                        <TouchableOpacity
-                            onPress={() => {
-                                createAlert("Go to existing Quiz Page");
-                            }}>
-                            <Text style={styles.chapterMaterialElementText}>{quizList[0].name}</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            );
-        } */
+            </>
+        );
     }
 
     function chapterContent() {
@@ -127,19 +225,13 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
         if (isPublished === CoursePublishState.UNPUBLISHED) {
             return (
                 <>
-                    <View style={styles.unpublishedCard}>
-                        <View style={styles.circleUnpublished} />
-                        <Text style={styles.textUnpublished}>{i18n.t("itrex.unpublished")}</Text>
-                    </View>
+                    <InfoUnpublished />
                 </>
             );
         } else if (isPublished === CoursePublishState.PUBLISHED) {
             return (
                 <>
-                    <View style={styles.publishedCard}>
-                        <View style={styles.circlePublished} />
-                        <Text style={styles.textPublished}>{i18n.t("itrex.published")}</Text>
-                    </View>
+                    <InfoPublished />
                 </>
             );
         }
@@ -214,60 +306,6 @@ const styles = StyleSheet.create({
     icon: {
         paddingLeft: 10,
         paddingRight: 10,
-    },
-    textUnpublished: {
-        color: dark.theme.pink,
-        fontSize: 10,
-    },
-    circleUnpublished: {
-        shadowRadius: 10,
-        shadowColor: dark.theme.pink,
-        shadowOffset: { width: -1, height: 1 },
-        width: 8,
-        height: 8,
-        borderRadius: 8 / 2,
-        backgroundColor: dark.theme.pink,
-        marginRight: 3,
-    },
-    publishedCard: {
-        flexDirection: "row",
-        backgroundColor: "black",
-        justifyContent: "center",
-        alignItems: "center",
-        borderColor: dark.theme.lightGreen,
-        borderWidth: 2,
-        textShadowColor: dark.theme.lightGreen,
-        textShadowOffset: { width: 1, height: 1 },
-        textShadowRadius: 3,
-        width: 100,
-        height: 15,
-    },
-    textPublished: {
-        color: dark.theme.lightGreen,
-        fontSize: 10,
-    },
-    circlePublished: {
-        shadowRadius: 10,
-        shadowColor: dark.theme.lightGreen,
-        shadowOffset: { width: -1, height: 1 },
-        width: 8,
-        height: 8,
-        borderRadius: 8 / 2,
-        backgroundColor: dark.theme.lightGreen,
-        marginRight: 5,
-    },
-    unpublishedCard: {
-        flexDirection: "row",
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "black",
-        borderColor: dark.theme.pink,
-        borderWidth: 2,
-        textShadowColor: dark.theme.pink,
-        textShadowOffset: { width: 1, height: 1 },
-        textShadowRadius: 3,
-        width: 100,
-        height: 15,
     },
     break: {
         borderBottomColor: dark.theme.lightGreen,

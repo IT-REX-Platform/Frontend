@@ -4,6 +4,8 @@ export const en = {
         starter: "Start learning right away!",
         itrex: "IT-REX",
         home: "Home",
+        timeline: "Timeline",
+        overview: "Overview",
         login: "Login",
         logout: "Logout",
 
@@ -108,6 +110,7 @@ export const en = {
         confirmPublishCourse:
             "Publishing the course will make it possible for students to join the course. Start- and end-date will also be fixed when publishing the course.",
         confirmDeleteCourse: "Do you really want to delete this course?",
+        week: "Week",
 
         getCoursesError: "An error occurred while getting courses.",
         getCourseError: "An error occurred while getting the course.",
@@ -127,5 +130,43 @@ export const en = {
         deleteChapterError: "An error occurred while deleting the chapter.",
 
         getUserInfoError: "An error occurred while getting user info.",
+
+        createQuiz: "Create a Quiz",
+        invalidQuizName: "Please define a quiz name.",
+        invalidQuestionsObject: "Please add at least one question  to the quiz.",
+        noQuestions: "No questions have been added yet!",
+
+        deleteQuizSuccess: "The quiz was deleted successfully.",
+        deleteQuizError: "An error occurred while deleting the quiz.",
+        saveQuizSuccess: "The quiz was saved successfully.",
+        saveQuizError: "An error occurred while saving the quiz.",
+        updateQuizSuccess: "The quiz was updated successfully.",
+        updateQuizError: "An error occurred while updating the quiz.",
+
+        deleteQuestionSuccess: "The question was deleted successfully.",
+        deleteQuestionError: "An error occurred while deleting the question.",
+        saveQuestionSuccess: "The question was saved successfully.",
+        saveQuestionError: "An error occurred while saving the question.",
+        updateQuestionSuccess: "The question was updated successfully.",
+        updateQuestionError: "An error occurred while updating the question.",
+
+        invalidQuizCourseID: "Invalid Course",
+        invalidQuestion: "Please define a question.",
+        invalidEpsilon: "Please define an epsilon value.",
+        invalidNumericSolution: "Please define a numeric answer.",
+        invalidAnswers: "Please define the possible answers.",
+        missingAnswers: "Please define every possible answers.",
+        invalidSingleSolution: "Please define the correct solution",
+        addQuestionText: "Please define your question here.",
+        kindOfQuestion: "Kind of answer: ",
+        addQuestion: "+ Add question",
+        specifyChoices: "Specify the different choices here:",
+        specifyNumericAnswer: "Specify the numeric answer right here: ",
+        specifyNumericEpsilon: "Specify the epsilon value for the answer right here: ",
+
+        category: "Category",
+        value: "Value",
+        result: "Result",
+        epsilon: "Epsilon value",
     },
 };

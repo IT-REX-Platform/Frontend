@@ -23,6 +23,8 @@ import AuthenticationService from "../../../services/AuthenticationService";
 import { TextButton } from "../../uiElements/TextButton";
 import { CourseRoles } from "../../../constants/CourseRoles";
 import { IUser } from "../../../types/IUser";
+import { InfoPublished } from "../../uiElements/InfoPublished";
+import { InfoUnpublished } from "../../uiElements/InfoUnpublished";
 
 export type ScreenCourseOverviewNavigationProp = CompositeNavigationProp<
     MaterialTopTabNavigationProp<CourseTabParamList, "OVERVIEW">,
@@ -143,10 +145,7 @@ export const ScreenCourseOverview: React.FC = () => {
         if (isPublished === CoursePublishState.UNPUBLISHED) {
             return (
                 <>
-                    <View style={styles.unpublishedCard}>
-                        <View style={styles.circleUnpublished} />
-                        <Text style={styles.textUnpublished}>{i18n.t("itrex.unpublished")}</Text>
-                    </View>
+                    <InfoUnpublished />
                     <Text>{getDate(course.startDate, i18n.t("itrex.startDate"))}</Text>
                     <Text>{getDate(course.endDate, i18n.t("itrex.endDate"))}</Text>
                     {checkOwnerSettings()}
@@ -155,10 +154,7 @@ export const ScreenCourseOverview: React.FC = () => {
         } else if (isPublished === CoursePublishState.PUBLISHED) {
             return (
                 <>
-                    <View style={styles.publishedCard}>
-                        <View style={styles.circlePublished} />
-                        <Text style={styles.textPublished}>{i18n.t("itrex.published")}</Text>
-                    </View>
+                    <InfoPublished />
                     <Text>{getDate(course.startDate, i18n.t("itrex.startDate") + ": ")}</Text>
                     <Text>{getDate(course.endDate, i18n.t("itrex.endDate") + ": ")}</Text>
                 </>
@@ -246,59 +242,5 @@ const styles = StyleSheet.create({
     },
     textWhite: {
         color: "white",
-    },
-    unpublishedCard: {
-        flexDirection: "row",
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "black",
-        borderColor: dark.theme.pink,
-        borderWidth: 2,
-        textShadowColor: dark.theme.pink,
-        textShadowOffset: { width: 1, height: 1 },
-        textShadowRadius: 3,
-        width: 100,
-        height: 15,
-    },
-    textUnpublished: {
-        color: dark.theme.pink,
-        fontSize: 10,
-    },
-    circleUnpublished: {
-        shadowRadius: 10,
-        shadowColor: dark.theme.pink,
-        shadowOffset: { width: -1, height: 1 },
-        width: 8,
-        height: 8,
-        borderRadius: 8 / 2,
-        backgroundColor: dark.theme.pink,
-        marginRight: 3,
-    },
-    publishedCard: {
-        flexDirection: "row",
-        backgroundColor: "black",
-        justifyContent: "center",
-        alignItems: "center",
-        borderColor: dark.theme.lightGreen,
-        borderWidth: 2,
-        textShadowColor: dark.theme.lightGreen,
-        textShadowOffset: { width: 1, height: 1 },
-        textShadowRadius: 3,
-        width: 100,
-        height: 15,
-    },
-    textPublished: {
-        color: dark.theme.lightGreen,
-        fontSize: 10,
-    },
-    circlePublished: {
-        shadowRadius: 10,
-        shadowColor: dark.theme.lightGreen,
-        shadowOffset: { width: -1, height: 1 },
-        width: 8,
-        height: 8,
-        borderRadius: 8 / 2,
-        backgroundColor: dark.theme.lightGreen,
-        marginRight: 5,
     },
 });
