@@ -47,15 +47,14 @@ export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
     const [solutionSingleChoice, setSolutionSingleChoice] = useState<string>();
 
     // Make Single Choice default
-    const defaultKindOfQuestionValue = kindOfQuestionOptions[1];
-    const [selectedKindOfQuestion, setKindOfQuestion] = useState<QuestionTypes | undefined>(
-        defaultKindOfQuestionValue.value
-    );
+    const defaultKindOfQuestionValue = question !== undefined ? question?.type : kindOfQuestionOptions[1].value;
+    const [selectedKindOfQuestion, setKindOfQuestion] = useState<QuestionTypes | undefined>(defaultKindOfQuestionValue);
 
     useFocusEffect(
         // eslint-disable-next-line complexity
         React.useCallback(() => {
             if (question === undefined) {
+                setKindOfQuestion(selectedKindOfQuestion);
                 return;
             } else {
                 setQuestionText(question.question);
@@ -71,8 +70,6 @@ export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
                         setSolutionNum(question.solution);
                 }
             }
-            setKindOfQuestion(selectedKindOfQuestion);
-            console.log(questionText);
         }, [selectedKindOfQuestion, solutionNum, solutionMultiChoice, solutionSingleChoice])
     );
 
@@ -84,7 +81,7 @@ export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
                         style={styles.questionInput}
                         value={questionText}
                         onChangeText={(text) => {
-                            console.log(text), setQuestionText(text);
+                            setQuestionText(text);
                         }}
                         multiline={true}
                     />
