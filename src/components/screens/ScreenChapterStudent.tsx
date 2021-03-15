@@ -85,7 +85,7 @@ export const ScreenChapterStudent: React.FC = () => {
                 marginBottom: "2.5%",
                 backgroundColor: dark.theme.darkBlue2,
             }}>
-            <TouchableOpacity onPress={() => changeCurrentState(item.id)}>
+            <TouchableOpacity onPress={() => changeCurrentVideo(item.id)}>
                 <ListItem.Content>
                     <ListItem.Title style={styles.listItemTitle} numberOfLines={1} lineBreakMode="tail">
                         {item.title}
@@ -108,7 +108,7 @@ export const ScreenChapterStudent: React.FC = () => {
                         rate={1.0}
                         volume={1.0}
                         isMuted={false}
-                        resizeMode="contain"
+                        resizeMode="cover"
                         shouldPlay={false}
                         useNativeControls={true}
                     />
@@ -185,7 +185,7 @@ export const ScreenChapterStudent: React.FC = () => {
         return createVideoUrl(vidId);
     }
 
-    function changeCurrentState(vidId: string) {
+    function changeCurrentVideo(vidId: string) {
         setCurrentVideo(vidId);
         _getVideoUrl();
     }
@@ -264,8 +264,8 @@ const styles = StyleSheet.create({
         paddingRight: "20px",
     },
     video: {
-        borderColor: dark.theme.darkBlue2,
-        borderWidth: 3,
+        //borderColor: dark.theme.darkBlue2,
+        //borderWidth: 3,
         marginTop: 20,
     },
 
