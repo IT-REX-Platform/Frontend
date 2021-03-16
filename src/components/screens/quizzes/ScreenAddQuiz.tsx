@@ -32,13 +32,13 @@ const endpointsQuiz: EndpointsQuiz = new EndpointsQuiz();
 type ScreenCourseTabsRouteProp = RouteProp<CourseStackParamList, "CREATE_QUIZ">;
 const contentReferenceEndpoint = new EndpointsContentReference();
 
-export const ScreenAddQuiz: React.FC<ChapterComponentProps> = (props) => {
+export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
     React.useContext(LocalizationContext);
     const route = useRoute<ScreenCourseTabsRouteProp>();
     const navigation = useNavigation<ScreenCourseOverviewNavigationProp>();
     const chapter = route.params.chapter;
     const initialContentList = chapter?.contentReferences !== undefined ? chapter.contentReferences : [];
-    const [contentList, setContentList] = useState<IContent[]>(initialContentList);
+    const [contentList] = useState<IContent[]>(initialContentList);
 
     let chapterId = route.params.chapterId;
     const quizWithQuestions = route.params.quiz;
@@ -49,7 +49,7 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = (props) => {
         chapterId = undefined;
     }
 
-    const initialQuizName = quizWithQuestions?.name == undefined ? "My new Quiz" : quizWithQuestions.name;
+    const initialQuizName = quizWithQuestions?.name == undefined ? chapter?.name + " - Quiz" : quizWithQuestions.name;
 
     const [quiz] = useState<IQuiz>({} as IQuiz);
     const chapterEndpoint = new EndpointsChapter();
@@ -62,16 +62,7 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = (props) => {
     useFocusEffect(
         React.useCallback(() => {
             if (route.params.quiz === undefined) {
-                if (chapterId != undefined) {
-                    const request: RequestInit = RequestFactory.createGetRequest();
-                    chapterEndpoint
-                        .getChapter(request, chapterId, undefined, i18n.t("itrex.getChapterError"))
-                        .then((chapter) => {
-                            setQuizName(chapter.name + " - Quiz");
-                        });
-                } else {
-                    quiz.name = "My new Quiz";
-                }
+                return;
             } else {
                 if (quizWithQuestions === undefined) {
                     return;

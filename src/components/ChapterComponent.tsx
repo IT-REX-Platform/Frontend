@@ -146,7 +146,7 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                                             color="white"
                                             style={styles.icon}
                                         />
-                                        <Text style={styles.chapterMaterialElementText}>{content.id}</Text>
+                                        <Text style={styles.chapterMaterialElementText}>{content.contentId}</Text>
                                     </View>
                                 );
                             }

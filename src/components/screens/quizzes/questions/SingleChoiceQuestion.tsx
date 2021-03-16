@@ -31,16 +31,12 @@ const endpointsQuestion: EndpointsQuestion = new EndpointsQuestion();
 export const SingleChoiceQuestion: React.FC<QuizProps> = (props) => {
     React.useContext(LocalizationContext);
     const navigation = useNavigation<ScreenCourseTabsNavigationProp>();
-    const contentReferenceEndpoint = new EndpointsContentReference();
-    const chapterEndpoint = new EndpointsChapter();
 
     const question = props.question;
     const questionId = question?.id;
     const questionText = props.questionText;
     const quiz = props.quiz;
     const courseId = props.courseId;
-
-    const [contentList, setContentList] = useState<IContent[]>([]);
 
     const [choicesSingleChoice, setChoicesSingleChoice] = useState<IChoices>();
 
