@@ -18,6 +18,8 @@ import { validateQuiz } from "../../../helperScripts/validateQuiz";
 import { IQuiz } from "../../../types/IQuiz";
 import { CourseStackParamList } from "../../../constants/navigators/NavigationRoutes";
 import { EndpointsQuiz } from "../../../api/endpoints/EndpointsQuiz";
+import { EndpointsContentReference } from "../../../api/endpoints/EndpointsContentReference";
+import { CONTENTREFERENCETYPE, IContent } from "../../../types/IContent";
 
 interface ChapterComponentProps {
     chapter?: IChapter;
@@ -28,11 +30,15 @@ interface ChapterComponentProps {
 
 const endpointsQuiz: EndpointsQuiz = new EndpointsQuiz();
 type ScreenCourseTabsRouteProp = RouteProp<CourseStackParamList, "CREATE_QUIZ">;
+const contentReferenceEndpoint = new EndpointsContentReference();
 
-export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
+export const ScreenAddQuiz: React.FC<ChapterComponentProps> = (props) => {
     React.useContext(LocalizationContext);
     const route = useRoute<ScreenCourseTabsRouteProp>();
     const navigation = useNavigation<ScreenCourseOverviewNavigationProp>();
+    const chapter = route.params.chapter;
+    const initialContentList = chapter?.contentReferences !== undefined ? chapter.contentReferences : [];
+    const [contentList, setContentList] = useState<IContent[]>(initialContentList);
 
     let chapterId = route.params.chapterId;
     const quizWithQuestions = route.params.quiz;
@@ -164,11 +170,40 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
                 i18n.t("itrex.saveQuizSuccess"),
                 i18n.t("itrex.saveQuizError")
             );
-            response.then((quiz) => {
-                console.log(quiz);
-                navigation.navigate("TIMELINE");
-            });
+            response
+                .then((quiz) => {
+                    defineContentList(quiz);
+                })
+                .then(() => {
+                    contentList.map((content) => {
+                        content.chapterId = chapterId;
+
+                        return new Promise((resolve) => {
+                            if (content.id === undefined) {
+                                const postRequest: RequestInit = RequestFactory.createPostRequestWithBody(content);
+
+                                contentReferenceEndpoint.createContentReference(postRequest).then((contentRef) => {
+                                    contentRef.isPersistent = true;
+                                    resolve(contentRef);
+                                });
+                            }
+                        });
+                    });
+                    // Navigate to the Timeline
+                    navigation.navigate("TIMELINE");
+                });
         }
+    }
+
+    function defineContentList(quiz: IQuiz | undefined): IContent[] {
+        const contentRef: IContent = {
+            chapterId: chapterId,
+            contentId: quiz?.id,
+            contentReferenceType: CONTENTREFERENCETYPE.QUIZ,
+        };
+        contentList.push(contentRef);
+
+        return contentList;
     }
 
     function updateQuiz() {
@@ -186,7 +221,6 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
                 i18n.t("itrex.updateQuizError")
             );
             response.then((quiz) => {
-                console.log(quiz);
                 navigation.navigate("TIMELINE");
             });
         }

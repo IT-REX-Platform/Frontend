@@ -252,7 +252,7 @@ export const ScreenAddChapter: React.FC = () => {
             video: video,
             id: video.id,
             isPersistent: false,
-            contentReferenceType: CONTENTREFERENCETYPE.QUIZ,
+            contentReferenceType: CONTENTREFERENCETYPE.VIDEO,
         };
         setContentList([...contentList, contentRef]);
     }
@@ -305,7 +305,7 @@ export const ScreenAddChapter: React.FC = () => {
                                             video: videos[videoInPool],
                                             id: contentReference.id,
                                             timePeriodId: contentReference.timePeriodId,
-                                            contentReferenceType: CONTENTREFERENCETYPE.QUIZ,
+                                            contentReferenceType: CONTENTREFERENCETYPE.VIDEO,
                                         };
                                         newContentList.push(contentRef);
                                         // Remove from Pool-List

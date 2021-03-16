@@ -4,6 +4,7 @@ import { IVideo } from "../../types/IVideo";
 import { IQuiz } from "../../types/IQuiz";
 import { ISolutionMultipleChoice } from "../../types/ISolution";
 import { IQuestionMultipleChoice, IQuestionNumeric, IQuestionSingleChoice } from "../../types/IQuestion";
+import { IChapter } from "../../types/IChapter";
 
 const prefix = Linking.makeUrl("it-rex://");
 
@@ -63,10 +64,12 @@ export type CourseStackParamList = {
     };
     CHAPTER_CREATE: undefined;
     CREATE_QUIZ: {
+        chapter?: IChapter;
         courseId?: string;
         chapterId?: string;
         questionId?: string;
         quiz?: IQuiz;
+        quizId?: string;
     };
     CREATE_QUESTION: {
         quiz?: IQuiz;

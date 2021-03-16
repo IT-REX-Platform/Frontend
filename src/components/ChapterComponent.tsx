@@ -18,6 +18,7 @@ import { EndpointsQuiz } from "../api/endpoints/EndpointsQuiz";
 import { RequestFactory } from "../api/requests/RequestFactory";
 import { IQuiz } from "../types/IQuiz";
 import { dateConverter } from "../helperScripts/validateCourseDates";
+import { CONTENTREFERENCETYPE } from "../types/IContent";
 
 interface ChapterComponentProps {
     chapter?: IChapter;
@@ -59,7 +60,6 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
             const response = endpointsQuiz.getCourseQuizzes(request, courseId);
             response.then(async () => {
                 setCourseQuizzes(await response);
-                console.log(courseQuizzes);
             });
         }, [])
     );
@@ -76,78 +76,82 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                 <View style={styles.chapterMaterialElements}>
                     {timePeriods !== undefined &&
                         chapter?.contentReferences?.map((contentReference) => {
-                            return (
-                                <View style={styles.chapterMaterialElement}>
-                                    <MaterialIcons name="attach-file" size={28} color="white" style={styles.icon} />
+                            if (contentReference.contentReferenceType === CONTENTREFERENCETYPE.VIDEO) {
+                                return (
+                                    <View style={styles.chapterMaterialElement}>
+                                        <MaterialIcons name="attach-file" size={28} color="white" style={styles.icon} />
 
-                                    <View
-                                        style={{
-                                            flex: 1,
-                                            flexDirection: "row",
-                                            justifyContent: "space-between",
-                                            alignItems: "center",
-                                        }}>
-                                        <Text style={styles.chapterMaterialElementText}>
-                                            {contentReference.contentId}
-                                        </Text>
-                                        <Text style={styles.chapterMaterialElementText}>
-                                            {
-                                                timePeriods.find(
-                                                    (timePeriod) => timePeriod.value === contentReference.timePeriodId
-                                                )?.label
-                                            }
-                                        </Text>
-                                        {/*props.editMode ? (
-                                            <Select
-                                                options={timePeriods}
-                                                defaultValue={timePeriods.find(
-                                                    (timePeriod) => timePeriod.value === contentReference.timePeriodId
-                                                )}
-                                                theme={(theme) => ({
-                                                    ...theme,
-                                                    borderRadius: 5,
-                                                    colors: {
-                                                        ...theme.colors,
-                                                        primary25: dark.Opacity.darkBlue1,
-                                                        primary: dark.Opacity.pink,
-                                                        backgroundColor: dark.Opacity.darkBlue1,
-                                                    },
-                                                })}
-                                                menuPortalTarget={document.body}
-                                                menuPosition={"fixed"}
-                                                styles={{
-                                                    container: () => ({
-                                                        width: 300,
-                                                    }),
-                                                }}></Select>
-                                        ) : (
-                                            
-                                        )*/}
+                                        <View
+                                            style={{
+                                                flex: 1,
+                                                flexDirection: "row",
+                                                justifyContent: "space-between",
+                                                alignItems: "center",
+                                            }}>
+                                            <Text style={styles.chapterMaterialElementText}>
+                                                {contentReference.contentId}
+                                            </Text>
+                                            <Text style={styles.chapterMaterialElementText}>
+                                                {
+                                                    timePeriods.find(
+                                                        (timePeriod) =>
+                                                            timePeriod.value === contentReference.timePeriodId
+                                                    )?.label
+                                                }
+                                            </Text>
+                                            {/*props.editMode ? (
+                                                <Select
+                                                    options={timePeriods}
+                                                    defaultValue={timePeriods.find(
+                                                        (timePeriod) => timePeriod.value === contentReference.timePeriodId
+                                                    )}
+                                                    theme={(theme) => ({
+                                                        ...theme,
+                                                        borderRadius: 5,
+                                                        colors: {
+                                                            ...theme.colors,
+                                                            primary25: dark.Opacity.darkBlue1,
+                                                            primary: dark.Opacity.pink,
+                                                            backgroundColor: dark.Opacity.darkBlue1,
+                                                        },
+                                                    })}
+                                                    menuPortalTarget={document.body}
+                                                    menuPosition={"fixed"}
+                                                    styles={{
+                                                        container: () => ({
+                                                            width: 300,
+                                                        }),
+                                                    }}></Select>
+                                            ) : (
+                                                
+                                            )*/}
+                                        </View>
                                     </View>
-                                </View>
-                            );
+                                );
+                            }
                         })}
                 </View>
                 <View style={styles.break} />
                 <Text style={styles.chapterMaterialHeader}>Chapter Quiz</Text>
 
-                {!props.editMode && AuthenticationService.getInstance().isLecturer() && (
-                    <View style={styles.chapterMaterialElements}>
-                        {courseQuizzes?.map((quiz) => {
-                            return (
-                                <View style={styles.chapterMaterialElement}>
-                                    <MaterialCommunityIcons
-                                        name="head-question-outline"
-                                        size={28}
-                                        color="white"
-                                        style={styles.icon}
-                                    />
-                                    <Text style={styles.chapterMaterialElementText}>{quiz.name}</Text>
-                                </View>
-                            );
+                <View style={styles.chapterMaterialElements}>
+                    {!props.editMode &&
+                        chapter?.contentReferences?.map((content) => {
+                            if (content.contentReferenceType === CONTENTREFERENCETYPE.QUIZ) {
+                                return (
+                                    <View style={styles.chapterMaterialElement}>
+                                        <MaterialCommunityIcons
+                                            name="head-question-outline"
+                                            size={28}
+                                            color="white"
+                                            style={styles.icon}
+                                        />
+                                        <Text style={styles.chapterMaterialElementText}>{content.id}</Text>
+                                    </View>
+                                );
+                            }
                         })}
-                    </View>
-                )}
+                </View>
 
                 {props.editMode && editChapterQuiz()}
             </View>
@@ -174,38 +178,60 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
         return (
             <>
                 <View style={styles.chapterMaterialElements}>
-                    {courseQuizzes?.map((quiz) => {
-                        return (
-                            <TouchableOpacity
-                                style={styles.chapterMaterialElement}
-                                onPress={() =>
-                                    navigation.navigate("CREATE_QUIZ", {
-                                        quiz: quiz,
-                                        chapterId: chapter?.id,
-                                        courseId: courseId,
-                                    })
-                                }>
-                                <MaterialCommunityIcons
-                                    name="head-question-outline"
-                                    size={28}
-                                    color="white"
-                                    style={styles.icon}
-                                />
-                                <Text style={styles.chapterMaterialElementText}>{quiz.name}</Text>
-                            </TouchableOpacity>
-                        );
+                    {chapter?.contentReferences?.map((content) => {
+                        if (content.contentReferenceType === CONTENTREFERENCETYPE.QUIZ) {
+                            return (
+                                <TouchableOpacity
+                                    style={styles.chapterMaterialElement}
+                                    onPress={() => navigateTo(content.contentId)}>
+                                    <MaterialCommunityIcons
+                                        name="head-question-outline"
+                                        size={28}
+                                        color="white"
+                                        style={styles.icon}
+                                    />
+                                    <Text style={styles.chapterMaterialElementText}>{content.contentId}</Text>
+                                </TouchableOpacity>
+                            );
+                        }
                     })}
                 </View>
                 <View style={styles.chapterMaterialElements}>
                     <TextButton
                         title={i18n.t("itrex.createQuiz")}
                         onPress={() => {
-                            navigation.navigate("CREATE_QUIZ", { chapterId: chapter?.id, courseId: courseId });
+                            navigation.navigate("CREATE_QUIZ", {
+                                chapterId: chapter?.id,
+                                courseId: courseId,
+                                chapter: chapter,
+                            });
                         }}
                     />
                 </View>
             </>
         );
+    }
+
+    function navigateTo(id: string | undefined) {
+        const endpointsQuiz: EndpointsQuiz = new EndpointsQuiz();
+        if (id === undefined) {
+            return;
+        }
+
+        const request: RequestInit = RequestFactory.createGetRequest();
+        const response = endpointsQuiz.getQuiz(request, id);
+        response.then((quiz) => navigateToQuiz(quiz));
+    }
+
+    function navigateToQuiz(quiz: IQuiz | undefined) {
+        if (quiz === undefined) {
+            return;
+        }
+        navigation.navigate("CREATE_QUIZ", {
+            quiz: quiz,
+            chapterId: chapter?.id,
+            courseId: courseId,
+        });
     }
 
     function chapterContent() {

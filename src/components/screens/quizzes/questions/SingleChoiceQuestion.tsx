@@ -16,6 +16,9 @@ import { EndpointsQuestion } from "../../../../api/endpoints/EndpointsQuestion";
 import { RequestFactory } from "../../../../api/requests/RequestFactory";
 import { IQuestionSingleChoice } from "../../../../types/IQuestion";
 import { QuestionTypes } from "../../../../constants/QuestionTypes";
+import { IContent } from "../../../../types/IContent";
+import { EndpointsContentReference } from "../../../../api/endpoints/EndpointsContentReference";
+import { EndpointsChapter } from "../../../../api/endpoints/EndpointsChapter";
 
 interface QuizProps {
     question?: IQuestionSingleChoice;
@@ -28,12 +31,16 @@ const endpointsQuestion: EndpointsQuestion = new EndpointsQuestion();
 export const SingleChoiceQuestion: React.FC<QuizProps> = (props) => {
     React.useContext(LocalizationContext);
     const navigation = useNavigation<ScreenCourseTabsNavigationProp>();
+    const contentReferenceEndpoint = new EndpointsContentReference();
+    const chapterEndpoint = new EndpointsChapter();
 
     const question = props.question;
     const questionId = question?.id;
     const questionText = props.questionText;
     const quiz = props.quiz;
     const courseId = props.courseId;
+
+    const [contentList, setContentList] = useState<IContent[]>([]);
 
     const [choicesSingleChoice, setChoicesSingleChoice] = useState<IChoices>();
 
