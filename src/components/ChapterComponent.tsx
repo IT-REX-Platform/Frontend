@@ -231,6 +231,7 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
             quiz: quiz,
             chapterId: chapter?.id,
             courseId: courseId,
+            chapter: chapter,
         });
     }
 

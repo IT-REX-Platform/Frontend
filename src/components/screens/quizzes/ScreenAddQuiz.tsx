@@ -39,7 +39,7 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
     const chapter = route.params.chapter;
     const initialContentList = chapter?.contentReferences !== undefined ? chapter.contentReferences : [];
     const [contentList] = useState<IContent[]>(initialContentList);
-
+    console.log(chapter);
     let chapterId = route.params.chapterId;
     const quizWithQuestions = route.params.quiz;
 
@@ -218,9 +218,15 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
     }
 
     function deleteQuiz() {
+        //How to reorder the contents ?
+        if (chapter == undefined) {
+            return;
+        }
+        const index = contentList.findIndex((quizToDelete) => quizToDelete.contentId === quizWithQuestions?.id);
         if (quizWithQuestions?.id === undefined) {
             return;
         }
+
         const request: RequestInit = RequestFactory.createDeleteRequest();
         const quizId = quizWithQuestions.id;
         const response = endpointsQuiz.deleteQuiz(
@@ -231,6 +237,12 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
             i18n.t("itrex.deleteQuizError")
         );
         response.then((questions) => {
+            contentList.splice(index, 1);
+            chapter.contentReferences = contentList;
+            console.log(chapter.contentReferences);
+            const patchRequest: RequestInit = RequestFactory.createPatchRequest(chapter);
+            chapterEndpoint.patchChapter(patchRequest);
+
             console.log(questions), navigation.navigate("TIMELINE");
         });
     }
