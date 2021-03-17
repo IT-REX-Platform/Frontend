@@ -38,6 +38,9 @@ import { dateConverter, validateCourseDates } from "../../../helperScripts/valid
 import { CONTENTREFERENCETYPE, IContent } from "../../../types/IContent";
 import { EndpointsContentReference } from "../../../api/endpoints/EndpointsContentReference";
 import Select from "react-select";
+import { IQuiz } from "../../../types/IQuiz";
+import { EndpointsQuiz } from "../../../api/endpoints/EndpointsQuiz";
+import { videoPoolStyles } from "../../videoPoolComponent/videoPoolStyles";
 
 type ScreenCourseTabsNavigationProp = CompositeNavigationProp<
     StackNavigationProp<CourseStackParamList, "CHAPTER">,
@@ -47,6 +50,7 @@ type ScreenCourseTabsNavigationProp = CompositeNavigationProp<
 type ScreenCourseTabsRouteProp = RouteProp<CourseStackParamList, "CHAPTER">;
 
 const endpointsVideo = new EndpointsVideo();
+const endpointsQuiz = new EndpointsQuiz();
 export const ScreenAddChapter: React.FC = () => {
     React.useContext(LocalizationContext);
     const route = useRoute<ScreenCourseTabsRouteProp>();
@@ -75,6 +79,8 @@ export const ScreenAddChapter: React.FC = () => {
     const [contentList, setContentList] = useState<IContent[]>([]);
 
     const [videoPoolList, setVideoPoolList] = useState<IVideo[]>([]);
+
+    const [quizPoolList, setQuizPoolList] = useState<IQuiz[]>([]);
 
     const initialSelection: { [id: string]: string } = {};
     const [selectedValues, setSelectedValues] = useState(initialSelection);
@@ -108,13 +114,40 @@ export const ScreenAddChapter: React.FC = () => {
         loggerService.trace("Displaying video list.");
         return (
             <View style={styles.containerTop}>
+                <Text style={{ marginBottom: 10, fontSize: 20, color: "white" }}>VIEDO POOL LIST</Text>
                 <FlatList
                     style={styles.list}
                     showsVerticalScrollIndicator={true}
                     data={videoPoolList}
                     renderItem={listItem}
                     keyExtractor={(item, index) => index.toString()}
-                    ListEmptyComponent={emptyList}
+                    ListEmptyComponent={emptyVideoList}
+                />
+            </View>
+        );
+    };
+
+    const renderQuizList = () => {
+        if (isLoading) {
+            loggerService.trace("Displaying loading icon.");
+            return (
+                <View style={styles.containerCentered}>
+                    <ActivityIndicator size="large" color="white" />
+                </View>
+            );
+        }
+        loggerService.trace("Displaying quiz list.");
+        return (
+            <View style={styles.containerTop}>
+                {" "}
+                <Text style={{ marginBottom: 10, fontSize: 20, color: "white" }}>QUIZ POOL LIST</Text>
+                <FlatList
+                    style={styles.list}
+                    showsVerticalScrollIndicator={true}
+                    data={quizPoolList}
+                    renderItem={quizListItem}
+                    keyExtractor={(item, index) => index.toString()}
+                    ListEmptyComponent={emptyQuizList}
                 />
             </View>
         );
@@ -130,6 +163,7 @@ export const ScreenAddChapter: React.FC = () => {
                     backgroundColor: dark.theme.darkBlue2,
                     borderColor: dark.theme.darkBlue4,
                     borderWidth: 2,
+                    maxWidth: 470,
                 }}>
                 <TouchableOpacity onPress={() => removeContent(item)}>
                     <MaterialIcons name="remove" size={28} color="white" style={styles.icon} />
@@ -138,7 +172,7 @@ export const ScreenAddChapter: React.FC = () => {
 
                 <ListItem.Content>
                     <TouchableOpacity onLongPress={drag}>
-                        <ListItem.Title style={styles.listItemTitle} numberOfLines={1} lineBreakMode="tail">
+                        <ListItem.Title style={styles.listItemTitle} numberOfLines={2} lineBreakMode="tail">
                             <View
                                 style={{
                                     flex: 1,
@@ -178,7 +212,7 @@ export const ScreenAddChapter: React.FC = () => {
                                         }}
                                         styles={{
                                             container: () => ({
-                                                width: 300,
+                                                width: 200,
                                                 marginLeft: "5px",
                                             }),
                                         }}></Select>
@@ -190,7 +224,6 @@ export const ScreenAddChapter: React.FC = () => {
                         </ListItem.Subtitle>
                     </TouchableOpacity>
                 </ListItem.Content>
-                <ListItem.Chevron onPress={() => navigation.navigate("VIDEO", { video: item })} />
             </ListItem>
         </View>
     );
@@ -200,10 +233,11 @@ export const ScreenAddChapter: React.FC = () => {
         <ListItem
             containerStyle={{
                 marginBottom: 5,
-                borderRadius: 2,
                 backgroundColor: dark.theme.darkBlue2,
                 borderColor: dark.theme.darkBlue4,
                 borderWidth: 2,
+                borderRadius: 5,
+                maxWidth: 250,
             }}>
             <TouchableOpacity onPress={() => addContent(item)}>
                 <MaterialIcons name="add" size={28} color="white" style={styles.icon} />
@@ -216,21 +250,50 @@ export const ScreenAddChapter: React.FC = () => {
                 </ListItem.Title>
                 <ListItem.Subtitle style={styles.listItemSubtitle}>{calculateVideoSize(item.length)}</ListItem.Subtitle>
             </ListItem.Content>
+        </ListItem>
+    );
 
-            <ListItem.Chevron
-                style={{ padding: 5 }}
-                onPress={() => {
-                    navigation.navigate("VIDEO", { video: item });
-                }}
-            />
+    // Creation of each item of video list.
+    const quizListItem = ({ item }: { item: IQuiz }) => (
+        <ListItem
+            containerStyle={{
+                marginBottom: 5,
+                backgroundColor: dark.theme.darkBlue2,
+                borderColor: dark.theme.darkBlue4,
+                borderWidth: 2,
+                borderRadius: 5,
+                width: 250,
+            }}>
+            <TouchableOpacity onPress={() => console.log("Add me to content")}>
+                <MaterialIcons name="add" size={28} color="white" style={styles.icon} />
+            </TouchableOpacity>
+            <MaterialCommunityIcons name="file-question-outline" size={28} color="white" />
+
+            <ListItem.Content>
+                <ListItem.Title style={videoPoolStyles.listItemTitle} numberOfLines={1} lineBreakMode="tail">
+                    {item.name}
+                </ListItem.Title>
+                <ListItem.Subtitle style={videoPoolStyles.listItemSubtitle} numberOfLines={1} lineBreakMode="tail">
+                    Numer Of Questions : {item.questions.length}
+                </ListItem.Subtitle>
+            </ListItem.Content>
         </ListItem>
     );
 
     // Info that the list is empty.
-    const emptyList = () => {
+    const emptyVideoList = () => {
         return (
-            <View style={styles.infoTextBox}>
-                <Text style={styles.infoText}>{i18n.t("itrex.noVideosAvailable")}</Text>
+            <View style={videoPoolStyles.infoTextBox}>
+                <Text style={videoPoolStyles.infoText}>{i18n.t("itrex.noVideosAvailable")}</Text>
+            </View>
+        );
+    };
+
+    // Info that the list is empty.
+    const emptyQuizList = () => {
+        return (
+            <View style={videoPoolStyles.infoTextBox}>
+                <Text style={videoPoolStyles.infoText}>Bisher wurden dem Quiz Pool noch keine Quizze hinzugefügt.</Text>
             </View>
         );
     };
@@ -276,8 +339,9 @@ export const ScreenAddChapter: React.FC = () => {
     useFocusEffect(
         React.useCallback(() => {
             if (chapterId != undefined) {
+                console.log("---------------------------------------------------------------");
+                _getAllQuizzes();
                 loggerService.trace("Getting all videos of course: " + course.id);
-
                 const request: RequestInit = RequestFactory.createGetRequest();
                 chapterEndpoint
                     .getChapter(request, chapterId, undefined, i18n.t("itrex.getChapterError"))
@@ -317,8 +381,11 @@ export const ScreenAddChapter: React.FC = () => {
                             }
                         });
                     });
+
+                //TODO: Definiere Quiz Liste wenn bereits welche zum Content hinzugefügt wurden
             } else {
                 _getAllVideos(course.id);
+                _getAllQuizzes();
             }
         }, [chapterId])
     );
@@ -343,7 +410,7 @@ export const ScreenAddChapter: React.FC = () => {
 
                 <View style={styles.headContainer}></View>
 
-                <View style={styles.videoContainer}>
+                <View style={styles.contentContainer}>
                     <View style={styles.sequenceArea}>
                         <View style={styles.containerTop}>
                             <DraggableFlatList
@@ -356,7 +423,12 @@ export const ScreenAddChapter: React.FC = () => {
                             />
                         </View>
                     </View>
-                    {renderUi()}
+                    <View style={styles.contentContainerAdd}>
+                        <View style={styles.containerTop}>{renderUi()}</View>
+                    </View>
+                    <View style={styles.contentContainerAdd}>
+                        <View style={styles.containerTop}>{renderQuizList()}</View>
+                    </View>
                 </View>
             </ImageBackground>
         </View>
@@ -487,6 +559,28 @@ export const ScreenAddChapter: React.FC = () => {
             })
             .finally(() => setLoading(false));
     }
+
+    async function _getAllQuizzes(): Promise<IQuiz[]> {
+        console.log("2-------------2--------------------");
+        console.log(course);
+        if (course.id == undefined) {
+            loggerService.warn("Course ID undefined, can't get quizzes.");
+            setLoading(false);
+            return [];
+        }
+        loggerService.trace("Getting all quizzes of course: " + course.id);
+
+        const request: RequestInit = RequestFactory.createGetRequest();
+
+        return endpointsQuiz
+            .getCourseQuizzes(request, course.id, undefined, "Error while getting Course quizzes")
+            .then((quizzesReceived: IQuiz[]) => {
+                setQuizPoolList(quizzesReceived);
+                console.log(quizzesReceived);
+                return quizzesReceived;
+            })
+            .finally(() => setLoading(false));
+    }
 };
 
 const styles = StyleSheet.create({
@@ -507,13 +601,22 @@ const styles = StyleSheet.create({
         borderBottomColor: "rgba(70,74,91,0.5)",
         borderBottomWidth: 3,
     },
-    videoContainer: {
+    contentContainer: {
         flex: 2,
         flexDirection: "row",
         padding: "2%",
     },
+    contentContainerAdd: {
+        flex: 1,
+        backgroundColor: "rgba(1,43,86,0.5)",
+        borderWidth: 3,
+        borderColor: dark.theme.darkBlue3,
+        marginRight: "3%",
+        alignItems: "center",
+        maxWidth: 280,
+    },
     sequenceArea: {
-        flex: 3,
+        flex: 1,
         backgroundColor: "rgba(1,43,86,0.5)",
         borderWidth: 3,
         borderColor: dark.theme.darkBlue3,
@@ -543,19 +646,6 @@ const styles = StyleSheet.create({
     containerTop: {
         flex: 1,
         alignItems: "center",
-    },
-    infoTextBox: {
-        backgroundColor: dark.theme.darkBlue2,
-        borderColor: dark.theme.darkBlue4,
-        borderWidth: 2,
-        borderRadius: 5,
-        textAlign: "center",
-        justifyContent: "center",
-    },
-    infoText: {
-        color: "white",
-        fontSize: 20,
-        margin: 10,
     },
     list: {
         height: 1, // Actual value is unimportant, this just makes the video list permanently scrollable, disregarding the current view height.

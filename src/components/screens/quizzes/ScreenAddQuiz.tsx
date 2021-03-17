@@ -3,7 +3,7 @@ import { RouteProp, useFocusEffect, useNavigation, useRoute } from "@react-navig
 import React, { useState } from "react";
 import { Text, ImageBackground, StyleSheet, View, TextInput, TouchableOpacity } from "react-native";
 import { dark } from "../../../constants/themes/dark";
-import { LocalizationContext } from "../../Context";
+import { CourseContext, LocalizationContext } from "../../Context";
 import { IChapter } from "../../../types/IChapter";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { TextButton } from "../../uiElements/TextButton";
@@ -20,6 +20,7 @@ import { CourseStackParamList } from "../../../constants/navigators/NavigationRo
 import { EndpointsQuiz } from "../../../api/endpoints/EndpointsQuiz";
 import { EndpointsContentReference } from "../../../api/endpoints/EndpointsContentReference";
 import { CONTENTREFERENCETYPE, IContent } from "../../../types/IContent";
+import { ICourse } from "../../../types/ICourse";
 
 interface ChapterComponentProps {
     chapter?: IChapter;
@@ -32,24 +33,18 @@ const endpointsQuiz: EndpointsQuiz = new EndpointsQuiz();
 type ScreenCourseTabsRouteProp = RouteProp<CourseStackParamList, "CREATE_QUIZ">;
 const contentReferenceEndpoint = new EndpointsContentReference();
 
-export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
+export const ScreenAddQuiz: React.FC<ChapterComponentProps> = (props) => {
     React.useContext(LocalizationContext);
-    const route = useRoute<ScreenCourseTabsRouteProp>();
     const navigation = useNavigation<ScreenCourseOverviewNavigationProp>();
-    const chapter = route.params.chapter;
-    const initialContentList = chapter?.contentReferences !== undefined ? chapter.contentReferences : [];
-    const [contentList] = useState<IContent[]>(initialContentList);
-    console.log(chapter);
-    let chapterId = route.params.chapterId;
-    const quizWithQuestions = route.params.quiz;
 
-    const courseId = route.params.courseId;
+    // Get course infos from context.
+    const course: ICourse = React.useContext(CourseContext);
+    console.log(course);
+    const quizWithQuestions = props.quiz;
 
-    if (chapterId == "undefined") {
-        chapterId = undefined;
-    }
+    const courseId = course.id;
 
-    const initialQuizName = quizWithQuestions?.name == undefined ? chapter?.name + " - Quiz" : quizWithQuestions.name;
+    const initialQuizName = quizWithQuestions?.name == undefined ? "My new Quiz" : quizWithQuestions.name;
 
     const [quiz] = useState<IQuiz>({} as IQuiz);
     const chapterEndpoint = new EndpointsChapter();
@@ -61,7 +56,7 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
 
     useFocusEffect(
         React.useCallback(() => {
-            if (route.params.quiz === undefined) {
+            if (props.quiz === undefined) {
                 return;
             } else {
                 if (quizWithQuestions === undefined) {
@@ -161,40 +156,12 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
                 i18n.t("itrex.saveQuizSuccess"),
                 i18n.t("itrex.saveQuizError")
             );
-            response
-                .then((quiz) => {
-                    defineContentList(quiz);
-                })
-                .then(() => {
-                    contentList.map((content) => {
-                        content.chapterId = chapterId;
 
-                        return new Promise((resolve) => {
-                            if (content.id === undefined) {
-                                const postRequest: RequestInit = RequestFactory.createPostRequestWithBody(content);
-
-                                contentReferenceEndpoint.createContentReference(postRequest).then((contentRef) => {
-                                    contentRef.isPersistent = true;
-                                    resolve(contentRef);
-                                });
-                            }
-                        });
-                    });
-                    // Navigate to the Timeline
-                    navigation.navigate("TIMELINE");
-                });
+            response.then((quiz) => {
+                console.log(quiz);
+                navigation.navigate("QUIZ_POOL");
+            });
         }
-    }
-
-    function defineContentList(quiz: IQuiz | undefined): IContent[] {
-        const contentRef: IContent = {
-            chapterId: chapterId,
-            contentId: quiz?.id,
-            contentReferenceType: CONTENTREFERENCETYPE.QUIZ,
-        };
-        contentList.push(contentRef);
-
-        return contentList;
     }
 
     function updateQuiz() {
@@ -212,17 +179,13 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
                 i18n.t("itrex.updateQuizError")
             );
             response.then((quiz) => {
-                navigation.navigate("TIMELINE");
+                console.log(quiz);
+                navigation.navigate("QUIZ_POOL");
             });
         }
     }
 
     function deleteQuiz() {
-        //How to reorder the contents ?
-        if (chapter == undefined) {
-            return;
-        }
-        const index = contentList.findIndex((quizToDelete) => quizToDelete.contentId === quizWithQuestions?.id);
         if (quizWithQuestions?.id === undefined) {
             return;
         }
@@ -237,12 +200,6 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
             i18n.t("itrex.deleteQuizError")
         );
         response.then((questions) => {
-            contentList.splice(index, 1);
-            chapter.contentReferences = contentList;
-            console.log(chapter.contentReferences);
-            const patchRequest: RequestInit = RequestFactory.createPatchRequest(chapter);
-            chapterEndpoint.patchChapter(patchRequest);
-
             console.log(questions), navigation.navigate("TIMELINE");
         });
     }

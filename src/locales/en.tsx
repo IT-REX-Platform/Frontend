@@ -131,6 +131,8 @@ export const en = {
 
         getUserInfoError: "An error occurred while getting user info.",
 
+        quizPool: "Quiz Pool",
+        quizProperties: "Create a new quiz to add to the quiz pool.",
         createQuiz: "Create a Quiz",
         invalidQuizName: "Please define a quiz name.",
         invalidQuestionsObject: "Please add at least one question  to the quiz.",

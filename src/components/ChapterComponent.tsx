@@ -213,7 +213,6 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
     }
 
     function navigateTo(id: string | undefined) {
-        const endpointsQuiz: EndpointsQuiz = new EndpointsQuiz();
         if (id === undefined) {
             return;
         }
