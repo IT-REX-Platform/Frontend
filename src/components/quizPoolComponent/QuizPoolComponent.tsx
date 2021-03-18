@@ -97,7 +97,11 @@ export const QuizPoolComponent: React.FC = () => {
         <TouchableOpacity
             activeOpacity={0.3}
             onPress={() => {
-                console.log("Navigate to quiz edit");
+                console.log(item);
+                navigation.navigate("CREATE_QUIZ", {
+                    quiz: item,
+                    courseId: course.id,
+                });
             }}>
             <ListItem
                 containerStyle={{
@@ -114,7 +118,7 @@ export const QuizPoolComponent: React.FC = () => {
                         {item.name}
                     </ListItem.Title>
                     <ListItem.Subtitle style={videoPoolStyles.listItemSubtitle} numberOfLines={1} lineBreakMode="tail">
-                        Numer Of Questions : {item.questions.length}
+                        Questions : {item.questions.length}
                     </ListItem.Subtitle>
                 </ListItem.Content>
 
@@ -154,7 +158,6 @@ export const QuizPoolComponent: React.FC = () => {
     }
 
     async function _getAllQuizzes(): Promise<void> {
-        console.log("-------------------- Get all Videos");
         if (course.id == undefined) {
             loggerService.warn("Course ID undefined, can't get videos.");
             return;

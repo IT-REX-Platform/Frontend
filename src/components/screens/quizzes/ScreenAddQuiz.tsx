@@ -36,11 +36,18 @@ const contentReferenceEndpoint = new EndpointsContentReference();
 export const ScreenAddQuiz: React.FC<ChapterComponentProps> = (props) => {
     React.useContext(LocalizationContext);
     const navigation = useNavigation<ScreenCourseOverviewNavigationProp>();
+    const route = useRoute<ScreenCourseTabsRouteProp>();
 
     // Get course infos from context.
     const course: ICourse = React.useContext(CourseContext);
     console.log(course);
-    const quizWithQuestions = props.quiz;
+    let quizWithQuestions = props.quiz;
+
+    if (route.params.quiz !== undefined) {
+        quizWithQuestions = route.params.quiz;
+    }
+
+    console.log(quizWithQuestions);
 
     const courseId = course.id;
 
@@ -56,13 +63,14 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = (props) => {
 
     useFocusEffect(
         React.useCallback(() => {
-            if (props.quiz === undefined) {
+            if (props.quiz !== undefined) {
                 return;
             } else {
                 if (quizWithQuestions === undefined) {
                     return;
                 }
                 setQuestions(quizWithQuestions.questions);
+                console.log(questions);
             }
         }, [])
     );

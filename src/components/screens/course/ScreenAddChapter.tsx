@@ -121,7 +121,7 @@ export const ScreenAddChapter: React.FC = () => {
                     showsVerticalScrollIndicator={true}
                     data={videoPoolList}
                     renderItem={listItem}
-                    keyExtractor={(item, index) => index.toString()}
+                    keyExtractor={(item, index) => `draggable-item-${item.id}`}
                     ListEmptyComponent={emptyVideoList}
                 />
             </View>
@@ -159,10 +159,10 @@ export const ScreenAddChapter: React.FC = () => {
             <ListItem
                 containerStyle={{
                     marginBottom: 5,
-                    borderRadius: 2,
                     backgroundColor: dark.theme.darkBlue2,
                     borderColor: dark.theme.darkBlue4,
                     borderWidth: 2,
+                    borderRadius: 5,
                     maxWidth: 470,
                 }}>
                 <TouchableOpacity onPress={() => removeContent(item)}>
@@ -244,7 +244,7 @@ export const ScreenAddChapter: React.FC = () => {
             <MaterialCommunityIcons name="video-vintage" size={28} color="white" />
 
             <ListItem.Content>
-                <ListItem.Title style={styles.listItemTitle} numberOfLines={1} lineBreakMode="tail">
+                <ListItem.Title style={styles.listItemTitle} numberOfLines={2} lineBreakMode="tail">
                     {item.title}
                 </ListItem.Title>
                 <ListItem.Subtitle style={styles.listItemSubtitle}>{calculateVideoSize(item.length)}</ListItem.Subtitle>
@@ -269,7 +269,7 @@ export const ScreenAddChapter: React.FC = () => {
             <MaterialCommunityIcons name="file-question-outline" size={28} color="white" />
 
             <ListItem.Content>
-                <ListItem.Title style={videoPoolStyles.listItemTitle} numberOfLines={1} lineBreakMode="tail">
+                <ListItem.Title style={videoPoolStyles.listItemTitle} numberOfLines={2} lineBreakMode="tail">
                     {item.name}
                 </ListItem.Title>
                 <ListItem.Subtitle style={videoPoolStyles.listItemSubtitle} numberOfLines={1} lineBreakMode="tail">
@@ -516,7 +516,7 @@ export const ScreenAddChapter: React.FC = () => {
                                 showsVerticalScrollIndicator={true}
                                 data={contentList}
                                 renderItem={listRemoveItem}
-                                keyExtractor={(item, index) => index.toString()}
+                                keyExtractor={(item, index) => `draggable1-item-${item.id}`}
                                 onDragEnd={({ to, from }) => reorderContent(to, from)}
                             />
                         </View>
