@@ -76,6 +76,7 @@ export type CourseStackParamList = {
         question?: IQuestionMultipleChoice | IQuestionNumeric | IQuestionSingleChoice;
     };
     CHAPTER: { chapterId: string | undefined };
+    CHAPTER_CONTENT: { chapterId: string };
 };
 
 export type CourseTabParamList = {
