@@ -113,7 +113,7 @@ export const ScreenAddChapter: React.FC = () => {
                     showsVerticalScrollIndicator={true}
                     data={videoPoolList}
                     renderItem={listItem}
-                    keyExtractor={(item, index) => index.toString()}
+                    keyExtractor={(item, index) => `draggable-item-${item.id}`}
                     ListEmptyComponent={emptyList}
                 />
             </View>
@@ -351,7 +351,7 @@ export const ScreenAddChapter: React.FC = () => {
                                 showsVerticalScrollIndicator={true}
                                 data={contentList}
                                 renderItem={listRemoveItem}
-                                keyExtractor={(item, index) => index.toString()}
+                                keyExtractor={(item, index) => `draggable1-item-${item.id}`}
                                 onDragEnd={({ to, from }) => reorderContent(to, from)}
                             />
                         </View>
