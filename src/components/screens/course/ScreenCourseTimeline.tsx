@@ -14,17 +14,15 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { ChapterComponent } from "../../ChapterComponent";
 import { ICourse } from "../../../types/ICourse";
-import CourseService from "../../../services/CourseService";
 import AuthenticationService from "../../../services/AuthenticationService";
 import i18n from "../../../locales";
-import { TimelineComponent } from "../../TimelineComponent";
 import { CoursePublishState } from "../../../constants/CoursePublishState";
 import { TimePeriodPublishState } from "../../../types/ITimePeriod";
 import { ScrollView } from "react-native-gesture-handler";
 import { EndpointsCourse } from "../../../api/endpoints/EndpointsCourse";
-import { EndpointsChapter } from "../../../api/endpoints/EndpointsChapter";
 import { RequestFactory } from "../../../api/requests/RequestFactory";
-import { IChapter } from "../../../types/IChapter";
+import { CourseRoles } from "../../../constants/CourseRoles";
+import { IUser } from "../../../types/IUser";
 
 export type ScreenCourseTimelineNavigationProp = CompositeNavigationProp<
     MaterialTopTabNavigationProp<CourseTabParamList, "TIMELINE">,
@@ -33,10 +31,9 @@ export type ScreenCourseTimelineNavigationProp = CompositeNavigationProp<
 
 export const ScreenCourseTimeline: React.FC = () => {
     const navigation = useNavigation<ScreenCourseTimelineNavigationProp>();
-    const courseService: CourseService = new CourseService();
+    const [user, setUserInfo] = useState<IUser>({});
 
     const courseEndpoint = new EndpointsCourse();
-    const chapterEndpoint = new EndpointsChapter();
 
     const [edit, setEdit] = useState(false);
 
@@ -48,6 +45,7 @@ export const ScreenCourseTimeline: React.FC = () => {
 
     const isFocused = useIsFocused();
     useEffect(() => {
+        AuthenticationService.getInstance().getUserInfo(setUserInfo);
         if (isFocused && course.id !== undefined) {
             //setMyCourse(fakeData);
 
@@ -140,7 +138,13 @@ export const ScreenCourseTimeline: React.FC = () => {
 
     // eslint-disable-next-line complexity
     function lecturerEditMode() {
-        if (AuthenticationService.getInstance().isLecturerOrAdmin()) {
+        if (user.courses === undefined || course.id === undefined) {
+            return <></>;
+        }
+
+        const courseRole: CourseRoles = user.courses[course.id];
+
+        if (courseRole === CourseRoles.OWNER || courseRole === undefined) {
             return (
                 <>
                     <View style={styles.editMode}>

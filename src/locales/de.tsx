@@ -45,7 +45,7 @@ export const de = {
         uploadSuccessful: "Upload erfolgreich: ",
         uploadFailed: "Upload gescheitert: ",
         uploadDone: "Upload beendet.",
-        noVideosAvailable: "Es gibt gegenwärtig keine Videos in dem Video-Pool von diesem Kurs.",
+        noVideosAvailable: "Dem Video-Pool dieses Kurses wurden bislang noch keine Videos hinzugefügt.",
         imagePickerPermAlert: "Entschuldigung, wir benötigen die Kamera-Berechtigung, damit das funktioniert!",
 
         switchLangEN: "Zu Englisch wechseln",
@@ -131,11 +131,16 @@ export const de = {
 
         getUserInfoError: "Ein Fehler ist beim Zugriff auf Benutzerinformationen aufgetreten.",
 
+        quizPool: "Quiz Pool",
+
+        noQuizzesAvailable: "Dem Quiz-Pool dieses Kurses wurden bislang noch keine Quizzes hinzugefügt.",
+        quizProperties: "Erstellen sie ein neues Quiz um dieses zum Quiz Pool hinzufügen. ",
         createQuiz: "Quiz erstellen",
         invalidQuizName: "Bitte definieren sie einen Quiz-Name.",
         invalidQuestionsObject: "Bitte füge mindestens eine Frage zum Quiz hinzu.",
         noQuestions: "Bisher wurden keine Fragen hinzugefügt!",
 
+        questions: "Fragen: ",
         deleteQuizSuccess: "Das Quiz wurde erfolgreich gelöscht.",
         deleteQuizError: "Ein Fehler ist beim Löschen des Quizzes aufgetreten.",
         saveQuizSuccess: "Das Quiz wurde erfolgreich gespeichert.",
@@ -168,5 +173,9 @@ export const de = {
         value: "Wert",
         result: "Ergebnis",
         epsilon: "Epsilon-Wert",
+
+        videoPoolList: "VIDEO POOL LIST",
+        quizPoolList: "QUIZ POOL LIST",
+        chapterContentList: "CHAPTER CONTENT LIST",
     },
 };

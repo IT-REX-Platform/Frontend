@@ -216,6 +216,7 @@ const styles = StyleSheet.create({
         justifyContent: "flex-start",
     },
     card: {
+        marginTop: 10,
         maxWidth: "50%",
         flexDirection: "row",
         alignItems: "center",
