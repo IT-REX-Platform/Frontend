@@ -153,7 +153,9 @@ export const ScreenCourseTimeline: React.FC = () => {
                         <TouchableOpacity
                             style={styles.btnAdd}
                             onPress={() => {
-                                navigation.navigate("CHAPTER", { chapterId: undefined });
+                                navigation.navigate("CHAPTER", {
+                                    chapterId: undefined,
+                                });
                             }}>
                             <Text style={styles.txtAddChapter}>{i18n.t("itrex.addChapter")}</Text>
                         </TouchableOpacity>
@@ -176,7 +178,7 @@ export const ScreenCourseTimeline: React.FC = () => {
 
         // Adjust ChapterOrder
         tmpChapterList.forEach((chapter, idx) => {
-            chapter.chapterNumber = idx;
+            chapter.chapterNumber = idx + 1;
         });
 
         const tmpCourse: ICourse = {
