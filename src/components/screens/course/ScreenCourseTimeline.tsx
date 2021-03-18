@@ -53,43 +53,45 @@ export const ScreenCourseTimeline: React.FC = () => {
 
             //courseService.getCourse(course.id).then((receivedCourse) => setMyCourse(receivedCourse));
             const request: RequestInit = RequestFactory.createGetRequest();
-            courseEndpoint.getCourse(request, course.id).then((receivedCourse) => {
-                if (receivedCourse.chapters !== undefined) {
-                    for (const chapter of receivedCourse.chapters) {
-                        if (chapter.contentReferences !== undefined) {
-                            for (const contentRef of chapter.contentReferences) {
-                                const timePeriod = receivedCourse.timePeriods?.find(
-                                    (period) => period.id === contentRef.timePeriodId
-                                );
-                                if (timePeriod !== undefined) {
-                                    if (timePeriod?.chapters === undefined) {
-                                        timePeriod.chapters = [];
-                                    }
-
-                                    // Search for chapter in timePeriod
-                                    let foundChapter = timePeriod.chapters.find(
-                                        (tmpChapter) => tmpChapter === chapter.id
+            courseEndpoint
+                .getCourse(request, course.id, undefined, i18n.t("itrex.getCourseError"))
+                .then((receivedCourse) => {
+                    if (receivedCourse.chapters !== undefined) {
+                        for (const chapter of receivedCourse.chapters) {
+                            if (chapter.contentReferences !== undefined) {
+                                for (const contentRef of chapter.contentReferences) {
+                                    const timePeriod = receivedCourse.timePeriods?.find(
+                                        (period) => period.id === contentRef.timePeriodId
                                     );
+                                    if (timePeriod !== undefined) {
+                                        if (timePeriod?.chapters === undefined) {
+                                            timePeriod.chapters = [];
+                                        }
 
-                                    if (foundChapter === undefined) {
-                                        foundChapter = {
-                                            courseId: chapter.courseId,
-                                            id: chapter.id,
-                                            name: chapter.name,
-                                        };
-                                        foundChapter.contentReferences = [];
-                                        timePeriod.chapters.push(foundChapter);
+                                        // Search for chapter in timePeriod
+                                        let foundChapter = timePeriod.chapters.find(
+                                            (tmpChapter) => tmpChapter === chapter.id
+                                        );
+
+                                        if (foundChapter === undefined) {
+                                            foundChapter = {
+                                                courseId: chapter.courseId,
+                                                id: chapter.id,
+                                                name: chapter.name,
+                                            };
+                                            foundChapter.contentReferences = [];
+                                            timePeriod.chapters.push(foundChapter);
+                                        }
+
+                                        foundChapter?.contentReferences?.push(contentRef);
                                     }
-
-                                    foundChapter?.contentReferences?.push(contentRef);
                                 }
                             }
                         }
+                        console.log(receivedCourse);
+                        setMyCourse(receivedCourse);
                     }
-                    console.log(receivedCourse);
-                    setMyCourse(receivedCourse);
-                }
-            });
+                });
         }
     }, [isFocused]);
 
