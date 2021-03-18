@@ -67,7 +67,7 @@ export const ScreenChapterStudent: React.FC = () => {
 
 function addVideo(): IVideo {
     const playList: IVideo[] = [];
-    endpointsVideo.getAllVideos(course.id).then((videos) => {
+    endpointsVideo.findAllVideosOfACourse(course.id).then((videos) => {
         if (video.chapterId == chapter.id) {
             playList.push(video);
         }

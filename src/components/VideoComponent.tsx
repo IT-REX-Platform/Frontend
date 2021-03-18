@@ -125,7 +125,7 @@ export const VideoComponent: React.FC = () => {
     }
 
     async function _deleteVideo(): Promise<void> {
-        if (video.id === undefined) {
+        if (video.id == undefined) {
             return;
         }
 

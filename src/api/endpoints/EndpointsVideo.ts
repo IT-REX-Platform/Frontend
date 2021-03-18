@@ -30,9 +30,9 @@ export class EndpointsVideo implements IEndpointsVideo {
      * @param errorMsg An error message.
      * @returns
      */
-    public getAllVideos(
+    public findAllVideosOfACourse(
         getRequest: RequestInit,
-        courseId?: string,
+        courseId: string,
         successMsg?: string,
         errorMsg?: string
     ): Promise<IVideo[]> {
@@ -54,13 +54,21 @@ export class EndpointsVideo implements IEndpointsVideo {
      * Get one video.
      *
      * @param getRequest GET request.
-     * @param id Video ID for URL parameter.
+     * @param videoId Video ID for URL parameter.
      * @param successMsg A success message.
      * @param errorMsg An error message.
      * @returns
      */
-    public downloadVideo(getRequest: RequestInit, id: string, successMsg?: string, errorMsg?: string): Promise<IVideo> {
-        const url: string = this.url + "/" + id;
+    public downloadVideo(
+        getRequest: RequestInit,
+        videoId: string,
+        httpHeaders: string[],
+        successMsg?: string,
+        errorMsg?: string
+    ): Promise<IVideo> {
+        // TODO: httpHeaders
+
+        const url: string = this.url + "/" + videoId;
 
         this.loggerApi.trace("Sending GET request to URL: " + url);
         const response: Promise<Response> = sendRequest(url, getRequest);
@@ -99,13 +107,18 @@ export class EndpointsVideo implements IEndpointsVideo {
      * Delete an existing video.
      *
      * @param deleteRequest DELETE request.
-     * @param id Video ID for URL parameter.
+     * @param videoId Video ID for URL parameter.
      * @param successMsg A success message.
      * @param errorMsg An error message.
      * @returns
      */
-    public deleteVideo(deleteRequest: RequestInit, id: string, successMsg?: string, errorMsg?: string): Promise<void> {
-        const url: string = this.url + "/" + id;
+    public deleteVideo(
+        deleteRequest: RequestInit,
+        videoId: string,
+        successMsg?: string,
+        errorMsg?: string
+    ): Promise<void> {
+        const url: string = this.url + "/" + videoId;
 
         this.loggerApi.trace("Sending DELETE request to URL: " + url);
         const response: Promise<Response> = sendRequest(url, deleteRequest);

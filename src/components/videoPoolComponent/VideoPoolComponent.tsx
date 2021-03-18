@@ -240,7 +240,7 @@ export const VideoPoolComponent: React.FC = () => {
 
         const request: RequestInit = RequestFactory.createGetRequest();
         endpointsVideo
-            .getAllVideos(request, course.id, undefined, i18n.t("itrex.getVideosError"))
+            .findAllVideosOfACourse(request, course.id, undefined, i18n.t("itrex.getVideosError"))
             .then((videosReceived: IVideo[]) => {
                 setVideos(videosReceived);
                 loggerService.trace("Received videos in next line:");
@@ -250,7 +250,7 @@ export const VideoPoolComponent: React.FC = () => {
     }
 
     async function _deleteVideo(videoId?: string): Promise<void> {
-        if (videoId === undefined) {
+        if (videoId == undefined) {
             return;
         }
 

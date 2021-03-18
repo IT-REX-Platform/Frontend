@@ -4,9 +4,9 @@ import { IVideo } from "../../types/IVideo";
  * Wrapper for endpoints in backend media-service VideoResource.java.
  */
 export interface IEndpointsVideo {
-    getAllVideos(getRequest: RequestInit, courseId?: string): Promise<IVideo[]>;
-    downloadVideo(getRequest: RequestInit, id: string): Promise<IVideo>;
+    findAllVideosOfACourse(getRequest: RequestInit, courseId: string): Promise<IVideo[]>;
+    downloadVideo(getRequest: RequestInit, videoId: string, httpHeaders: string[]): Promise<IVideo>;
     uploadVideo(postRequest: RequestInit): Promise<IVideo>;
     patchVideo(patchRequest: RequestInit): Promise<IVideo>;
-    deleteVideo(deleteRequest: RequestInit, id: string): Promise<void>;
+    deleteVideo(deleteRequest: RequestInit, videoId: string): Promise<void>;
 }
