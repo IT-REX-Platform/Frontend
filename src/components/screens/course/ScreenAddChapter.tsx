@@ -380,10 +380,10 @@ export const ScreenAddChapter: React.FC = () => {
 
             const postRequest: RequestInit = RequestFactory.createPostRequestWithBody(myNewChapter);
 
-            chapterEndpoint.createChapter(postRequest).then((chapter) => {
+            chapterEndpoint.createChapter(postRequest).then((chapter: IChapter) => {
                 // Assign the Videos
                 Promise.all(
-                    contentList.map((content) => {
+                    contentList.map((content: IContent) => {
                         content.chapterId = chapter.id;
 
                         return new Promise((resolve) => {
@@ -414,7 +414,7 @@ export const ScreenAddChapter: React.FC = () => {
 
             //How to reorder the contents ?
             Promise.all(
-                contentList.map((content) => {
+                contentList.map((content: IContent) => {
                     return new Promise((resolve) => {
                         content.chapterId = chapter.id;
 

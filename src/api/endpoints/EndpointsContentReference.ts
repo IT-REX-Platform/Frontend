@@ -26,7 +26,11 @@ export class EndpointsContentReference implements IEndpointsContentReference {
      * @param getRequest GET request.
      * @param params Optional parameters for GET request URL to filter all existing courses.
      */
-    public getContentReferences(getRequest: RequestInit, successMsg?: string, errorMsg?: string): Promise<IContent[]> {
+    public getAllContentReferences(
+        getRequest: RequestInit,
+        successMsg?: string,
+        errorMsg?: string
+    ): Promise<IContent[]> {
         this.loggerApi.trace("Sending GET request to URL: " + this.url);
         const response: Promise<Response> = sendRequest(this.url, getRequest);
         return this.responseParser.parseContentReferences(response, successMsg, errorMsg);
@@ -63,17 +67,6 @@ export class EndpointsContentReference implements IEndpointsContentReference {
     }
 
     /**
-     * Update all fields of a ContentReference.
-     *
-     * @param postRequest PUT request with course JSON body containing a course ID and all available course fields.
-     */
-    public updateContentReference(putRequest: RequestInit, successMsg?: string, errorMsg?: string): Promise<IContent> {
-        this.loggerApi.trace("Sending PUT request to URL: " + this.url);
-        const response: Promise<Response> = sendRequest(this.url, putRequest);
-        return this.responseParser.parseContentReference(response, successMsg, errorMsg);
-    }
-
-    /**
      * Update one or more ContentReference fields.
      *
      * @param postRequest PATCH request with course JSON body containing a course ID and one or more course fields.
@@ -88,15 +81,15 @@ export class EndpointsContentReference implements IEndpointsContentReference {
      * Delete an existing ContentReference.
      *
      * @param deleteRequest DELETE request.
-     * @param id Course ID for URL parameter.
+     * @param contentReferenceId Course ID for URL parameter.
      */
     public deleteContentReference(
         deleteRequest: RequestInit,
-        id: string,
+        contentReferenceId: string,
         successMsg?: string,
         errorMsg?: string
     ): Promise<void> {
-        const urlUpdated = this.url + "/" + id;
+        const urlUpdated = this.url + "/" + contentReferenceId;
 
         this.loggerApi.trace("Sending DELETE request to URL: " + urlUpdated);
         const response: Promise<Response> = sendRequest(urlUpdated, deleteRequest);
