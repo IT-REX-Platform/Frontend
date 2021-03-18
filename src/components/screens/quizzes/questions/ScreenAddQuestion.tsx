@@ -1,10 +1,9 @@
 /* eslint-disable complexity */
 import { RouteProp, useFocusEffect, useRoute } from "@react-navigation/native";
 import React, { useState } from "react";
-import { ImageBackground, StyleSheet, View, TextInput, Text } from "react-native";
+import { ImageBackground, View, TextInput, Text } from "react-native";
 import { dark } from "../../../../constants/themes/dark";
 import { LocalizationContext } from "../../../Context";
-import { IChapter } from "../../../../types/IChapter";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import i18n from "../../../../locales";
 import { QuestionTypes } from "../../../../constants/QuestionTypes";
@@ -18,17 +17,9 @@ import { IQuiz } from "../../../../types/IQuiz";
 import { CourseStackParamList } from "../../../../constants/navigators/NavigationRoutes";
 import { quizStyles } from "../quizStyles";
 
-interface ChapterComponentProps {
-    chapter?: IChapter;
-    chapterId?: string;
-    editMode?: boolean;
-    quiz: IQuiz;
-    courseId?: string;
-}
-
 type ScreenCourseTabsRouteProp = RouteProp<CourseStackParamList, "CREATE_QUESTION">;
 
-export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
+export const ScreenAddQuestion: React.FC = () => {
     React.useContext(LocalizationContext);
     const [questionText, setQuestionText] = useState<string>(i18n.t("itrex.addQuestionText"));
     const route = useRoute<ScreenCourseTabsRouteProp>();
@@ -37,6 +28,7 @@ export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
     const question = route.params.question;
     const [quiz] = useState<IQuiz | undefined>(quizTemp);
 
+    // Selection choices
     const kindOfQuestionOptions = [
         { value: QuestionTypes.MULTIPLE_CHOICE, label: "Multiple Choice" },
         { value: QuestionTypes.SINGLE_CHOICE, label: "Single Choice" },
@@ -93,6 +85,11 @@ export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
         </ImageBackground>
     );
 
+    /**
+     * Selection for the kind of question to add.
+     *
+     * @returns
+     */
     function selectKindOfQuestion() {
         return (
             <View style={quizStyles.card}>
@@ -120,6 +117,11 @@ export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
         );
     }
 
+    /**
+     * Set the input fields for the selected kind of question.
+     * @returns
+     *
+     */
     function setInputFields() {
         switch (selectedKindOfQuestion) {
             case QuestionTypes.NUMERIC:

@@ -1,10 +1,9 @@
 /* eslint-disable complexity */
 import { RouteProp, useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
 import React, { useState } from "react";
-import { Text, ImageBackground, StyleSheet, View, TextInput, TouchableOpacity } from "react-native";
+import { Text, ImageBackground, View, TextInput, TouchableOpacity } from "react-native";
 import { dark } from "../../../constants/themes/dark";
 import { CourseContext, LocalizationContext } from "../../Context";
-import { IChapter } from "../../../types/IChapter";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { TextButton } from "../../uiElements/TextButton";
 import i18n from "../../../locales";
@@ -40,10 +39,7 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = (props) => {
         quizWithQuestions = route.params.quiz;
     }
 
-    console.log(quizWithQuestions);
-
     const courseId = course.id;
-
     const initialQuizName = quizWithQuestions?.name == undefined ? "My new Quiz" : quizWithQuestions.name;
 
     const [quiz] = useState<IQuiz>({} as IQuiz);

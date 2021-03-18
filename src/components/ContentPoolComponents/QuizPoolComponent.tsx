@@ -145,6 +145,9 @@ export const QuizPoolComponent: React.FC = () => {
         return 3;
     }
 
+    /**
+     * Get a list of all quizzes
+     */
     async function _getAllQuizzes(): Promise<void> {
         if (course.id == undefined) {
             return;
@@ -153,20 +156,26 @@ export const QuizPoolComponent: React.FC = () => {
         setQuizzes(initialQuizzes);
 
         const request: RequestInit = RequestFactory.createGetRequest();
-        const response = endpointsQuiz.getCourseQuizzes(request, course.id, "OK", "ERROR");
+        const response = endpointsQuiz.getCourseQuizzes(request, course.id);
         response.then((courseQuizzes: IQuiz[]) => {
             setQuizzes(courseQuizzes);
             console.log(courseQuizzes);
         });
     }
 
+    /**
+     * Delete a specifix quiz with it's id. Update the Quizzes list afterwards.
+     *
+     * @param quizId id of the quiz to delete
+     * @returns
+     */
     async function _deleteQuiz(quizId?: string): Promise<void> {
         if (quizId === undefined) {
             return;
         }
 
         const request: RequestInit = RequestFactory.createDeleteRequest();
-        const response = endpointsQuiz.deleteQuiz(request, quizId, undefined, "OK", "ERROR");
+        const response = endpointsQuiz.deleteQuiz(request, quizId, undefined);
         response.then(() => _getAllQuizzes());
     }
 };

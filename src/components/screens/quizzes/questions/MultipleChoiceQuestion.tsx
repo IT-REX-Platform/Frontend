@@ -148,10 +148,20 @@ export const MultipleChoiceQuestion: React.FC<QuizProps> = (props) => {
         </>
     );
 
+    /**
+     * Add the user defined solution entry of the text input to the solution of the questions.
+     *
+     * @param index index of the solution entry
+     * @param text text of the solution entry
+     */
     function addSolutionEntry(index: string, text: string) {
         setchoicesMultipleChoice((choicesMultipleChoice) => ({ ...choicesMultipleChoice, [index]: text }));
     }
 
+    /**
+     * Save the defined  multiple choice question.
+     * @returns
+     */
     function saveMultipleChoiceQuestion() {
         setSolution({ "0": checkboxZero, "1": checkboxOne, "2": checkboxTwo, "3": checkboxThree });
         if (validateMultipleChoiceQuestion(courseId, questionText, choicesMultipleChoice, solution)) {
@@ -184,6 +194,10 @@ export const MultipleChoiceQuestion: React.FC<QuizProps> = (props) => {
         }
     }
 
+    /**
+     * Update an existing question.
+     * @returns
+     */
     function updateQuestion() {
         if (quiz === undefined) {
             return;
@@ -211,6 +225,10 @@ export const MultipleChoiceQuestion: React.FC<QuizProps> = (props) => {
         }
     }
 
+    /**
+     * Delete an existing question.
+     * @returns
+     */
     function deleteQuestion() {
         if (quiz == undefined || questionId == undefined) {
             return;

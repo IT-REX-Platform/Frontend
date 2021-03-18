@@ -1,7 +1,7 @@
 /* eslint-disable complexity */
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
-import { StyleSheet, View, Text } from "react-native";
+import { View, Text } from "react-native";
 import { dark } from "../../../../constants/themes/dark";
 import { LocalizationContext } from "../../../Context";
 import { TextButton } from "../../../uiElements/TextButton";
@@ -96,6 +96,12 @@ export const NumericQuestion: React.FC<QuizProps> = (props) => {
         </>
     );
 
+    /**
+     * Save user input as espsilon value.
+     * @param solutionEpsilon number of the user input
+     *
+     * @returns
+     */
     function setNumberOfEpsilon(solutionEpsilon: number | null) {
         if (solutionEpsilon === null) {
             return;
@@ -103,6 +109,12 @@ export const NumericQuestion: React.FC<QuizProps> = (props) => {
         setEpsilonSolution(solutionEpsilon);
     }
 
+    /**
+     * Save user number input as solution number.
+     *
+     * @param solutionNumber number of the user input
+     * @returns
+     */
     function setNumberOfSolution(solutionNumber: number | null) {
         if (solutionNumber === null) {
             return;
@@ -110,6 +122,10 @@ export const NumericQuestion: React.FC<QuizProps> = (props) => {
         setNumberSolution(solutionNumber);
     }
 
+    /**
+     * Save a numeric question.
+     * @returns
+     */
     function saveNumericQuestion() {
         if (validateNumericQuestion(courseId, questionText, epsilonSolution, numberSolution)) {
             const myNewQuestion = validateNumericQuestion(courseId, questionText, epsilonSolution, numberSolution);
@@ -136,6 +152,10 @@ export const NumericQuestion: React.FC<QuizProps> = (props) => {
         }
     }
 
+    /**
+     * Update an existing question.
+     * @returns
+     */
     function updateQuestion() {
         if (quiz === undefined) {
             return;
@@ -163,6 +183,10 @@ export const NumericQuestion: React.FC<QuizProps> = (props) => {
         }
     }
 
+    /**
+     * Delete existion question.
+     * @returns
+     */
     function deleteQuestion() {
         if (quiz == undefined || questionId == undefined) {
             return;

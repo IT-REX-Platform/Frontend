@@ -1,7 +1,7 @@
 /* eslint-disable complexity */
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
-import { StyleSheet, View, TextInput, Text } from "react-native";
+import { View, TextInput, Text } from "react-native";
 import { dark } from "../../../../constants/themes/dark";
 import { LocalizationContext } from "../../../Context";
 import { TextButton } from "../../../uiElements/TextButton";
@@ -146,7 +146,11 @@ export const SingleChoiceQuestion: React.FC<QuizProps> = (props) => {
         </>
     );
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    /**
+     * Change the checkbox values.
+     *
+     * @param index of the right solution entry
+     */
     function changeChecked(index: string): void {
         if (index === "0") {
             setCheckboxZero(true);
@@ -175,10 +179,20 @@ export const SingleChoiceQuestion: React.FC<QuizProps> = (props) => {
         }
     }
 
+    /**
+     * Add the user defined solution entry of the text input to the solution of the questions.
+     *
+     * @param index index of the solution entry
+     * @param text text of the solution entry
+     */
     function addSolutionEntry(index: string, text: string) {
         setChoicesSingleChoice((choicesSingleChoice) => ({ ...choicesSingleChoice, [index]: text }));
     }
 
+    /**
+     * Save the defined single choice question.
+     * @returns
+     */
     function saveSingleChoiceQuestion() {
         if (validateSingleChoiceQuestion(courseId, questionText, choicesSingleChoice, solution)) {
             const myNewQuestion = validateSingleChoiceQuestion(courseId, questionText, choicesSingleChoice, solution);
@@ -205,6 +219,11 @@ export const SingleChoiceQuestion: React.FC<QuizProps> = (props) => {
         }
     }
 
+    /**
+     * Update an existing question.
+     *
+     * @returns
+     */
     function updateQuestion() {
         if (quiz === undefined) {
             return;
@@ -232,6 +251,10 @@ export const SingleChoiceQuestion: React.FC<QuizProps> = (props) => {
         }
     }
 
+    /**
+     * Delete an existing question.
+     * @returns
+     */
     function deleteQuestion() {
         if (quiz == undefined || questionId == undefined) {
             return;
