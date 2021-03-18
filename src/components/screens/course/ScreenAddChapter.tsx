@@ -168,7 +168,7 @@ export const ScreenAddChapter: React.FC = () => {
                 </TouchableOpacity>
                 {getContentIcon(item)}
                 <ListItem.Content>
-                    <TouchableOpacity onPress={drag}>
+                    <TouchableOpacity onLongPress={drag}>
                         <ListItem.Title style={styles.listItemTitle} numberOfLines={2} lineBreakMode="tail">
                             <View
                                 style={{

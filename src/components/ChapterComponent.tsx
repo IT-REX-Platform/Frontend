@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
         marginBottom: 5,
         paddingTop: "20px",
         flex: 1,
-        flexDirection: "row",
+        flexDirection: "column",
         alignSelf: "center",
     },
     chapterMaterialElement: {
