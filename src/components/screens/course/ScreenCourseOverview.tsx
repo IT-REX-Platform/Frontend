@@ -58,7 +58,7 @@ export const ScreenCourseOverview: React.FC = () => {
                         {getPublishedSate(course.publishState)}
                         {checkForLeaveCourse()}
                         <Text style={styles.textWhite}>{course.courseDescription}</Text>
-                        {uploadViedeoAsOwner()}
+                        {createContentAsOwner()}
                     </View>
                 </View>
             </ImageBackground>
@@ -97,14 +97,19 @@ export const ScreenCourseOverview: React.FC = () => {
         );
     }
 
-    function uploadViedeoAsOwner() {
+    function createContentAsOwner() {
         if (user.courses === undefined || course.id === undefined) {
             return <></>;
         }
 
         const courseRole = user.courses[course.id];
         if (courseRole === CourseRoles.OWNER) {
-            return <TextButton title={i18n.t("itrex.videoPool")} onPress={() => goToVideoPool()} />;
+            return (
+                <View style={{ flexDirection: "row" }}>
+                    <TextButton title={i18n.t("itrex.videoPool")} onPress={() => goToVideoPool()} />
+                    <TextButton title={i18n.t("itrex.quizPool")} onPress={() => goToQuizPool()} />
+                </View>
+            );
         }
     }
 
@@ -200,6 +205,12 @@ export const ScreenCourseOverview: React.FC = () => {
     function goToVideoPool() {
         if (course.id !== undefined) {
             navigation.navigate("VIDEO_POOL");
+        }
+    }
+
+    function goToQuizPool() {
+        if (course.id !== undefined) {
+            navigation.navigate("QUIZ_POOL");
         }
     }
 

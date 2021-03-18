@@ -1,3 +1,4 @@
+import { IQuiz } from "./IQuiz";
 import { IVideo } from "./IVideo";
 
 export enum CONTENTREFERENCETYPE {
@@ -11,6 +12,7 @@ export type IContent = {
     timePeriodId?: string;
     contentId?: string;
     video?: IVideo;
+    quiz?: IQuiz;
     contentReferenceType?: CONTENTREFERENCETYPE;
     //tmp
     isPersistent?: boolean;

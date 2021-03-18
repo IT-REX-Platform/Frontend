@@ -20,7 +20,11 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
 
     function getPublishedSate(isPublished: CoursePublishState | undefined) {
         if (isPublished === CoursePublishState.UNPUBLISHED) {
-            return <InfoUnpublished />;
+            return (
+                <View style={styles.publishedState}>
+                    <InfoUnpublished />
+                </View>
+            );
         } else if (isPublished === CoursePublishState.PUBLISHED) {
             return <InfoPublished />;
         }
@@ -88,5 +92,10 @@ const styles = StyleSheet.create({
         opacity: 0.5,
         height: 1,
         marginTop: 1,
+    },
+    publishedState: {
+        flexDirection: "row",
+        justifyContent: "flex-end",
+        margin: 5,
     },
 });
