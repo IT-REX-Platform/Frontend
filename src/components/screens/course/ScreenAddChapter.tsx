@@ -17,7 +17,14 @@ import { dark } from "../../../constants/themes/dark";
 import { CourseContext, LocalizationContext } from "../../Context";
 import { DatePickerComponent } from "../../DatePickerComponent";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
-import { CompositeNavigationProp, RouteProp, useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
+import {
+    CompositeNavigationProp,
+    RouteProp,
+    useFocusEffect,
+    useLinkProps,
+    useNavigation,
+    useRoute,
+} from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { CourseStackParamList, RootDrawerParamList } from "../../../constants/navigators/NavigationRoutes";
@@ -532,9 +539,11 @@ export const ScreenAddChapter: React.FC = () => {
 
         // Create new Chapter
         if (chapterId == undefined) {
+            const chapterNumber = course.chapters !== undefined ? course.chapters.length + 1 : 1;
             const myNewChapter: IChapter = {
                 name: chapterName,
                 courseId: course.id,
+                chapterNumber: chapterNumber,
             };
             const postRequest: RequestInit = RequestFactory.createPostRequestWithBody(myNewChapter);
 
