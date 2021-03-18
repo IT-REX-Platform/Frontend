@@ -16,6 +16,7 @@ import { SingleChoiceQuestion } from "./SingleChoiceQuestion";
 import { MultipleChoiceQuestion } from "./MultipleChoiceQuestion";
 import { IQuiz } from "../../../../types/IQuiz";
 import { CourseStackParamList } from "../../../../constants/navigators/NavigationRoutes";
+import { quizStyles } from "../quizStyles";
 
 interface ChapterComponentProps {
     chapter?: IChapter;
@@ -73,18 +74,18 @@ export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
     );
 
     return (
-        <ImageBackground source={require("../../../../constants/images/Background1-1.png")} style={styles.image}>
-            <View style={[styles.headContainer]}>
-                <View style={styles.borderContainer}>
+        <ImageBackground source={require("../../../../constants/images/Background1-1.png")} style={quizStyles.image}>
+            <View style={[quizStyles.headContainer]}>
+                <View style={quizStyles.borderContainer}>
                     <TextInput
-                        style={styles.questionInput}
+                        style={quizStyles.questionInput}
                         value={questionText}
                         onChangeText={(text) => {
                             setQuestionText(text);
                         }}
                         multiline={true}
                     />
-                    <MaterialCommunityIcons name="pen" size={24} color={dark.theme.darkGreen} style={styles.icon} />
+                    <MaterialCommunityIcons name="pen" size={24} color={dark.theme.darkGreen} style={quizStyles.icon} />
                 </View>
             </View>
             {selectKindOfQuestion()}
@@ -94,9 +95,9 @@ export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
 
     function selectKindOfQuestion() {
         return (
-            <View style={styles.card}>
-                <Text style={styles.cardHeader}>{i18n.t("itrex.kindOfQuestion")}</Text>
-                <View style={styles.filterContainer}>
+            <View style={quizStyles.card}>
+                <Text style={quizStyles.cardHeader}>{i18n.t("itrex.kindOfQuestion")}</Text>
+                <View style={quizStyles.filterContainer}>
                     <View style={{ padding: 8, flex: 1 }}>
                         <Select
                             options={kindOfQuestionOptions}
@@ -163,62 +164,3 @@ export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
         }
     }
 };
-
-const styles = StyleSheet.create({
-    headContainer: {
-        flexDirection: "row",
-        alignItems: "flex-start",
-        paddingTop: "3%",
-        paddingLeft: "3%",
-    },
-    borderContainer: {
-        height: 100,
-        flex: 3,
-        flexDirection: "row",
-        borderBottomColor: "rgba(70,74,91,0.5)",
-        borderBottomWidth: 3,
-    },
-    icon: {
-        position: "relative",
-        alignItems: "flex-start",
-    },
-    image: {
-        flex: 1,
-        resizeMode: "stretch",
-    },
-    questionInput: {
-        color: "white",
-        fontSize: 24,
-        fontWeight: "bold",
-        width: "100%",
-        height: "90%",
-        margin: 2,
-        padding: 5,
-        borderColor: "white",
-        borderStyle: "dotted",
-        textAlign: "center",
-        borderWidth: 1,
-        borderRadius: 5,
-    },
-    card: {
-        marginTop: 20,
-        maxWidth: "35%",
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "flex-start",
-        backgroundColor: dark.Opacity.grey,
-    },
-    cardHeader: {
-        padding: 16,
-        fontSize: 20,
-        fontWeight: "bold",
-        color: "white",
-        textAlign: "center",
-        flexGrow: 1,
-    },
-    filterContainer: {
-        flexGrow: 4,
-        flexDirection: "row",
-        flexWrap: "nowrap",
-    },
-});

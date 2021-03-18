@@ -16,9 +16,7 @@ import { EndpointsQuestion } from "../../../../api/endpoints/EndpointsQuestion";
 import { RequestFactory } from "../../../../api/requests/RequestFactory";
 import { IQuestionSingleChoice } from "../../../../types/IQuestion";
 import { QuestionTypes } from "../../../../constants/QuestionTypes";
-import { IContent } from "../../../../types/IContent";
-import { EndpointsContentReference } from "../../../../api/endpoints/EndpointsContentReference";
-import { EndpointsChapter } from "../../../../api/endpoints/EndpointsChapter";
+import { quizStyles } from "../quizStyles";
 
 interface QuizProps {
     question?: IQuestionSingleChoice;
@@ -61,76 +59,76 @@ export const SingleChoiceQuestion: React.FC<QuizProps> = (props) => {
     return (
         <>
             <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "center", marginTop: 90 }}>
-                <Text style={styles.textStyle}>{i18n.t("itrex.specifyChoices")}</Text>
+                <Text style={quizStyles.textStyle}>{i18n.t("itrex.specifyChoices")}</Text>
             </View>
 
             <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "center" }}>
-                <View style={styles.section}>
+                <View style={quizStyles.section}>
                     <Checkbox
-                        style={styles.checkbox}
+                        style={quizStyles.checkbox}
                         color={checkboxZero ? dark.theme.darkGreen : dark.theme.pink}
                         value={checkboxZero}
                         onValueChange={() => changeChecked("0")}
                     />
-                    <View style={styles.cardChoicesRight}>
+                    <View style={quizStyles.cardChoicesRight}>
                         <TextInput
                             editable
                             defaultValue={choicesSingleChoice !== undefined ? choicesSingleChoice["0"] : ""}
-                            style={[styles.answerInput]}
+                            style={[quizStyles.answerInput]}
                             onChangeText={(text: string) => addSolutionEntry("0", text)}
                             multiline={true}
                         />
                     </View>
                 </View>
 
-                <View style={styles.section}>
+                <View style={quizStyles.section}>
                     <Checkbox
-                        style={styles.checkbox}
+                        style={quizStyles.checkbox}
                         color={checkboxOne ? dark.theme.darkGreen : dark.theme.pink}
                         value={checkboxOne}
                         onValueChange={() => changeChecked("1")}
                     />
-                    <View style={styles.cardChoicesRight}>
+                    <View style={quizStyles.cardChoicesRight}>
                         <TextInput
                             editable
                             defaultValue={choicesSingleChoice !== undefined ? choicesSingleChoice["1"] : ""}
-                            style={[styles.answerInput]}
+                            style={[quizStyles.answerInput]}
                             onChangeText={(text: string) => addSolutionEntry("1", text)}
                             multiline={true}
                         />
                     </View>
                 </View>
-                <View style={styles.section}>
+                <View style={quizStyles.section}>
                     <Checkbox
-                        style={styles.checkbox}
+                        style={quizStyles.checkbox}
                         color={checkboxTwo ? dark.theme.darkGreen : dark.theme.pink}
                         value={checkboxTwo}
                         onValueChange={() => changeChecked("2")}
                     />
 
-                    <View style={styles.cardChoicesRight}>
+                    <View style={quizStyles.cardChoicesRight}>
                         <TextInput
                             editable
                             defaultValue={choicesSingleChoice !== undefined ? choicesSingleChoice["2"] : ""}
-                            style={[styles.answerInput]}
+                            style={[quizStyles.answerInput]}
                             onChangeText={(text: string) => addSolutionEntry("2", text)}
                             multiline={true}
                         />
                     </View>
                 </View>
-                <View style={styles.section}>
+                <View style={quizStyles.section}>
                     <Checkbox
-                        style={styles.checkbox}
+                        style={quizStyles.checkbox}
                         color={checkboxThree ? dark.theme.darkGreen : dark.theme.pink}
                         value={checkboxThree}
                         onValueChange={() => changeChecked("3")}
                     />
-                    <View style={styles.cardChoicesRight}>
+                    <View style={quizStyles.cardChoicesRight}>
                         <TextInput
                             editable
                             defaultValue={choicesSingleChoice !== undefined ? choicesSingleChoice["3"] : ""}
                             allowFontScaling={true}
-                            style={[styles.answerInput]}
+                            style={[quizStyles.answerInput]}
                             onChangeText={(text: string) => addSolutionEntry("3", text)}
                             multiline={true}
                         />
@@ -254,58 +252,3 @@ export const SingleChoiceQuestion: React.FC<QuizProps> = (props) => {
         });
     }
 };
-
-const styles = StyleSheet.create({
-    cardChoicesRight: {
-        margin: 8,
-        minHeight: 100,
-        maxHeight: 150,
-        width: "90%",
-        backgroundColor: dark.Opacity.grey,
-        borderColor: dark.theme.lightBlue,
-        borderWidth: 5,
-        justifyContent: "center",
-        color: "white",
-    },
-    answerInput: {
-        width: "100%",
-        minHeight: 90,
-        fontSize: 25,
-        color: "white",
-        borderColor: "white",
-        borderStyle: "dotted",
-        textAlign: "center",
-        borderWidth: 1,
-        borderRadius: 5,
-    },
-    card: {
-        marginTop: 20,
-        maxWidth: "50%",
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "flex-start",
-        backgroundColor: dark.Opacity.grey,
-    },
-
-    textStyle: {
-        color: "white",
-        fontSize: 18,
-    },
-    section: {
-        margin: 8,
-        marginBottom: 0,
-        minHeight: 120,
-        maxHeight: 150,
-        width: "45%",
-        flexDirection: "row",
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    checkbox: {
-        margin: 8,
-        width: 40,
-        height: 40,
-        backgroundColor: dark.theme.pink,
-        borderRadius: 3,
-    },
-});
