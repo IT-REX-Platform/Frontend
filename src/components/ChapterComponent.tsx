@@ -159,7 +159,7 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
 const styles = StyleSheet.create({
     chapterContainer: {
         backgroundColor: "rgba(0,0,0,0.3)",
-        width: "80%",
+        width: "100%",
         marginTop: "1%",
         padding: "1.5%",
         borderWidth: 3,
