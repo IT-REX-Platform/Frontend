@@ -530,13 +530,6 @@ export const ScreenAddChapter: React.FC = () => {
         // Validate start/end Date
         // Check if start and Enddate are set
 
-        const currContentList = [];
-        for (const content of contentList) {
-            if (content.id !== undefined) {
-                currContentList.push(content.id);
-            }
-        }
-
         // Create new Chapter
         if (chapterId == undefined) {
             const myNewChapter: IChapter = {
@@ -552,12 +545,13 @@ export const ScreenAddChapter: React.FC = () => {
                         content.chapterId = chapter.id;
 
                         return new Promise((resolve) => {
+                            // This is a new Content, the current id is only temp
                             if (content.id !== undefined) {
                                 // Search for TimePeriod
                                 if (selectedValues[content.id] !== undefined) {
                                     content.timePeriodId = selectedValues[content.id];
-                                    content.id = undefined;
                                 }
+                                content.id = undefined;
                             }
 
                             const postRequest: RequestInit = RequestFactory.createPostRequestWithBody(content);
@@ -581,7 +575,7 @@ export const ScreenAddChapter: React.FC = () => {
             Promise.all(
                 contentList.map((content) => {
                     return new Promise((resolve) => {
-                        content.chapterId = chapter.id;
+                        //content.chapterId = chapter.id;
 
                         if (content.id !== undefined) {
                             // Search for TimePeriod
@@ -596,9 +590,10 @@ export const ScreenAddChapter: React.FC = () => {
 
                             const postRequest: RequestInit = RequestFactory.createPostRequestWithBody(content);
 
-                            contentReferenceEndpoint.createContentReference(postRequest).then((contentRef) => {
-                                contentRef.isPersistent = true;
+                            return contentReferenceEndpoint.createContentReference(postRequest).then((contentRef) => {
+                                content.isPersistent = true;
                                 content.id = contentRef.id;
+
                                 resolve(contentRef);
                             });
                         }
