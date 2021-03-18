@@ -6,7 +6,7 @@ import { IEndpointsCourse } from "../endpoints_interfaces/IEndpointsCourse";
 import { loggerFactory } from "../../../logger/LoggerConfig";
 import { CourseUrlParams } from "../../constants/CourseUrlParams";
 import { ResponseParser } from "./ResponseParser";
-import { CourseURLSuffix } from "../../constants/CourseURLSuffix";
+import { CourseUrlSuffix } from "../../constants/CourseUrlSuffix";
 import { CoursePublishState } from "../../constants/CoursePublishState";
 
 /**
@@ -65,7 +65,7 @@ export class EndpointsCourse implements IEndpointsCourse {
         successMsg?: string,
         errorMsg?: string
     ): Promise<ICourse[]> {
-        const myCoursesURL = this.url + CourseURLSuffix.USER;
+        const myCoursesURL = this.url + CourseUrlSuffix.USER;
 
         this.loggerApi.trace("Checking for additional parameters for GET request URL.");
         const url: string = this._appendCourseParams(myCoursesURL, publishState, activeOnly);
@@ -90,7 +90,7 @@ export class EndpointsCourse implements IEndpointsCourse {
         successMsg?: string,
         errorMsg?: string
     ): Promise<ICourse[]> {
-        const myCoursesURL = this.url + CourseURLSuffix.PUBLISHED;
+        const myCoursesURL = this.url + CourseUrlSuffix.PUBLISHED;
 
         this.loggerApi.trace("Checking for additional parameters for GET request URL.");
         const url: string = this._appendCourseParams(myCoursesURL, undefined, activeOnly);
@@ -177,7 +177,7 @@ export class EndpointsCourse implements IEndpointsCourse {
         successMsg?: string,
         errorMsg?: string
     ): Promise<void> {
-        const urlJoin = this.url + "/" + courseId + CourseURLSuffix.JOIN;
+        const urlJoin = this.url + "/" + courseId + CourseUrlSuffix.JOIN;
 
         this.loggerApi.trace("Sending POST request to URL: " + urlJoin);
         const response: Promise<Response> = sendRequest(urlJoin, postRequest);
@@ -199,7 +199,7 @@ export class EndpointsCourse implements IEndpointsCourse {
         successMsg?: string,
         errorMsg?: string
     ): Promise<void> {
-        const urlLeave = this.url + "/" + courseId + CourseURLSuffix.LEAVE;
+        const urlLeave = this.url + "/" + courseId + CourseUrlSuffix.LEAVE;
 
         this.loggerApi.trace("Sending POST request to URL: " + urlLeave);
         const response: Promise<Response> = sendRequest(urlLeave, postRequest);

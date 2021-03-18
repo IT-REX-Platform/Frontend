@@ -5,6 +5,7 @@ import { IVideo } from "../../types/IVideo";
  */
 export interface IEndpointsVideo {
     findAllVideosOfACourse(getRequest: RequestInit, courseId: string): Promise<IVideo[]>;
+    findAllWithIds(getRequest: RequestInit, videoIds: string[]): Promise<Map<string, IVideo>>;
     downloadVideo(getRequest: RequestInit, videoId: string, httpHeaders: string[]): Promise<IVideo>;
     uploadVideo(postRequest: RequestInit): Promise<IVideo>;
     patchVideo(patchRequest: RequestInit): Promise<IVideo>;

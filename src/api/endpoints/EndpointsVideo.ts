@@ -6,6 +6,7 @@ import { IEndpointsVideo } from "../endpoints_interfaces/IEndpointsVideo";
 import { loggerFactory } from "../../../logger/LoggerConfig";
 import { ResponseParser } from "./ResponseParser";
 import { VideoUrlParams } from "../../constants/VideoUrlParams";
+import { VideoUrlSuffix } from "../../constants/VideoUrlSuffix";
 
 /**
  * Endpoints for mediaservice/api/videos.
@@ -37,7 +38,7 @@ export class EndpointsVideo implements IEndpointsVideo {
         errorMsg?: string
     ): Promise<IVideo[]> {
         this.loggerApi.trace("Checking for additional parameters for GET request URL.");
-        let url: string = this.url;
+        let url: string = this.url + VideoUrlSuffix.COURSE;
 
         const urlParams = new URLSearchParams();
         if (courseId !== undefined) {
@@ -48,6 +49,19 @@ export class EndpointsVideo implements IEndpointsVideo {
         this.loggerApi.trace("Sending GET request to URL: " + url);
         const response: Promise<Response> = sendRequest(url, getRequest);
         return this.responseParser.parseVideos(response, successMsg, errorMsg);
+    }
+
+    public findAllWithIds(
+        getRequest: RequestInit,
+        videoIds: string[],
+        successMsg?: string,
+        errorMsg?: string
+    ): Promise<Map<string, IVideo>> {
+        // TODO: put videoIds in body or URL?
+
+        this.loggerApi.trace("Sending GET request to URL: " + this.url);
+        const response: Promise<Response> = sendRequest(this.url, getRequest);
+        return this.responseParser.parseVideoMap(response, successMsg, errorMsg);
     }
 
     /**
@@ -66,9 +80,9 @@ export class EndpointsVideo implements IEndpointsVideo {
         successMsg?: string,
         errorMsg?: string
     ): Promise<IVideo> {
-        // TODO: httpHeaders
+        // TODO: do something with httpHeaders?
 
-        const url: string = this.url + "/" + videoId;
+        const url: string = this.url + VideoUrlSuffix.DOWNLOAD + "/" + videoId;
 
         this.loggerApi.trace("Sending GET request to URL: " + url);
         const response: Promise<Response> = sendRequest(url, getRequest);
