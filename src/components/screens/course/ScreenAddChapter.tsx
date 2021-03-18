@@ -113,7 +113,7 @@ export const ScreenAddChapter: React.FC = () => {
         loggerService.trace("Displaying video list.");
         return (
             <View style={styles.containerTop}>
-                <Text style={{ marginBottom: 10, fontSize: 20, color: "white" }}>VIDEO POOL LIST</Text>
+                <Text style={{ marginBottom: 10, fontSize: 20, color: "white" }}>{i18n.t("itrex.videoPoolList")}</Text>
                 <FlatList
                     style={styles.list}
                     showsVerticalScrollIndicator={true}
@@ -138,7 +138,7 @@ export const ScreenAddChapter: React.FC = () => {
         loggerService.trace("Displaying quiz list.");
         return (
             <View style={styles.containerTop}>
-                <Text style={{ marginBottom: 10, fontSize: 20, color: "white" }}>QUIZ POOL LIST</Text>
+                <Text style={{ marginBottom: 10, fontSize: 20, color: "white" }}>{i18n.t("itrex.quizPoolList")}</Text>
                 <FlatList
                     style={styles.list}
                     showsVerticalScrollIndicator={true}
@@ -271,7 +271,7 @@ export const ScreenAddChapter: React.FC = () => {
                     {item.name}
                 </ListItem.Title>
                 <ListItem.Subtitle style={contentPoolStyles.listItemSubtitle} numberOfLines={1} lineBreakMode="tail">
-                    Questions : {item.questions.length}
+                    {i18n.t("itrex.questions")} {item.questions.length}
                 </ListItem.Subtitle>
             </ListItem.Content>
         </ListItem>
@@ -290,9 +290,7 @@ export const ScreenAddChapter: React.FC = () => {
     const emptyQuizList = () => {
         return (
             <View style={contentPoolStyles.infoTextBox}>
-                <Text style={contentPoolStyles.infoText}>
-                    Bisher wurden dem Quiz Pool noch keine Quizze hinzugefügt.
-                </Text>
+                <Text style={contentPoolStyles.infoText}>{i18n.t("itrex.noQuizzesAvailable")}</Text>
             </View>
         );
     };
@@ -320,7 +318,11 @@ export const ScreenAddChapter: React.FC = () => {
             case CONTENTREFERENCETYPE.VIDEO:
                 return calculateVideoSize(item.video?.length);
             case CONTENTREFERENCETYPE.QUIZ:
-                return <Text>Questions: {item.quiz?.questions.length}</Text>;
+                return (
+                    <Text>
+                        {i18n.t("itrex.questions")} {item.quiz?.questions.length}
+                    </Text>
+                );
         }
     }
 
@@ -510,7 +512,9 @@ export const ScreenAddChapter: React.FC = () => {
                 <View style={styles.contentContainer}>
                     <View style={styles.sequenceArea}>
                         <View style={styles.containerTop}>
-                            <Text style={{ marginBottom: 10, fontSize: 20, color: "white" }}>CHAPTER CONTENT LIST</Text>
+                            <Text style={{ marginBottom: 10, fontSize: 20, color: "white" }}>
+                                {i18n.t("itrex.chapterContentList")}
+                            </Text>
                             <DraggableFlatList
                                 style={styles.list}
                                 showsVerticalScrollIndicator={true}
@@ -664,8 +668,6 @@ export const ScreenAddChapter: React.FC = () => {
     }
 
     async function _getAllQuizzes(): Promise<IQuiz[]> {
-        console.log("2-------------2--------------------");
-        console.log(course);
         if (course.id == undefined) {
             loggerService.warn("Course ID undefined, can't get quizzes.");
             setLoading(false);
@@ -679,8 +681,6 @@ export const ScreenAddChapter: React.FC = () => {
             .getCourseQuizzes(request, course.id, undefined, "Error while getting Course quizzes")
             .then((quizzesReceived: IQuiz[]) => {
                 setQuizPoolList(quizzesReceived);
-                console.log("---------------QUIZ POOL----------------");
-                console.log(quizzesReceived);
                 return quizzesReceived;
             })
             .finally(() => setLoading(false));

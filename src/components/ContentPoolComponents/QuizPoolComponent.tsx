@@ -104,7 +104,7 @@ export const QuizPoolComponent: React.FC = () => {
                         style={contentPoolStyles.listItemSubtitle}
                         numberOfLines={1}
                         lineBreakMode="tail">
-                        Questions : {item.questions.length}
+                        {i18n.t("itrex.questions")} {item.questions.length}
                     </ListItem.Subtitle>
                 </ListItem.Content>
 
@@ -121,9 +121,7 @@ export const QuizPoolComponent: React.FC = () => {
     const renderEmptyList = () => {
         return (
             <View style={contentPoolStyles.infoTextBox}>
-                <Text style={contentPoolStyles.infoText}>
-                    Bisher wurden dem Quiz Pool noch keine Quizze hinzugefügt.
-                </Text>
+                <Text style={contentPoolStyles.infoText}>{i18n.t("itrex.noQuizzesAvailable")}</Text>
             </View>
         );
     };
