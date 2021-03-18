@@ -34,7 +34,7 @@ export class ResponseParser {
                     resolve(courses);
                 })
                 .catch((error) => {
-                    this.loggerApi.error("An error occurred while parsing courses.", error);
+                    this.loggerApi.error("An error occurred while parsing courses: " + error.message);
                     this._toastError(errorMsg);
                     resolve([]);
                 });
@@ -63,7 +63,7 @@ export class ResponseParser {
                     resolve(course);
                 })
                 .catch((error) => {
-                    this.loggerApi.error("An error occurred while parsing course.", error);
+                    this.loggerApi.error("An error occurred while parsing course: " + error.message);
                     this._toastError(errorMsg);
                     resolve({});
                 });
@@ -79,7 +79,7 @@ export class ResponseParser {
                     resolve(chapters);
                 })
                 .catch((error) => {
-                    this.loggerApi.error("An error occurred while parsing chapters.", error);
+                    this.loggerApi.error("An error occurred while parsing chapters: " + error.message);
                     this._toastError(errorMsg);
                     resolve([]);
                 });
@@ -95,7 +95,7 @@ export class ResponseParser {
                     resolve(chapter);
                 })
                 .catch((error) => {
-                    this.loggerApi.error("An error occurred while parsing chapter.", error);
+                    this.loggerApi.error("An error occurred while parsing chapter: " + error.message);
                     this._toastError(errorMsg);
                     resolve({});
                 });
@@ -115,7 +115,7 @@ export class ResponseParser {
                     resolve(contents);
                 })
                 .catch((error) => {
-                    this.loggerApi.error("An error occurred while parsing contents.", error);
+                    this.loggerApi.error("An error occurred while parsing contents: " + error.message);
                     this._toastError(errorMsg);
                     resolve([]);
                 });
@@ -135,7 +135,7 @@ export class ResponseParser {
                     resolve(content);
                 })
                 .catch((error) => {
-                    this.loggerApi.error("An error occurred while parsing content.", error);
+                    this.loggerApi.error("An error occurred while parsing content: " + error.message);
                     this._toastError(errorMsg);
                     resolve({});
                 });
@@ -151,7 +151,7 @@ export class ResponseParser {
                     resolve(user);
                 })
                 .catch((error) => {
-                    this.loggerApi.error("An error occurred while parsing user info.", error);
+                    this.loggerApi.error("An error occurred while parsing user info: " + error.message);
                     this._toastError(errorMsg);
                     resolve({});
                 });
@@ -174,7 +174,7 @@ export class ResponseParser {
                     resolve(videos);
                 })
                 .catch((error) => {
-                    this.loggerApi.error("An error occurred while parsing videos.", error);
+                    this.loggerApi.error("An error occurred while parsing videos: " + error.message);
                     this._toastError(errorMsg);
                     resolve([]);
                 });
@@ -201,7 +201,7 @@ export class ResponseParser {
                     resolve(videoMap);
                 })
                 .catch((error) => {
-                    this.loggerApi.error("An error occurred while parsing videos.", error);
+                    this.loggerApi.error("An error occurred while parsing videos: " + error.message);
                     this._toastError(errorMsg);
                     resolve(new Map<string, IVideo>());
                 });
@@ -226,7 +226,7 @@ export class ResponseParser {
                     resolve(video);
                 })
                 .catch((error) => {
-                    this.loggerApi.error("An error occurred while parsing video.", error);
+                    this.loggerApi.error("An error occurred while parsing video: " + error.message);
                     this._toastError(errorMsg, toastTimeout);
                     resolve({});
                 });
@@ -242,7 +242,7 @@ export class ResponseParser {
                     resolve(quizzes);
                 })
                 .catch((error) => {
-                    this.loggerApi.error("An error occurred while parsing quizzes.", error);
+                    this.loggerApi.error("An error occurred while parsing quizzes: " + error.message);
                     this._toastError(errorMsg);
                     resolve([]);
                 });
@@ -258,7 +258,7 @@ export class ResponseParser {
                     resolve(quiz);
                 })
                 .catch((error) => {
-                    this.loggerApi.error("An error occurred while parsing quiz.", error);
+                    this.loggerApi.error("An error occurred while parsing quiz: " + error.message);
                     this._toastError(errorMsg);
                     resolve(undefined);
                 });
@@ -278,7 +278,7 @@ export class ResponseParser {
                     resolve(questions);
                 })
                 .catch((error) => {
-                    this.loggerApi.error("An error occurred while parsing questions.", error);
+                    this.loggerApi.error("An error occurred while parsing questions: " + error.message);
                     this._toastError(errorMsg);
                     resolve([]);
                 });
@@ -298,7 +298,7 @@ export class ResponseParser {
                     resolve(question);
                 })
                 .catch((error) => {
-                    this.loggerApi.error("An error occurred while parsing question.", error);
+                    this.loggerApi.error("An error occurred while parsing question: " + error.message);
                     this._toastError(errorMsg);
                     resolve(undefined);
                 });
@@ -318,7 +318,7 @@ export class ResponseParser {
                     resolve();
                 })
                 .catch((error) => {
-                    this.loggerApi.error("An error occurred while parsing empty response.", error);
+                    this.loggerApi.error("An error occurred while parsing empty response: " + error.message);
                     this._toastError(errorMsg);
                     resolve();
                 });

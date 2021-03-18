@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "flex-start",
-        backgroundColor: dark.Opacity.grey,
+        // backgroundColor: dark.Opacity.grey,
     },
     cardHeader: {
         padding: 16,
