@@ -89,7 +89,7 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = (props) => {
                 </View>
             </View>
 
-            <View style={quizStyles.contentContainer}>
+            <View style={{ flex: 2, paddingLeft: "3%" }}>
                 {displayQuestions()}
                 <View style={[quizStyles.addQuizContainer]}>
                     <TouchableOpacity style={quizStyles.btnAdd} onPress={() => navigateTo()}>

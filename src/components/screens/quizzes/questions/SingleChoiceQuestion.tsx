@@ -70,7 +70,7 @@ export const SingleChoiceQuestion: React.FC<QuizProps> = (props) => {
                         value={checkboxZero}
                         onValueChange={() => changeChecked("0")}
                     />
-                    <View style={quizStyles.cardChoicesRight}>
+                    <View style={quizStyles.cardChoices}>
                         <TextInput
                             editable
                             defaultValue={choicesSingleChoice !== undefined ? choicesSingleChoice["0"] : ""}
@@ -88,7 +88,7 @@ export const SingleChoiceQuestion: React.FC<QuizProps> = (props) => {
                         value={checkboxOne}
                         onValueChange={() => changeChecked("1")}
                     />
-                    <View style={quizStyles.cardChoicesRight}>
+                    <View style={quizStyles.cardChoices}>
                         <TextInput
                             editable
                             defaultValue={choicesSingleChoice !== undefined ? choicesSingleChoice["1"] : ""}
@@ -106,7 +106,7 @@ export const SingleChoiceQuestion: React.FC<QuizProps> = (props) => {
                         onValueChange={() => changeChecked("2")}
                     />
 
-                    <View style={quizStyles.cardChoicesRight}>
+                    <View style={quizStyles.cardChoices}>
                         <TextInput
                             editable
                             defaultValue={choicesSingleChoice !== undefined ? choicesSingleChoice["2"] : ""}
@@ -123,7 +123,7 @@ export const SingleChoiceQuestion: React.FC<QuizProps> = (props) => {
                         value={checkboxThree}
                         onValueChange={() => changeChecked("3")}
                     />
-                    <View style={quizStyles.cardChoicesRight}>
+                    <View style={quizStyles.cardChoices}>
                         <TextInput
                             editable
                             defaultValue={choicesSingleChoice !== undefined ? choicesSingleChoice["3"] : ""}

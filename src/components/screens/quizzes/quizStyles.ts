@@ -110,18 +110,6 @@ export const quizStyles = StyleSheet.create({
         width: "80%",
         marginTop: 20,
     },
-
-    answerInput: {
-        width: "100%",
-        minHeight: 90,
-        fontSize: 25,
-        color: "white",
-        borderColor: "white",
-        borderStyle: "dotted",
-        textAlign: "center",
-        borderWidth: 1,
-        borderRadius: 5,
-    },
     section: {
         margin: 8,
         marginBottom: 0,
