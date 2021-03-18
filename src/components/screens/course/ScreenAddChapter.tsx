@@ -203,7 +203,6 @@ export const ScreenAddChapter: React.FC = () => {
                                                 if (itemId !== undefined && value !== undefined) {
                                                     selectedValues[itemId] = value;
                                                     setSelectedValues(selectedValues);
-                                                    console.log(selectedValues);
                                                 }
                                             }
                                         }}
@@ -345,10 +344,7 @@ export const ScreenAddChapter: React.FC = () => {
             isPersistent: false,
             contentReferenceType: CONTENTREFERENCETYPE.QUIZ,
         };
-        console.log(contentRef);
-        console.log(contentList);
         setContentList([...contentList, contentRef]);
-        console.log(contentList);
     }
 
     /**
@@ -370,10 +366,7 @@ export const ScreenAddChapter: React.FC = () => {
             isPersistent: false,
             contentReferenceType: CONTENTREFERENCETYPE.VIDEO,
         };
-        console.log(contentRef);
-        console.log(contentList);
         setContentList([...contentList, contentRef]);
-        console.log(contentList);
     }
 
     /**
@@ -403,8 +396,6 @@ export const ScreenAddChapter: React.FC = () => {
     useFocusEffect(
         React.useCallback(() => {
             if (chapterId != undefined) {
-                console.log("---------------------------------------------------------------");
-
                 const newContentList: IContent[] = [];
                 loggerService.trace("Getting all videos of course: " + course.id);
                 const request: RequestInit = RequestFactory.createGetRequest();
@@ -485,7 +476,6 @@ export const ScreenAddChapter: React.FC = () => {
                 _getAllVideos(course.id);
                 _getAllQuizzes();
             }
-            console.log(contentList);
         }, [chapterId])
     );
 
@@ -553,11 +543,9 @@ export const ScreenAddChapter: React.FC = () => {
                 name: chapterName,
                 courseId: course.id,
             };
-            console.log(myNewChapter);
             const postRequest: RequestInit = RequestFactory.createPostRequestWithBody(myNewChapter);
 
             chapterEndpoint.createChapter(postRequest).then((chapter) => {
-                console.log(chapter);
                 // Assign the Videos
                 Promise.all(
                     contentList.map((content) => {
@@ -573,20 +561,16 @@ export const ScreenAddChapter: React.FC = () => {
                             }
 
                             const postRequest: RequestInit = RequestFactory.createPostRequestWithBody(content);
-                            console.log(content);
+
                             contentReferenceEndpoint.createContentReference(postRequest).then((contentRef) => {
                                 contentRef.isPersistent = true;
                                 resolve(contentRef);
-                                console.log(contentRef);
-                                console.log(chapter);
                             });
                         });
                     })
                 ).then(() => {
-                    // WO werden dem chapter die contents zugewiesen? Man erstellt irgendwie nur die references?
                     // Navigate to the new Chapter
                     navigation.navigate("CHAPTER", { chapterId: chapter.id }); // Navigate to the new Chapter
-                    console.log(chapter);
                 });
             });
         } else {
