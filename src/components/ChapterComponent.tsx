@@ -47,7 +47,9 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
     return (
         <View style={styles.chapterContainer}>
             <View style={styles.chapterTopRow}>
-                <Text style={styles.chapterHeader}>{chapter?.name}</Text>
+                <Text style={styles.chapterHeader}>
+                    {chapter?.chapterNumber}. {chapter?.name}
+                </Text>
                 {/* TODO: add real publish/unpublished state to the chapterss*/}
                 <View style={styles.chapterStatus}>{getPublishedSate(CoursePublishState.PUBLISHED)}</View>
             </View>
@@ -128,7 +130,9 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                     </TouchableOpacity> */}
                     <TouchableOpacity
                         onPress={() => {
-                            navigation.navigate("CHAPTER", { chapterId: chapter?.id });
+                            navigation.navigate("CHAPTER", {
+                                chapterId: chapter?.id,
+                            });
                         }}>
                         <MaterialIcons name="edit" size={28} color="white" style={styles.icon} />
                     </TouchableOpacity>
