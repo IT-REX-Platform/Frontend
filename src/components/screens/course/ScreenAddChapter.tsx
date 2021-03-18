@@ -31,17 +31,15 @@ import { IVideo } from "../../../types/IVideo";
 import { EndpointsVideo } from "../../../api/endpoints/EndpointsVideo";
 import { loggerFactory } from "../../../../logger/LoggerConfig";
 import { calculateVideoSize } from "../../../services/calculateVideoSize";
-import { Event } from "@react-native-community/datetimepicker";
 import DraggableFlatList from "react-native-draggable-flatlist";
 import { TextButton } from "../../uiElements/TextButton";
-import { dateConverter, validateCourseDates } from "../../../helperScripts/validateCourseDates";
+import { dateConverter } from "../../../helperScripts/validateCourseDates";
 import { CONTENTREFERENCETYPE, IContent } from "../../../types/IContent";
 import { EndpointsContentReference } from "../../../api/endpoints/EndpointsContentReference";
 import Select from "react-select";
 import { IQuiz } from "../../../types/IQuiz";
 import { EndpointsQuiz } from "../../../api/endpoints/EndpointsQuiz";
-import { videoPoolStyles } from "../../videoPoolComponent/videoPoolStyles";
-import { Icon } from "react-native-vector-icons/Icon";
+import { contentPoolStyles } from "../../ContentPoolComponents/contentPoolStyles";
 
 type ScreenCourseTabsNavigationProp = CompositeNavigationProp<
     StackNavigationProp<CourseStackParamList, "CHAPTER">,
@@ -146,7 +144,7 @@ export const ScreenAddChapter: React.FC = () => {
                     showsVerticalScrollIndicator={true}
                     data={quizPoolList}
                     renderItem={quizListItem}
-                    keyExtractor={(item, index) => index.toString()}
+                    keyExtractor={(item, index) => `draggableQuiz-item-${item.id}`}
                     ListEmptyComponent={emptyQuizList}
                 />
             </View>
@@ -170,7 +168,7 @@ export const ScreenAddChapter: React.FC = () => {
                 </TouchableOpacity>
                 {getContentIcon(item)}
                 <ListItem.Content>
-                    <TouchableOpacity onLongPress={drag}>
+                    <TouchableOpacity onPress={drag}>
                         <ListItem.Title style={styles.listItemTitle} numberOfLines={2} lineBreakMode="tail">
                             <View
                                 style={{
@@ -269,10 +267,10 @@ export const ScreenAddChapter: React.FC = () => {
             <MaterialCommunityIcons name="file-question-outline" size={28} color="white" />
 
             <ListItem.Content>
-                <ListItem.Title style={videoPoolStyles.listItemTitle} numberOfLines={2} lineBreakMode="tail">
+                <ListItem.Title style={contentPoolStyles.listItemTitle} numberOfLines={2} lineBreakMode="tail">
                     {item.name}
                 </ListItem.Title>
-                <ListItem.Subtitle style={videoPoolStyles.listItemSubtitle} numberOfLines={1} lineBreakMode="tail">
+                <ListItem.Subtitle style={contentPoolStyles.listItemSubtitle} numberOfLines={1} lineBreakMode="tail">
                     Questions : {item.questions.length}
                 </ListItem.Subtitle>
             </ListItem.Content>
@@ -282,8 +280,8 @@ export const ScreenAddChapter: React.FC = () => {
     // Info that the list is empty.
     const emptyVideoList = () => {
         return (
-            <View style={videoPoolStyles.infoTextBox}>
-                <Text style={videoPoolStyles.infoText}>{i18n.t("itrex.noVideosAvailable")}</Text>
+            <View style={contentPoolStyles.infoTextBox}>
+                <Text style={contentPoolStyles.infoText}>{i18n.t("itrex.noVideosAvailable")}</Text>
             </View>
         );
     };
@@ -291,8 +289,10 @@ export const ScreenAddChapter: React.FC = () => {
     // Info that the list is empty.
     const emptyQuizList = () => {
         return (
-            <View style={videoPoolStyles.infoTextBox}>
-                <Text style={videoPoolStyles.infoText}>Bisher wurden dem Quiz Pool noch keine Quizze hinzugefügt.</Text>
+            <View style={contentPoolStyles.infoTextBox}>
+                <Text style={contentPoolStyles.infoText}>
+                    Bisher wurden dem Quiz Pool noch keine Quizze hinzugefügt.
+                </Text>
             </View>
         );
     };

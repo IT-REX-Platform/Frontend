@@ -24,7 +24,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { calculateVideoSize } from "../../services/calculateVideoSize";
 import { FilePickerService } from "../../services/FilePickerService";
 import { buildVideoAsFormData } from "../../services/VideoFormDataService";
-import { videoPoolStyles } from "./videoPoolStyles";
+import { contentPoolStyles } from "./contentPoolStyles";
 import { sleep } from "../../services/SleepService";
 import { ToastService } from "../../services/toasts/ToastService";
 import { TextButton } from "../uiElements/TextButton";
@@ -69,17 +69,17 @@ export const VideoPoolComponent: React.FC = () => {
         if (isVideoUploading) {
             loggerUI.trace("Uploading videos: displaying loading icon.");
             return (
-                <View style={videoPoolStyles.videoUploadContainer}>
-                    <Text style={videoPoolStyles.infoText}>{i18n.t("itrex.videoUploading")}</Text>
-                    <ActivityIndicator style={videoPoolStyles.loadingIcon} size="large" color="white" />
+                <View style={contentPoolStyles.addContentContainer}>
+                    <Text style={contentPoolStyles.infoText}>{i18n.t("itrex.videoUploading")}</Text>
+                    <ActivityIndicator style={contentPoolStyles.loadingIcon} size="large" color="white" />
                 </View>
             );
         }
 
         loggerUI.trace("Ready to upload videos: displaying video upload UI.");
         return (
-            <View style={videoPoolStyles.videoUploadContainer}>
-                <Text style={videoPoolStyles.infoText}>{i18n.t("itrex.videoProperties")}</Text>
+            <View style={contentPoolStyles.addContentContainer}>
+                <Text style={contentPoolStyles.infoText}>{i18n.t("itrex.videoProperties")}</Text>
 
                 <TextButton title={i18n.t("itrex.toUploadVideo")} onPress={_initVideoUpload} />
             </View>
@@ -91,20 +91,20 @@ export const VideoPoolComponent: React.FC = () => {
         if (isVideoListLoading) {
             loggerUI.trace("Receiving videos: displaying loading icon.");
             return (
-                <View style={videoPoolStyles.videoListDownloadingContainer}>
-                    <ActivityIndicator style={videoPoolStyles.loadingIcon} size="large" color="white" />
+                <View style={contentPoolStyles.videoListDownloadingContainer}>
+                    <ActivityIndicator style={contentPoolStyles.loadingIcon} size="large" color="white" />
                 </View>
             );
         }
 
         loggerUI.trace("Video data received: displaying video list.");
         return (
-            <View style={videoPoolStyles.videoListContainer}>
+            <View style={contentPoolStyles.contentListContainer}>
                 {/* // flex: 1: makes the list scrollable
                 // maxWidth: "95%": prevents list items from going beyond left-right screen borders */}
                 <Animated.View style={{ transform: [{ translateY }], flex: 1, maxWidth: "95%" }}>
                     <FlatList
-                        style={videoPoolStyles.videoList}
+                        style={contentPoolStyles.contentList}
                         showsVerticalScrollIndicator={false}
                         data={videos}
                         renderItem={renderVideoListItem}
@@ -119,7 +119,7 @@ export const VideoPoolComponent: React.FC = () => {
 
     // Button to refresh video list.
     const renderRefreshButton = () => (
-        <TouchableOpacity style={videoPoolStyles.refreshButton} onPress={() => _resetAnimBeforeGetAllVideos()}>
+        <TouchableOpacity style={contentPoolStyles.refreshButton} onPress={() => _resetAnimBeforeGetAllVideos()}>
             <MaterialCommunityIcons name="refresh" size={32} color="white" />
         </TouchableOpacity>
     );
@@ -143,16 +143,19 @@ export const VideoPoolComponent: React.FC = () => {
                 <MaterialCommunityIcons name="video-vintage" size={28} color="white" />
 
                 <ListItem.Content>
-                    <ListItem.Title style={videoPoolStyles.listItemTitle} numberOfLines={1} lineBreakMode="tail">
+                    <ListItem.Title style={contentPoolStyles.listItemTitle} numberOfLines={1} lineBreakMode="tail">
                         {item.title}
                     </ListItem.Title>
-                    <ListItem.Subtitle style={videoPoolStyles.listItemSubtitle} numberOfLines={1} lineBreakMode="tail">
+                    <ListItem.Subtitle
+                        style={contentPoolStyles.listItemSubtitle}
+                        numberOfLines={1}
+                        lineBreakMode="tail">
                         {calculateVideoSize(item.length)}
                     </ListItem.Subtitle>
                 </ListItem.Content>
 
-                <TouchableOpacity style={videoPoolStyles.deleteButton} onPress={() => _deleteVideo(item.id)}>
-                    <MaterialCommunityIcons style={videoPoolStyles.deleteIcon} name="delete" size={32} color="red" />
+                <TouchableOpacity style={contentPoolStyles.deleteButton} onPress={() => _deleteVideo(item.id)}>
+                    <MaterialCommunityIcons style={contentPoolStyles.deleteIcon} name="delete" size={32} color="red" />
                 </TouchableOpacity>
 
                 <ListItem.Chevron color="white" />
@@ -163,8 +166,8 @@ export const VideoPoolComponent: React.FC = () => {
     // Info that the list is empty.
     const renderEmptyList = () => {
         return (
-            <View style={videoPoolStyles.infoTextBox}>
-                <Text style={videoPoolStyles.infoText}>{i18n.t("itrex.noVideosAvailable")}</Text>
+            <View style={contentPoolStyles.infoTextBox}>
+                <Text style={contentPoolStyles.infoText}>{i18n.t("itrex.noVideosAvailable")}</Text>
             </View>
         );
     };
@@ -172,8 +175,8 @@ export const VideoPoolComponent: React.FC = () => {
     return (
         <ImageBackground
             source={require("../../constants/images/Background2.png")}
-            style={videoPoolStyles.imageContainer}>
-            <Text style={videoPoolStyles.header}>{i18n.t("itrex.videoPool")}</Text>
+            style={contentPoolStyles.imageContainer}>
+            <Text style={contentPoolStyles.header}>{i18n.t("itrex.videoPool")}</Text>
             {renderVideoUpload()}
             {renderRefreshButton()}
             {renderVideoList()}

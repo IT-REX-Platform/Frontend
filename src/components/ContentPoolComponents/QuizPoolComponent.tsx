@@ -1,34 +1,19 @@
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
-import {
-    ActivityIndicator,
-    Animated,
-    FlatList,
-    ImageBackground,
-    Platform,
-    Text,
-    TouchableOpacity,
-    View,
-} from "react-native";
+import { Animated, FlatList, ImageBackground, Platform, Text, TouchableOpacity, View } from "react-native";
 import { ListItem } from "react-native-elements";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { loggerFactory } from "../../../logger/LoggerConfig";
 import { EndpointsQuiz } from "../../api/endpoints/EndpointsQuiz";
-import { EndpointsVideo } from "../../api/endpoints/EndpointsVideo";
 import { RequestFactory } from "../../api/requests/RequestFactory";
-import { quizList } from "../../constants/fixtures/quizzes.fixture";
 import { dark } from "../../constants/themes/dark";
 import i18n from "../../locales";
 import { ICourse } from "../../types/ICourse";
 import { IQuiz } from "../../types/IQuiz";
 import { CourseContext, LocalizationContext } from "../Context";
 import { TextButton } from "../uiElements/TextButton";
-import { videoPoolStyles } from "../videoPoolComponent/videoPoolStyles";
+import { contentPoolStyles } from "./contentPoolStyles";
 
-const endpointsVideo = new EndpointsVideo();
 const endpointsQuiz = new EndpointsQuiz();
-const loggerService = loggerFactory.getLogger("service.VideoPoolComponent");
-const loggerUI = loggerFactory.getLogger("UI.VideoPoolComponent");
 
 const translateY = new Animated.Value(100);
 export const QuizPoolComponent: React.FC = () => {
@@ -49,7 +34,6 @@ export const QuizPoolComponent: React.FC = () => {
     // Call following function/s only once when this screen is shown.
     useFocusEffect(
         React.useCallback(() => {
-            loggerService.trace("EXECUTING THIS ONLY ONCE ON SCREEN FOCUS!");
             _getAllQuizzes();
             console.log(quizzes);
         }, [course])
@@ -57,8 +41,8 @@ export const QuizPoolComponent: React.FC = () => {
 
     function renderQuizCreation() {
         return (
-            <View style={videoPoolStyles.videoUploadContainer}>
-                <Text style={videoPoolStyles.infoText}>{i18n.t("itrex.quizProperties")}</Text>
+            <View style={contentPoolStyles.addContentContainer}>
+                <Text style={contentPoolStyles.infoText}>{i18n.t("itrex.quizProperties")}</Text>
 
                 <TextButton
                     title={i18n.t("itrex.createQuiz")}
@@ -71,20 +55,18 @@ export const QuizPoolComponent: React.FC = () => {
         );
     }
 
-    // Render UI for video list according to un-/available video data.
-    const renderVideoList = () => {
+    // Render UI for quiz list according to un-/available quiz data.
+    const renderQuizList = () => {
         return (
-            <View style={videoPoolStyles.videoListContainer}>
-                {/* // flex: 1: makes the list scrollable
-            // maxWidth: "95%": prevents list items from going beyond left-right screen borders */}
+            <View style={contentPoolStyles.contentListContainer}>
                 <Animated.View style={{ transform: [{ translateY }], flex: 1, maxWidth: "95%" }}>
                     <FlatList
-                        style={videoPoolStyles.videoList}
+                        style={contentPoolStyles.contentList}
                         showsVerticalScrollIndicator={false}
                         data={quizzes}
-                        renderItem={renderVideoListItem}
+                        renderItem={renderQuizListItem}
                         keyExtractor={(item, index) => index.toString()}
-                        initialNumToRender={_videoListLinesToRender()}
+                        initialNumToRender={_quizListLinesToRender()}
                         ListEmptyComponent={renderEmptyList}
                     />
                 </Animated.View>
@@ -92,8 +74,8 @@ export const QuizPoolComponent: React.FC = () => {
         );
     };
 
-    // Creation of each item of video list.
-    const renderVideoListItem = ({ item }: { item: IQuiz }) => (
+    // Creation of each item of quiz list.
+    const renderQuizListItem = ({ item }: { item: IQuiz }) => (
         <TouchableOpacity
             activeOpacity={0.3}
             onPress={() => {
@@ -110,20 +92,24 @@ export const QuizPoolComponent: React.FC = () => {
                     borderColor: dark.theme.darkBlue4,
                     borderWidth: 2,
                     borderRadius: 5,
+                    maxWidth: 400,
                 }}>
                 <MaterialCommunityIcons name="file-question-outline" size={28} color="white" />
 
                 <ListItem.Content>
-                    <ListItem.Title style={videoPoolStyles.listItemTitle} numberOfLines={1} lineBreakMode="tail">
+                    <ListItem.Title style={contentPoolStyles.listItemTitle} numberOfLines={2} lineBreakMode="tail">
                         {item.name}
                     </ListItem.Title>
-                    <ListItem.Subtitle style={videoPoolStyles.listItemSubtitle} numberOfLines={1} lineBreakMode="tail">
+                    <ListItem.Subtitle
+                        style={contentPoolStyles.listItemSubtitle}
+                        numberOfLines={1}
+                        lineBreakMode="tail">
                         Questions : {item.questions.length}
                     </ListItem.Subtitle>
                 </ListItem.Content>
 
-                <TouchableOpacity style={videoPoolStyles.deleteButton} onPress={() => _deleteQuiz(item.id)}>
-                    <MaterialCommunityIcons style={videoPoolStyles.deleteIcon} name="delete" size={32} color="red" />
+                <TouchableOpacity style={contentPoolStyles.deleteButton} onPress={() => _deleteQuiz(item.id)}>
+                    <MaterialCommunityIcons style={contentPoolStyles.deleteIcon} name="delete" size={32} color="red" />
                 </TouchableOpacity>
 
                 <ListItem.Chevron color="white" />
@@ -134,8 +120,10 @@ export const QuizPoolComponent: React.FC = () => {
     // Info that the list is empty.
     const renderEmptyList = () => {
         return (
-            <View style={videoPoolStyles.infoTextBox}>
-                <Text style={videoPoolStyles.infoText}>Bisher wurden dem Quiz Pool noch keine Quizze hinzugefügt.</Text>
+            <View style={contentPoolStyles.infoTextBox}>
+                <Text style={contentPoolStyles.infoText}>
+                    Bisher wurden dem Quiz Pool noch keine Quizze hinzugefügt.
+                </Text>
             </View>
         );
     };
@@ -143,14 +131,14 @@ export const QuizPoolComponent: React.FC = () => {
     return (
         <ImageBackground
             source={require("../../constants/images/Background2.png")}
-            style={videoPoolStyles.imageContainer}>
-            <Text style={videoPoolStyles.header}>{i18n.t("itrex.quizPool")}</Text>
+            style={contentPoolStyles.imageContainer}>
+            <Text style={contentPoolStyles.header}>{i18n.t("itrex.quizPool")}</Text>
             {renderQuizCreation()}
-            {renderVideoList()}
+            {renderQuizList()}
         </ImageBackground>
     );
 
-    function _videoListLinesToRender(): number {
+    function _quizListLinesToRender(): number {
         if (Platform.OS === "web") {
             return 50;
         }
@@ -159,10 +147,8 @@ export const QuizPoolComponent: React.FC = () => {
 
     async function _getAllQuizzes(): Promise<void> {
         if (course.id == undefined) {
-            loggerService.warn("Course ID undefined, can't get videos.");
             return;
         }
-        loggerService.trace("Getting all videos of course: " + course.id);
 
         setQuizzes(initialQuizzes);
 

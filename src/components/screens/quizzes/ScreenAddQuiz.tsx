@@ -43,7 +43,7 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = (props) => {
     console.log(course);
     let quizWithQuestions = props.quiz;
 
-    if (route.params.quiz !== undefined) {
+    if (route.params !== undefined) {
         quizWithQuestions = route.params.quiz;
     }
 
