@@ -26,7 +26,6 @@ import { RequestFactory } from "../../../api/requests/RequestFactory";
 import { EndpointsChapter } from "../../../api/endpoints/EndpointsChapter";
 import { ICourse } from "../../../types/ICourse";
 import { ListItem } from "react-native-elements";
-import CourseService from "../../../services/CourseService";
 import { IVideo } from "../../../types/IVideo";
 import { EndpointsVideo } from "../../../api/endpoints/EndpointsVideo";
 import { loggerFactory } from "../../../../logger/LoggerConfig";
@@ -67,7 +66,6 @@ export const ScreenAddChapter: React.FC = () => {
     const initialCourseName = chapterId == undefined ? i18n.t("itrex.myNewChapter") : "";
     const chapterEndpoint = new EndpointsChapter();
     const contentReferenceEndpoint = new EndpointsContentReference();
-    const courseService = new CourseService();
     const [chapter, setChapter] = useState<IChapter>({} as IChapter);
 
     const [chapterName, setChapterName] = useState<string | undefined>(initialCourseName);
