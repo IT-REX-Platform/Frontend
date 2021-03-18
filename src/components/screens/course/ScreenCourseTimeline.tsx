@@ -25,6 +25,8 @@ import { EndpointsCourse } from "../../../api/endpoints/EndpointsCourse";
 import { EndpointsChapter } from "../../../api/endpoints/EndpointsChapter";
 import { RequestFactory } from "../../../api/requests/RequestFactory";
 import { IChapter } from "../../../types/IChapter";
+import { CourseRoles } from "../../../constants/CourseRoles";
+import { IUser } from "../../../types/IUser";
 
 export type ScreenCourseTimelineNavigationProp = CompositeNavigationProp<
     MaterialTopTabNavigationProp<CourseTabParamList, "TIMELINE">,
@@ -34,6 +36,7 @@ export type ScreenCourseTimelineNavigationProp = CompositeNavigationProp<
 export const ScreenCourseTimeline: React.FC = () => {
     const navigation = useNavigation<ScreenCourseTimelineNavigationProp>();
     const courseService: CourseService = new CourseService();
+    const [user, setUserInfo] = useState<IUser>({});
 
     const courseEndpoint = new EndpointsCourse();
     const chapterEndpoint = new EndpointsChapter();
@@ -48,6 +51,7 @@ export const ScreenCourseTimeline: React.FC = () => {
 
     const isFocused = useIsFocused();
     useEffect(() => {
+        AuthenticationService.getInstance().getUserInfo(setUserInfo);
         if (isFocused && course.id !== undefined) {
             //setMyCourse(fakeData);
 
@@ -140,7 +144,13 @@ export const ScreenCourseTimeline: React.FC = () => {
 
     // eslint-disable-next-line complexity
     function lecturerEditMode() {
-        if (AuthenticationService.getInstance().isLecturerOrAdmin()) {
+        if (user.courses === undefined || course.id === undefined) {
+            return <></>;
+        }
+
+        const courseRole: CourseRoles = user.courses[course.id];
+
+        if (courseRole === CourseRoles.OWNER || courseRole === undefined) {
             return (
                 <>
                     <View style={styles.editMode}>

@@ -41,6 +41,7 @@ import Select from "react-select";
 import { IQuiz } from "../../../types/IQuiz";
 import { EndpointsQuiz } from "../../../api/endpoints/EndpointsQuiz";
 import { videoPoolStyles } from "../../videoPoolComponent/videoPoolStyles";
+import { Icon } from "react-native-vector-icons/Icon";
 
 type ScreenCourseTabsNavigationProp = CompositeNavigationProp<
     StackNavigationProp<CourseStackParamList, "CHAPTER">,
@@ -114,7 +115,7 @@ export const ScreenAddChapter: React.FC = () => {
         loggerService.trace("Displaying video list.");
         return (
             <View style={styles.containerTop}>
-                <Text style={{ marginBottom: 10, fontSize: 20, color: "white" }}>VIEDO POOL LIST</Text>
+                <Text style={{ marginBottom: 10, fontSize: 20, color: "white" }}>VIDEO POOL LIST</Text>
                 <FlatList
                     style={styles.list}
                     showsVerticalScrollIndicator={true}
@@ -139,7 +140,6 @@ export const ScreenAddChapter: React.FC = () => {
         loggerService.trace("Displaying quiz list.");
         return (
             <View style={styles.containerTop}>
-                {" "}
                 <Text style={{ marginBottom: 10, fontSize: 20, color: "white" }}>QUIZ POOL LIST</Text>
                 <FlatList
                     style={styles.list}
@@ -168,8 +168,7 @@ export const ScreenAddChapter: React.FC = () => {
                 <TouchableOpacity onPress={() => removeContent(item)}>
                     <MaterialIcons name="remove" size={28} color="white" style={styles.icon} />
                 </TouchableOpacity>
-                <MaterialCommunityIcons name="video-vintage" size={28} color="white" />
-
+                {getContentIcon(item)}
                 <ListItem.Content>
                     <TouchableOpacity onLongPress={drag}>
                         <ListItem.Title style={styles.listItemTitle} numberOfLines={2} lineBreakMode="tail">
@@ -180,7 +179,7 @@ export const ScreenAddChapter: React.FC = () => {
                                     alignItems: "center",
                                     justifyContent: "space-between",
                                 }}>
-                                <Text>{item.video?.title}</Text>
+                                {getContentName(item)}
                                 {timePeriods !== undefined && (
                                     <Select
                                         options={timePeriods}
@@ -220,7 +219,7 @@ export const ScreenAddChapter: React.FC = () => {
                             </View>
                         </ListItem.Title>
                         <ListItem.Subtitle style={styles.listItemSubtitle}>
-                            {calculateVideoSize(item.video?.length)}
+                            {getContentSubtitle(item)}
                         </ListItem.Subtitle>
                     </TouchableOpacity>
                 </ListItem.Content>
@@ -239,7 +238,7 @@ export const ScreenAddChapter: React.FC = () => {
                 borderRadius: 5,
                 maxWidth: 250,
             }}>
-            <TouchableOpacity onPress={() => addContent(item)}>
+            <TouchableOpacity onPress={() => addVideo(item)}>
                 <MaterialIcons name="add" size={28} color="white" style={styles.icon} />
             </TouchableOpacity>
             <MaterialCommunityIcons name="video-vintage" size={28} color="white" />
@@ -264,7 +263,7 @@ export const ScreenAddChapter: React.FC = () => {
                 borderRadius: 5,
                 width: 250,
             }}>
-            <TouchableOpacity onPress={() => console.log("Add me to content")}>
+            <TouchableOpacity onPress={() => addQuiz(item)}>
                 <MaterialIcons name="add" size={28} color="white" style={styles.icon} />
             </TouchableOpacity>
             <MaterialCommunityIcons name="file-question-outline" size={28} color="white" />
@@ -274,7 +273,7 @@ export const ScreenAddChapter: React.FC = () => {
                     {item.name}
                 </ListItem.Title>
                 <ListItem.Subtitle style={videoPoolStyles.listItemSubtitle} numberOfLines={1} lineBreakMode="tail">
-                    Numer Of Questions : {item.questions.length}
+                    Questions : {item.questions.length}
                 </ListItem.Subtitle>
             </ListItem.Content>
         </ListItem>
@@ -298,11 +297,63 @@ export const ScreenAddChapter: React.FC = () => {
         );
     };
 
+    function getContentIcon(item: IContent) {
+        switch (item.contentReferenceType) {
+            case CONTENTREFERENCETYPE.VIDEO:
+                return <MaterialCommunityIcons name="video-vintage" size={28} color="white" />;
+            case CONTENTREFERENCETYPE.QUIZ:
+                return <MaterialCommunityIcons name="file-question-outline" size={28} color="white" />;
+        }
+    }
+
+    function getContentName(item: IContent) {
+        switch (item.contentReferenceType) {
+            case CONTENTREFERENCETYPE.VIDEO:
+                return <Text>{item.video?.title}</Text>;
+            case CONTENTREFERENCETYPE.QUIZ:
+                return <Text>{item.quiz?.name}</Text>;
+        }
+    }
+
+    function getContentSubtitle(item: IContent) {
+        switch (item.contentReferenceType) {
+            case CONTENTREFERENCETYPE.VIDEO:
+                return calculateVideoSize(item.video?.length);
+            case CONTENTREFERENCETYPE.QUIZ:
+                return <Text>Questions: {item.quiz?.questions.length}</Text>;
+        }
+    }
+
+    /**
+     * Add Quiz to Chapter List
+     * @param video
+     */
+    function addQuiz(quiz: IQuiz) {
+        const index = quizPoolList.indexOf(quiz);
+        if (index > -1) {
+            quizPoolList.splice(index, 1);
+        }
+
+        // Create new ContentReference
+        const contentRef: IContent = {
+            chapterId: chapterId,
+            contentId: quiz.id,
+            id: quiz.id,
+            quiz: quiz,
+            isPersistent: false,
+            contentReferenceType: CONTENTREFERENCETYPE.QUIZ,
+        };
+        console.log(contentRef);
+        console.log(contentList);
+        setContentList([...contentList, contentRef]);
+        console.log(contentList);
+    }
+
     /**
      * Add Video to Chapter List
      * @param video
      */
-    function addContent(video: IVideo) {
+    function addVideo(video: IVideo) {
         const index = videoPoolList.indexOf(video);
         if (index > -1) {
             videoPoolList.splice(index, 1);
@@ -317,7 +368,10 @@ export const ScreenAddChapter: React.FC = () => {
             isPersistent: false,
             contentReferenceType: CONTENTREFERENCETYPE.VIDEO,
         };
+        console.log(contentRef);
+        console.log(contentList);
         setContentList([...contentList, contentRef]);
+        console.log(contentList);
     }
 
     /**
@@ -330,8 +384,16 @@ export const ScreenAddChapter: React.FC = () => {
             contentList.splice(index, 1);
         }
         setContentList([...contentList]);
-        if (content.video !== undefined) {
-            setVideoPoolList([...videoPoolList, content.video]);
+        switch (content.contentReferenceType) {
+            case CONTENTREFERENCETYPE.VIDEO:
+                if (content.video !== undefined) {
+                    setVideoPoolList([...videoPoolList, content.video]);
+                }
+                break;
+            case CONTENTREFERENCETYPE.QUIZ:
+                if (content.quiz !== undefined) {
+                    setQuizPoolList([...quizPoolList, content.quiz]);
+                }
         }
     }
 
@@ -340,7 +402,8 @@ export const ScreenAddChapter: React.FC = () => {
         React.useCallback(() => {
             if (chapterId != undefined) {
                 console.log("---------------------------------------------------------------");
-                _getAllQuizzes();
+
+                const newContentList: IContent[] = [];
                 loggerService.trace("Getting all videos of course: " + course.id);
                 const request: RequestInit = RequestFactory.createGetRequest();
                 chapterEndpoint
@@ -349,44 +412,78 @@ export const ScreenAddChapter: React.FC = () => {
                         setChapter(chapter);
                         setChapterName(chapter.name);
                         loggerService.trace("Chater name: " + chapterName);
-
                         _getAllVideos(course.id).then((videos) => {
                             // Are there already contents in this chapter ?
                             if (chapter.contentReferences !== undefined) {
-                                const newContentList: IVideo[] = [];
                                 // Remove assigned contents from the pool, and add those to the "contentList"
                                 for (const contentReference of chapter.contentReferences) {
-                                    const videoInPool = videos.findIndex(
-                                        (video) => video.id === contentReference.contentId
-                                    );
+                                    if (contentReference.contentReferenceType == CONTENTREFERENCETYPE.VIDEO) {
+                                        const videoInPool = videos.findIndex(
+                                            (video) => video.id === contentReference.contentId
+                                        );
 
-                                    if (videoInPool !== -1) {
-                                        // Add To Content-List
-                                        // Create new ContentReference
-                                        const contentRef: IContent = {
-                                            chapterId: chapterId,
-                                            contentId: videos[videoInPool].id,
-                                            video: videos[videoInPool],
-                                            id: contentReference.id,
-                                            timePeriodId: contentReference.timePeriodId,
-                                            contentReferenceType: CONTENTREFERENCETYPE.VIDEO,
-                                        };
-                                        newContentList.push(contentRef);
-                                        // Remove from Pool-List
-                                        videos.splice(videoInPool, 1);
+                                        if (videoInPool !== -1) {
+                                            // Add To Content-List
+                                            // Create new ContentReference
+                                            const contentRef: IContent = {
+                                                chapterId: chapterId,
+                                                contentId: videos[videoInPool].id,
+                                                video: videos[videoInPool],
+                                                id: contentReference.id,
+                                                timePeriodId: contentReference.timePeriodId,
+                                                contentReferenceType: CONTENTREFERENCETYPE.VIDEO,
+                                            };
+                                            newContentList.push(contentRef);
+                                            // Remove from Pool-List
+                                            videos.splice(videoInPool, 1);
+                                        }
                                     }
+
+                                    setVideoPoolList([...videos]);
                                 }
-                                setContentList(newContentList);
-                                setVideoPoolList([...videos]);
                             }
                         });
-                    });
 
+                        _getAllQuizzes().then((quizzes) => {
+                            // Are there already contents in this chapter ?
+                            if (chapter.contentReferences !== undefined) {
+                                // Remove assigned contents from the pool, and add those to the "contentList"
+                                for (const contentReference of chapter.contentReferences) {
+                                    if (contentReference.contentReferenceType == CONTENTREFERENCETYPE.QUIZ) {
+                                        const quizIndex = quizzes.findIndex(
+                                            (quiz) => quiz.id === contentReference.contentId
+                                        );
+
+                                        if (quizIndex !== -1) {
+                                            // Add To Content-List
+                                            // Create new ContentReference
+                                            const contentRef: IContent = {
+                                                chapterId: chapterId,
+                                                contentId: quizzes[quizIndex].id,
+                                                quiz: quizzes[quizIndex],
+                                                id: contentReference.id,
+                                                timePeriodId: contentReference.timePeriodId,
+                                                contentReferenceType: CONTENTREFERENCETYPE.QUIZ,
+                                            };
+                                            newContentList.push(contentRef);
+                                            // Remove from Pool-List
+                                            quizzes.splice(quizIndex, 1);
+                                        }
+                                    }
+                                }
+
+                                setQuizPoolList([...quizzes]);
+                            }
+                        });
+
+                        setContentList(newContentList);
+                    });
                 //TODO: Definiere Quiz Liste wenn bereits welche zum Content hinzugefügt wurden
             } else {
                 _getAllVideos(course.id);
                 _getAllQuizzes();
             }
+            console.log(contentList);
         }, [chapterId])
     );
 
@@ -413,6 +510,7 @@ export const ScreenAddChapter: React.FC = () => {
                 <View style={styles.contentContainer}>
                     <View style={styles.sequenceArea}>
                         <View style={styles.containerTop}>
+                            <Text style={{ marginBottom: 10, fontSize: 20, color: "white" }}>CHAPTER CONTENT LIST</Text>
                             <DraggableFlatList
                                 style={styles.list}
                                 showsVerticalScrollIndicator={true}
@@ -451,10 +549,11 @@ export const ScreenAddChapter: React.FC = () => {
                 name: chapterName,
                 courseId: course.id,
             };
-
+            console.log(myNewChapter);
             const postRequest: RequestInit = RequestFactory.createPostRequestWithBody(myNewChapter);
 
             chapterEndpoint.createChapter(postRequest).then((chapter) => {
+                console.log(chapter);
                 // Assign the Videos
                 Promise.all(
                     contentList.map((content) => {
@@ -470,16 +569,20 @@ export const ScreenAddChapter: React.FC = () => {
                             }
 
                             const postRequest: RequestInit = RequestFactory.createPostRequestWithBody(content);
-
+                            console.log(content);
                             contentReferenceEndpoint.createContentReference(postRequest).then((contentRef) => {
                                 contentRef.isPersistent = true;
                                 resolve(contentRef);
+                                console.log(contentRef);
+                                console.log(chapter);
                             });
                         });
                     })
                 ).then(() => {
+                    // WO werden dem chapter die contents zugewiesen? Man erstellt irgendwie nur die references?
                     // Navigate to the new Chapter
                     navigation.navigate("CHAPTER", { chapterId: chapter.id }); // Navigate to the new Chapter
+                    console.log(chapter);
                 });
             });
         } else {
@@ -576,6 +679,7 @@ export const ScreenAddChapter: React.FC = () => {
             .getCourseQuizzes(request, course.id, undefined, "Error while getting Course quizzes")
             .then((quizzesReceived: IQuiz[]) => {
                 setQuizPoolList(quizzesReceived);
+                console.log("---------------QUIZ POOL----------------");
                 console.log(quizzesReceived);
                 return quizzesReceived;
             })
