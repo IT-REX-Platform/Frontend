@@ -233,7 +233,7 @@ export const ScreenChapterStudent: React.FC = () => {
                             showsVerticalScrollIndicator={true}
                             renderItem={myPlaylistItem}
                             //renderItem={thisPlaylistItem}
-                            extraData={isDisplayChanging}
+                            extraData={courseProgress}
                             keyExtractor={(item) => item.id ?? ""}
                             ListEmptyComponent={<Text>Videos here</Text>}
                         />
@@ -242,6 +242,17 @@ export const ScreenChapterStudent: React.FC = () => {
             </View>
         </View>
     );
+
+    function updateCourseProgress() {
+        if (course.id === undefined) {
+            return;
+        }
+
+        const progressRequest: RequestInit = RequestFactory.createGetRequest();
+        endpointsProgress
+            .getCourseProgress(progressRequest, course.id, undefined, i18n.t("itrex.getCourseProgressError"))
+            .then((receivedProgress) => setCourseProgress(receivedProgress));
+    }
 
     function changeVideoProgress(contentRef: IContent) {
         // TODO: Adjust and/or reuse this for actual progress.
@@ -264,32 +275,40 @@ export const ScreenChapterStudent: React.FC = () => {
             const postReq = RequestFactory.createPostRequestWithBody(contentRef);
             console.log("Content Ref in changeProgress:");
             console.log(contentRef);
-            endpointsProgress
-                .createContentProgress(postReq, courseProgress.id)
-                .then((receivedContentProgress) => {
-                    console.log("Created content progress:");
-                    console.log(receivedContentProgress);
+            endpointsProgress.createContentProgress(postReq, courseProgress.id).then((receivedContentProgress) => {
+                console.log("Created content progress:");
+                console.log(receivedContentProgress);
 
-                    updateLastAccessedContent(contentRef);
-                })
-                .finally(() => {
-                    setDisplayChanging(true);
-                });
-        } else {
-            // Update the status to complete.
-            const putReq = RequestFactory.createPutRequest({});
-            endpointsProgress
-                .setContentStateComplete(putReq, contentProgress.id)
-                .then((receivedContentProgress) => {
-                    console.log("Set content progress to complete:");
-                    console.log(receivedContentProgress);
-
-                    updateLastAccessedContent(contentRef);
-                })
-                .finally(() => {
-                    setDisplayChanging(true);
-                });
+                updateLastAccessedContent(contentRef);
+                updateCourseProgress();
+            });
         }
+    }
+
+    function completeVideo(contentRef: IContent) {
+        // Update the status to complete.
+        if (
+            courseProgress.id === undefined ||
+            courseProgress.contentProgressTrackers === undefined ||
+            contentRef.id === undefined
+        ) {
+            console.log("ContentRef: ");
+            console.log(contentRef);
+            return;
+        }
+        const contentProgress = courseProgress.contentProgressTrackers[contentRef.id];
+        const putReq = RequestFactory.createPutRequest({});
+        endpointsProgress
+            .setContentStateComplete(putReq, contentProgress.id)
+            .then((receivedContentProgress) => {
+                console.log("Set content progress to complete:");
+                console.log(receivedContentProgress);
+
+                updateLastAccessedContent(contentRef);
+            })
+            .finally(() => {
+                setDisplayChanging(true);
+            });
     }
 
     function updateLastAccessedContent(contentRef: IContent): void {
@@ -433,6 +452,8 @@ const styles = StyleSheet.create({
         //borderColor: dark.theme.darkBlue2,
         //borderWidth: 3,
         marginTop: 20,
+        width: "100%",
+        height: "auto",
     },
 
     videoListDownloadingContainer: {},
