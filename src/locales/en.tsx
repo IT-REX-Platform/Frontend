@@ -102,7 +102,7 @@ export const en = {
         myNewChapter: "My new chapter",
         save: "Save",
 
-        saveAndReturn: "Save & return",
+        saveAndReturn: "Save & Return",
 
         chapterCreatedSuccess: "The chapter was created successfully.",
         chapterUpdateSuccess: "The chapter was updated successfully.",
