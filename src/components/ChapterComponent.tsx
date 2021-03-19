@@ -12,7 +12,6 @@ import { InfoUnpublished } from "./uiElements/InfoUnpublished";
 import Select from "react-select";
 import { ICourse } from "../types/ICourse";
 import { IContent } from "../types/IContent";
-import { EndpointsProgress } from "../api/endpoints/EndpointsProgress";
 import { ICourseProgressTracker } from "../types/ICourseProgressTracker";
 import { IContentProgressTracker } from "../types/IContentProgressTracker";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
@@ -23,6 +22,8 @@ import { RequestFactory } from "../api/requests/RequestFactory";
 import { IQuiz } from "../types/IQuiz";
 import { dateConverter } from "../helperScripts/validateCourseDates";
 import { ContentProgressInfo } from "./uiElements/ContentProgressInfo";
+import ProgressService from "../services/ProgressService";
+import { ContentProgressTrackerState } from "../constants/ContentProgressTrackerState";
 
 interface ChapterComponentProps {
     chapter?: IChapter;
@@ -35,8 +36,6 @@ const endpointsQuiz: EndpointsQuiz = new EndpointsQuiz();
 export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
     React.useContext(LocalizationContext);
     const navigation = useNavigation();
-
-    const endpointsProgress = new EndpointsProgress();
 
     const chapter = props.chapter;
     const course = props.course;
@@ -228,61 +227,59 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
             return;
         }
 
-        const progressRequest: RequestInit = RequestFactory.createGetRequest();
-        endpointsProgress
-            .getCourseProgress(progressRequest, course.id, undefined, i18n.t("itrex.getCourseProgressError"))
-            .then((receivedProgress) => setCourseProgress(receivedProgress));
+        ProgressService.getInstance().updateCourseProgressFor(course.id, (receivedProgress) => {
+            setCourseProgress(receivedProgress);
+        });
     }
 
     function markProgress(contentRef: IContent) {
         // TODO: Adjust and/or reuse this for actual progress.
         // For now it just touches the content once or completes it when touched.
 
-        // No course progress, no content refs or the given one is invalid.
-        if (
-            courseProgress.id === undefined ||
-            courseProgress.contentProgressTrackers === undefined ||
-            contentRef.id === undefined
-        ) {
+        if (course.id === undefined) {
             return;
         }
 
-        const contentProgress = courseProgress.contentProgressTrackers[contentRef.id];
-        if (contentProgress === undefined || contentProgress.id === undefined) {
-            // Touch the content ref once.
-            const postReq = RequestFactory.createPostRequestWithBody(contentRef);
-            endpointsProgress.createContentProgress(postReq, courseProgress.id).then((receivedContentProgress) => {
-                console.log("Created content progress:");
-                console.log(receivedContentProgress);
+        const progressService = ProgressService.getInstance();
 
-                updateLastAccessedContent(contentRef);
-                updateCourseProgress();
-            });
-        } else {
-            // Update the status to complete.
-            const putReq = RequestFactory.createPutRequest({});
-            endpointsProgress.setContentStateComplete(putReq, contentProgress.id).then((receivedContentProgress) => {
-                console.log("Set content progress to complete:");
-                console.log(receivedContentProgress);
+        progressService.getContentProgressInfo(course.id, contentRef, (status, progress) => {
+            // New progress if needed.
+            const newProgress = progress + 0.1;
 
-                updateLastAccessedContent(contentRef);
-                updateCourseProgress();
-            });
-        }
-    }
+            switch (status) {
+                case ContentProgressTrackerState.STARTED:
+                    progressService.updateContentProgress(course.id, contentRef, newProgress, (createdProgress) => {
+                        console.log("Updated progress: ");
+                        console.log(createdProgress);
 
-    function updateLastAccessedContent(contentRef: IContent): void {
-        if (courseProgress.id === undefined) {
-            return;
-        }
+                        if (newProgress >= 1) {
+                            progressService.completeContentProgress(course.id, contentRef, (completedProgress) => {
+                                console.log("Completed progress: ");
+                                console.log(completedProgress);
 
-        const putReq = RequestFactory.createPutRequest(contentRef);
-        endpointsProgress
-            .updateLastAccessedContentProgress(putReq, courseProgress.id)
-            .then((receivedCourseProgress) => {
-                console.log("Updated last accessed content:");
-                console.log(receivedCourseProgress);
-            });
+                                updateCourseProgress();
+                            });
+                        } else {
+                            updateCourseProgress();
+                        }
+                    });
+                    break;
+
+                case undefined:
+                    progressService.createContentProgress(course.id, contentRef, (createdProgress) => {
+                        console.log("Created progress: ");
+                        console.log(createdProgress);
+
+                        updateCourseProgress();
+                    });
+                    break;
+
+                case ContentProgressTrackerState.COMPLETED:
+                default:
+                    // Do nothing.
+                    break;
+            }
+        });
     }
 
     function getProgressInfo(contentRef: IContent) {

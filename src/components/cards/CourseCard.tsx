@@ -10,9 +10,8 @@ import { CoursePublishState } from "../../constants/CoursePublishState";
 import { InfoUnpublished } from "../uiElements/InfoUnpublished";
 import { InfoPublished } from "../uiElements/InfoPublished";
 import { ICourseProgressTracker } from "../../types/ICourseProgressTracker";
-import { RequestFactory } from "../../api/requests/RequestFactory";
-import { EndpointsProgress } from "../../api/endpoints/EndpointsProgress";
 import { TextButton } from "../uiElements/TextButton";
+import ProgressService from "../../services/ProgressService";
 
 interface CourseCardProps {
     course: ICourse;
@@ -22,18 +21,16 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
     const { course } = props;
     const navigation = useNavigation();
 
-    const endpointsProgress = new EndpointsProgress();
     const [courseProgress, setCourseProgress] = useState<ICourseProgressTracker>({});
     useEffect(() => {
         if (course.id === undefined) {
             return;
         }
 
-        const progressRequest: RequestInit = RequestFactory.createGetRequest();
-        endpointsProgress
-            .getCourseProgress(progressRequest, course.id, undefined, i18n.t("itrex.getCourseProgressError"))
-            .then((receivedProgress) => setCourseProgress(receivedProgress));
-    }, []);
+        ProgressService.getInstance().updateCourseProgressFor(course.id, (receivedProgress) => {
+            setCourseProgress(receivedProgress);
+        });
+    }, [course.id]);
 
     function getPublishedSate(isPublished: CoursePublishState | undefined) {
         if (isPublished === CoursePublishState.UNPUBLISHED) {
