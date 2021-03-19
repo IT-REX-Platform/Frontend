@@ -39,9 +39,13 @@ export const ScreenAddQuestion: React.FC = () => {
     const [solutionMultiChoice, setSolutionMutliChoice] = useState<ISolutionMultipleChoice>();
     const [solutionSingleChoice, setSolutionSingleChoice] = useState<string>();
 
-    // Make Single Choice default
-    const defaultKindOfQuestionValue = question !== undefined ? question?.type : kindOfQuestionOptions[1].value;
-    const [selectedKindOfQuestion, setKindOfQuestion] = useState<QuestionTypes | undefined>(defaultKindOfQuestionValue);
+    // Make Single Choice default or saved user selection.
+    const index = kindOfQuestionOptions.findIndex((x) => x.value == question?.type);
+    const defaultKindOfQuestionValue = index !== -1 ? kindOfQuestionOptions[index] : kindOfQuestionOptions[1];
+
+    const [selectedKindOfQuestion, setKindOfQuestion] = useState<QuestionTypes | undefined>(
+        defaultKindOfQuestionValue.value
+    );
 
     useFocusEffect(
         // eslint-disable-next-line complexity

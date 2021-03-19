@@ -51,7 +51,6 @@ export const en = {
         switchLangEN: "Switch to english",
         switchLangDE: "Switch to german",
         switchLang: "Switch to german",
-        darkTheme: "Dark-Theme",
 
         myCoursesDivider: "My Courses",
         quickSettings: "Quick settings",
@@ -102,6 +101,8 @@ export const en = {
         chapterMaterial: "Chapter Material",
         myNewChapter: "My new chapter",
         save: "Save",
+
+        saveAndReturn: "Save & return",
 
         chapterCreatedSuccess: "The chapter was created successfully.",
         chapterUpdateSuccess: "The chapter was updated successfully.",

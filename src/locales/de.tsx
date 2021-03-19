@@ -51,7 +51,6 @@ export const de = {
         switchLangEN: "Zu Englisch wechseln",
         switchLangDE: "Zu Deutsch wechseln",
         switchLang: "Zu Englisch wechseln",
-        darkTheme: "Dunkelmodus",
 
         myCoursesDivider: "Meine Kurse",
         quickSettings: "Kurzeinstellung",
@@ -102,6 +101,7 @@ export const de = {
         chapterMaterial: "Kapitel Materialien",
         myNewChapter: "Mein neues Kapitel",
         save: "Speichern",
+        saveAndReturn: "Speichern & zurückkehren",
 
         chapterCreatedSuccess: "Das Kapitel wurde erfolgreich angelegt.",
         chapterUpdateSuccess: "Das Kapitel wurde erfolgreich aktualisiert.",

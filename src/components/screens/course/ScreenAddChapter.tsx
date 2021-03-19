@@ -17,7 +17,14 @@ import { dark } from "../../../constants/themes/dark";
 import { CourseContext, LocalizationContext } from "../../Context";
 import { DatePickerComponent } from "../../DatePickerComponent";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
-import { CompositeNavigationProp, RouteProp, useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
+import {
+    CompositeNavigationProp,
+    RouteProp,
+    useFocusEffect,
+    useLinkProps,
+    useNavigation,
+    useRoute,
+} from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { CourseStackParamList, RootDrawerParamList } from "../../../constants/navigators/NavigationRoutes";
@@ -492,8 +499,9 @@ export const ScreenAddChapter: React.FC = () => {
                         />
                         <MaterialCommunityIcons name="pen" size={24} color={dark.theme.darkGreen} style={styles.icon} />
                     </View>
-                    <View>
-                        <TextButton title={i18n.t("itrex.save")} onPress={() => saveChapter()} />
+                    <View style={{ flexDirection: "row" }}>
+                        <TextButton title={i18n.t("itrex.saveAndReturn")} onPress={() => saveChapter(true)} />
+                        <TextButton title={i18n.t("itrex.save")} onPress={() => saveChapter(false)} />
                     </View>
                 </View>
 
@@ -526,15 +534,17 @@ export const ScreenAddChapter: React.FC = () => {
         </View>
     );
 
-    function saveChapter() {
+    function saveChapter(returnToTimeline: boolean) {
         // Validate start/end Date
         // Check if start and Enddate are set
 
         // Create new Chapter
         if (chapterId == undefined) {
+            const chapterNumber = course.chapters !== undefined ? course.chapters.length + 1 : 1;
             const myNewChapter: IChapter = {
                 name: chapterName,
                 courseId: course.id,
+                chapterNumber: chapterNumber,
             };
             const postRequest: RequestInit = RequestFactory.createPostRequestWithBody(myNewChapter);
 
@@ -563,8 +573,13 @@ export const ScreenAddChapter: React.FC = () => {
                         });
                     })
                 ).then(() => {
-                    // Navigate to the new Chapter
-                    navigation.navigate("CHAPTER", { chapterId: chapter.id }); // Navigate to the new Chapter
+                    if (returnToTimeline) {
+                        // Navigate back to Timeline
+                        navigation.navigate("INFO", { screen: "TIMELINE" });
+                    } else {
+                        // Navigate to the new Chapter
+                        navigation.navigate("CHAPTER", { chapterId: chapter.id });
+                    }
                 });
             });
         } else {
@@ -609,6 +624,14 @@ export const ScreenAddChapter: React.FC = () => {
                     i18n.t("itrex.chapterUpdateSuccess"),
                     i18n.t("itrex.updateChapterError")
                 );
+
+                if (returnToTimeline) {
+                    // Navigate back to Timeline
+                    navigation.navigate("INFO", { screen: "TIMELINE" });
+                } else {
+                    // Navigate to the new Chapter
+                    navigation.navigate("CHAPTER", { chapterId: chapter.id });
+                }
             });
         }
     }

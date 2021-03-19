@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 /* eslint-disable complexity */
 import React, { useEffect, useState } from "react";
 import { Text, ImageBackground, StyleSheet, View, TouchableOpacity, Switch } from "react-native";
@@ -23,6 +24,8 @@ import { EndpointsCourse } from "../../../api/endpoints/EndpointsCourse";
 import { RequestFactory } from "../../../api/requests/RequestFactory";
 import { CourseRoles } from "../../../constants/CourseRoles";
 import { IUser } from "../../../types/IUser";
+import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { IChapter } from "../../../types/IChapter";
 
 export type ScreenCourseTimelineNavigationProp = CompositeNavigationProp<
     MaterialTopTabNavigationProp<CourseTabParamList, "TIMELINE">,
@@ -42,14 +45,12 @@ export const ScreenCourseTimeline: React.FC = () => {
     const course: ICourse = React.useContext(CourseContext);
 
     const [myCourse, setMyCourse] = useState<ICourse>({});
+    const [chapters, setChapters] = useState<IChapter[]>([]);
 
     const isFocused = useIsFocused();
     useEffect(() => {
         AuthenticationService.getInstance().getUserInfo(setUserInfo);
         if (isFocused && course.id !== undefined) {
-            //setMyCourse(fakeData);
-
-            //courseService.getCourse(course.id).then((receivedCourse) => setMyCourse(receivedCourse));
             const request: RequestInit = RequestFactory.createGetRequest();
             courseEndpoint.getCourse(request, course.id).then((receivedCourse) => {
                 if (receivedCourse.chapters !== undefined) {
@@ -84,8 +85,8 @@ export const ScreenCourseTimeline: React.FC = () => {
                             }
                         }
                     }
-                    console.log(receivedCourse);
                     setMyCourse(receivedCourse);
+                    setChapters(receivedCourse.chapters);
                 }
             });
         }
@@ -99,15 +100,41 @@ export const ScreenCourseTimeline: React.FC = () => {
             {lecturerEditMode()}
 
             <ScrollView contentContainerStyle={styles.scrollContainer}>
-                {myCourse.chapters?.length === 0 ? (
+                {chapters.length === 0 ? (
                     <View>{!edit && <Text style={styles.textStyle}>{i18n.t("itrex.noChapters")}</Text>}</View>
                 ) : (
-                    myCourse.chapters?.map((chapter) => (
-                        <ChapterComponent
-                            key={chapter.id}
-                            editMode={edit}
-                            chapter={chapter}
-                            course={course}></ChapterComponent>
+                    chapters.map((chapter, idx) => (
+                        <View style={styles.chapterContainer}>
+                            <ChapterComponent
+                                key={chapter.id}
+                                editMode={edit}
+                                chapter={chapter}
+                                course={course}></ChapterComponent>
+                            {edit && (
+                                <View>
+                                    {idx !== 0 && (
+                                        <TouchableOpacity onPress={() => reorderChapters(idx - 1, idx)}>
+                                            <MaterialIcons
+                                                name="keyboard-arrow-up"
+                                                size={28}
+                                                color="white"
+                                                style={{}}
+                                            />
+                                        </TouchableOpacity>
+                                    )}
+                                    {idx !== chapters.length - 1 && (
+                                        <TouchableOpacity onPress={() => reorderChapters(idx + 1, idx)}>
+                                            <MaterialIcons
+                                                name="keyboard-arrow-down"
+                                                size={28}
+                                                color="white"
+                                                style={{}}
+                                            />
+                                        </TouchableOpacity>
+                                    )}
+                                </View>
+                            )}
+                        </View>
                     ))
                 )}
                 {/*myCourse.timePeriods?.length === 0 ? (
@@ -126,7 +153,9 @@ export const ScreenCourseTimeline: React.FC = () => {
                         <TouchableOpacity
                             style={styles.btnAdd}
                             onPress={() => {
-                                navigation.navigate("CHAPTER", { chapterId: undefined });
+                                navigation.navigate("CHAPTER", {
+                                    chapterId: undefined,
+                                });
                             }}>
                             <Text style={styles.txtAddChapter}>{i18n.t("itrex.addChapter")}</Text>
                         </TouchableOpacity>
@@ -135,6 +164,39 @@ export const ScreenCourseTimeline: React.FC = () => {
             </ScrollView>
         </ImageBackground>
     );
+
+    /**
+     * Reorder the Chapter objects in the chapter list, to save them in the correct order
+     *
+     * @param from
+     * @param to
+     */
+    function reorderChapters(to: number, from: number) {
+        const tmpChapterList = [...chapters];
+        const elementToCut = tmpChapterList.splice(from, 1)[0];
+        tmpChapterList.splice(to, 0, elementToCut);
+
+        // Adjust ChapterOrder
+        tmpChapterList.forEach((chapter, idx) => {
+            chapter.chapterNumber = idx + 1;
+        });
+
+        const tmpCourse: ICourse = {
+            id: myCourse.id,
+            chapters: tmpChapterList,
+        };
+        const patchRequest: RequestInit = RequestFactory.createPatchRequest(tmpCourse);
+        const courseEndpoint = new EndpointsCourse();
+        courseEndpoint
+            .patchCourse(patchRequest)
+            .then(() => {
+                setChapters([...tmpChapterList]);
+            })
+            .catch(() => {
+                // Restore old order
+                setChapters([...chapters]);
+            });
+    }
 
     // eslint-disable-next-line complexity
     function lecturerEditMode() {
@@ -263,6 +325,14 @@ const styles = StyleSheet.create({
         width: "screenWidth",
         alignItems: "center",
         paddingBottom: 20,
+    },
+    chapterContainer: {
+        width: "80%",
+        flex: 1,
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: "10px",
     },
     editMode: {
         alignSelf: "flex-end",
