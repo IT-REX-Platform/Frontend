@@ -12,6 +12,7 @@ import {
     Animated,
     StyleProp,
     ViewStyle,
+    SectionList,
 } from "react-native";
 import { ListItem } from "react-native-elements";
 import React from "react";
@@ -42,11 +43,17 @@ import { render } from "react-dom";
 import { borderRadius } from "react-select/src/theme";
 import { waitFor } from "@testing-library/react-native";
 import { TextButton } from "../uiElements/TextButton";
+import { dateConverter } from "../../helperScripts/validateCourseDates";
 
 const endpointsVideo = new EndpointsVideo();
 const endpointsChapter = new EndpointsChapter();
 const endpointsProgress = new EndpointsProgress();
 const endpointsCourse = new EndpointsCourse();
+
+interface IVideoListSection {
+    title: string;
+    data: IContent[];
+}
 
 export type ChapterContentRouteProp = RouteProp<RootDrawerParamList, "ROUTE_CHAPTER_CONTENT">;
 
@@ -66,7 +73,7 @@ export const ScreenChapterStudent: React.FC = () => {
 
     let [currentVideo, setCurrentVideo] = useState<IContent>();
 
-    const [videos, setVideos] = useState<IContent[]>([]);
+    const [videos, setVideos] = useState<IVideoListSection[]>([]);
     //let video: IVideo
 
     //Vertical slide animation for FlatList.
@@ -80,6 +87,18 @@ export const ScreenChapterStudent: React.FC = () => {
 
     const videoPlayer = React.useRef<Video>(null);
     let timeSinceLastProgressUpdatePush: number = 0;
+
+    const timePeriods = course.timePeriods?.map((timePeriod, idx) => {
+        return {
+            value: timePeriod.id,
+            label: i18n.t("itrex.week") + " " + (idx + 1),
+            //+ " (" +
+            //dateConverter(timePeriod.startDate) +
+            //" - " +
+            //dateConverter(timePeriod.endDate) +
+            //")",
+        };
+    });
 
     // Render UI for video list according to un-/available video data.
     const renderVideoList = () => {
@@ -96,6 +115,7 @@ export const ScreenChapterStudent: React.FC = () => {
     useFocusEffect(
         React.useCallback(() => {
             console.log("In Callback");
+            _getAllChapters();
 
             const progressRequest: RequestInit = RequestFactory.createGetRequest();
             endpointsProgress
@@ -110,9 +130,8 @@ export const ScreenChapterStudent: React.FC = () => {
 
     useEffect(() => {
         _getChapter();
-        _getAllChapters();
         //_getAllVideos();
-        setVideos(chapterPlaylist);
+        _splitPlaylist(chapterPlaylist);
         if (chapterPlaylist.length > 0) {
             setCurrentVideo(chapterPlaylist[0]);
         }
@@ -189,10 +208,9 @@ export const ScreenChapterStudent: React.FC = () => {
 
     return (
         <View style={styles.rootContainer}>
-            <TextButton title={i18n.t("itrex.nextChapter")} color="pink" onPress={() => _gotoChapter()}></TextButton>
             <Button title={i18n.t("itrex.nextChapter")} onPress={() => _gotoChapter()} />
 
-            <Text style={styles.chapterHeading}>Ch 1. Some Chaptername</Text>
+            <Text style={styles.chapterHeading}>{chapter.name}</Text>
             <View style={styles.contentContainer}>
                 <View style={styles.videoContainer}>
                     <Text style={styles.videoTitle}>Ch1.: My Video</Text>
@@ -207,27 +225,59 @@ export const ScreenChapterStudent: React.FC = () => {
                         resizeMode="cover"
                         shouldPlay={false}
                         useNativeControls={true}
+                        // onLoad={changeVideoProgress()}
                     />
                 </View>
                 <View style={styles.playlistContainer}>
                     <Text style={styles.videoTitle}>Playlist</Text>
                     {renderVideoList()}
                     <Animated.View style={{ transform: [{ translateY }], flex: 1, maxWidth: "95%" }}>
-                        <FlatList
+                        <SectionList
                             style={styles.playlist}
-                            data={videos}
+                            //data={videos}
+                            sections={videos}
                             showsVerticalScrollIndicator={true}
                             renderItem={myPlaylistItem}
                             //renderItem={thisPlaylistItem}
                             extraData={courseProgress}
                             keyExtractor={(item) => item.id ?? ""}
                             ListEmptyComponent={<Text>Videos here</Text>}
+                            renderSectionHeader={({ section: { title } }) => (
+                                <Text style={styles.chapterHeading}>{title}</Text>
+                            )}
                         />
                     </Animated.View>
                 </View>
             </View>
         </View>
     );
+
+    function _splitPlaylist(pl: IContent[]) {
+        let weeks: IVideoListSection[] = [];
+
+        if (timePeriods == undefined) {
+            console.log("Time Periods undefined");
+            return;
+        }
+
+        for (const time of timePeriods) {
+            weeks.push({ title: time.label, data: [] });
+
+            // let time = pl[cont].timePeriodId;
+        }
+
+        for (const cont of pl) {
+            // Get time period  and title of content from time periods
+            const week = timePeriods?.find((timePeriod) => timePeriod.value === cont.timePeriodId)?.label;
+            // Write Content in right week
+            weeks.find((date) => date.title == week)?.data.push(cont);
+
+            // Sectiontitle: Week
+            // Sectiondata: data[]
+        }
+
+        setVideos(weeks);
+    }
 
     function heartbeat(status: AVPlaybackStatus) {
         /*console.log("*Heartbeat*:");
