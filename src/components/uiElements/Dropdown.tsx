@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from "react";
-import { StyleSheet } from "react-native";
 import Select from "react-select";
 import { dark } from "../../constants/themes/dark";
 
@@ -12,6 +12,32 @@ interface DropdownProps {
 }
 
 export const DropDown: React.FC<DropdownProps> = (props) => {
+    const dropDownStyles = React.useMemo(
+        () => ({
+            option: (theme: any) => ({
+                ...theme,
+                color: "black",
+                padding: 15,
+            }),
+            control: (theme: any) => ({
+                ...theme,
+                width: "100%",
+                background: dark.Opacity.blueGreen,
+            }),
+            menu: (theme: any) => ({
+                ...theme,
+                overflow: "hidden",
+                border: "2px solid #307580",
+                opacity: 0.95,
+            }),
+            singleValue: (theme: any) => ({
+                ...theme,
+                color: "white",
+                fontWeight: "bold",
+            }),
+        }),
+        []
+    );
     return (
         <Select
             options={props.options}
@@ -21,22 +47,14 @@ export const DropDown: React.FC<DropdownProps> = (props) => {
             menuPosition={props.menuPosition}
             theme={(theme) => ({
                 ...theme,
-                borderRadius: 5,
-                background: dark.theme.grey,
+                borderRadius: 0,
                 colors: {
                     ...theme.colors,
-                    primary25: dark.Opacity.darkBlue1,
-                    primary: dark.Opacity.pink,
+                    primary25: dark.Opacity.pink,
+                    primary: dark.Opacity.blueGreen,
                 },
             })}
-            styles={{
-                container: () => ({
-                    width: 200,
-                    marginLeft: "5px",
-                }),
-            }}
+            styles={dropDownStyles}
         />
     );
 };
-
-const styles = StyleSheet.create({});

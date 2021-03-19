@@ -100,7 +100,9 @@ export const ScreenHome: React.FC<ScreenHomeProps> = (props) => {
                 <View style={styles.filterContainer}>
                     {userRole !== ITREXRoles.ROLE_STUDENT && (
                         <View style={{ padding: 8, flex: 1 }}>
-                            <Text style={{ color: "white" }}>{i18n.t("itrex.filterPubUnpub")}</Text>
+                            <Text style={{ color: "white", textAlign: "center" }}>
+                                {i18n.t("itrex.filterPubUnpub")}
+                            </Text>
                             <DropDown
                                 options={publishStateFilterOptions}
                                 defaultValue={defaultPublishStateValue}
@@ -109,7 +111,9 @@ export const ScreenHome: React.FC<ScreenHomeProps> = (props) => {
                         </View>
                     )}
                     <View style={{ padding: 8, flex: 1 }}>
-                        <Text style={{ color: "white" }}>{i18n.t("itrex.filterActiveInActive")}</Text>
+                        <Text style={{ color: "white", textAlign: "center" }}>
+                            {i18n.t("itrex.filterActiveInActive")}
+                        </Text>
                         <DropDown
                             options={activeStateFilterOptions}
                             defaultValue={defaultActiveStateValue}
@@ -202,6 +206,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "flex-start",
         backgroundColor: dark.Opacity.grey,
+        zIndex: 11,
     },
     cardHeader: {
         padding: 16,

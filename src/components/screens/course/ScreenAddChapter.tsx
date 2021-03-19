@@ -186,32 +186,32 @@ export const ScreenAddChapter: React.FC = () => {
                                     justifyContent: "space-between",
                                 }}>
                                 {getContentName(item)}
-                                {timePeriods !== undefined && (
-                                    <DropDown
-                                        options={timePeriods}
-                                        defaultValue={timePeriods.find(
-                                            (timePeriod) => timePeriod.value === item.timePeriodId
-                                        )}
-                                        menuPortalTarget={document.body}
-                                        menuPosition={"fixed"}
-                                        onChange={(option) => {
-                                            if (item.id !== undefined) {
-                                                const itemId = item.id;
-                                                const value = option?.value;
-                                                if (itemId !== undefined && value !== undefined) {
-                                                    selectedValues[itemId] = value;
-                                                    setSelectedValues(selectedValues);
-                                                }
-                                            }
-                                        }}
-                                    />
-                                )}
                             </View>
                         </ListItem.Title>
                         <ListItem.Subtitle style={styles.listItemSubtitle}>
                             {getContentSubtitle(item)}
                         </ListItem.Subtitle>
                     </TouchableOpacity>
+                </ListItem.Content>
+                <ListItem.Content>
+                    {timePeriods !== undefined && (
+                        <DropDown
+                            options={timePeriods}
+                            defaultValue={timePeriods.find((timePeriod) => timePeriod.value === item.timePeriodId)}
+                            menuPortalTarget={document.body}
+                            menuPosition={"fixed"}
+                            onChange={(option) => {
+                                if (item.id !== undefined) {
+                                    const itemId = item.id;
+                                    const value = option?.value;
+                                    if (itemId !== undefined && value !== undefined) {
+                                        selectedValues[itemId] = value;
+                                        setSelectedValues(selectedValues);
+                                    }
+                                }
+                            }}
+                        />
+                    )}
                 </ListItem.Content>
             </ListItem>
         </View>
