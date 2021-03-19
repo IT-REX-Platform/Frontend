@@ -104,6 +104,8 @@ export const de = {
         chapterMaterial: "Kapitel Materialien",
         myNewChapter: "Mein neues Kapitel",
         save: "Speichern",
+        nextChapter: "Nächstes Kapitel",
+        lastChapter: "Letzes Kapitel",
 
         chapterCreatedSuccess: "Das Kapitel wurde erfolgreich angelegt.",
         chapterUpdateSuccess: "Das Kapitel wurde erfolgreich aktualisiert.",

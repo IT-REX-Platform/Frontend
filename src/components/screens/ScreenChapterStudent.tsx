@@ -2,6 +2,7 @@ import { DarkTheme, RouteProp, useFocusEffect, useNavigation, useRoute } from "@
 import { Video } from "expo-av";
 import { useEffect, useState } from "react";
 import {
+    Button,
     ActivityIndicator,
     FlatList,
     TouchableOpacity,
@@ -40,6 +41,7 @@ import { IContentProgressTracker } from "../../types/IContentProgressTracker";
 import { render } from "react-dom";
 import { borderRadius } from "react-select/src/theme";
 import { waitFor } from "@testing-library/react-native";
+import { TextButton } from "../uiElements/TextButton";
 
 const endpointsVideo = new EndpointsVideo();
 const endpointsChapter = new EndpointsChapter();
@@ -53,24 +55,18 @@ export const ScreenChapterStudent: React.FC = () => {
     console.log("KursID:");
     console.log(course.id);
     const [courseProgress, setCourseProgress] = useState<ICourseProgressTracker>({});
-    useEffect(() => {
-        const request: RequestInit = RequestFactory.createGetRequest();
-    }, []);
 
     const [chapter, setChapter] = useState<IChapter>({});
+    const [chapterList, setChapterList] = useState<IChapter[]>([]);
     const [chapterPlaylist, setChapterPlaylist] = useState<IContent[]>([]);
 
     const initialVideoState: IVideo[] = [];
     const [isVideoListLoading, setVideoListLoading] = useState(true);
-    const videoList: IVideo[] = [];
     //Store URL of Current Video here:
     let [currentVideo, setCurrentVideo] = useState<string>();
     //let currentVideo: string;
     const [videos, setVideos] = useState<IContent[]>([]);
     //let video: IVideo
-
-    const [selectedId, setSelectedId] = useState<string | undefined>();
-    const [isDisplayChanging, setDisplayChanging] = useState<boolean>(false);
 
     //Vertical slide animation for FlatList.
     let translateY = new Animated.Value(50);
@@ -113,13 +109,20 @@ export const ScreenChapterStudent: React.FC = () => {
         }, [course])
     );
 
+    useEffect(() => {
+        _getChapter();
+        //_getAllVideos();
+        setVideos(chapterPlaylist);
+        if (chapterPlaylist.length > 0) {
+            setCurrentVideo(chapterPlaylist[0].contentId);
+        }
+    }, [courseProgress]);
+
     const myPlaylistItem = ({ item }: { item: IContent }) => {
         let bck: string = " ";
 
         console.log("RenderItemID");
         console.log(item.id);
-
-        //TODO: Warte mit Ausführung, bis Progress im Backend geupdated ist!
 
         console.log("Entered thisPlaylistItem");
         if (
@@ -151,10 +154,8 @@ export const ScreenChapterStudent: React.FC = () => {
 
                 bck = dark.Opacity.lightGreen;
             }
-            setDisplayChanging(false);
         }
-        //console.log(courseProgress);
-        //const bck : string = item.id === selectedId ? dark.theme.darkBlue4 : dark.theme.darkGreen;
+
         const mystyle = {
             marginBottom: "2.5%",
             backgroundColor: bck,
@@ -168,7 +169,6 @@ export const ScreenChapterStudent: React.FC = () => {
                     onPress={() => {
                         changeCurrentVideo(item.contentId);
                         changeVideoProgress(item);
-                        setSelectedId(item.id?.slice());
                     }}>
                     <ListItem.Content>
                         <ListItem.Title style={styles.listItemTitle} numberOfLines={1} lineBreakMode="tail">
@@ -181,33 +181,11 @@ export const ScreenChapterStudent: React.FC = () => {
         );
     };
 
-    const playlistlistItem = ({ item }: { item: IContent }) => (
-        <ListItem
-            containerStyle={{
-                marginBottom: "2.5%",
-                //backgroundColor: dark.theme.darkBlue2,
-                //backgroundColor: {item.id === selectedId ? "#6e3b6e" : "#f9c2ff"},
-            }}>
-            {/* <TouchableOpacity onPress={() => {changeCurrentVideo(item.id); changeVideoProgress(item); renderListDummy(item)} }> */}
-
-            <TouchableOpacity
-                onPress={() => {
-                    changeCurrentVideo(item.contentId);
-                    changeVideoProgress(item);
-                    setSelectedId(item.id?.slice());
-                }}>
-                <ListItem.Content>
-                    <ListItem.Title style={styles.listItemTitle} numberOfLines={1} lineBreakMode="tail">
-                        {item?.id}
-                    </ListItem.Title>
-                    <ListItem.Subtitle style={styles.listItemSubtitle}>Subtitle</ListItem.Subtitle>
-                </ListItem.Content>
-            </TouchableOpacity>
-        </ListItem>
-    );
-
     return (
         <View style={styles.rootContainer}>
+            <TextButton title={i18n.t("itrex.nextChapter")} color="pink" onPress={() => _gotoChapter()}></TextButton>
+            <Button title={i18n.t("itrex.nextChapter")} onPress={() => _gotoChapter()} />
+
             <Text style={styles.chapterHeading}>Ch 1. Some Chaptername</Text>
             <View style={styles.contentContainer}>
                 <View style={styles.videoContainer}>
@@ -298,17 +276,12 @@ export const ScreenChapterStudent: React.FC = () => {
         }
         const contentProgress = courseProgress.contentProgressTrackers[contentRef.id];
         const putReq = RequestFactory.createPutRequest({});
-        endpointsProgress
-            .setContentStateComplete(putReq, contentProgress.id)
-            .then((receivedContentProgress) => {
-                console.log("Set content progress to complete:");
-                console.log(receivedContentProgress);
+        endpointsProgress.setContentStateComplete(putReq, contentProgress.id).then((receivedContentProgress) => {
+            console.log("Set content progress to complete:");
+            console.log(receivedContentProgress);
 
-                updateLastAccessedContent(contentRef);
-            })
-            .finally(() => {
-                setDisplayChanging(true);
-            });
+            updateLastAccessedContent(contentRef);
+        });
     }
 
     function updateLastAccessedContent(contentRef: IContent): void {
@@ -325,6 +298,13 @@ export const ScreenChapterStudent: React.FC = () => {
             });
     }
 
+    function _getAllChapter() {
+        const request: RequestInit = RequestFactory.createGetRequest();
+        endpointsChapter.getChapters(request).then((chaptersReceived: IChapter[]) => {
+            setChapterList(chaptersReceived.filter);
+        });
+    }
+
     function _getChapter() {
         const request: RequestInit = RequestFactory.createGetRequest();
         setVideoListLoading(true);
@@ -339,6 +319,18 @@ export const ScreenChapterStudent: React.FC = () => {
                 }
             })
             .finally(async () => setVideoListLoading(false));
+    }
+
+    function _gotoChapter() {
+        const chapterIndex = chapterList.findIndex((i) => i.id);
+        React.useContext(LocalizationContext);
+        const navigation = useNavigation();
+
+        //const chaindex = chapter.findIndex((x) => x.value == question?.type);
+
+        navigation.navigate("CHAPTER_CONTENT", {
+            chapterId: chapterList[chapterIndex + 1].id,
+        });
     }
 
     function _getVideoUrl(): string {
@@ -360,60 +352,6 @@ export const ScreenChapterStudent: React.FC = () => {
             setCurrentVideo(vidId);
             _getVideoUrl();
         }
-    }
-
-    // function setVideos(): IVideo[]{}
-
-    async function _getAllVideos(): Promise<void> {
-        if (course.id == undefined) {
-            return;
-        }
-
-        setVideoListLoading(true);
-        //setVideos(initialVideoState);
-
-        const request: RequestInit = RequestFactory.createGetRequest();
-        endpointsVideo
-            .getAllVideos(request, course.id, undefined, i18n.t("itrex.getVideosError"))
-            .then((videoReceived: IVideo[]) => {
-                //videoList.push(videoReceived.filter(((vid: IVideo) => {
-                //          if (vid.id !== undefined && chapterPlaylist.includes(vid.id)) {return vid} })));
-                let vidList: IContent[] = [];
-                for (const vid in videoReceived) {
-                    for (const cont in chapterPlaylist) {
-                        if (videoReceived[vid].id == chapterPlaylist[cont].id) {
-                            vidList.push(chapterPlaylist[cont]);
-                        }
-                    }
-                }
-                setVideos(vidList);
-
-                console.log("VidList:");
-                console.log(vidList);
-
-                //setVideos(
-
-                //    videoReceived.filter((video: IVideo) => {
-                //        if (video.id !== undefined && vidList.includes(video.id)) {
-                //            return video;
-                //        }
-                //    })
-                //);
-
-                console.log("Result of Filter:");
-                console.log(videos);
-
-                //setChapterPlaylist2(["asdf", "asdf2"]);
-
-                //console.log("gsicht" + chapterPlaylist2 + " asdf");
-
-                console.log("Content ID in get all videos: ");
-                console.log(chapterPlaylist);
-                //console.log("Videos Received in get all videos: " );
-                //console.log(videoReceived)
-            })
-
-            .finally(async () => setVideoListLoading(false));
     }
 };
 
