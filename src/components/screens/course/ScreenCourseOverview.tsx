@@ -91,7 +91,7 @@ export const ScreenCourseOverview: React.FC = () => {
         }
 
         return (
-            <View style={[{ width: "20%", marginTop: 15 }]}>
+            <View style={[{ width: "25%", marginTop: 15 }]}>
                 <TextButton color="pink" title={i18n.t("itrex.leaveCourse")} onPress={() => leaveCourse()} />
             </View>
         );
@@ -105,7 +105,7 @@ export const ScreenCourseOverview: React.FC = () => {
         const courseRole = user.courses[course.id];
         if (courseRole === CourseRoles.OWNER) {
             return (
-                <View style={{ flexDirection: "row" }}>
+                <View style={{ flexDirection: "row", width: "25%" }}>
                     <TextButton title={i18n.t("itrex.videoPool")} onPress={() => goToVideoPool()} />
                     <TextButton title={i18n.t("itrex.quizPool")} onPress={() => goToQuizPool()} />
                 </View>
@@ -121,7 +121,7 @@ export const ScreenCourseOverview: React.FC = () => {
         const courseRole = user.courses[course.id];
         if (courseRole === CourseRoles.OWNER || courseRole === CourseRoles.MANAGER) {
             return (
-                <View style={{ flexDirection: "row" }}>
+                <View style={{ flexDirection: "row", width: "25%" }}>
                     <TextButton title={i18n.t("itrex.publishCourse")} onPress={() => confirmPublishCourse(course)} />
                     <TextButton
                         title={i18n.t("itrex.deleteCourse")}

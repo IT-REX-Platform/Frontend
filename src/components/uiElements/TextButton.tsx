@@ -95,19 +95,19 @@ const styles = StyleSheet.create({
         marginBottom: 5,
     },
     smallButton: {
-        width: "40%",
+        width: "50%",
         minWidth: 150,
         maxWidth: 250,
         height: 30,
     },
     mediumButton: {
-        width: "50%",
+        width: "55%",
         minWidth: 200,
         maxWidth: 250,
         height: 40,
     },
     largeButton: {
-        width: "60%",
+        width: "65%",
         minWidth: 250,
         maxWidth: 300,
         height: 50,
