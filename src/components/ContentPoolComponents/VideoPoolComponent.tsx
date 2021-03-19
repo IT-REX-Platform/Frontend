@@ -220,8 +220,8 @@ export const VideoPoolComponent: React.FC = () => {
             )
             .then((video) => {
                 loggerService.trace("Upload sucessful: " + video.title);
-                _getAllVideos();
-            });
+            })
+            .finally(() => _getAllVideos());
     }
 
     function _resetAnimBeforeGetAllVideos() {
