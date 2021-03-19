@@ -76,12 +76,9 @@ export class EndpointsVideo implements IEndpointsVideo {
     public downloadVideo(
         getRequest: RequestInit,
         videoId: string,
-        httpHeaders: string[],
         successMsg?: string,
         errorMsg?: string
     ): Promise<IVideo> {
-        // TODO: do something with httpHeaders?
-
         const url: string = this.url + VideoUrlSuffix.DOWNLOAD + "/" + videoId;
 
         this.loggerApi.trace("Sending GET request to URL: " + url);
