@@ -499,8 +499,9 @@ export const ScreenAddChapter: React.FC = () => {
                         />
                         <MaterialCommunityIcons name="pen" size={24} color={dark.theme.darkGreen} style={styles.icon} />
                     </View>
-                    <View>
-                        <TextButton title={i18n.t("itrex.save")} onPress={() => saveChapter()} />
+                    <View style={{ flexDirection: "row" }}>
+                        <TextButton title={i18n.t("itrex.saveAndReturn")} onPress={() => saveChapter(true)} />
+                        <TextButton title={i18n.t("itrex.save")} onPress={() => saveChapter(false)} />
                     </View>
                 </View>
 
@@ -533,7 +534,7 @@ export const ScreenAddChapter: React.FC = () => {
         </View>
     );
 
-    function saveChapter() {
+    function saveChapter(returnToTimeline: boolean) {
         // Validate start/end Date
         // Check if start and Enddate are set
 
@@ -572,8 +573,13 @@ export const ScreenAddChapter: React.FC = () => {
                         });
                     })
                 ).then(() => {
-                    // Navigate to the new Chapter
-                    navigation.navigate("CHAPTER", { chapterId: chapter.id }); // Navigate to the new Chapter
+                    if (returnToTimeline) {
+                        // Navigate back to Timeline
+                        navigation.navigate("INFO", { screen: "TIMELINE" });
+                    } else {
+                        // Navigate to the new Chapter
+                        navigation.navigate("CHAPTER", { chapterId: chapter.id });
+                    }
                 });
             });
         } else {
@@ -618,6 +624,14 @@ export const ScreenAddChapter: React.FC = () => {
                     i18n.t("itrex.chapterUpdateSuccess"),
                     i18n.t("itrex.updateChapterError")
                 );
+
+                if (returnToTimeline) {
+                    // Navigate back to Timeline
+                    navigation.navigate("INFO", { screen: "TIMELINE" });
+                } else {
+                    // Navigate to the new Chapter
+                    navigation.navigate("CHAPTER", { chapterId: chapter.id });
+                }
             });
         }
     }

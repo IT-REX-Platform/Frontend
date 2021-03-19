@@ -102,6 +102,8 @@ export const en = {
         myNewChapter: "My new chapter",
         save: "Save",
 
+        saveAndReturn: "Save & return",
+
         chapterCreatedSuccess: "The chapter was created successfully.",
         chapterUpdateSuccess: "The chapter was updated successfully.",
         publishCourseSuccess: "The course was published successfully.",
