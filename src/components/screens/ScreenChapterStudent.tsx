@@ -63,7 +63,9 @@ export const ScreenChapterStudent: React.FC = () => {
     const initialVideoState: IVideo[] = [];
     const [isVideoListLoading, setVideoListLoading] = useState(true);
     //Store URL of Current Video here:
-    let [currentVideo, setCurrentVideo] = useState<string>();
+    // let [currentVideo, setCurrentVide] = useState<string>();
+    let [currentVideo, setCurrentVideo] = useState<IContent>();
+
     //let currentVideo: string;
     const [videos, setVideos] = useState<IContent[]>([]);
     //let video: IVideo
@@ -75,6 +77,7 @@ export const ScreenChapterStudent: React.FC = () => {
     React.useContext(LocalizationContext);
     const route = useRoute<ChapterContentRouteProp>();
     const chapterId = route.params.chapterId;
+    const navigation = useNavigation();
 
     // Render UI for video list according to un-/available video data.
     const renderVideoList = () => {
@@ -100,23 +103,18 @@ export const ScreenChapterStudent: React.FC = () => {
                     console.log(receivedProgress);
                     setCourseProgress(receivedProgress);
                 });
-            _getChapter();
-            //_getAllVideos();
-            setVideos(chapterPlaylist);
-            if (chapterPlaylist.length > 0) {
-                setCurrentVideo(chapterPlaylist[0].contentId);
-            }
         }, [course])
     );
 
     useEffect(() => {
         _getChapter();
+        _getAllChapters();
         //_getAllVideos();
         setVideos(chapterPlaylist);
         if (chapterPlaylist.length > 0) {
-            setCurrentVideo(chapterPlaylist[0].contentId);
+            setCurrentVideo(chapterPlaylist[0]);
         }
-    }, [courseProgress]);
+    }, [courseProgress, chapterId]);
 
     const myPlaylistItem = ({ item }: { item: IContent }) => {
         let bck: string = " ";
@@ -167,7 +165,7 @@ export const ScreenChapterStudent: React.FC = () => {
 
                 <TouchableOpacity
                     onPress={() => {
-                        changeCurrentVideo(item.contentId);
+                        changeCurrentVideo(item);
                         changeVideoProgress(item);
                     }}>
                     <ListItem.Content>
@@ -298,10 +296,22 @@ export const ScreenChapterStudent: React.FC = () => {
             });
     }
 
-    function _getAllChapter() {
+    function _getAllChapters() {
         const request: RequestInit = RequestFactory.createGetRequest();
         endpointsChapter.getChapters(request).then((chaptersReceived: IChapter[]) => {
-            setChapterList(chaptersReceived.filter);
+            setChapterList(
+                chaptersReceived.filter((chap: IChapter) => {
+                    if (chap.courseId == course.id) {
+                        return chap;
+                    }
+                })
+            );
+
+            console.log("Chapter List of Course:");
+            console.log(chapterList);
+
+            //videoReceived.filter(((vid: IVideo) => {
+            //          if (vid.id !== undefined && chapterPlaylist.includes(vid.id)) {return vid} })));
         });
     }
 
@@ -322,21 +332,25 @@ export const ScreenChapterStudent: React.FC = () => {
     }
 
     function _gotoChapter() {
-        const chapterIndex = chapterList.findIndex((i) => i.id);
-        React.useContext(LocalizationContext);
-        const navigation = useNavigation();
-
+        let chapterIndex = chapterList.findIndex((i) => i.id);
         //const chaindex = chapter.findIndex((x) => x.value == question?.type);
 
-        navigation.navigate("CHAPTER_CONTENT", {
-            chapterId: chapterList[chapterIndex + 1].id,
-        });
+        console.log("ChapterIndex:");
+        console.log(chapterIndex);
+
+        if (chapterList !== undefined) {
+            (chapterIndex = chapterIndex + 1), console.log("IF Chapter List Not undefined:");
+            console.log(chapterIndex);
+            navigation.navigate("CHAPTER_CONTENT", {
+                chapterId: chapterList[chapterIndex].id,
+            });
+        }
     }
 
     function _getVideoUrl(): string {
         let vidId: string = " ";
         //vidId = chapterPlaylist[1]
-        vidId = currentVideo;
+        vidId = currentVideo?.contentId;
         console.log("Vid Id:");
         console.log(vidId);
 
@@ -347,7 +361,7 @@ export const ScreenChapterStudent: React.FC = () => {
         return createVideoUrl(vidId);
     }
 
-    function changeCurrentVideo(vidId?: string) {
+    function changeCurrentVideo(vidId?: IContent) {
         if (vidId !== undefined) {
             setCurrentVideo(vidId);
             _getVideoUrl();
