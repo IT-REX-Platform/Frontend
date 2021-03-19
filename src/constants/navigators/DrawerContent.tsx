@@ -93,10 +93,6 @@ export const DrawerContent: React.FC<DrawerContentComponentProps> = (props: Draw
             <Text style={styles.sectionHeader}>{i18n.t("itrex.quickSettings")}</Text>
             <View style={styles.settingsContainer}>
                 <View style={styles.horizontalContainer}>
-                    <Text style={{ color: "white" }}>{i18n.t("itrex.darkTheme")}</Text>
-                    <Switch value={isDarkTheme} onValueChange={toggleIsDarkTheme} />
-                </View>
-                <View style={styles.horizontalContainer}>
                     <Text style={{ color: "white" }}>{i18n.t("itrex.switchLang")}</Text>
                     <Switch value={locale == "de-DE"} onValueChange={toggleIsGerman} />
                 </View>
