@@ -1,11 +1,11 @@
 import { ICourse } from "../../types/ICourse";
-import { sendRequest } from "./sendRequest";
+import { sendRequest } from "../requests/sendRequest";
 import { itRexVars } from "../../constants/Constants";
 import { ApiUrls } from "../../constants/ApiUrls";
 import { IEndpointsCourse } from "../endpoints_interfaces/IEndpointsCourse";
 import { loggerFactory } from "../../../logger/LoggerConfig";
 import { CourseUrlParams } from "../../constants/CourseUrlParams";
-import { ResponseParser } from "./ResponseParser";
+import { ResponseParser } from "../responses/ResponseParser";
 import { CourseUrlSuffix } from "../../constants/CourseUrlSuffix";
 import { CoursePublishState } from "../../constants/CoursePublishState";
 

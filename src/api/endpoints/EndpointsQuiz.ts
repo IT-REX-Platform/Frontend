@@ -4,8 +4,8 @@ import { itRexVars } from "../../constants/Constants";
 import { QuizParams } from "../../constants/QuizParams";
 import { IQuiz } from "../../types/IQuiz";
 import { IEndpointsQuiz } from "../endpoints_interfaces/IEndpointsQuiz";
-import { ResponseParser } from "./ResponseParser";
-import { sendRequest } from "./sendRequest";
+import { ResponseParser } from "../responses/ResponseParser";
+import { sendRequest } from "../requests/sendRequest";
 
 /**
  * Endpoints for mediaservice/api/quizzes.

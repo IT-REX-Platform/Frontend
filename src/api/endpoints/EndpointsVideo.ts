@@ -1,10 +1,10 @@
 import { IVideo } from "../../types/IVideo";
-import { sendRequest } from "./sendRequest";
+import { sendRequest } from "../requests/sendRequest";
 import { itRexVars } from "../../constants/Constants";
 import { ApiUrls } from "../../constants/ApiUrls";
 import { IEndpointsVideo } from "../endpoints_interfaces/IEndpointsVideo";
 import { loggerFactory } from "../../../logger/LoggerConfig";
-import { ResponseParser } from "./ResponseParser";
+import { ResponseParser } from "../responses/ResponseParser";
 import { VideoUrlSuffix } from "../../constants/VideoUrlSuffix";
 import { VideoUrlParams } from "../../constants/VideoUrlParams";
 
