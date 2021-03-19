@@ -1,5 +1,5 @@
 import { DarkTheme, RouteProp, useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
-import { Video } from "expo-av";
+import { AVPlaybackStatus, Video } from "expo-av";
 import { useEffect, useState } from "react";
 import {
     Button,
@@ -63,10 +63,9 @@ export const ScreenChapterStudent: React.FC = () => {
     const initialVideoState: IVideo[] = [];
     const [isVideoListLoading, setVideoListLoading] = useState(true);
     //Store URL of Current Video here:
-    // let [currentVideo, setCurrentVide] = useState<string>();
+
     let [currentVideo, setCurrentVideo] = useState<IContent>();
 
-    //let currentVideo: string;
     const [videos, setVideos] = useState<IContent[]>([]);
     //let video: IVideo
 
@@ -78,6 +77,9 @@ export const ScreenChapterStudent: React.FC = () => {
     const route = useRoute<ChapterContentRouteProp>();
     const chapterId = route.params.chapterId;
     const navigation = useNavigation();
+
+    const videoPlayer = React.useRef<Video>(null);
+    let timeSinceLastProgressUpdatePush: number = 0;
 
     // Render UI for video list according to un-/available video data.
     const renderVideoList = () => {
@@ -115,6 +117,12 @@ export const ScreenChapterStudent: React.FC = () => {
             setCurrentVideo(chapterPlaylist[0]);
         }
     }, [courseProgress, chapterId]);
+
+    useEffect(() => {
+        if (currentVideo != undefined) restoreWatchProgress();
+    }, [currentVideo]);
+
+    //useEffect(() => {}, [currentVideo]);
 
     const myPlaylistItem = ({ item }: { item: IContent }) => {
         let bck: string = " ";
@@ -190,6 +198,8 @@ export const ScreenChapterStudent: React.FC = () => {
                     <Text style={styles.videoTitle}>Ch1.: My Video</Text>
                     <Video
                         style={styles.video}
+                        ref={videoPlayer}
+                        onPlaybackStatusUpdate={async (status) => heartbeat(status)}
                         source={{ uri: _getVideoUrl() }}
                         rate={1.0}
                         volume={1.0}
@@ -218,6 +228,43 @@ export const ScreenChapterStudent: React.FC = () => {
             </View>
         </View>
     );
+
+    function heartbeat(status: AVPlaybackStatus) {
+        /*console.log("*Heartbeat*:");
+        console.log(status);*/
+        //player.current?.setProgressUpdateIntervalAsync(5000000);
+
+        if (currentVideo == undefined) {
+            return;
+        }
+
+        if (status["isLoaded"] == true) {
+            timeSinceLastProgressUpdatePush = timeSinceLastProgressUpdatePush + status["progressUpdateIntervalMillis"];
+
+            console.log(timeSinceLastProgressUpdatePush);
+
+            if (timeSinceLastProgressUpdatePush >= 2500) {
+                timeSinceLastProgressUpdatePush = 0;
+
+                console.log("heartbeat");
+
+                changeVideoWatchProgress(currentVideo, Math.floor(status["positionMillis"] * 0.001));
+            }
+        }
+    }
+
+    function restoreWatchProgress() {
+        /*if (
+            courseProgress == undefined ||
+            courseProgress.contentProgressTrackers == undefined ||
+            currentVideo == undefined ||
+            currentVideo.id == undefined
+        ) {
+            return;
+        }*/
+        videoPlayer.current?.stopAsync();
+        //videoPlayer.current?.playFromPositionAsync(courseProgress.contentProgressTrackers[currentVideo.id]?.progress);
+    }
 
     function updateCourseProgress() {
         if (course.id === undefined) {
@@ -259,6 +306,40 @@ export const ScreenChapterStudent: React.FC = () => {
                 updateCourseProgress();
             });
         }
+    }
+
+    function changeVideoWatchProgress(contentRef: IContent, newProgress: number) {
+        // TODO: Adjust and/or reuse this for actual progress.
+        // For now it just touches the content once or completes it when touched.
+
+        // No course progress, no content refs or the given one is invalid.
+        if (
+            courseProgress.id === undefined ||
+            courseProgress.contentProgressTrackers === undefined ||
+            contentRef.id === undefined
+        ) {
+            console.log("ContentRef: ");
+            console.log(contentRef);
+            return;
+        }
+
+        var contentProgress = courseProgress.contentProgressTrackers[contentRef.id];
+        if (contentProgress === undefined || contentProgress.id === undefined) {
+            changeVideoProgress(contentRef);
+            contentProgress = courseProgress.contentProgressTrackers[contentRef.id];
+        }
+
+        if (contentProgress === undefined || contentProgress.id === undefined) {
+            return;
+        }
+
+        const putReq = RequestFactory.createPutRequest({});
+        endpointsProgress
+            .updateContentProgress(putReq, contentProgress.id, newProgress)
+            .then((receivedContentProgress) => {
+                console.log("Set content progress to:");
+                console.log(receivedContentProgress);
+            });
     }
 
     function completeVideo(contentRef: IContent) {
@@ -361,9 +442,9 @@ export const ScreenChapterStudent: React.FC = () => {
         return createVideoUrl(vidId);
     }
 
-    function changeCurrentVideo(vidId?: IContent) {
-        if (vidId !== undefined) {
-            setCurrentVideo(vidId);
+    function changeCurrentVideo(vid?: IContent) {
+        if (vid !== undefined) {
+            setCurrentVideo(vid);
             _getVideoUrl();
         }
     }
