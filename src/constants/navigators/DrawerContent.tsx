@@ -31,10 +31,6 @@ export const DrawerContent: React.FC<DrawerContentComponentProps> = (props: Draw
     const initialCourseState: ICourse[] = [];
     const [courses, setCourses] = useState(initialCourseState);
 
-    // Theme state.
-    const [isDarkTheme, setIsDarkTheme] = React.useState(false);
-    const toggleIsDarkTheme = () => setIsDarkTheme((previousState) => !previousState);
-
     // Localisation.
     const { locale, setLocale } = React.useContext(LocalizationContext);
     const toggleIsGerman = () => {
