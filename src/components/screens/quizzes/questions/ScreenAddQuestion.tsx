@@ -8,7 +8,6 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import i18n from "../../../../locales";
 import { QuestionTypes } from "../../../../constants/QuestionTypes";
 
-import Select from "react-select";
 import { ISolutionMultipleChoice, ISolutionNumeric } from "../../../../types/ISolution";
 import { NumericQuestion } from "./NumericQuestion";
 import { SingleChoiceQuestion } from "./SingleChoiceQuestion";
