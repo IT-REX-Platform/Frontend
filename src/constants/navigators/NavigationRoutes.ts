@@ -5,6 +5,7 @@ import { IQuiz } from "../../types/IQuiz";
 import { ISolutionMultipleChoice } from "../../types/ISolution";
 import { IQuestionMultipleChoice, IQuestionNumeric, IQuestionSingleChoice } from "../../types/IQuestion";
 import { IChapter } from "../../types/IChapter";
+import { ICourse } from "../../types/ICourse";
 
 const prefix = Linking.makeUrl("it-rex://");
 
@@ -41,6 +42,9 @@ export const config = {
                     path: "chapter/createQuiz/createQuestion/:chapterId",
                     screens: {},
                 },
+                QUIZ_OVERVIEW: "QUIZ_OVERVIEW",
+                QUIZ_RESULT: "QUIZ_RESULT",
+                QUIZ_SOLVE: "QUIZ_SOLVE",
             },
         },
     },
@@ -74,6 +78,9 @@ export type CourseStackParamList = {
         quiz?: IQuiz;
         courseId?: string;
         question?: IQuestionMultipleChoice | IQuestionNumeric | IQuestionSingleChoice;
+    };
+    QUIZ_OVERVIEW: {
+        quiz: IQuiz;
     };
     CHAPTER: {
         chapterId: string | undefined;
