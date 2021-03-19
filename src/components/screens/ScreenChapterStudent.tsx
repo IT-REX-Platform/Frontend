@@ -60,6 +60,8 @@ export const ScreenChapterStudent: React.FC = () => {
     const [chapterList, setChapterList] = useState<IChapter[]>([]);
     const [chapterPlaylist, setChapterPlaylist] = useState<IContent[]>([]);
 
+    const [playlistUpdateIndicator, setPlaylistUpdateIndicator] = useState<number>(0);
+
     const initialVideoState: IVideo[] = [];
     const [isVideoListLoading, setVideoListLoading] = useState(true);
     //Store URL of Current Video here:
@@ -102,6 +104,7 @@ export const ScreenChapterStudent: React.FC = () => {
                     console.log("Progress of course Init:");
                     console.log(receivedProgress);
                     setCourseProgress(receivedProgress);
+                    setPlaylistUpdateIndicator(playlistUpdateIndicator + 1);
                 });
         }, [course])
     );
@@ -113,13 +116,11 @@ export const ScreenChapterStudent: React.FC = () => {
         if (chapterPlaylist.length > 0) {
             setCurrentVideo(chapterPlaylist[0]);
         }
-    }, [courseProgress, chapterId]);
+    }, [playlistUpdateIndicator, chapterId]);
 
     useEffect(() => {
         if (currentVideo != undefined) restoreWatchProgress();
     }, [currentVideo]);
-
-    //useEffect(() => {}, [currentVideo]);
 
     const myPlaylistItem = ({ item }: { item: IContent }) => {
         let bck: string = " ";
@@ -227,10 +228,6 @@ export const ScreenChapterStudent: React.FC = () => {
     );
 
     function heartbeat(status: AVPlaybackStatus) {
-        /*console.log("*Heartbeat*:");
-        console.log(status);*/
-        //player.current?.setProgressUpdateIntervalAsync(5000000);
-
         if (currentVideo == undefined) {
             return;
         }
@@ -259,8 +256,13 @@ export const ScreenChapterStudent: React.FC = () => {
         ) {
             return;
         }*/
+
+        console.log("RESTORE PROGRESS");
+
         videoPlayer.current?.stopAsync();
-        videoPlayer.current?.playFromPositionAsync(courseProgress.contentProgressTrackers[currentVideo.id]?.progress);
+        videoPlayer.current?.playFromPositionAsync(
+            courseProgress.contentProgressTrackers[currentVideo.id]?.progress * 1000
+        );
     }
 
     function updateCourseProgress() {
@@ -336,6 +338,9 @@ export const ScreenChapterStudent: React.FC = () => {
             .then((receivedContentProgress) => {
                 console.log("Set content progress to:");
                 console.log(receivedContentProgress);
+            })
+            .finally(() => {
+                contentProgress.progress = newProgress;
             });
     }
 
