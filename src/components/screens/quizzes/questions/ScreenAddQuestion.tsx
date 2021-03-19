@@ -16,6 +16,7 @@ import { MultipleChoiceQuestion } from "./MultipleChoiceQuestion";
 import { IQuiz } from "../../../../types/IQuiz";
 import { CourseStackParamList } from "../../../../constants/navigators/NavigationRoutes";
 import { quizStyles } from "../quizStyles";
+import { DropDown } from "../../../uiElements/Dropdown";
 
 type ScreenCourseTabsRouteProp = RouteProp<CourseStackParamList, "CREATE_QUESTION">;
 
@@ -100,20 +101,10 @@ export const ScreenAddQuestion: React.FC = () => {
                 <Text style={quizStyles.cardHeader}>{i18n.t("itrex.kindOfQuestion")}</Text>
                 <View style={quizStyles.filterContainer}>
                     <View style={{ padding: 8, flex: 1 }}>
-                        <Select
+                        <DropDown
                             options={kindOfQuestionOptions}
                             defaultValue={defaultKindOfQuestionValue}
                             onChange={(option) => setKindOfQuestion(option?.value)}
-                            theme={(theme) => ({
-                                ...theme,
-                                borderRadius: 5,
-                                colors: {
-                                    ...theme.colors,
-                                    primary25: dark.Opacity.darkBlue1,
-                                    primary: dark.Opacity.pink,
-                                    backgroundColor: dark.Opacity.darkBlue1,
-                                },
-                            })}
                         />
                     </View>
                 </View>

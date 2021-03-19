@@ -47,6 +47,7 @@ import Select from "react-select";
 import { IQuiz } from "../../../types/IQuiz";
 import { EndpointsQuiz } from "../../../api/endpoints/EndpointsQuiz";
 import { contentPoolStyles } from "../../ContentPoolComponents/contentPoolStyles";
+import { DropDown } from "../../uiElements/Dropdown";
 
 type ScreenCourseTabsNavigationProp = CompositeNavigationProp<
     StackNavigationProp<CourseStackParamList, "CHAPTER">,
@@ -186,18 +187,8 @@ export const ScreenAddChapter: React.FC = () => {
                                 }}>
                                 {getContentName(item)}
                                 {timePeriods !== undefined && (
-                                    <Select
+                                    <DropDown
                                         options={timePeriods}
-                                        theme={(theme) => ({
-                                            ...theme,
-                                            borderRadius: 5,
-                                            colors: {
-                                                ...theme.colors,
-                                                primary25: dark.Opacity.darkBlue1,
-                                                primary: dark.Opacity.pink,
-                                                backgroundColor: dark.Opacity.darkBlue1,
-                                            },
-                                        })}
                                         defaultValue={timePeriods.find(
                                             (timePeriod) => timePeriod.value === item.timePeriodId
                                         )}
@@ -213,12 +204,7 @@ export const ScreenAddChapter: React.FC = () => {
                                                 }
                                             }
                                         }}
-                                        styles={{
-                                            container: () => ({
-                                                width: 200,
-                                                marginLeft: "5px",
-                                            }),
-                                        }}></Select>
+                                    />
                                 )}
                             </View>
                         </ListItem.Title>
