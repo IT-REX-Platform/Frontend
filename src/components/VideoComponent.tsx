@@ -75,7 +75,7 @@ export const VideoComponent: React.FC = () => {
     );
 
     function _getVideoUrl(): string {
-        if (video.id == undefined || null) {
+        if (video.id == undefined) {
             toast.error(i18n.t("itrex.videoNotFound"));
             return "";
         }
@@ -84,21 +84,21 @@ export const VideoComponent: React.FC = () => {
     }
 
     function _getTitle(): string {
-        if (video.title == undefined || null) {
+        if (video.title == undefined) {
             return "-";
         }
         return video.title;
     }
 
     // function _getStartDate(): string {
-    //     if (video.startDate == undefined || null) {
+    //     if (video.startDate == undefined) {
     //         return "-";
     //     }
     //     return video.startDate.toString();
     // }
 
     // function _getEndDate(): string {
-    //     if (video.endDate == undefined || null) {
+    //     if (video.endDate == undefined) {
     //         return "-";
     //     }
     //     return video.endDate.toString();
