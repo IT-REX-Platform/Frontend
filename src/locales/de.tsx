@@ -51,7 +51,6 @@ export const de = {
         switchLangEN: "Zu Englisch wechseln",
         switchLangDE: "Zu Deutsch wechseln",
         switchLang: "Zu Englisch wechseln",
-        darkTheme: "Dunkelmodus",
 
         myCoursesDivider: "Meine Kurse",
         quickSettings: "Kurzeinstellung",

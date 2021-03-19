@@ -51,7 +51,6 @@ export const en = {
         switchLangEN: "Switch to english",
         switchLangDE: "Switch to german",
         switchLang: "Switch to german",
-        darkTheme: "Dark-Theme",
 
         myCoursesDivider: "My Courses",
         quickSettings: "Quick settings",
