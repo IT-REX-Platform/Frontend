@@ -6,7 +6,7 @@ import { IEndpointsCourse } from "../endpoints_interfaces/IEndpointsCourse";
 import { loggerFactory } from "../../../logger/LoggerConfig";
 import { CourseUrlParams } from "../../constants/CourseUrlParams";
 import { ResponseParser } from "../responses/ResponseParser";
-import { CourseUrlSuffix } from "../../constants/CourseUrlSuffix";
+import { CourseUrlSuffix } from "../../constants/CourseURLSuffixTEST";
 import { CoursePublishState } from "../../constants/CoursePublishState";
 
 /**
