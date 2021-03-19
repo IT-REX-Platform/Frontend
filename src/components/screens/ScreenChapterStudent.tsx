@@ -235,12 +235,8 @@ export const ScreenChapterStudent: React.FC = () => {
         if (status["isLoaded"] == true) {
             timeSinceLastProgressUpdatePush = timeSinceLastProgressUpdatePush + status["progressUpdateIntervalMillis"];
 
-            console.log(timeSinceLastProgressUpdatePush);
-
             if (timeSinceLastProgressUpdatePush >= 2500) {
                 timeSinceLastProgressUpdatePush = 0;
-
-                console.log("heartbeat");
 
                 changeVideoWatchProgress(currentVideo, Math.floor(status["positionMillis"] * 0.001));
             }
@@ -248,16 +244,14 @@ export const ScreenChapterStudent: React.FC = () => {
     }
 
     function restoreWatchProgress() {
-        /*if (
+        if (
             courseProgress == undefined ||
             courseProgress.contentProgressTrackers == undefined ||
             currentVideo == undefined ||
             currentVideo.id == undefined
         ) {
             return;
-        }*/
-
-        console.log("RESTORE PROGRESS");
+        }
 
         videoPlayer.current?.stopAsync();
         videoPlayer.current?.playFromPositionAsync(
