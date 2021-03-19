@@ -5,8 +5,8 @@ import { ApiUrls } from "../../constants/ApiUrls";
 import { IEndpointsVideo } from "../endpoints_interfaces/IEndpointsVideo";
 import { loggerFactory } from "../../../logger/LoggerConfig";
 import { ResponseParser } from "./ResponseParser";
-import { VideoUrlParams } from "../../constants/VideoUrlParams";
 import { VideoUrlSuffix } from "../../constants/VideoUrlSuffix";
+import { VideoUrlParams } from "../../constants/VideoUrlParams";
 
 /**
  * Endpoints for mediaservice/api/videos.
@@ -37,17 +37,10 @@ export class EndpointsVideo implements IEndpointsVideo {
         successMsg?: string,
         errorMsg?: string
     ): Promise<IVideo[]> {
-        this.loggerApi.trace("Checking for additional parameters for GET request URL.");
-        let url: string = this.url + VideoUrlSuffix.COURSE;
+        const urlUpdated: string = this.url + VideoUrlSuffix.COURSE + "/" + courseId;
 
-        const urlParams = new URLSearchParams();
-        if (courseId !== undefined) {
-            urlParams.append(VideoUrlParams.COURSE_ID, courseId);
-            url = url + "?" + urlParams;
-        }
-
-        this.loggerApi.trace("Sending GET request to URL: " + url);
-        const response: Promise<Response> = sendRequest(url, getRequest);
+        this.loggerApi.trace("Sending GET request to URL: " + urlUpdated);
+        const response: Promise<Response> = sendRequest(urlUpdated, getRequest);
         return this.responseParser.parseVideos(response, successMsg, errorMsg);
     }
 
@@ -57,10 +50,12 @@ export class EndpointsVideo implements IEndpointsVideo {
         successMsg?: string,
         errorMsg?: string
     ): Promise<Map<string, IVideo>> {
-        // TODO: put videoIds in body or URL?
+        // http://localhost:8080/services/mediaservice/api/videos/?videoIds=e4997cee-cfc1-45d1-ab4e-7b2bc0c60e75,2f91abb3-a2fa-4050-96df-b2aa2a7e6d0b
+        const videoIdsString: string = videoIds.join(",");
+        const urlUpdated: string = this.url + "/?" + VideoUrlParams.VIDEO_IDS + "=" + videoIdsString;
 
-        this.loggerApi.trace("Sending GET request to URL: " + this.url);
-        const response: Promise<Response> = sendRequest(this.url, getRequest);
+        this.loggerApi.trace("Sending GET request to URL: " + urlUpdated);
+        const response: Promise<Response> = sendRequest(urlUpdated, getRequest);
         return this.responseParser.parseVideoMap(response, successMsg, errorMsg);
     }
 
