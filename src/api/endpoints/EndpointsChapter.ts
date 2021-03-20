@@ -1,8 +1,8 @@
-import { sendRequest } from "./sendRequest";
+import { sendRequest } from "../requests/sendRequest";
 import { itRexVars } from "../../constants/Constants";
 import { ApiUrls } from "../../constants/ApiUrls";
 import { loggerFactory } from "../../../logger/LoggerConfig";
-import { ResponseParser } from "./ResponseParser";
+import { ResponseParser } from "../responses/ResponseParser";
 import { IEndpointsChapter } from "../endpoints_interfaces/IEndpointsChapter";
 import { IChapter } from "../../types/IChapter";
 
@@ -28,7 +28,7 @@ export class EndpointsChapter implements IEndpointsChapter {
      * @param errorMsg An error message.
      * @returns
      */
-    public getChapters(getRequest: RequestInit, successMsg?: string, errorMsg?: string): Promise<IChapter[]> {
+    public getAllChapters(getRequest: RequestInit, successMsg?: string, errorMsg?: string): Promise<IChapter[]> {
         this.loggerApi.trace("Sending GET request to URL: " + this.url);
         const response: Promise<Response> = sendRequest(this.url, getRequest);
         return this.responseParser.parseChapters(response, successMsg, errorMsg);
@@ -71,20 +71,6 @@ export class EndpointsChapter implements IEndpointsChapter {
     }
 
     /**
-     * Update all fields of a course.
-     *
-     * @param postRequest PUT request with course JSON body containing a course ID and all available course fields.
-     * @param successMsg A success message.
-     * @param errorMsg An error message.
-     * @returns
-     */
-    public updateChapter(putRequest: RequestInit, successMsg?: string, errorMsg?: string): Promise<IChapter> {
-        this.loggerApi.trace("Sending PUT request to URL: " + this.url);
-        const response: Promise<Response> = sendRequest(this.url, putRequest);
-        return this.responseParser.parseChapter(response, successMsg, errorMsg);
-    }
-
-    /**
      * Update one or more course fields.
      *
      * @param postRequest PATCH request with course JSON body containing a course ID and one or more course fields.
@@ -102,18 +88,18 @@ export class EndpointsChapter implements IEndpointsChapter {
      * Delete an existing course.
      *
      * @param deleteRequest DELETE request.
-     * @param id Course ID for URL parameter.
+     * @param chapterId Course ID for URL parameter.
      * @param successMsg A success message.
      * @param errorMsg An error message.
      * @returns
      */
     public deleteChapter(
         deleteRequest: RequestInit,
-        id: string,
+        chapterId: string,
         successMsg?: string,
         errorMsg?: string
     ): Promise<void> {
-        const urlUpdated = this.url + "/" + id;
+        const urlUpdated = this.url + "/" + chapterId;
 
         this.loggerApi.trace("Sending DELETE request to URL: " + urlUpdated);
         const response: Promise<Response> = sendRequest(urlUpdated, deleteRequest);

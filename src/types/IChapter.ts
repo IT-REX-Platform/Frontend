@@ -5,4 +5,5 @@ export type IChapter = {
     name?: string;
     courseId?: string;
     contentReferences?: IContent[];
+    chapterNumber?: number;
 };

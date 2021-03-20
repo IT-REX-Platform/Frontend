@@ -1,7 +1,7 @@
 import { dark } from "../../constants/themes/dark";
 import { StyleSheet } from "react-native";
 
-export const videoPoolStyles = StyleSheet.create({
+export const contentPoolStyles = StyleSheet.create({
     imageContainer: {
         flex: 1,
         resizeMode: "stretch",
@@ -12,7 +12,7 @@ export const videoPoolStyles = StyleSheet.create({
         color: dark.theme.pink,
         fontSize: 50,
     },
-    videoUploadContainer: {
+    addContentContainer: {
         width: "50%",
         alignSelf: "center",
         alignItems: "center",
@@ -34,7 +34,7 @@ export const videoPoolStyles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
     },
-    videoListContainer: {
+    contentListContainer: {
         flex: 1,
         maxWidth: "100%",
         alignItems: "center",
@@ -50,7 +50,7 @@ export const videoPoolStyles = StyleSheet.create({
         borderWidth: 2,
         borderRadius: 5,
     },
-    videoList: {
+    contentList: {
         height: 1, // Actual value is unimportant, this just makes the video list permanently scrollable, disregarding the current view height.
         marginBottom: 20,
     },

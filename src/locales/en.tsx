@@ -51,7 +51,6 @@ export const en = {
         switchLangEN: "Switch to english",
         switchLangDE: "Switch to german",
         switchLang: "Switch to german",
-        darkTheme: "Dark-Theme",
 
         myCoursesDivider: "My Courses",
         quickSettings: "Quick settings",
@@ -107,6 +106,8 @@ export const en = {
         nextChapter: "Next Chapter",
         lastChapter: "Last Chapter",
 
+        saveAndReturn: "Save & return",
+
         chapterCreatedSuccess: "The chapter was created successfully.",
         chapterUpdateSuccess: "The chapter was updated successfully.",
         publishCourseSuccess: "The course was published successfully.",
@@ -136,11 +137,15 @@ export const en = {
 
         getUserInfoError: "An error occurred while getting user info.",
 
+        quizPool: "Quiz Pool",
+        noQuizzesAvailable: "There are currently no quizzes in the quiz pool of this course.",
+        quizProperties: "Create a new quiz to add to the quiz pool.",
         createQuiz: "Create a Quiz",
         invalidQuizName: "Please define a quiz name.",
         invalidQuestionsObject: "Please add at least one question  to the quiz.",
         noQuestions: "No questions have been added yet!",
 
+        questions: "Questions: ",
         deleteQuizSuccess: "The quiz was deleted successfully.",
         deleteQuizError: "An error occurred while deleting the quiz.",
         saveQuizSuccess: "The quiz was saved successfully.",
@@ -173,5 +178,9 @@ export const en = {
         value: "Value",
         result: "Result",
         epsilon: "Epsilon value",
+
+        videoPoolList: "VIDEO POOL LIST",
+        quizPoolList: "QUIZ POOL LIST",
+        chapterContentList: "CHAPTER CONTENT LIST",
     },
 };

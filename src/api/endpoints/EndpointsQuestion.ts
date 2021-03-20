@@ -4,8 +4,8 @@ import { itRexVars } from "../../constants/Constants";
 import { QuestionParams } from "../../constants/QuestionParams";
 import { IQuestionSingleChoice, IQuestionMultipleChoice, IQuestionNumeric } from "../../types/IQuestion";
 import { IEndpointsQuestion } from "../endpoints_interfaces/IEndpointsQuestion";
-import { ResponseParser } from "./ResponseParser";
-import { sendRequest } from "./sendRequest";
+import { ResponseParser } from "../responses/ResponseParser";
+import { sendRequest } from "../requests/sendRequest";
 
 /**
  * Endpoints for quizservice/api/questions.
