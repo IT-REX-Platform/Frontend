@@ -202,7 +202,7 @@ export const ScreenChapterStudent: React.FC = () => {
 
         const request: RequestInit = RequestFactory.createGetRequest();
         endpointsVideo
-            .getAllVideos(request, course.id, undefined, i18n.t("itrex.getVideosError"))
+            .findAllVideosOfACourse(request, course.id, undefined, i18n.t("itrex.getVideosError"))
             .then((videoReceived: IVideo[]) => {
                 //videoList.push(videoReceived.filter(((vid: IVideo) => {
                 //          if (vid.id !== undefined && chapterPlaylist.includes(vid.id)) {return vid} })));

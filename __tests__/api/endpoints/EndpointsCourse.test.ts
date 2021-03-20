@@ -67,22 +67,8 @@ describe("EndpointsCourse", () => {
     });
 
     xit("getFilteredCourses() should return an array of published courses.", async () => {
-        const params: ICourse = { publishState: CoursePublishState.PUBLISHED };
-
         try {
-            const response: ICourse[] = await instance.getAllCourses(request, params);
-            expect(response).resolves.toBe(courseExpected);
-        } catch (error) {
-            // Enable once fetch has been mocked.
-            // console.log("An error has occurred.", error);
-        }
-    });
-
-    xit("getFilteredCourses() should return an array of all courses with name TheoInf2.", async () => {
-        const params: ICourse = { name: "TheoInf3" };
-
-        try {
-            const response: ICourse[] = await instance.getAllCourses(request, params);
+            const response: ICourse[] = await instance.getAllCourses(request, CoursePublishState.PUBLISHED);
             expect(response).resolves.toBe(courseExpected);
         } catch (error) {
             // Enable once fetch has been mocked.
@@ -92,8 +78,8 @@ describe("EndpointsCourse", () => {
 
     xit("getCourse() should return one course.", async () => {
         try {
-            let id: string = "12345";
-            const response: ICourse = await instance.getCourse(request, id);
+            let courseId: string = "12345";
+            const response: ICourse = await instance.getCourse(request, courseId);
             expect(response).resolves.toBe(courseExpected);
         } catch (error) {
             // Enable once fetch has been mocked.
