@@ -17,7 +17,7 @@ export class RequestAuthorization {
                 credentials: "include",
             };
         } catch (error) {
-            loggerApi.error("An error has occurred while getting authorizarion tokens for request.", error);
+            loggerApi.error("An error has occurred while getting authorizarion tokens for request: " + error.message);
             throw new Error("User must log in.");
         }
     }

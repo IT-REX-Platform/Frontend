@@ -1,12 +1,13 @@
 import { ICourse } from "../../types/ICourse";
-import { sendRequest } from "./sendRequest";
+import { sendRequest } from "../requests/sendRequest";
 import { itRexVars } from "../../constants/Constants";
 import { ApiUrls } from "../../constants/ApiUrls";
 import { IEndpointsCourse } from "../endpoints_interfaces/IEndpointsCourse";
 import { loggerFactory } from "../../../logger/LoggerConfig";
 import { CourseUrlParams } from "../../constants/CourseUrlParams";
-import { ResponseParser } from "./ResponseParser";
-import { CourseURLSuffix } from "../../constants/CourseURLSuffix";
+import { ResponseParser } from "../responses/ResponseParser";
+import { CourseUrlSuffix } from "../../constants/CourseUrlSuffix";
+import { CoursePublishState } from "../../constants/CoursePublishState";
 
 /**
  * Endpoints for courseservice/api/courses/.
@@ -26,19 +27,21 @@ export class EndpointsCourse implements IEndpointsCourse {
      * Get one or more courses.
      *
      * @param getRequest GET request.
-     * @param params Optional parameters for GET request URL to filter all existing courses.
+     * @param publishState Optional published courses only parameter.
+     * @param activeOnly Optional active courses only parameter.
      * @param successMsg A success message.
      * @param errorMsg An error message.
      * @returns
      */
     public getAllCourses(
         getRequest: RequestInit,
-        params?: ICourse,
+        publishState?: CoursePublishState,
+        activeOnly?: boolean,
         successMsg?: string,
         errorMsg?: string
     ): Promise<ICourse[]> {
         this.loggerApi.trace("Checking for additional parameters for GET request URL.");
-        const url: string = this._appendCourseParams(this.url, params);
+        const url: string = this._appendCourseParams(this.url, publishState, activeOnly);
 
         this.loggerApi.trace("Sending GET request to URL: " + url);
         const response: Promise<Response> = sendRequest(url, getRequest);
@@ -49,20 +52,48 @@ export class EndpointsCourse implements IEndpointsCourse {
      * Get courses that belong to current user (I manage them / I joined them).
      *
      * @param getRequest GET request.
-     * @param params Optional parameters for GET request URL to filter users courses.
+     * @param publishState Optional published courses only parameter.
+     * @param activeOnly Optional active courses only parameter.
      * @param successMsg A success message.
      * @param errorMsg An error message.
      * @returns
      */
     public getUserCourses(
         getRequest: RequestInit,
-        params?: ICourse,
+        publishState?: CoursePublishState,
+        activeOnly?: boolean,
         successMsg?: string,
         errorMsg?: string
     ): Promise<ICourse[]> {
+        const myCoursesURL = this.url + CourseUrlSuffix.USER;
+
         this.loggerApi.trace("Checking for additional parameters for GET request URL.");
-        const myCoursesURL = this.url + CourseURLSuffix.USER;
-        const url: string = this._appendCourseParams(myCoursesURL, params);
+        const url: string = this._appendCourseParams(myCoursesURL, publishState, activeOnly);
+
+        this.loggerApi.trace("Sending GET request to URL: " + url);
+        const response: Promise<Response> = sendRequest(url, getRequest);
+        return this.responseParser.parseCourses(response, successMsg, errorMsg);
+    }
+
+    /**
+     * Get published courses.
+     *
+     * @param getRequest GET request.
+     * @param activeOnly Optional active courses only parameter.
+     * @param successMsg A success message.
+     * @param errorMsg An error message.
+     * @returns
+     */
+    public getAllPublishedCourses(
+        getRequest: RequestInit,
+        activeOnly?: boolean,
+        successMsg?: string,
+        errorMsg?: string
+    ): Promise<ICourse[]> {
+        const myCoursesURL = this.url + CourseUrlSuffix.PUBLISHED;
+
+        this.loggerApi.trace("Checking for additional parameters for GET request URL.");
+        const url: string = this._appendCourseParams(myCoursesURL, undefined, activeOnly);
 
         this.loggerApi.trace("Sending GET request to URL: " + url);
         const response: Promise<Response> = sendRequest(url, getRequest);
@@ -73,44 +104,44 @@ export class EndpointsCourse implements IEndpointsCourse {
      * Append course filter parameters to the URL.
      *
      * @param url Original URL.
-     * @param params Optional parameters for GET request URL.
-     * @returns
+     * @param publishState Published courses only parameter.
+     * @param activeOnly Active courses only parameter.
+     * @returns Adjusted URL with params.
      */
-    private _appendCourseParams(url: string, params?: ICourse): string {
-        const urlBase = url;
-
-        if (params === undefined) {
-            return urlBase;
-        }
-
-        const urlParams = new URLSearchParams();
+    private _appendCourseParams(url: string, publishState?: CoursePublishState, activeOnly?: boolean): string {
+        const urlParams: URLSearchParams = new URLSearchParams();
 
         this.loggerApi.trace("Checking for publishState.");
-        if (params.publishState !== undefined) {
-            urlParams.append(CourseUrlParams.PUBLISH_STATE, params.publishState);
-            this.loggerApi.trace(`Appended ${CourseUrlParams.PUBLISH_STATE} parameter to GET request URL: ${urlBase}`);
+        if (publishState != undefined) {
+            urlParams.append(CourseUrlParams.PUBLISH_STATE, publishState);
+            this.loggerApi.trace(`Appended ${CourseUrlParams.PUBLISH_STATE} parameter to GET request URL: ${url}`);
         }
 
         this.loggerApi.trace("Checking for activeState.");
-        if (params.activeOnly !== undefined) {
-            urlParams.append(CourseUrlParams.ACTIVITY_STATE, params.activeOnly.toString());
-            this.loggerApi.trace(`Appended ${CourseUrlParams.ACTIVITY_STATE} parameter to GET request URL: ${urlBase}`);
+        if (activeOnly != undefined) {
+            urlParams.append(CourseUrlParams.ACTIVITY_STATE, activeOnly.toString());
+            this.loggerApi.trace(`Appended ${CourseUrlParams.ACTIVITY_STATE} parameter to GET request URL: ${url}`);
         }
 
-        return urlBase + "?" + urlParams;
+        return url + "?" + urlParams;
     }
 
     /**
      * Get one course.
      *
      * @param getRequest GET request.
-     * @param id Course ID for URL parameter.
+     * @param courseId Course ID for URL parameter.
      * @param successMsg A success message.
      * @param errorMsg An error message.
      * @returns
      */
-    public getCourse(getRequest: RequestInit, id: string, successMsg?: string, errorMsg?: string): Promise<ICourse> {
-        const urlUpdated = this.url + "/" + id;
+    public getCourse(
+        getRequest: RequestInit,
+        courseId: string,
+        successMsg?: string,
+        errorMsg?: string
+    ): Promise<ICourse> {
+        const urlUpdated = this.url + "/" + courseId;
 
         this.loggerApi.trace("Sending GET request to URL: " + urlUpdated);
         const response: Promise<Response> = sendRequest(urlUpdated, getRequest);
@@ -132,17 +163,47 @@ export class EndpointsCourse implements IEndpointsCourse {
     }
 
     /**
-     * Update all fields of a course.
+     * Send a request to join a course.
      *
-     * @param postRequest PUT request with course JSON body containing a course ID and all available course fields.
+     * @param postRequest the POST request used.
+     * @param courseId the UUID of the course to join.
      * @param successMsg A success message.
      * @param errorMsg An error message.
      * @returns
      */
-    public updateCourse(putRequest: RequestInit, successMsg?: string, errorMsg?: string): Promise<ICourse> {
-        this.loggerApi.trace("Sending PUT request to URL: " + this.url);
-        const response: Promise<Response> = sendRequest(this.url, putRequest);
-        return this.responseParser.parseCourse(response, successMsg, errorMsg);
+    public joinCourse(
+        postRequest: RequestInit,
+        courseId: string,
+        successMsg?: string,
+        errorMsg?: string
+    ): Promise<void> {
+        const urlJoin = this.url + "/" + courseId + CourseUrlSuffix.JOIN;
+
+        this.loggerApi.trace("Sending POST request to URL: " + urlJoin);
+        const response: Promise<Response> = sendRequest(urlJoin, postRequest);
+        return this.responseParser.checkEmptyResponse(response, successMsg, errorMsg);
+    }
+
+    /**
+     * Send a request to leave a course.
+     *
+     * @param postRequest the POST request used.
+     * @param courseId the UUID of the course to leave.
+     * @param successMsg A success message.
+     * @param errorMsg An error message.
+     * @returns
+     */
+    public leaveCourse(
+        postRequest: RequestInit,
+        courseId: string,
+        successMsg?: string,
+        errorMsg?: string
+    ): Promise<void> {
+        const urlLeave = this.url + "/" + courseId + CourseUrlSuffix.LEAVE;
+
+        this.loggerApi.trace("Sending POST request to URL: " + urlLeave);
+        const response: Promise<Response> = sendRequest(urlLeave, postRequest);
+        return this.responseParser.checkEmptyResponse(response, successMsg, errorMsg);
     }
 
     /**
@@ -163,50 +224,21 @@ export class EndpointsCourse implements IEndpointsCourse {
      * Delete an existing course.
      *
      * @param deleteRequest DELETE request.
-     * @param id Course ID for URL parameter.
+     * @param courseId Course ID for URL parameter.
      * @param successMsg A success message.
      * @param errorMsg An error message.
      * @returns
      */
-    public deleteCourse(deleteRequest: RequestInit, id: string, successMsg?: string, errorMsg?: string): Promise<void> {
-        const urlUpdated = this.url + "/" + id;
+    public deleteCourse(
+        deleteRequest: RequestInit,
+        courseId: string,
+        successMsg?: string,
+        errorMsg?: string
+    ): Promise<void> {
+        const urlUpdated = this.url + "/" + courseId;
 
         this.loggerApi.trace("Sending DELETE request to URL: " + urlUpdated);
         const response: Promise<Response> = sendRequest(urlUpdated, deleteRequest);
-        return this.responseParser.checkEmptyResponse(response, successMsg, errorMsg);
-    }
-
-    /**
-     * Send a request to join a course.
-     *
-     * @param postRequest the POST request used.
-     * @param id the UUID of the course to join.
-     * @param successMsg A success message.
-     * @param errorMsg An error message.
-     * @returns
-     */
-    public joinCourse(postRequest: RequestInit, id: string, successMsg?: string, errorMsg?: string): Promise<void> {
-        const urlJoin = this.url + "/" + id + CourseURLSuffix.JOIN;
-
-        this.loggerApi.trace("Sending POST request to URL: " + urlJoin);
-        const response: Promise<Response> = sendRequest(urlJoin, postRequest);
-        return this.responseParser.checkEmptyResponse(response, successMsg, errorMsg);
-    }
-
-    /**
-     * Send a request to leave a course.
-     *
-     * @param postRequest the POST request used.
-     * @param id the UUID of the course to leave.
-     * @param successMsg A success message.
-     * @param errorMsg An error message.
-     * @returns
-     */
-    public leaveCourse(postRequest: RequestInit, id: string, successMsg?: string, errorMsg?: string): Promise<void> {
-        const urlLeave = this.url + "/" + id + CourseURLSuffix.LEAVE;
-
-        this.loggerApi.trace("Sending POST request to URL: " + urlLeave);
-        const response: Promise<Response> = sendRequest(urlLeave, postRequest);
         return this.responseParser.checkEmptyResponse(response, successMsg, errorMsg);
     }
 }
