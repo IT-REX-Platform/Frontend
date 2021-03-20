@@ -8,6 +8,7 @@ interface IItrexVariables {
     channel: string;
     authClientId: string;
     authRedirectUrl: string;
+    frontendUrl: string;
 }
 
 export function itRexVars(): IItrexVariables {
