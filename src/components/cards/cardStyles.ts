@@ -22,6 +22,28 @@ export const cardStyles = StyleSheet.create({
         justifyContent: "center",
         color: "white",
     },
+    cardChoicesResultRight: {
+        margin: 8,
+        minHeight: 40,
+        width: "40%",
+        backgroundColor: dark.Opacity.darkGreen,
+        flexDirection: "row",
+        justifyContent: "center",
+        color: "white",
+    },
+    cardChoicesResultWrong: {
+        margin: 8,
+        minHeight: 40,
+        width: "40%",
+        backgroundColor: dark.Opacity.pink,
+        flexDirection: "row",
+        justifyContent: "center",
+        color: "white",
+    },
+    cardChoicesResultSelected: {
+        borderColor: "white",
+        borderWidth: 5,
+    },
     cardChoicesSelect: {
         margin: 8,
         minHeight: 40,

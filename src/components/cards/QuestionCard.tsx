@@ -10,7 +10,7 @@ import i18n from "../../locales";
 import { LocalizationContext } from "../Context";
 import { useNavigation } from "@react-navigation/native";
 import { IQuiz } from "../../types/IQuiz";
-import { cardStyles } from "./cradStyles";
+import { cardStyles } from "./cardStyles";
 
 interface QuestionCardProps {
     question: IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric;

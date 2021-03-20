@@ -6,6 +6,7 @@ import { useNavigation } from "@react-navigation/core";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { CourseStackParamList } from "../../../../constants/navigators/NavigationRoutes";
 import { QuestionTypes } from "../../../../constants/QuestionTypes";
+import { ResultSingleChoiceCard } from "../../../cards/ResultSingleChoiceCard";
 
 type ScreenQuizResultProps = RouteProp<CourseStackParamList, "QUIZ_RESULT">;
 
@@ -27,7 +28,7 @@ export const ScreenQuizResult: React.FC = () => {
             {quiz.questions.map((question) => {
                 switch (question.type) {
                     case QuestionTypes.SINGLE_CHOICE:
-                        // return <ResultSingleChoiceCard></ResultSingleChoiceCard>;
+                        return <ResultSingleChoiceCard question={question}></ResultSingleChoiceCard>;
                         return <></>;
                     case QuestionTypes.MULTIPLE_CHOICE:
                         return <></>;

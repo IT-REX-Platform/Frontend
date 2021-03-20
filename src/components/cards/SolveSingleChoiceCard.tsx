@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { IQuestionSingleChoice } from "../../types/IQuestion";
 import { LocalizationContext } from "../Context";
-import { cardStyles } from "./cradStyles";
+import { cardStyles } from "./cardStyles";
 
 interface QuestionCardProps {
     question: IQuestionSingleChoice;
