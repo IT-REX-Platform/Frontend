@@ -6,7 +6,7 @@ import { dark } from "../../constants/themes/dark";
 import i18n from "../../locales";
 import { IQuestionNumeric } from "../../types/IQuestion";
 import { LocalizationContext } from "../Context";
-import { cardStyles } from "./cradStyles";
+import { cardStyles } from "./cardStyles";
 
 interface QuestionCardProps {
     question: IQuestionNumeric;
