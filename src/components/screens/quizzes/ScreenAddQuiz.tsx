@@ -58,7 +58,6 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = (props) => {
                     return;
                 }
                 setQuestions(quizWithQuestions.questions);
-                console.log(questions);
             }
         }, [])
     );

@@ -26,5 +26,5 @@ export interface IQuestionMultipleChoice extends IQuestion {
 export interface IQuestionNumeric extends IQuestion {
     type: QuestionTypes.NUMERIC;
     solution: ISolutionNumeric;
-    userInput?: ISolutionNumeric;
+    userInput?: number;
 }

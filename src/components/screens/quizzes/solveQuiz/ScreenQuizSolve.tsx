@@ -10,6 +10,7 @@ import { SolveSingleChoiceCard } from "../../../cards/SolveSingleChoiceCard";
 import { QuestionTypes } from "../../../../constants/QuestionTypes";
 import { SolveMultipleChoiceCard } from "../../../cards/SolveMultipleChoiceCard";
 import { IQuestionMultipleChoice, IQuestionNumeric, IQuestionSingleChoice } from "../../../../types/IQuestion";
+import { SolveNumericCard } from "../../../cards/SolveNumericCard";
 
 type ScreenQuizSolveProps = RouteProp<CourseStackParamList, "QUIZ_SOLVE">;
 
@@ -44,6 +45,12 @@ export const ScreenQuizSolve: React.FC = () => {
                                 <SolveMultipleChoiceCard
                                     question={question}
                                     onSolutionClicked={solutionClickCallback}></SolveMultipleChoiceCard>
+                            );
+                        case QuestionTypes.NUMERIC:
+                            return (
+                                <SolveNumericCard
+                                    question={question}
+                                    onSolutionClicked={solutionClickCallback}></SolveNumericCard>
                             );
                     }
                 })}
