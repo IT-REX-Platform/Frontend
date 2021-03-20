@@ -34,7 +34,7 @@ export const ResultMultipleChoiceCard: React.FC<ResultMultipleChoiceCardProps> =
             }
         }
         return (
-            <View style={selected ? cardStyles.cardChoicesResultSelected : undefined}>
+            <View style={selected ? cardStyles.cardChoicesResultSelected : cardStyles.cardChoicesNotSelect}>
                 <View
                     style={
                         question.solution[index] ? cardStyles.cardChoicesResultRight : cardStyles.cardChoicesResultWrong
