@@ -64,7 +64,7 @@ export const ScreenHome: React.FC<ScreenHomeProps> = (props) => {
         if (isFocused) {
             const request: RequestInit = RequestFactory.createGetRequest();
             endpointsCourse
-                .getUserCourses(request, undefined, undefined, i18n.t("itrex.getCoursesError"))
+                .getUserCourses(request, undefined, undefined, undefined, i18n.t("itrex.getCoursesError"))
                 .then((receivedCourses: ICourse[]) => setAllCourses(receivedCourses));
         }
     }, [isFocused]);
@@ -76,17 +76,15 @@ export const ScreenHome: React.FC<ScreenHomeProps> = (props) => {
         setSelectedActiveState: CourseActivityState | undefined
     ): void {
         const request: RequestInit = RequestFactory.createGetRequest();
-        const activeOnly = getEndDateBasedOnFilter(setSelectedActiveState);
+        const activeOnly: boolean | undefined = getEndDateBasedOnFilter(setSelectedActiveState);
 
         // Only show published courses to student
         if (userRole === ITREXRoles.ROLE_STUDENT) {
             publishState = CoursePublishState.PUBLISHED;
         }
 
-        const filterParams: ICourse = { publishState, activeOnly };
-
         endpointsCourse
-            .getUserCourses(request, filterParams, undefined, i18n.t("itrex.getCoursesError"))
+            .getUserCourses(request, publishState, activeOnly, undefined, i18n.t("itrex.getCoursesError"))
             .then((receivedCourses: ICourse[]) => setFilteredCourses(receivedCourses));
     }
 
@@ -205,8 +203,8 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "flex-start",
-        backgroundColor: dark.Opacity.grey,
         zIndex: 11,
+        // backgroundColor: dark.Opacity.grey,
     },
     cardHeader: {
         padding: 16,

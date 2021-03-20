@@ -190,7 +190,6 @@ export const VideoPoolComponent: React.FC = () => {
 
         loggerService.trace("Initialising video upload.");
         await _uploadVideos(pickedVideos);
-        _resetAnimBeforeGetAllVideos();
     }
 
     async function _uploadVideos(selectedVideos: File[]): Promise<void> {
@@ -199,9 +198,6 @@ export const VideoPoolComponent: React.FC = () => {
         for (const selectedVideo of selectedVideos) {
             await _uploadVideo(selectedVideo);
         }
-
-        // Give MediaService 1 second to save uploaded videos before sending getAllVideos() request.
-        await sleep(1000);
 
         setVideoUploading(false);
         toast.info(i18n.t("itrex.uploadDone"), false);
@@ -222,7 +218,10 @@ export const VideoPoolComponent: React.FC = () => {
                 i18n.t("itrex.uploadSuccessful") + selectedVideo.name,
                 i18n.t("itrex.uploadFailed") + selectedVideo.name
             )
-            .then((video) => loggerService.trace("Upload sucessful: " + video.title));
+            .then((video) => {
+                loggerService.trace("Upload sucessful: " + video.title);
+            })
+            .finally(() => _getAllVideos());
     }
 
     function _resetAnimBeforeGetAllVideos() {
@@ -243,7 +242,7 @@ export const VideoPoolComponent: React.FC = () => {
 
         const request: RequestInit = RequestFactory.createGetRequest();
         endpointsVideo
-            .getAllVideos(request, course.id, undefined, i18n.t("itrex.getVideosError"))
+            .findAllVideosOfACourse(request, course.id, undefined, i18n.t("itrex.getVideosError"))
             .then((videosReceived: IVideo[]) => {
                 setVideos(videosReceived);
                 loggerService.trace("Received videos in next line:");
@@ -253,7 +252,7 @@ export const VideoPoolComponent: React.FC = () => {
     }
 
     async function _deleteVideo(videoId?: string): Promise<void> {
-        if (videoId === undefined) {
+        if (videoId == undefined) {
             return;
         }
 

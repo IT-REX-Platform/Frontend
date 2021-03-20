@@ -4,6 +4,7 @@ import { IVideo } from "../../types/IVideo";
 import { IChapter } from "../../types/IChapter";
 import { IQuiz } from "../../types/IQuiz";
 import { IQuestionMultipleChoice, IQuestionNumeric, IQuestionSingleChoice } from "../../types/IQuestion";
+import { IContent } from "../../types/IContent";
 
 /**
  * Class for backend request creation.
@@ -29,7 +30,15 @@ export class RequestFactory {
     }
 
     public static createPostRequestWithBody(
-        object: ICourse | IVideo | IChapter | IQuiz | IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric
+        object:
+            | ICourse
+            | IChapter
+            | IContent
+            | IVideo
+            | IQuiz
+            | IQuestionSingleChoice
+            | IQuestionMultipleChoice
+            | IQuestionNumeric
     ): RequestInit {
         return RequestFactory.createRequestWithJson("POST", object);
     }
@@ -41,7 +50,7 @@ export class RequestFactory {
     }
 
     // PATCH does not exist for following types: IQuiz, IQuestionSingleChoice, IQuestionMultipleChoice, IQuestionNumeric.
-    public static createPatchRequest(object: ICourse | IVideo | IChapter): RequestInit {
+    public static createPatchRequest(object: ICourse | IChapter | IContent | IVideo): RequestInit {
         return RequestFactory.createRequestWithJson("PATCH", object);
     }
 

@@ -522,10 +522,10 @@ export const ScreenAddChapter: React.FC = () => {
             };
             const postRequest: RequestInit = RequestFactory.createPostRequestWithBody(myNewChapter);
 
-            chapterEndpoint.createChapter(postRequest).then((chapter) => {
+            chapterEndpoint.createChapter(postRequest).then((chapter: IChapter) => {
                 // Assign the Videos
                 Promise.all(
-                    contentList.map((content) => {
+                    contentList.map((content: IContent) => {
                         content.chapterId = chapter.id;
 
                         return new Promise((resolve) => {
@@ -562,7 +562,7 @@ export const ScreenAddChapter: React.FC = () => {
 
             //How to reorder the contents ?
             Promise.all(
-                contentList.map((content) => {
+                contentList.map((content: IContent) => {
                     return new Promise((resolve) => {
                         //content.chapterId = chapter.id;
 
@@ -626,16 +626,16 @@ export const ScreenAddChapter: React.FC = () => {
      * @param courseId ID of the course to which the videos belong.
      */
     async function _getAllVideos(courseId?: string): Promise<IVideo[]> {
-        if (course.id == undefined) {
+        if (courseId == undefined) {
             loggerService.warn("Course ID undefined, can't get videos.");
             setLoading(false);
             return [];
         }
-        loggerService.trace("Getting all videos of course: " + course.id);
+        loggerService.trace("Getting all videos of course: " + courseId);
 
         const request: RequestInit = RequestFactory.createGetRequest();
         return endpointsVideo
-            .getAllVideos(request, courseId, undefined, i18n.t("itrex.getVideosError"))
+            .findAllVideosOfACourse(request, courseId, undefined, i18n.t("itrex.getVideosError"))
             .then((videosReceived: IVideo[]) => {
                 setVideoPoolList(videosReceived);
                 return videosReceived;
@@ -708,7 +708,6 @@ const styles = StyleSheet.create({
         fontSize: 24,
         fontWeight: "bold",
         width: "100%",
-        // eslint-disable-next-line max-lines
     },
     image: {
         flex: 1,
