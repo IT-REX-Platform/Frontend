@@ -62,7 +62,6 @@ export const SolveSingleChoiceCard: React.FC<QuestionCardProps> = (props) => {
     }
 
     function selectedSolution(index: string) {
-        console.log(index);
         if (index === "0") {
             setSingleAnswerZero(true);
             setSingleAnswerOne(false);

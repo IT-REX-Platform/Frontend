@@ -9,7 +9,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import { SolveSingleChoiceCard } from "../../../cards/SolveSingleChoiceCard";
 import { QuestionTypes } from "../../../../constants/QuestionTypes";
 import { SolveMultipleChoiceCard } from "../../../cards/SolveMultipleChoiceCard";
-import { IQuestionSingleChoice } from "../../../../types/IQuestion";
+import { IQuestionMultipleChoice, IQuestionNumeric, IQuestionSingleChoice } from "../../../../types/IQuestion";
 
 type ScreenQuizSolveProps = RouteProp<CourseStackParamList, "QUIZ_SOLVE">;
 
@@ -19,7 +19,9 @@ export const ScreenQuizSolve: React.FC = () => {
 
     const navigation = useNavigation();
 
-    const solutionClickCallback = (question: IQuestionSingleChoice | undefined) => {
+    const solutionClickCallback = (
+        question: IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric | undefined
+    ) => {
         const index = quiz.questions.findIndex((questionToUpdate) => questionToUpdate.id === question?.id);
         quiz.questions[index].userInput = question?.userInput;
     };
@@ -28,10 +30,8 @@ export const ScreenQuizSolve: React.FC = () => {
         <>
             <ScrollView>
                 <Text>{quiz.name}</Text>
-                <Text>TEEEEST</Text>
 
                 {quiz.questions.map((question) => {
-                    console.log(question);
                     switch (question.type) {
                         case QuestionTypes.SINGLE_CHOICE:
                             return (
@@ -40,7 +40,11 @@ export const ScreenQuizSolve: React.FC = () => {
                                     onSolutionClicked={solutionClickCallback}></SolveSingleChoiceCard>
                             );
                         case QuestionTypes.MULTIPLE_CHOICE:
-                            return <SolveMultipleChoiceCard question={question}></SolveMultipleChoiceCard>;
+                            return (
+                                <SolveMultipleChoiceCard
+                                    question={question}
+                                    onSolutionClicked={solutionClickCallback}></SolveMultipleChoiceCard>
+                            );
                     }
                 })}
 

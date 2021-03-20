@@ -1,6 +1,6 @@
 /* eslint-disable complexity */
 import { useFocusEffect } from "@react-navigation/native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { IQuestionMultipleChoice } from "../../types/IQuestion";
 import { ISolutionMultipleChoice } from "../../types/ISolution";
@@ -9,26 +9,45 @@ import { cardStyles } from "./cradStyles";
 
 interface QuestionCardProps {
     question: IQuestionMultipleChoice;
+    onSolutionClicked: (question: IQuestionMultipleChoice | undefined) => void;
 }
 
 export const SolveMultipleChoiceCard: React.FC<QuestionCardProps> = (props) => {
     React.useContext(LocalizationContext);
+
+    const { question, onSolutionClicked } = props;
 
     const [singleAnswerZero, setSingleAnswerZero] = useState<boolean>(false);
     const [singleAnswerOne, setSingleAnswerOne] = useState<boolean>(false);
     const [singleAnswerTwo, setSingleAnswerTwo] = useState<boolean>(false);
     const [singleAnswerThree, setSingleAnswerThree] = useState<boolean>(false);
 
-    const question = props.question;
-
     const [solution, setSolution] = useState<ISolutionMultipleChoice>();
 
-    useFocusEffect(
-        React.useCallback(() => {
-            setSolution({ "0": singleAnswerZero, "1": singleAnswerOne, "2": singleAnswerTwo, "3": singleAnswerThree });
-            console.log(solution);
-        }, [singleAnswerZero, singleAnswerOne, singleAnswerTwo, singleAnswerThree])
-    );
+    // useFocusEffect(
+    //     React.useCallback(() => {
+    //         const solutionObj: ISolutionMultipleChoice = {
+    //             "0": singleAnswerZero,
+    //             "1": singleAnswerOne,
+    //             "2": singleAnswerTwo,
+    //             "3": singleAnswerThree,
+    //         };
+    //         setSolution(solutionObj);
+    //         console.log(solution);
+    //     }, [singleAnswerZero, singleAnswerOne, singleAnswerTwo, singleAnswerThree])
+    // );
+
+    useEffect(() => {
+        const solutionObj: ISolutionMultipleChoice = {
+            "0": singleAnswerZero,
+            "1": singleAnswerOne,
+            "2": singleAnswerTwo,
+            "3": singleAnswerThree,
+        };
+        // setSolution(solutionObj);
+        onSolutionClicked({ ...question, userInput: solutionObj });
+        console.log(solution);
+    }, [singleAnswerZero, singleAnswerOne, singleAnswerTwo, singleAnswerThree]);
 
     return (
         <View style={cardStyles.card}>
