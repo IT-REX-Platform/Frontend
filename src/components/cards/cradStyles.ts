@@ -22,6 +22,17 @@ export const cardStyles = StyleSheet.create({
         justifyContent: "center",
         color: "white",
     },
+    cardChoicesSelect: {
+        margin: 8,
+        minHeight: 40,
+        width: "40%",
+        backgroundColor: dark.Opacity.grey,
+        borderColor: dark.Opacity.grey,
+        borderWidth: 5,
+        flexDirection: "row",
+        justifyContent: "center",
+        color: "white",
+    },
     cardChoicesWrong: {
         minHeight: 40,
         margin: 8,

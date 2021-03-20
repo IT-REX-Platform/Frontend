@@ -1,7 +1,6 @@
 /* eslint-disable complexity */
 import React, { useState } from "react";
-import { View, Text } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { View, Text, TouchableOpacity } from "react-native";
 import { IQuestionSingleChoice } from "../../types/IQuestion";
 import { LocalizationContext } from "../Context";
 import { quizStyles } from "../screens/quizzes/quizStyles";
@@ -14,10 +13,10 @@ interface QuestionCardProps {
 export const SolveSingleChoiceCard: React.FC<QuestionCardProps> = (props) => {
     React.useContext(LocalizationContext);
 
-    const [singleAnswerZero, setSingleAnswerZero] = useState<boolean>();
-    const [singleAnswerOne, setSingleAnswerOne] = useState<boolean>();
-    const [singleAnswerTwo, setSingleAnswerTwo] = useState<boolean>();
-    const [singleAnswerThree, setSingleAnswerThree] = useState<boolean>();
+    const [singleAnswerZero, setSingleAnswerZero] = useState<boolean>(false);
+    const [singleAnswerOne, setSingleAnswerOne] = useState<boolean>(false);
+    const [singleAnswerTwo, setSingleAnswerTwo] = useState<boolean>(false);
+    const [singleAnswerThree, setSingleAnswerThree] = useState<boolean>(false);
 
     const [solution, setSolution] = useState<string | undefined>();
 
@@ -35,35 +34,36 @@ export const SolveSingleChoiceCard: React.FC<QuestionCardProps> = (props) => {
             <>
                 <TouchableOpacity
                     disabled={singleAnswerZero}
-                    style={singleAnswerZero ? cardStyles.cardChoicesRight : quizStyles.answerInput}
-                    onPress={() => setSelectedSolution("0")}>
+                    style={singleAnswerZero ? cardStyles.cardChoicesRight : cardStyles.cardChoicesSelect}
+                    onPress={() => selectedSolution("0")}>
                     <Text style={cardStyles.textChoice}>{question.choices[0]}</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    style={singleAnswerOne ? cardStyles.cardChoicesRight : quizStyles.answerInput}
+                    style={singleAnswerOne ? cardStyles.cardChoicesRight : cardStyles.cardChoicesSelect}
                     disabled={singleAnswerOne}
-                    onPress={() => setSelectedSolution("1")}>
+                    onPress={() => selectedSolution("1")}>
                     <Text style={cardStyles.textChoice}>{question.choices[1]}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    style={singleAnswerTwo ? cardStyles.cardChoicesRight : quizStyles.answerInput}
+                    style={singleAnswerTwo ? cardStyles.cardChoicesRight : cardStyles.cardChoicesSelect}
                     disabled={singleAnswerTwo}
-                    onPress={() => setSelectedSolution("2")}>
+                    onPress={() => selectedSolution("2")}>
                     <Text style={cardStyles.textChoice}>{question.choices[2]}</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    style={singleAnswerThree ? cardStyles.cardChoicesRight : quizStyles.answerInput}
+                    style={singleAnswerThree ? cardStyles.cardChoicesRight : cardStyles.cardChoicesSelect}
                     disabled={singleAnswerThree}
-                    onPress={() => setSelectedSolution("3")}>
+                    onPress={() => selectedSolution("3")}>
                     <Text style={cardStyles.textChoice}>{question.choices[3]}</Text>
                 </TouchableOpacity>
             </>
         );
     }
 
-    function setSelectedSolution(index: string) {
+    function selectedSolution(index: string) {
+        console.log(index);
         if (index === "0") {
             setSingleAnswerZero(true);
             setSingleAnswerOne(false);
