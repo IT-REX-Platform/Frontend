@@ -29,6 +29,7 @@ export const cardStyles = StyleSheet.create({
         backgroundColor: dark.Opacity.darkGreen,
         flexDirection: "row",
         justifyContent: "center",
+        alignItems: "center",
         color: "white",
     },
     cardChoicesResultWrong: {
@@ -48,7 +49,10 @@ export const cardStyles = StyleSheet.create({
         justifyContent: "center",
         color: "white",
         borderColor: "white",
-        borderWidth: 5,
+        borderWidth: 2,
+        shadowRadius: 10,
+        shadowColor: "white",
+        shadowOpacity: 0.5,
     },
     cardChoicesSelect: {
         margin: 8,
