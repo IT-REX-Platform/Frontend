@@ -22,27 +22,44 @@ export const ResultSingleChoiceCard: React.FC<ResultSingleChoiceCardProps> = (pr
     );
 
     function renderAnswers() {
+        console.log(question.solution + " " + question.userInput);
         return (
             <>
                 {/* First Question */}
                 <View
-                    style={question.solution === question.userInput ? cardStyles.cardChoicesResultSelected : undefined}>
+                    style={
+                        "0" === question.userInput
+                            ? cardStyles.cardChoicesResultSelected
+                            : cardStyles.cardChoicesNotSelect
+                    }>
                     {renderAnswer(question, "0")}
                 </View>
                 {/* Second Question */}
                 <View
-                    style={question.solution === question.userInput ? cardStyles.cardChoicesResultSelected : undefined}>
+                    style={
+                        "1" === question.userInput
+                            ? cardStyles.cardChoicesResultSelected
+                            : cardStyles.cardChoicesNotSelect
+                    }>
                     {renderAnswer(question, "1")}
                 </View>
 
                 {/* Third Question */}
                 <View
-                    style={question.solution === question.userInput ? cardStyles.cardChoicesResultSelected : undefined}>
+                    style={
+                        "2" === question.userInput
+                            ? cardStyles.cardChoicesResultSelected
+                            : cardStyles.cardChoicesNotSelect
+                    }>
                     {renderAnswer(question, "2")}
                 </View>
                 {/* Fourth Question */}
                 <View
-                    style={question.solution === question.userInput ? cardStyles.cardChoicesResultSelected : undefined}>
+                    style={
+                        "3" === question.userInput
+                            ? cardStyles.cardChoicesResultSelected
+                            : cardStyles.cardChoicesNotSelect
+                    }>
                     {renderAnswer(question, "3")}
                 </View>
             </>
@@ -52,15 +69,14 @@ export const ResultSingleChoiceCard: React.FC<ResultSingleChoiceCardProps> = (pr
     function renderAnswer(question: IQuestionSingleChoice, index: string) {
         return (
             <>
-                {question.solution === index ? (
-                    <View style={cardStyles.cardChoicesRight}>
-                        <Text style={cardStyles.textChoice}>{question.choices[Number(index)]}</Text>
-                    </View>
-                ) : (
-                    <View style={cardStyles.cardChoicesWrong}>
-                        <Text style={cardStyles.textChoice}>{question.choices[Number(index)]}</Text>
-                    </View>
-                )}
+                <View
+                    style={
+                        question.solution === index
+                            ? cardStyles.cardChoicesResultRight
+                            : cardStyles.cardChoicesResultWrong
+                    }>
+                    <Text style={cardStyles.textChoice}>{question.choices[Number(index)]}</Text>
+                </View>
             </>
         );
     }

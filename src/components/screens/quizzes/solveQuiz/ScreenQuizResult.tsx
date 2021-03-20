@@ -1,12 +1,13 @@
 import React from "react";
 import { IQuiz } from "../../../../types/IQuiz";
-import { Text } from "react-native";
+import { ImageBackground, ScrollView, Text } from "react-native";
 import { TextButton } from "../../../uiElements/TextButton";
 import { useNavigation } from "@react-navigation/core";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { CourseStackParamList } from "../../../../constants/navigators/NavigationRoutes";
 import { QuestionTypes } from "../../../../constants/QuestionTypes";
 import { ResultSingleChoiceCard } from "../../../cards/ResultSingleChoiceCard";
+import { quizStyles } from "../quizStyles";
 
 type ScreenQuizResultProps = RouteProp<CourseStackParamList, "QUIZ_RESULT">;
 
@@ -19,28 +20,34 @@ export const ScreenQuizResult: React.FC = () => {
     const navigation = useNavigation();
     return (
         <>
-            <Text>Quiz Solution Screen</Text>
-            <Text>{quiz.name}</Text>
-            <Text>
-                You solved {correctlySolved(quiz)} out of {quiz.questions.length} questions
-            </Text>
+            <ImageBackground
+                source={require("../../../../constants/images/Background1-1.png")}
+                style={quizStyles.image}>
+                <ScrollView>
+                    <Text>Quiz Solution Screen</Text>
+                    <Text>{quiz.name}</Text>
+                    <Text>
+                        You solved {correctlySolved(quiz)} out of {quiz.questions.length} questions
+                    </Text>
 
-            {quiz.questions.map((question) => {
-                switch (question.type) {
-                    case QuestionTypes.SINGLE_CHOICE:
-                        return <ResultSingleChoiceCard question={question}></ResultSingleChoiceCard>;
-                        return <></>;
-                    case QuestionTypes.MULTIPLE_CHOICE:
-                        return <></>;
-                    case QuestionTypes.NUMERIC:
-                        return <></>;
-                }
-            })}
+                    {quiz.questions.map((question) => {
+                        switch (question.type) {
+                            case QuestionTypes.SINGLE_CHOICE:
+                                return <ResultSingleChoiceCard question={question}></ResultSingleChoiceCard>;
+                                return <></>;
+                            case QuestionTypes.MULTIPLE_CHOICE:
+                                return <></>;
+                            case QuestionTypes.NUMERIC:
+                                return <></>;
+                        }
+                    })}
 
-            <TextButton
-                title={"Return to chapter"}
-                // Navigate back to Chapter Overview Page
-                onPress={() => navigation.navigate("INFO", { screen: "OVERVIEW" })}></TextButton>
+                    <TextButton
+                        title={"Return to chapter"}
+                        // Navigate back to Chapter Overview Page
+                        onPress={() => navigation.navigate("INFO", { screen: "OVERVIEW" })}></TextButton>
+                </ScrollView>
+            </ImageBackground>
         </>
     );
 };

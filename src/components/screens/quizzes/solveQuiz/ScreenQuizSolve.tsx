@@ -1,6 +1,6 @@
 import React from "react";
 import { IQuiz } from "../../../../types/IQuiz";
-import { Text } from "react-native";
+import { ImageBackground, Text } from "react-native";
 import { useNavigation } from "@react-navigation/core";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { CourseStackParamList } from "../../../../constants/navigators/NavigationRoutes";
@@ -11,6 +11,7 @@ import { QuestionTypes } from "../../../../constants/QuestionTypes";
 import { SolveMultipleChoiceCard } from "../../../cards/SolveMultipleChoiceCard";
 import { IQuestionMultipleChoice, IQuestionNumeric, IQuestionSingleChoice } from "../../../../types/IQuestion";
 import { SolveNumericCard } from "../../../cards/SolveNumericCard";
+import { quizStyles } from "../quizStyles";
 
 type ScreenQuizSolveProps = RouteProp<CourseStackParamList, "QUIZ_SOLVE">;
 
@@ -29,40 +30,44 @@ export const ScreenQuizSolve: React.FC = () => {
 
     return (
         <>
-            <ScrollView>
-                <Text>{quiz.name}</Text>
+            <ImageBackground
+                source={require("../../../../constants/images/Background1-1.png")}
+                style={quizStyles.image}>
+                <ScrollView>
+                    <Text>{quiz.name}</Text>
 
-                {quiz.questions.map((question) => {
-                    switch (question.type) {
-                        case QuestionTypes.SINGLE_CHOICE:
-                            return (
-                                <SolveSingleChoiceCard
-                                    question={question}
-                                    onSolutionClicked={solutionClickCallback}></SolveSingleChoiceCard>
-                            );
-                        case QuestionTypes.MULTIPLE_CHOICE:
-                            return (
-                                <SolveMultipleChoiceCard
-                                    question={question}
-                                    onSolutionClicked={solutionClickCallback}></SolveMultipleChoiceCard>
-                            );
-                        case QuestionTypes.NUMERIC:
-                            return (
-                                <SolveNumericCard
-                                    question={question}
-                                    onSolutionClicked={solutionClickCallback}></SolveNumericCard>
-                            );
-                    }
-                })}
+                    {quiz.questions.map((question) => {
+                        switch (question.type) {
+                            case QuestionTypes.SINGLE_CHOICE:
+                                return (
+                                    <SolveSingleChoiceCard
+                                        question={question}
+                                        onSolutionClicked={solutionClickCallback}></SolveSingleChoiceCard>
+                                );
+                            case QuestionTypes.MULTIPLE_CHOICE:
+                                return (
+                                    <SolveMultipleChoiceCard
+                                        question={question}
+                                        onSolutionClicked={solutionClickCallback}></SolveMultipleChoiceCard>
+                                );
+                            case QuestionTypes.NUMERIC:
+                                return (
+                                    <SolveNumericCard
+                                        question={question}
+                                        onSolutionClicked={solutionClickCallback}></SolveNumericCard>
+                                );
+                        }
+                    })}
 
-                <TextButton
-                    title={"Finish Quiz"}
-                    onPress={() => {
-                        navigation.navigate("QUIZ_RESULT", {
-                            quiz,
-                        });
-                    }}></TextButton>
-            </ScrollView>
+                    <TextButton
+                        title={"Finish Quiz"}
+                        onPress={() => {
+                            navigation.navigate("QUIZ_RESULT", {
+                                quiz,
+                            });
+                        }}></TextButton>
+                </ScrollView>
+            </ImageBackground>
         </>
     );
 };
