@@ -30,7 +30,6 @@ import { createVideoUrl } from "../../services/createVideoUrl";
 //import { ScreenCourseTabsNavigationProp, ScreenCourseTabsRouteProp } from "../../course/ScreenCourseTabs";
 import { RequestFactory } from "../../api/requests/RequestFactory";
 import { ImageBackground } from "react-native";
-import { IContent } from "../../types/IContent";
 import { EndpointsChapter } from "../../api/endpoints/EndpointsChapter";
 import { Icon } from "react-native-vector-icons/Icon";
 import { EndpointsCourse } from "../../api/endpoints/EndpointsCourse";
@@ -39,6 +38,8 @@ import { EndpointsProgress } from "../../api/endpoints/EndpointsProgress";
 import { ICourseProgressTracker } from "../../types/ICourseProgressTracker";
 import { ContentProgressTrackerState } from "../../constants/ContentProgressTrackerState";
 import { IContentProgressTracker } from "../../types/IContentProgressTracker";
+import { CONTENTREFERENCETYPE, IContent } from "../../types/IContent";
+import { calculateVideoSize } from "../../services/calculateVideoSize";
 import { render } from "react-dom";
 import { borderRadius } from "react-select/src/theme";
 import { waitFor } from "@testing-library/react-native";
@@ -92,7 +93,13 @@ export const ScreenChapterStudent: React.FC = () => {
     const timePeriods = course.timePeriods?.map((timePeriod, idx) => {
         return {
             value: timePeriod.id,
-            label: i18n.t("itrex.week") + " " + (idx + 1),
+            label: "Due on: " + dateConverter(timePeriod.endDate),
+
+            //dateConverter(timePeriod.startDate) +
+            //" - " +
+            //dateConverter(timePeriod.endDate),
+
+            //i18n.t("itrex.week") + " " + (idx + 1),
             //+ " (" +
             //dateConverter(timePeriod.startDate) +
             //" - " +
@@ -146,11 +153,18 @@ export const ScreenChapterStudent: React.FC = () => {
 
     const myPlaylistItem = ({ item }: { item: IContent }) => {
         let bck: string = " ";
+        let contentIcon;
 
         console.log("RenderItemID");
         console.log(item.id);
 
         console.log("Entered thisPlaylistItem");
+        if (item.quiz) {
+            contentIcon = '"key"';
+        } else if (item.video) {
+            contentIcon = '"video"';
+        }
+
         if (
             courseProgress.id !== undefined &&
             courseProgress.contentProgressTrackers !== undefined &&
@@ -196,11 +210,14 @@ export const ScreenChapterStudent: React.FC = () => {
                         changeCurrentVideo(item);
                         changeVideoProgress(item);
                     }}>
+                    {getContentIcon(item)}
                     <ListItem.Content>
                         <ListItem.Title style={styles.listItemTitle} numberOfLines={1} lineBreakMode="tail">
-                            {item?.id}
+                            {getContentName(item)}
                         </ListItem.Title>
-                        <ListItem.Subtitle style={styles.listItemSubtitle}>Subtitle</ListItem.Subtitle>
+                        <ListItem.Subtitle style={styles.listItemSubtitle}>
+                            {getContentSubtitle(item)}
+                        </ListItem.Subtitle>
                     </ListItem.Content>
                 </TouchableOpacity>
             </ListItem>
@@ -209,12 +226,38 @@ export const ScreenChapterStudent: React.FC = () => {
 
     return (
         <View style={styles.rootContainer}>
-            <Button title={i18n.t("itrex.nextChapter")} onPress={() => _gotoChapter()} />
+            <View style={styles.headerContainer}>
+                <TouchableOpacity style={styles.iconBox} onPress={() => _gotoLastChapter()}>
+                    <MaterialIcons
+                        name="arrow-left"
+                        size={28}
+                        color="rgba(255,255,255, 1)"
+                        style={[styles.icon, { justifyContent: "center" }]}
+                    />
+                    <Text style={[styles.chapterNavigation, { color: "rgba(255,255,255,0.8)" }]}>
+                        {i18n.t("itrex.lastChapter")}{" "}
+                    </Text>
+                </TouchableOpacity>
 
-            <Text style={styles.chapterHeading}>{chapter.name}</Text>
+                <View style={styles.iconBox}>
+                    <Text style={styles.chapterHeading}>{chapter.name}</Text>
+                </View>
+
+                <TouchableOpacity style={styles.iconBox} onPress={() => _gotoNextChapter()}>
+                    <Text style={[styles.chapterNavigation, { color: "rgba(255,255,255,0.8)" }]}>
+                        {i18n.t("itrex.nextChapter")}{" "}
+                    </Text>
+                    <MaterialIcons
+                        name="arrow-right"
+                        size={28}
+                        color="rgba(255,255,255, 1)"
+                        style={[styles.icon, { justifyContent: "center" }]}
+                    />
+                </TouchableOpacity>
+            </View>
+
             <View style={styles.contentContainer}>
                 <View style={styles.videoContainer}>
-                    <Text style={styles.videoTitle}>Ch1.: My Video</Text>
                     <Video
                         style={styles.video}
                         ref={videoPlayer}
@@ -228,9 +271,12 @@ export const ScreenChapterStudent: React.FC = () => {
                         useNativeControls={true}
                         // onLoad={changeVideoProgress()}
                     />
+                    <View style={styles.iconContainer}>
+                        <Text style={[styles.videoTitle, { paddingTop: "1.5%" }]}>Ch1.: My Video</Text>
+                    </View>
                 </View>
+
                 <View style={styles.playlistContainer}>
-                    <Text style={styles.videoTitle}>Playlist</Text>
                     {renderVideoList()}
                     <Animated.View style={{ transform: [{ translateY }], flex: 1, maxWidth: "95%" }}>
                         <SectionList
@@ -239,19 +285,60 @@ export const ScreenChapterStudent: React.FC = () => {
                             sections={videos}
                             showsVerticalScrollIndicator={true}
                             renderItem={myPlaylistItem}
+                            //ListHeaderComponent={<Text style={styles.videoTitle}>Playlist</Text>}
                             //renderItem={thisPlaylistItem}
                             extraData={courseProgress}
                             keyExtractor={(item) => item.id ?? ""}
                             ListEmptyComponent={<Text>Videos here</Text>}
-                            renderSectionHeader={({ section: { title } }) => (
-                                <Text style={styles.chapterHeading}>{title}</Text>
-                            )}
+                            renderSectionHeader={({ section }) =>
+                                section.data.length > 0 ? (
+                                    <Text style={[styles.listItemSubtitle, { marginTop: 5 }]}>{section.title}</Text>
+                                ) : null
+                                //renderSectionHeader={({ section: { title } }) => (
+                                //  <Text style={styles.chapterHeading}>{title}</Text>
+                            }
                         />
                     </Animated.View>
                 </View>
             </View>
         </View>
     );
+
+    function getContentIcon(item: IContent) {
+        switch (item.contentReferenceType) {
+            case CONTENTREFERENCETYPE.VIDEO:
+                return <MaterialCommunityIcons name="video-vintage" size={28} color="white" />;
+            case CONTENTREFERENCETYPE.QUIZ:
+                return <MaterialCommunityIcons name="file-question-outline" size={28} color="white" />;
+        }
+    }
+
+    function getContentName(item: IContent) {
+        switch (item.contentReferenceType) {
+            case CONTENTREFERENCETYPE.VIDEO:
+                return <Text>{item.video?.title}</Text>;
+            case CONTENTREFERENCETYPE.QUIZ:
+                return <Text>{item.quiz?.name}</Text>;
+        }
+    }
+
+    function getContentSubtitle(item: IContent) {
+        switch (item.contentReferenceType) {
+            case CONTENTREFERENCETYPE.VIDEO:
+                return (
+                    <Text>
+                        {i18n.t("itrex.videoDuration")}
+                        {calculateVideoSize(item.video?.length)}
+                    </Text>
+                );
+            case CONTENTREFERENCETYPE.QUIZ:
+                return (
+                    <Text>
+                        {i18n.t("itrex.questions")} {item.quiz?.questions.length}
+                    </Text>
+                );
+        }
+    }
 
     function _splitPlaylist(pl: IContent[]) {
         let weeks: IVideoListSection[] = [];
@@ -270,9 +357,7 @@ export const ScreenChapterStudent: React.FC = () => {
         for (const cont of pl) {
             // Get time period  and title of content from time periods
             const week = timePeriods?.find((timePeriod) => timePeriod.value === cont.timePeriodId)?.label;
-            if (weeks.find((date) => date.data !== undefined)) {
-                weeks.find((date) => date.title == week)?.data.push(cont);
-            }
+            weeks.find((date) => date.title == week)?.data.push(cont);
             // Write Content in right week
 
             // Sectiontitle: Week
@@ -282,7 +367,7 @@ export const ScreenChapterStudent: React.FC = () => {
         setVideos(weeks);
 
         //setVideos(weeks.filter(((abc: IVideoListSection)=>
-        //    {if (abc.data !== []) {return abc}})));
+        //   {if (abc.data !== undefined) {return abc}})));
     }
 
     function heartbeat(status: AVPlaybackStatus) {
@@ -435,7 +520,7 @@ export const ScreenChapterStudent: React.FC = () => {
 
     function _getAllChapters() {
         const request: RequestInit = RequestFactory.createGetRequest();
-        endpointsChapter.getChapters(request).then((chaptersReceived: IChapter[]) => {
+        endpointsChapter.getAllChapters(request).then((chaptersReceived: IChapter[]) => {
             setChapterList(
                 chaptersReceived.filter((chap: IChapter) => {
                     if (chap.courseId == course.id) {
@@ -468,7 +553,7 @@ export const ScreenChapterStudent: React.FC = () => {
             .finally(async () => setVideoListLoading(false));
     }
 
-    function _gotoChapter() {
+    function _gotoNextChapter() {
         let chapterIndex = chapterList.findIndex((i) => i.id);
         //const chaindex = chapter.findIndex((x) => x.value == question?.type);
 
@@ -477,6 +562,22 @@ export const ScreenChapterStudent: React.FC = () => {
 
         if (chapterList !== undefined) {
             (chapterIndex = chapterIndex + 1), console.log("IF Chapter List Not undefined:");
+            console.log(chapterIndex);
+            navigation.navigate("CHAPTER_CONTENT", {
+                chapterId: chapterList[chapterIndex].id,
+            });
+        }
+    }
+
+    function _gotoLastChapter() {
+        let chapterIndex = chapterList.findIndex((i) => i.id);
+        //const chaindex = chapter.findIndex((x) => x.value == question?.type);
+
+        console.log("ChapterIndex:");
+        console.log(chapterIndex);
+
+        if (chapterList !== undefined) {
+            (chapterIndex = chapterIndex - 1), console.log("IF Chapter List Not undefined:");
             console.log(chapterIndex);
             navigation.navigate("CHAPTER_CONTENT", {
                 chapterId: chapterList[chapterIndex].id,
@@ -515,6 +616,21 @@ const styles = StyleSheet.create({
         padding: "3%",
     },
 
+    headerContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+
+        paddingBottom: "3%",
+        justifyContent: "space-between",
+    },
+
+    chapterNavigation: {
+        alignSelf: "center",
+        color: "white",
+        fontSize: 18,
+        fontWeight: "bold",
+    },
+
     contentContainer: {
         flexDirection: "row",
         alignContent: "center",
@@ -534,7 +650,6 @@ const styles = StyleSheet.create({
     videoTitle: {
         color: "white",
         fontSize: 18,
-        fontWeight: "bold",
         paddingRight: "20px",
     },
     video: {
@@ -551,6 +666,7 @@ const styles = StyleSheet.create({
     iconContainer: {
         flex: 1,
         flexDirection: "row-reverse",
+        justifyContent: "flex-end",
         borderColor: dark.theme.grey,
         borderBottomWidth: 1.5,
         padding: "0.5%",
@@ -559,6 +675,7 @@ const styles = StyleSheet.create({
     iconBox: {
         flexDirection: "row",
         paddingLeft: "1%",
+        padding: "0.5%",
     },
 
     icon: {

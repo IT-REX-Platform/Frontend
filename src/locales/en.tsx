@@ -71,6 +71,7 @@ export const en = {
         videoUpdated: "Video updated!",
         delete: "Delete",
         videoDeleted: "Video deleted!",
+        videoDuration: "Duration: ",
 
         startDate: "Start Date",
         endDate: "End Date",

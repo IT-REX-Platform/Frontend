@@ -124,6 +124,7 @@ export const ScreenCourseTimeline: React.FC = () => {
                                             />
                                         </TouchableOpacity>
                                     )}
+
                                     {idx !== chapters.length - 1 && (
                                         <TouchableOpacity onPress={() => reorderChapters(idx + 1, idx)}>
                                             <MaterialIcons
