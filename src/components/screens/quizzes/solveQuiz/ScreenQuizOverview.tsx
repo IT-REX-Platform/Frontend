@@ -26,7 +26,6 @@ export const ScreenQuizOverview: React.FC = () => {
                 <TextButton
                     title={"Start Quiz"}
                     onPress={() => {
-                        console.log();
                         navigation.navigate("QUIZ_SOLVE", {
                             quiz,
                         });
