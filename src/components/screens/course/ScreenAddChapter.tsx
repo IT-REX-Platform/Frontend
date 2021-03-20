@@ -165,7 +165,7 @@ export const ScreenAddChapter: React.FC = () => {
                 {getContentIcon(item)}
                 <ListItem.Content>
                     <TouchableOpacity onLongPress={drag}>
-                        <ListItem.Title style={styles.listItemTitle} numberOfLines={2} lineBreakMode="tail">
+                        <ListItem.Title style={styles.listItemTitle} numberOfLines={3} lineBreakMode="tail">
                             <View
                                 style={{
                                     flex: 1,
@@ -179,27 +179,29 @@ export const ScreenAddChapter: React.FC = () => {
                         <ListItem.Subtitle style={styles.listItemSubtitle}>
                             {getContentSubtitle(item)}
                         </ListItem.Subtitle>
+                        <ListItem.Content style={{ marginTop: 5 }}>
+                            {timePeriods !== undefined && (
+                                <DropDown
+                                    options={timePeriods}
+                                    defaultValue={timePeriods.find(
+                                        (timePeriod) => timePeriod.value === item.timePeriodId
+                                    )}
+                                    menuPortalTarget={document.body}
+                                    menuPosition={"fixed"}
+                                    onChange={(option) => {
+                                        if (item.id !== undefined) {
+                                            const itemId = item.id;
+                                            const value = option?.value;
+                                            if (itemId !== undefined && value !== undefined) {
+                                                selectedValues[itemId] = value;
+                                                setSelectedValues(selectedValues);
+                                            }
+                                        }
+                                    }}
+                                />
+                            )}
+                        </ListItem.Content>
                     </TouchableOpacity>
-                </ListItem.Content>
-                <ListItem.Content>
-                    {timePeriods !== undefined && (
-                        <DropDown
-                            options={timePeriods}
-                            defaultValue={timePeriods.find((timePeriod) => timePeriod.value === item.timePeriodId)}
-                            menuPortalTarget={document.body}
-                            menuPosition={"fixed"}
-                            onChange={(option) => {
-                                if (item.id !== undefined) {
-                                    const itemId = item.id;
-                                    const value = option?.value;
-                                    if (itemId !== undefined && value !== undefined) {
-                                        selectedValues[itemId] = value;
-                                        setSelectedValues(selectedValues);
-                                    }
-                                }
-                            }}
-                        />
-                    )}
                 </ListItem.Content>
             </ListItem>
         </View>

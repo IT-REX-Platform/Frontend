@@ -22,6 +22,7 @@ export const DropDown: React.FC<DropdownProps> = (props) => {
             control: (theme: any) => ({
                 ...theme,
                 width: "100%",
+                minWidth: 300,
                 background: dark.Opacity.blueGreen,
             }),
             menu: (theme: any) => ({
