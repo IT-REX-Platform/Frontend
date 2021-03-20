@@ -1,4 +1,6 @@
 import { CoursePublishState } from "../constants/CoursePublishState";
+import { IChapter } from "./IChapter";
+import { ITimePeriod } from "./ITimePeriod";
 
 export type ICourse = {
     id?: string;
@@ -8,5 +10,8 @@ export type ICourse = {
     endDate?: Date;
     maxFoodSum?: number;
     publishState?: CoursePublishState;
-    // ownership?: string;
+    activeOnly?: boolean;
+    chapters?: IChapter[];
+    timePeriods?: ITimePeriod[];
+    remainActiveOffset?: number;
 };

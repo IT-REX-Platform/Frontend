@@ -1,6 +1,7 @@
 import "../../setupTests.ts";
 import { ApiUrls } from "../../src/constants/ApiUrls";
 import { itRexVars } from "../../src/constants/Constants";
+import { VideoUrlSuffix } from "../../src/constants/VideoUrlSuffix";
 import { createVideoUrl } from "../../src/services/createVideoUrl";
 
 jest.mock("../../src/constants/Constants", () => {
@@ -21,7 +22,7 @@ jest.mock("../../src/constants/Constants", () => {
 describe("test video URL creator", () => {
     it("check if a correct video URL is created", () => {
         const videoId = "some_video_ID";
-        const expectedUrl: string = itRexVars().apiUrl + ApiUrls.URL_VIDEOS + "/" + videoId;
+        const expectedUrl: string = itRexVars().apiUrl + ApiUrls.URL_VIDEOS + VideoUrlSuffix.DOWNLOAD + "/" + videoId;
         expect(createVideoUrl(videoId)).toBe(expectedUrl);
     });
 });

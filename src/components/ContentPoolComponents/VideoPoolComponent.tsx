@@ -24,9 +24,10 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { calculateVideoSize } from "../../services/calculateVideoSize";
 import { FilePickerService } from "../../services/FilePickerService";
 import { buildVideoAsFormData } from "../../services/VideoFormDataService";
-import { videoPoolStyles } from "./videoPoolStyles";
+import { contentPoolStyles } from "./contentPoolStyles";
 import { sleep } from "../../services/SleepService";
 import { ToastService } from "../../services/toasts/ToastService";
+import { TextButton } from "../uiElements/TextButton";
 
 const endpointsVideo = new EndpointsVideo();
 const loggerService = loggerFactory.getLogger("service.VideoPoolComponent");
@@ -68,21 +69,19 @@ export const VideoPoolComponent: React.FC = () => {
         if (isVideoUploading) {
             loggerUI.trace("Uploading videos: displaying loading icon.");
             return (
-                <View style={videoPoolStyles.videoUploadContainer}>
-                    <Text style={videoPoolStyles.infoText}>{i18n.t("itrex.videoUploading")}</Text>
-                    <ActivityIndicator style={videoPoolStyles.loadingIcon} size="large" color="white" />
+                <View style={contentPoolStyles.addContentContainer}>
+                    <Text style={contentPoolStyles.infoText}>{i18n.t("itrex.videoUploading")}</Text>
+                    <ActivityIndicator style={contentPoolStyles.loadingIcon} size="large" color="white" />
                 </View>
             );
         }
 
         loggerUI.trace("Ready to upload videos: displaying video upload UI.");
         return (
-            <View style={videoPoolStyles.videoUploadContainer}>
-                <Text style={videoPoolStyles.infoText}>{i18n.t("itrex.videoProperties")}</Text>
+            <View style={contentPoolStyles.addContentContainer}>
+                <Text style={contentPoolStyles.infoText}>{i18n.t("itrex.videoProperties")}</Text>
 
-                <TouchableOpacity style={videoPoolStyles.button} onPress={_initVideoUpload}>
-                    <Text style={videoPoolStyles.buttonText}>{i18n.t("itrex.toUploadVideo")}</Text>
-                </TouchableOpacity>
+                <TextButton title={i18n.t("itrex.toUploadVideo")} onPress={_initVideoUpload} />
             </View>
         );
     };
@@ -92,38 +91,26 @@ export const VideoPoolComponent: React.FC = () => {
         if (isVideoListLoading) {
             loggerUI.trace("Receiving videos: displaying loading icon.");
             return (
-                <View style={videoPoolStyles.videoListDownloadingContainer}>
-                    <ActivityIndicator style={videoPoolStyles.loadingIcon} size="large" color="white" />
-                </View>
-            );
-        }
-
-        if (videos.length < 1) {
-            loggerUI.trace("No video data received: displaying info box.");
-            return (
-                <View style={videoPoolStyles.videoListContainer}>
-                    {renderRefreshButton()}
-
-                    <View style={videoPoolStyles.infoTextBox}>
-                        <Text style={videoPoolStyles.infoText}>{i18n.t("itrex.noVideosAvailable")}</Text>
-                    </View>
+                <View style={contentPoolStyles.videoListDownloadingContainer}>
+                    <ActivityIndicator style={contentPoolStyles.loadingIcon} size="large" color="white" />
                 </View>
             );
         }
 
         loggerUI.trace("Video data received: displaying video list.");
         return (
-            <View style={videoPoolStyles.videoListContainer}>
-                {renderRefreshButton()}
-
+            <View style={contentPoolStyles.contentListContainer}>
+                {/* // flex: 1: makes the list scrollable
+                // maxWidth: "95%": prevents list items from going beyond left-right screen borders */}
                 <Animated.View style={{ transform: [{ translateY }], flex: 1, maxWidth: "95%" }}>
                     <FlatList
-                        style={videoPoolStyles.videoList}
+                        style={contentPoolStyles.contentList}
                         showsVerticalScrollIndicator={false}
                         data={videos}
                         renderItem={renderVideoListItem}
                         keyExtractor={(item, index) => index.toString()}
                         initialNumToRender={_videoListLinesToRender()}
+                        ListEmptyComponent={renderEmptyList}
                     />
                 </Animated.View>
             </View>
@@ -132,7 +119,7 @@ export const VideoPoolComponent: React.FC = () => {
 
     // Button to refresh video list.
     const renderRefreshButton = () => (
-        <TouchableOpacity style={videoPoolStyles.refreshButton} onPress={() => _resetAnimBeforeGetAllVideos()}>
+        <TouchableOpacity style={contentPoolStyles.refreshButton} onPress={() => _resetAnimBeforeGetAllVideos()}>
             <MaterialCommunityIcons name="refresh" size={32} color="white" />
         </TouchableOpacity>
     );
@@ -151,21 +138,24 @@ export const VideoPoolComponent: React.FC = () => {
                     backgroundColor: dark.theme.darkBlue2,
                     borderColor: dark.theme.darkBlue4,
                     borderWidth: 2,
-                    borderRadius: 2,
+                    borderRadius: 5,
                 }}>
                 <MaterialCommunityIcons name="video-vintage" size={28} color="white" />
 
                 <ListItem.Content>
-                    <ListItem.Title style={videoPoolStyles.listItemTitle} numberOfLines={1} lineBreakMode="tail">
+                    <ListItem.Title style={contentPoolStyles.listItemTitle} numberOfLines={1} lineBreakMode="tail">
                         {item.title}
                     </ListItem.Title>
-                    <ListItem.Subtitle style={videoPoolStyles.listItemSubtitle} numberOfLines={1} lineBreakMode="tail">
+                    <ListItem.Subtitle
+                        style={contentPoolStyles.listItemSubtitle}
+                        numberOfLines={1}
+                        lineBreakMode="tail">
                         {calculateVideoSize(item.length)}
                     </ListItem.Subtitle>
                 </ListItem.Content>
 
-                <TouchableOpacity style={videoPoolStyles.deleteButton} onPress={() => _deleteVideo(item.id)}>
-                    <MaterialCommunityIcons style={videoPoolStyles.deleteIcon} name="delete" size={32} color="red" />
+                <TouchableOpacity style={contentPoolStyles.deleteButton} onPress={() => _deleteVideo(item.id)}>
+                    <MaterialCommunityIcons style={contentPoolStyles.deleteIcon} name="delete" size={32} color="red" />
                 </TouchableOpacity>
 
                 <ListItem.Chevron color="white" />
@@ -173,12 +163,22 @@ export const VideoPoolComponent: React.FC = () => {
         </TouchableOpacity>
     );
 
+    // Info that the list is empty.
+    const renderEmptyList = () => {
+        return (
+            <View style={contentPoolStyles.infoTextBox}>
+                <Text style={contentPoolStyles.infoText}>{i18n.t("itrex.noVideosAvailable")}</Text>
+            </View>
+        );
+    };
+
     return (
         <ImageBackground
             source={require("../../constants/images/Background2.png")}
-            style={videoPoolStyles.imageContainer}>
-            <Text style={videoPoolStyles.header}>{i18n.t("itrex.videoPool")}</Text>
+            style={contentPoolStyles.imageContainer}>
+            <Text style={contentPoolStyles.header}>{i18n.t("itrex.videoPool")}</Text>
             {renderVideoUpload()}
+            {renderRefreshButton()}
             {renderVideoList()}
         </ImageBackground>
     );
@@ -190,7 +190,6 @@ export const VideoPoolComponent: React.FC = () => {
 
         loggerService.trace("Initialising video upload.");
         await _uploadVideos(pickedVideos);
-        _resetAnimBeforeGetAllVideos();
     }
 
     async function _uploadVideos(selectedVideos: File[]): Promise<void> {
@@ -199,9 +198,6 @@ export const VideoPoolComponent: React.FC = () => {
         for (const selectedVideo of selectedVideos) {
             await _uploadVideo(selectedVideo);
         }
-
-        // Give MediaService 1 second to save uploaded videos before sending getAllVideos() request.
-        await sleep(1000);
 
         setVideoUploading(false);
         toast.info(i18n.t("itrex.uploadDone"), false);
@@ -216,18 +212,16 @@ export const VideoPoolComponent: React.FC = () => {
 
         const videoFormData: FormData = await buildVideoAsFormData(selectedVideo, course.id);
         const postRequest: RequestInit = RequestFactory.createPostRequestWithFormData(videoFormData);
-        const response: IVideo = await endpointsVideo.uploadVideo(postRequest);
-
-        if (response.id == undefined) {
-            const msg: string = i18n.t("itrex.uploadFailed") + selectedVideo.name;
-            toast.error(msg, false);
-            loggerService.error("Upload failed: " + selectedVideo.name);
-            return;
-        }
-
-        const msg: string = i18n.t("itrex.uploadSuccessful") + selectedVideo.name;
-        toast.success(msg, false);
-        loggerService.trace("Upload sucessful: " + selectedVideo.name);
+        await endpointsVideo
+            .uploadVideo(
+                postRequest,
+                i18n.t("itrex.uploadSuccessful") + selectedVideo.name,
+                i18n.t("itrex.uploadFailed") + selectedVideo.name
+            )
+            .then((video) => {
+                loggerService.trace("Upload sucessful: " + video.title);
+            })
+            .finally(() => _getAllVideos());
     }
 
     function _resetAnimBeforeGetAllVideos() {
@@ -247,32 +241,25 @@ export const VideoPoolComponent: React.FC = () => {
         setVideos(initialVideoState);
 
         const request: RequestInit = RequestFactory.createGetRequest();
-        const response: Promise<IVideo[]> = endpointsVideo.getAllVideos(request, course.id);
-
-        await response
+        endpointsVideo
+            .findAllVideosOfACourse(request, course.id, undefined, i18n.t("itrex.getVideosError"))
             .then((videosReceived: IVideo[]) => {
                 setVideos(videosReceived);
                 loggerService.trace("Received videos in next line:");
                 console.log(videosReceived);
             })
-            .catch((error) => {
-                loggerService.error("An error has occured while getting videos.", error);
-            })
-            .finally(async () => {
-                setVideoListLoading(false);
-            });
+            .finally(async () => setVideoListLoading(false));
     }
 
     async function _deleteVideo(videoId?: string): Promise<void> {
-        if (videoId === undefined) {
+        if (videoId == undefined) {
             return;
         }
 
         const deleteRequest: RequestInit = RequestFactory.createDeleteRequest();
-        const response: Promise<Response> = endpointsVideo.deleteVideo(deleteRequest, videoId);
-        response.then(() => {
-            _getAllVideos();
-        });
+        endpointsVideo
+            .deleteVideo(deleteRequest, videoId, undefined, i18n.t("itrex.deleteVideoError"))
+            .then(() => _getAllVideos());
     }
 
     function _resetAllStates(): void {

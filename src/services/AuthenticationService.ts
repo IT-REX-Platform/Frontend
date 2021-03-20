@@ -8,6 +8,7 @@ import { ITREXRoles } from "../constants/ITREXRoles";
 import { IUser } from "../types/IUser";
 import { AsyncStorageService, StorageConstants } from "./StorageService";
 import * as WebBrowser from "expo-web-browser";
+import i18n from "../locales";
 
 export const discovery = {
     authorizationEndpoint: itRexVars().authEndpoint,
@@ -39,7 +40,7 @@ export default class AuthenticationService {
     // Default token lifetime, 5 minutes -> refresh after
     private accessTokenLifeTime = 1000 * 60 * 5;
 
-    private tokenResponse!: AuthSession.TokenResponseConfig;
+    public tokenResponse!: AuthSession.TokenResponseConfig;
     private roles: string[] = [];
     private refreshTimeout: NodeJS.Timeout | undefined;
 
@@ -78,9 +79,9 @@ export default class AuthenticationService {
                         );
                         resolve(tResponse);
                     })
-                    .catch((reason) => {
+                    .catch((error) => {
                         // Refresh does not work
-                        this.loggerApi.info("Could not refresh oauth2 token");
+                        this.loggerApi.error("Could not refresh oauth2 token: " + error.message);
                         new AsyncStorageService().deleteItem(StorageConstants.OAUTH_REFRESH_TOKEN);
                         reject(false);
                     });
@@ -121,7 +122,7 @@ export default class AuthenticationService {
      */
     public getUserInfo(consumer: (userInfo: IUser) => void): void {
         const request: RequestInit = RequestFactory.createGetRequest();
-        this.endpointsUserInfo.getUserInfo(request).then(consumer);
+        this.endpointsUserInfo.getUserInfo(request, undefined, i18n.t("itrex.getUserInfoError")).then(consumer);
     }
 
     public getRoles(): string[] {

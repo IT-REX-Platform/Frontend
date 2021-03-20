@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, StyleSheet, View } from "react-native";
+import { Text, StyleSheet, View, ScaledSize, useWindowDimensions } from "react-native";
 import { dark } from "../themes/dark";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { NavigationRoutes } from "../../constants/navigators/NavigationRoutes";
@@ -12,28 +12,32 @@ interface Title {
 
 export const Header: React.FC<Title> = (props) => {
     const title = props.title;
-    console.log(props.title);
     React.useContext(LocalizationContext);
     const navigation = useNavigation();
+    const dimensions: ScaledSize = useWindowDimensions();
+
     return (
         <View style={styles.container}>
-            <MaterialCommunityIcons
-                name="menu"
-                size={28}
-                color="white"
-                style={styles.iconLeft}
-                onPress={() => navigation.openDrawer()}
-            />
+            <MaterialCommunityIcons style={styles.iconLeft} />
             <Text style={styles.headerTitle}>{title}</Text>
-            <MaterialCommunityIcons
-                name="home-outline"
-                size={28}
-                color="white"
-                style={styles.iconRight}
-                onPress={() => navigation.navigate(NavigationRoutes.ROUTE_HOME)}
-            />
+            {showHamburger(dimensions)}
         </View>
     );
+    function showHamburger(dimensions: ScaledSize) {
+        if (dimensions.width < 1280) {
+            return (
+                <MaterialCommunityIcons
+                    style={styles.iconRight}
+                    name="menu"
+                    size={28}
+                    color="white"
+                    onPress={() => navigation.openDrawer()}
+                />
+            );
+        } else {
+            return <MaterialCommunityIcons style={styles.iconRight} />;
+        }
+    }
 };
 
 const styles = StyleSheet.create({
@@ -48,6 +52,7 @@ const styles = StyleSheet.create({
     },
     iconLeft: {
         padding: 10,
+        marginRight: 30,
     },
     headerTitle: {
         alignSelf: "center",

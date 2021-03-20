@@ -1,20 +1,18 @@
-import React, { ChangeEvent, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
-import { Button, ImageBackground, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { ImageBackground, StyleSheet, Text, TextInput, View } from "react-native";
 import { ICourse } from "../types/ICourse";
 import i18n from "../locales";
 import { RequestFactory } from "../api/requests/RequestFactory";
-import { loggerFactory } from "../../logger/LoggerConfig";
 import { EndpointsCourse } from "../api/endpoints/EndpointsCourse";
-import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import { RouteProp, useIsFocused, useNavigation } from "@react-navigation/native";
 import { Header } from "../constants/navigators/Header";
 import { LocalizationContext } from "./Context";
 import { NavigationRoutes, RootDrawerParamList } from "../constants/navigators/NavigationRoutes";
 import { CoursePublishState } from "../constants/CoursePublishState";
 import { IUser } from "../types/IUser";
 import AuthenticationService from "../services/AuthenticationService";
-
-const loggerService = loggerFactory.getLogger("service.JoinCourseComponent");
+import { TextButton } from "./uiElements/TextButton";
 
 export type JoinCourseRouteProp = RouteProp<RootDrawerParamList, "ROUTE_JOIN_COURSE">;
 
@@ -24,9 +22,7 @@ export const JoinCourseComponent: React.FC = () => {
 
     const endpointsCourse: EndpointsCourse = new EndpointsCourse();
 
-    // const route = useRoute<JoinCourseRouteProp>();
-
-    const [courseIdString, setCourseId] = useState("");
+    const [courseId, setCourseId] = useState("");
 
     const initialPublishedCourseState: ICourse[] = [];
     const [coursesPublished, setCoursesPublished] = useState(initialPublishedCourseState);
@@ -37,96 +33,94 @@ export const JoinCourseComponent: React.FC = () => {
         AuthenticationService.getInstance().getUserInfo(setUserInfo);
     }, []);
 
+    const isFocused = useIsFocused();
+    useEffect(() => {
+        if (isFocused) {
+            AuthenticationService.getInstance()
+                .refreshToken()
+                .then(() => {
+                    AuthenticationService.getInstance().getUserInfo(setUserInfo);
+                });
+        }
+    }, [isFocused]);
+
     return (
-        <ImageBackground source={require("../constants/images/Background2.png")} style={styles.image}>
-            <ScrollView>
-                <View style={styles.container}>
-                    <Header title={i18n.t("itrex.joinCourse")} />
-                    <View style={styles.styledInputContainer}>
-                        <Text style={styles.textSytle}>{i18n.t("itrex.enterCouseId")}</Text>
-                        <TextInput
-                            style={styles.styledTextInput}
-                            onChangeText={(id: string) => setCourseId(id)}
-                            testID="courseIdInput"></TextInput>
-                    </View>
-                    <Pressable style={styles.styledButton}>
-                        <Button title={i18n.t("itrex.joinCourse")} onPress={joinCourse}></Button>
-                    </Pressable>
-                </View>
-            </ScrollView>
+        <ImageBackground source={require("../constants/images/Background2.png")} style={styles.imageContainer}>
+            <Header title={i18n.t("itrex.joinCourse")} />
+
+            <View style={styles.container}>
+                <View style={{ marginTop: 70 }} />
+
+                <Text style={styles.textStyle}>{i18n.t("itrex.enterCouseId")}</Text>
+                <TextInput
+                    style={[styles.textInput, styles.separator]}
+                    value={courseId}
+                    onChangeText={(id: string) => setCourseId(id)}
+                    testID="courseIdInput"
+                />
+
+                <TextButton title={i18n.t("itrex.joinCourse")} onPress={joinCourse}></TextButton>
+            </View>
         </ImageBackground>
     );
 
     function getPublishedCourses(): void {
         const request: RequestInit = RequestFactory.createGetRequest();
         endpointsCourse
-            .getAllCourses(request, { publishState: CoursePublishState.PUBLISHED })
-            .then((receivedCoursesPublished) => {
-                setCoursesPublished(receivedCoursesPublished);
-            });
+            .getAllCourses(request, CoursePublishState.PUBLISHED, undefined, i18n.t("itrex.getCoursesError"))
+            .then((receivedCoursesPublished) => setCoursesPublished(receivedCoursesPublished));
     }
 
     function joinCourse(): void {
         // Check for the course to join being published/available.
-        if (coursesPublished.find((val) => val.id == courseIdString) === undefined) {
+        if (coursesPublished.find((val) => val.id == courseId) === undefined) {
             alert(i18n.t("itrex.joinCourseNoCourseError"));
             return;
         }
 
         // Check whether the user already joined the course.
-        if (user.courses !== undefined && user.courses[courseIdString] !== undefined) {
+        if (user.courses !== undefined && user.courses[courseId] !== undefined) {
             alert(i18n.t("itrex.joinCourseAlreadyMember"));
 
             navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, {
-                courseId: courseIdString,
+                courseId: courseId,
             });
             return;
         }
 
         // Do the request stuff.
         const request: RequestInit = RequestFactory.createPostRequestWithoutBody();
-        endpointsCourse.joinCourse(request, courseIdString);
-
-        navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, {
-            courseId: courseIdString,
+        endpointsCourse.joinCourse(request, courseId, undefined, i18n.t("itrex.joinCourseError")).then(() => {
+            AuthenticationService.getInstance()
+                .refreshToken()
+                .then(() => navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, { courseId: courseId }));
         });
     }
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        flexDirection: "column",
-    },
-    pageContainer: {
-        marginTop: 70,
-    },
-    image: {
+    imageContainer: {
         flex: 1,
         resizeMode: "stretch",
-        justifyContent: "center",
     },
-    styledInputContainer: {
-        margin: 5,
-        flexDirection: "row",
-        justifyContent: "center",
+    container: {
+        alignItems: "center",
     },
-    styledTextInput: {
-        marginLeft: 8,
-        borderColor: "lightgray",
-        borderWidth: 2,
+    textStyle: {
         color: "white",
-        minWidth: 384,
-    },
-    styledButton: {
-        margin: 5,
-    },
-    item: {
-        padding: 10,
         fontSize: 18,
-        height: 44,
     },
-    textSytle: {
+    textInput: {
+        width: "50%",
+        margin: 5,
+        padding: 5,
+        fontSize: 16,
         color: "white",
+        borderColor: "white",
+        borderWidth: 2,
+        borderRadius: 5,
+    },
+    separator: {
+        marginBottom: 20,
     },
 });

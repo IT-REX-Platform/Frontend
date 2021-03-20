@@ -1,6 +1,7 @@
-import { CompositeNavigationProp, useNavigation } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
-import { Text, ImageBackground, StyleSheet, Button, View, Pressable } from "react-native";
+/* eslint-disable complexity */
+import { CompositeNavigationProp, useFocusEffect, useNavigation } from "@react-navigation/native";
+import React, { useState } from "react";
+import { Text, ImageBackground, StyleSheet, View } from "react-native";
 import { dark } from "../../../constants/themes/dark";
 import { ICourse } from "../../../types/ICourse";
 import {
@@ -19,9 +20,11 @@ import { RequestFactory } from "../../../api/requests/RequestFactory";
 import { EndpointsCourse } from "../../../api/endpoints/EndpointsCourse";
 import { loggerFactory } from "../../../../logger/LoggerConfig";
 import AuthenticationService from "../../../services/AuthenticationService";
-import { ITREXRoles } from "../../../constants/ITREXRoles";
+import { TextButton } from "../../uiElements/TextButton";
 import { CourseRoles } from "../../../constants/CourseRoles";
 import { IUser } from "../../../types/IUser";
+import { InfoPublished } from "../../uiElements/InfoPublished";
+import { InfoUnpublished } from "../../uiElements/InfoUnpublished";
 
 export type ScreenCourseOverviewNavigationProp = CompositeNavigationProp<
     MaterialTopTabNavigationProp<CourseTabParamList, "OVERVIEW">,
@@ -40,32 +43,33 @@ export const ScreenCourseOverview: React.FC = () => {
     const course: ICourse = React.useContext(CourseContext);
 
     const [user, setUserInfo] = useState<IUser>({});
-    useEffect(() => {
-        AuthenticationService.getInstance().getUserInfo(setUserInfo);
-    }, []);
+
+    useFocusEffect(
+        React.useCallback(() => {
+            AuthenticationService.getInstance().getUserInfo(setUserInfo);
+        }, [])
+    );
 
     return (
-        <>
-            <ImageBackground source={require("../../../constants/images/Background_forest.svg")} style={styles.image}>
+        <View style={styles.rootContainer}>
+            <ImageBackground source={require("../../../constants/images/Background2.png")} style={styles.image}>
                 <View style={styles.container}>
                     <View style={styles.content}>
-                        <View style={styles.content}>{getPublishedSate(course.publishState)} </View>
-
+                        {getPublishedSate(course.publishState)}
                         {checkForLeaveCourse()}
-
                         <Text style={styles.textWhite}>{course.courseDescription}</Text>
-
-                        {uploadViedeoAsOwner()}
+                        {createContentAsOwner()}
                     </View>
                 </View>
             </ImageBackground>
-        </>
+        </View>
     );
 
     function getDate(showDate: Date | undefined, title: string) {
         return (
             <Text style={{ color: "white" }}>
-                <Text style={{ fontWeight: "bold" }}>{title}</Text> {dateConverter(showDate)}
+                <Text style={{ fontWeight: "bold", marginEnd: 10 }}>{title}</Text>
+                {dateConverter(showDate)}
             </Text>
         );
     }
@@ -75,87 +79,89 @@ export const ScreenCourseOverview: React.FC = () => {
             return <></>;
         }
 
+        const courseRole: CourseRoles = user.courses[course.id];
+        return checkForUserRole(courseRole);
+    }
+
+    function checkForUserRole(courseRole: CourseRoles) {
+        if (courseRole === CourseRoles.OWNER || courseRole === undefined) {
+            // TODO: Undefined should never happen, buuuut currently does when creating a course.
+            // Apparently updating the token and then navigating isn't waiting long enough.
+            return <></>;
+        }
+
+        return (
+            <View style={[{ width: "20%", marginTop: 15 }]}>
+                <TextButton color="pink" title={i18n.t("itrex.leaveCourse")} onPress={() => leaveCourse()} />
+            </View>
+        );
+    }
+
+    function createContentAsOwner() {
+        if (user.courses === undefined || course.id === undefined) {
+            return <></>;
+        }
+
         const courseRole = user.courses[course.id];
-        if (courseRole !== CourseRoles.OWNER) {
-            return (
-                <View style={[{ width: "20%", marginTop: 15 }]}>
-                    <Button
-                        color={dark.Opacity.pink}
-                        title={i18n.t("itrex.leaveCourse")}
-                        onPress={() => leaveCourse()}
-                    />
-                </View>
-            );
-        }
-
-        return <></>;
-    }
-
-    function uploadViedeoAsOwner() {
-        if (
-            AuthenticationService.getInstance().getRoles().includes("ROLE_ITREX_LECTURER") ||
-            AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_ADMIN)
-        ) {
-            return (
-                <View style={[{ width: "20%", marginTop: 15 }]}>
-                    <Button
-                        color={dark.Opacity.blueGreen}
-                        title={i18n.t("itrex.videoPool")}
-                        onPress={() => goToVideoPool()}
-                    />
-                </View>
-            );
-        }
-    }
-
-    //TODO: Check if user is owner, when the course/role list is available
-    function checkOwnerSettings() {
-        if (
-            AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_LECTURER) ||
-            AuthenticationService.getInstance().getRoles().includes(ITREXRoles.ROLE_ADMIN)
-        ) {
+        if (courseRole === CourseRoles.OWNER) {
             return (
                 <View style={{ flexDirection: "row" }}>
-                    <Pressable style={styles.styledButton}>
-                        <Button
-                            color={dark.Opacity.blueGreen}
-                            title={i18n.t("itrex.publishCourse")}
-                            onPress={() => patchCourse(course)}></Button>
-                    </Pressable>
-                    <Pressable style={styles.styledButton}>
-                        <Button
-                            color={dark.Opacity.pink}
-                            title={i18n.t("itrex.deleteCourse")}
-                            onPress={() => deleteCourse(course)}></Button>
-                    </Pressable>
+                    <TextButton title={i18n.t("itrex.videoPool")} onPress={() => goToVideoPool()} />
+                    <TextButton title={i18n.t("itrex.quizPool")} onPress={() => goToQuizPool()} />
                 </View>
             );
         }
     }
 
+    function checkOwnerSettings() {
+        if (user.courses === undefined || course.id === undefined) {
+            return <></>;
+        }
+
+        const courseRole = user.courses[course.id];
+        if (courseRole === CourseRoles.OWNER || courseRole === CourseRoles.MANAGER) {
+            return (
+                <View style={{ flexDirection: "row" }}>
+                    <TextButton title={i18n.t("itrex.publishCourse")} onPress={() => confirmPublishCourse(course)} />
+                    <TextButton
+                        title={i18n.t("itrex.deleteCourse")}
+                        color="pink"
+                        onPress={() => confirmDeletion(course)}
+                    />
+                </View>
+            );
+        }
+    }
+
+    function confirmPublishCourse(course: ICourse) {
+        const publishCourse = confirm(i18n.t("itrex.confirmPublishCourse"));
+        if (publishCourse === true) {
+            patchCourse(course);
+        }
+    }
+
+    function confirmDeletion(course: ICourse) {
+        const confirmation = confirm(i18n.t("itrex.confirmDeleteCourse"));
+        if (confirmation === true) {
+            deleteCourse(course);
+        }
+    }
     function getPublishedSate(isPublished: string | undefined) {
-        console.log(isPublished);
-        if (isPublished === "UNPUBLISHED") {
+        if (isPublished === CoursePublishState.UNPUBLISHED) {
             return (
                 <>
-                    <View style={styles.unpublishedCard}>
-                        <View style={styles.circleUnpublished} />
-                        <Text style={styles.textUnpublished}>{i18n.t("itrex.unpublished")}</Text>
-                    </View>
-                    {getDate(course.startDate, i18n.t("itrex.startDate"))}
-                    {getDate(course.endDate, i18n.t("itrex.endDate"))}
+                    <InfoUnpublished />
+                    <Text>{getDate(course.startDate, i18n.t("itrex.startDate"))}</Text>
+                    <Text>{getDate(course.endDate, i18n.t("itrex.endDate"))}</Text>
                     {checkOwnerSettings()}
                 </>
             );
-        } else if (isPublished === "PUBLISHED") {
+        } else if (isPublished === CoursePublishState.PUBLISHED) {
             return (
                 <>
-                    <View style={styles.publishedCard}>
-                        <View style={styles.circlePublished} />
-                        <Text style={styles.textPublished}>{i18n.t("itrex.published")}</Text>
-                    </View>
-                    {getDate(course.startDate, i18n.t("itrex.startDate") + ": ")}
-                    {getDate(course.endDate, i18n.t("itrex.endDate") + ": ")}
+                    <InfoPublished />
+                    <Text>{getDate(course.startDate, i18n.t("itrex.startDate") + ": ")}</Text>
+                    <Text>{getDate(course.endDate, i18n.t("itrex.endDate") + ": ")}</Text>
                 </>
             );
         }
@@ -175,7 +181,9 @@ export const ScreenCourseOverview: React.FC = () => {
 
         loggerService.trace(`Updating course: name=${courses.name}, publishedState=${CoursePublishState.PUBLISHED}.`);
         const putRequest: RequestInit = RequestFactory.createPatchRequest(course);
-        endpointsCourse.patchCourse(putRequest).then((data) => console.log(data));
+        endpointsCourse
+            .patchCourse(putRequest, i18n.t("itrex.publishCourseSuccess"), i18n.t("itrex.publishCourseError"))
+            .then((data) => console.log(data));
     }
 
     function deleteCourse(courses: ICourse): void {
@@ -184,7 +192,14 @@ export const ScreenCourseOverview: React.FC = () => {
         }
 
         const request: RequestInit = RequestFactory.createDeleteRequest();
-        endpointsCourse.deleteCourse(request, courses.id);
+        endpointsCourse
+            .deleteCourse(
+                request,
+                courses.id,
+                i18n.t("itrex.courseDeletedSuccessfully"),
+                i18n.t("itrex.deleteCourseError")
+            )
+            .then(() => navigation.navigate("ROUTE_HOME"));
     }
 
     function goToVideoPool() {
@@ -193,12 +208,20 @@ export const ScreenCourseOverview: React.FC = () => {
         }
     }
 
+    function goToQuizPool() {
+        if (course.id !== undefined) {
+            navigation.navigate("QUIZ_POOL");
+        }
+    }
+
     function leaveCourse() {
         if (course.id !== undefined) {
             const request: RequestInit = RequestFactory.createPostRequestWithoutBody();
-            endpointsCourse.leaveCourse(request, course.id);
-
-            navigation.navigate("ROUTE_HOME");
+            endpointsCourse.leaveCourse(request, course.id, undefined, i18n.t("itrex.leaveCourseError")).then(() => {
+                AuthenticationService.getInstance()
+                    .refreshToken()
+                    .then(() => navigation.navigate("ROUTE_HOME"));
+            });
         }
     }
 };
@@ -212,15 +235,15 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         textAlign: "center",
     },
+    rootContainer: {
+        paddingTop: "3%",
+        flex: 4,
+        flexDirection: "column",
+        backgroundColor: dark.theme.darkBlue1,
+    },
     image: {
         flex: 1,
         resizeMode: "stretch",
-    },
-    icon: {
-        alignItems: "center",
-        paddingLeft: 10,
-        paddingRight: 10,
-        marginTop: 20,
     },
     content: {
         flex: 1,
@@ -230,70 +253,5 @@ const styles = StyleSheet.create({
     },
     textWhite: {
         color: "white",
-    },
-    styledButton: {
-        margin: 5,
-    },
-    unpublishedCard: {
-        flexDirection: "row",
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "black",
-        borderColor: dark.theme.pink,
-        borderWidth: 2,
-        textShadowColor: dark.theme.pink,
-        textShadowOffset: { width: 1, height: 1 },
-        textShadowRadius: 3,
-        width: 100,
-        height: 15,
-    },
-    textUnpublished: {
-        color: dark.theme.pink,
-        fontSize: 10,
-    },
-    circleUnpublished: {
-        shadowRadius: 10,
-        shadowColor: dark.theme.pink,
-        shadowOffset: { width: -1, height: 1 },
-        width: 8,
-        height: 8,
-        borderRadius: 8 / 2,
-        backgroundColor: dark.theme.pink,
-        marginRight: 3,
-    },
-    publishedCard: {
-        flexDirection: "row",
-        backgroundColor: "black",
-        justifyContent: "center",
-        alignItems: "center",
-        borderColor: dark.theme.lightGreen,
-        borderWidth: 2,
-        textShadowColor: dark.theme.lightGreen,
-        textShadowOffset: { width: 1, height: 1 },
-        textShadowRadius: 3,
-        width: 100,
-        height: 15,
-    },
-    textPublished: {
-        color: dark.theme.lightGreen,
-        fontSize: 10,
-    },
-    circlePublished: {
-        shadowRadius: 10,
-        shadowColor: dark.theme.lightGreen,
-        shadowOffset: { width: -1, height: 1 },
-        width: 8,
-        height: 8,
-        borderRadius: 8 / 2,
-        backgroundColor: dark.theme.lightGreen,
-        marginRight: 5,
-    },
-    input: {
-        borderRadius: 20,
-        minHeight: 40,
-        maxHeight: 200,
-        margin: 20,
-        padding: 20,
-        borderWidth: 1,
     },
 });

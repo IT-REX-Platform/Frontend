@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import { ImageBackground, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { ImageBackground, StyleSheet, Text, TextInput, View } from "react-native";
 import { loggerFactory } from "../../logger/LoggerConfig";
 import { IVideo } from "../types/IVideo";
 import { Video } from "expo-av";
 import { createVideoUrl } from "../services/createVideoUrl";
-import { createAlert } from "../helperScripts/createAlert";
 import i18n from "../locales";
 import { RequestFactory } from "../api/requests/RequestFactory";
 import { EndpointsVideo } from "../api/endpoints/EndpointsVideo";
@@ -15,6 +14,8 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { dark } from "../constants/themes/dark";
 import { calculateVideoSize } from "../services/calculateVideoSize";
+import { TextButton } from "./uiElements/TextButton";
+import { ToastService } from "../services/toasts/ToastService";
 
 const loggerService = loggerFactory.getLogger("service.VideoComponent");
 const endpointsVideo = new EndpointsVideo();
@@ -31,21 +32,22 @@ export const VideoComponent: React.FC = () => {
     React.useContext(LocalizationContext);
     const navigation = useNavigation<ScreenCourseTabsNavigationProp>();
 
+    const toast: ToastService = new ToastService();
+
     const route = useRoute<ScreenCourseTabsRouteProp>();
     const video: IVideo = route.params.video;
-    console.log(video);
 
     const [newTitle, setTitle] = useState("");
 
     return (
         <ImageBackground style={styles.imageContainer} source={require("../constants/images/Background2.png")}>
             <Text style={styles.header} numberOfLines={1} lineBreakMode="tail">
-                {getTitle()}
+                {_getTitle()}
             </Text>
 
             <Video
                 style={styles.videoStyle}
-                source={{ uri: getVideoUrl() }}
+                source={{ uri: _getVideoUrl() }}
                 rate={1.0}
                 volume={1.0}
                 isMuted={false}
@@ -65,49 +67,44 @@ export const VideoComponent: React.FC = () => {
                 <Text style={styles.text}>{calculateVideoSize(video.length)}</Text>
 
                 <View style={styles.horizontalContainer}>
-                    <TouchableOpacity style={styles.button} onPress={updateVideo}>
-                        <Text style={styles.buttonText}>{i18n.t("itrex.update")}</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style={styles.buttonDelete} onPress={deleteVideo}>
-                        <Text style={styles.buttonText}>{i18n.t("itrex.delete")}</Text>
-                    </TouchableOpacity>
+                    <TextButton title={i18n.t("itrex.update")} onPress={_updateVideo}></TextButton>
+                    <TextButton title={i18n.t("itrex.delete")} color="pink" onPress={_deleteVideo}></TextButton>
                 </View>
             </View>
         </ImageBackground>
     );
 
-    function getVideoUrl(): string {
-        if (video.id == undefined || null) {
-            createAlert(i18n.t("itrex.videoNotFound"));
+    function _getVideoUrl(): string {
+        if (video.id == undefined) {
+            toast.error(i18n.t("itrex.videoNotFound"));
             return "";
         }
 
         return createVideoUrl(video.id);
     }
 
-    function getTitle(): string {
-        if (video.title == undefined || null) {
+    function _getTitle(): string {
+        if (video.title == undefined) {
             return "-";
         }
         return video.title;
     }
 
-    // function getStartDate(): string {
-    //     if (video.startDate == undefined || null) {
+    // function _getStartDate(): string {
+    //     if (video.startDate == undefined) {
     //         return "-";
     //     }
     //     return video.startDate.toString();
     // }
 
-    // function getEndDate(): string {
-    //     if (video.endDate == undefined || null) {
+    // function _getEndDate(): string {
+    //     if (video.endDate == undefined) {
     //         return "-";
     //     }
     //     return video.endDate.toString();
     // }
 
-    async function updateVideo(): Promise<void> {
+    async function _updateVideo(): Promise<void> {
         const videoUpdate: IVideo = {
             id: video.id,
         };
@@ -119,27 +116,23 @@ export const VideoComponent: React.FC = () => {
         // TODO: add more video fields to update here. @s.pastuchov 22.02.21
 
         const postRequest: RequestInit = RequestFactory.createPatchRequest(videoUpdate);
-        const response: IVideo = await endpointsVideo.patchVideo(postRequest);
-        console.log(response);
-
-        createAlert(i18n.t("itrex.videoUpdated"));
-
-        if (video.courseId !== undefined) {
-            navigation.navigate("VIDEO_POOL");
-        }
+        await endpointsVideo
+            .patchVideo(postRequest, i18n.t("itrex.videoUpdated"), i18n.t("itrex.updateVideoError"))
+            .then((response) => {
+                console.log(response);
+                navigation.navigate("VIDEO_POOL");
+            });
     }
 
-    async function deleteVideo(): Promise<void> {
-        if (video.id === undefined) {
+    async function _deleteVideo(): Promise<void> {
+        if (video.id == undefined) {
             return;
         }
 
         const deleteRequest: RequestInit = RequestFactory.createDeleteRequest();
-        const response: Promise<Response> = endpointsVideo.deleteVideo(deleteRequest, video.id);
-        response.then(() => {
-            createAlert(i18n.t("itrex.videoDeleted"));
-            navigation.navigate("VIDEO_POOL");
-        });
+        endpointsVideo
+            .deleteVideo(deleteRequest, video.id, i18n.t("itrex.videoDeleted"), i18n.t("itrex.deleteVideoError"))
+            .then(() => navigation.navigate("VIDEO_POOL"));
     }
 };
 
@@ -162,22 +155,24 @@ const styles = StyleSheet.create({
         backgroundColor: "black",
     },
     infoContainer: {
-        width: "50%",
+        width: "90%",
         alignItems: "center",
         padding: 5,
         backgroundColor: dark.theme.darkBlue2,
         borderColor: dark.theme.darkBlue4,
         borderWidth: 2,
-        borderRadius: 2,
+        borderRadius: 5,
     },
     textInput: {
         width: "100%",
         margin: 5,
+        padding: 5,
         textAlign: "center",
+        fontSize: 16,
         color: "white",
         borderColor: "white",
-        borderWidth: 1,
-        borderRadius: 2,
+        borderWidth: 2,
+        borderRadius: 5,
     },
     text: {
         maxWidth: "100%",
@@ -188,20 +183,6 @@ const styles = StyleSheet.create({
     horizontalContainer: {
         flexDirection: "row",
         alignItems: "center",
-        justifyContent: "space-around",
-    },
-    button: {
-        margin: 5,
-        backgroundColor: dark.theme.darkBlue4,
-        borderRadius: 2,
-    },
-    buttonDelete: {
-        margin: 5,
-        backgroundColor: "red",
-        borderRadius: 2,
-    },
-    buttonText: {
-        padding: 10,
-        color: "white",
+        justifyContent: "space-between",
     },
 });
