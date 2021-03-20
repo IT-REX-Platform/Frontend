@@ -20,7 +20,6 @@ export const ScreenQuizOverview: React.FC = () => {
             <ImageBackground
                 source={require("../../../../constants/images/Background1-1.png")}
                 style={quizStyles.image}>
-                <Text>{course.name}</Text>
                 <Text>{quiz.name}</Text>
                 <Text>This quiz consists out of {quiz.questions.length} questions</Text>
                 {/* Add Navigation route */}
