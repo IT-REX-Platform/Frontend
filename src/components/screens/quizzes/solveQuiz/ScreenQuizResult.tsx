@@ -5,7 +5,7 @@ import { TextButton } from "../../../uiElements/TextButton";
 import { useNavigation } from "@react-navigation/core";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { CourseStackParamList } from "../../../../constants/navigators/NavigationRoutes";
-import { quizList } from "../../../../constants/fixtures/quizzes.fixture";
+import { QuestionTypes } from "../../../../constants/QuestionTypes";
 
 type ScreenQuizResultProps = RouteProp<CourseStackParamList, "QUIZ_RESULT">;
 
@@ -21,8 +21,20 @@ export const ScreenQuizResult: React.FC = () => {
             <Text>Quiz Solution Screen</Text>
             <Text>{quiz.name}</Text>
             <Text>
-                You solved {correctlySolved()} out of {quiz.questions.length} questions
+                You solved {correctlySolved(quiz)} out of {quiz.questions.length} questions
             </Text>
+
+            {quiz.questions.map((question) => {
+                switch (question.type) {
+                    case QuestionTypes.SINGLE_CHOICE:
+                        // return <ResultSingleChoiceCard></ResultSingleChoiceCard>;
+                        return <></>;
+                    case QuestionTypes.MULTIPLE_CHOICE:
+                        return <></>;
+                    case QuestionTypes.NUMERIC:
+                        return <></>;
+                }
+            })}
 
             <TextButton
                 title={"Return to chapter"}
@@ -30,18 +42,16 @@ export const ScreenQuizResult: React.FC = () => {
                 onPress={() => navigation.navigate("INFO", { screen: "OVERVIEW" })}></TextButton>
         </>
     );
-
-    function correctlySolved(): number {
-        let amountCorrectlySolved = 0;
-
-        quiz.questions.map((question) => {
-            if (JSON.stringify(question.solution) === JSON.stringify(question.userInput)) {
-                amountCorrectlySolved += 1;
-            } else {
-                console.log("wrong", question);
-            }
-        });
-
-        return amountCorrectlySolved;
-    }
 };
+
+function correctlySolved(quiz: IQuiz): number {
+    let amountCorrectlySolved = 0;
+
+    quiz.questions.map((question) => {
+        if (JSON.stringify(question.solution) === JSON.stringify(question.userInput)) {
+            amountCorrectlySolved += 1;
+        }
+    });
+
+    return amountCorrectlySolved;
+}

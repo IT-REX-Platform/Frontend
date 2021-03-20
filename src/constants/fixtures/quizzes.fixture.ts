@@ -7,7 +7,7 @@ import { QuestionTypes } from "../QuestionTypes";
 //================= SINGLE CHOICE QUESTION =================
 const choicesSingleChoice: IChoices = {
     "0": "0",
-    "1": "1",
+    "1": "56",
     "2": "42",
     "3": "4",
 };
@@ -48,7 +48,7 @@ const question3: IQuestionSingleChoice = {
     type: QuestionTypes.SINGLE_CHOICE,
     question: "Was ist 21+21?",
     choices: choicesSingleChoice,
-    solution: "0",
+    solution: "2",
 };
 
 const question4: IQuestionSingleChoice = {
@@ -64,7 +64,8 @@ const question5: IQuestionSingleChoice = {
     courseId: "",
     id: "uuid6",
     type: QuestionTypes.SINGLE_CHOICE,
-    question: "Das ist eine gaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanz lange Fraaaaaaaage",
+    question:
+        "Das ist eine gaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanz lange Fraaaaaaaage (56 is richtig)",
     choices: choicesSingleChoice,
     solution: "1",
 };
