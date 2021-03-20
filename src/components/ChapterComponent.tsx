@@ -89,28 +89,13 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                                             }
                                         </Text>
                                         {/*props.editMode ? (
-                                                <Select
+                                                <DropDown
                                                     options={timePeriods}
                                                     defaultValue={timePeriods.find(
                                                         (timePeriod) => timePeriod.value === contentReference.timePeriodId
                                                     )}
-                                                    theme={(theme) => ({
-                                                        ...theme,
-                                                        borderRadius: 5,
-                                                        colors: {
-                                                            ...theme.colors,
-                                                            primary25: dark.Opacity.darkBlue1,
-                                                            primary: dark.Opacity.pink,
-                                                            backgroundColor: dark.Opacity.darkBlue1,
-                                                        },
-                                                    })}
                                                     menuPortalTarget={document.body}
-                                                    menuPosition={"fixed"}
-                                                    styles={{
-                                                        container: () => ({
-                                                            width: 300,
-                                                        }),
-                                                    }}></Select>
+                                                    menuPosition={"fixed"}></DropDown>
                                             ) : (
                                                 
                                             )*/}

@@ -4,27 +4,18 @@ import {
     ActivityIndicator,
     FlatList,
     ImageBackground,
-    Platform,
     StyleSheet,
     Text,
     TextInput,
     TouchableOpacity,
     View,
 } from "react-native";
-import React, { ChangeEvent, useState } from "react";
+import React, { useState } from "react";
 import i18n from "../../../locales";
 import { dark } from "../../../constants/themes/dark";
 import { CourseContext, LocalizationContext } from "../../Context";
-import { DatePickerComponent } from "../../DatePickerComponent";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
-import {
-    CompositeNavigationProp,
-    RouteProp,
-    useFocusEffect,
-    useLinkProps,
-    useNavigation,
-    useRoute,
-} from "@react-navigation/native";
+import { CompositeNavigationProp, RouteProp, useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { CourseStackParamList, RootDrawerParamList } from "../../../constants/navigators/NavigationRoutes";
@@ -42,10 +33,10 @@ import { TextButton } from "../../uiElements/TextButton";
 import { dateConverter } from "../../../helperScripts/validateCourseDates";
 import { CONTENTREFERENCETYPE, IContent } from "../../../types/IContent";
 import { EndpointsContentReference } from "../../../api/endpoints/EndpointsContentReference";
-import Select from "react-select";
 import { IQuiz } from "../../../types/IQuiz";
 import { EndpointsQuiz } from "../../../api/endpoints/EndpointsQuiz";
 import { contentPoolStyles } from "../../ContentPoolComponents/contentPoolStyles";
+import { DropDown } from "../../uiElements/Dropdown";
 
 type ScreenCourseTabsNavigationProp = CompositeNavigationProp<
     StackNavigationProp<CourseStackParamList, "CHAPTER">,
@@ -174,7 +165,7 @@ export const ScreenAddChapter: React.FC = () => {
                 {getContentIcon(item)}
                 <ListItem.Content>
                     <TouchableOpacity onLongPress={drag}>
-                        <ListItem.Title style={styles.listItemTitle} numberOfLines={2} lineBreakMode="tail">
+                        <ListItem.Title style={styles.listItemTitle} numberOfLines={3} lineBreakMode="tail">
                             <View
                                 style={{
                                     flex: 1,
@@ -183,46 +174,33 @@ export const ScreenAddChapter: React.FC = () => {
                                     justifyContent: "space-between",
                                 }}>
                                 {getContentName(item)}
-                                {timePeriods !== undefined && (
-                                    <Select
-                                        options={timePeriods}
-                                        theme={(theme) => ({
-                                            ...theme,
-                                            borderRadius: 5,
-                                            colors: {
-                                                ...theme.colors,
-                                                primary25: dark.Opacity.darkBlue1,
-                                                primary: dark.Opacity.pink,
-                                                backgroundColor: dark.Opacity.darkBlue1,
-                                            },
-                                        })}
-                                        defaultValue={timePeriods.find(
-                                            (timePeriod) => timePeriod.value === item.timePeriodId
-                                        )}
-                                        menuPortalTarget={document.body}
-                                        menuPosition={"fixed"}
-                                        onChange={(option) => {
-                                            if (item.id !== undefined) {
-                                                const itemId = item.id;
-                                                const value = option?.value;
-                                                if (itemId !== undefined && value !== undefined) {
-                                                    selectedValues[itemId] = value;
-                                                    setSelectedValues(selectedValues);
-                                                }
-                                            }
-                                        }}
-                                        styles={{
-                                            container: () => ({
-                                                width: 200,
-                                                marginLeft: "5px",
-                                            }),
-                                        }}></Select>
-                                )}
                             </View>
                         </ListItem.Title>
                         <ListItem.Subtitle style={styles.listItemSubtitle}>
                             {getContentSubtitle(item)}
                         </ListItem.Subtitle>
+                        <ListItem.Content style={{ marginTop: 5 }}>
+                            {timePeriods !== undefined && (
+                                <DropDown
+                                    options={timePeriods}
+                                    defaultValue={timePeriods.find(
+                                        (timePeriod) => timePeriod.value === item.timePeriodId
+                                    )}
+                                    menuPortalTarget={document.body}
+                                    menuPosition={"fixed"}
+                                    onChange={(option) => {
+                                        if (item.id !== undefined) {
+                                            const itemId = item.id;
+                                            const value = option?.value;
+                                            if (itemId !== undefined && value !== undefined) {
+                                                selectedValues[itemId] = value;
+                                                setSelectedValues(selectedValues);
+                                            }
+                                        }
+                                    }}
+                                />
+                            )}
+                        </ListItem.Content>
                     </TouchableOpacity>
                 </ListItem.Content>
             </ListItem>

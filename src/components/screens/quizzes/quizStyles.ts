@@ -85,6 +85,7 @@ export const quizStyles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "flex-start",
         backgroundColor: dark.Opacity.grey,
+        zIndex: 11,
     },
     cardHeader: {
         padding: 16,
