@@ -27,21 +27,21 @@ export const ResultMultipleChoiceCard: React.FC<ResultMultipleChoiceCardProps> =
     );
 
     function renderAnswer(question: IQuestionMultipleChoice, index: string, value: string) {
+        let selected = false;
         if (question.userInput) {
-            console.log(typeof question.userInput[index]);
-            if (typeof question.userInput[index] === "undefined") {
-                // FIND OUT why undefined is of type string
+            if (question.userInput[index] !== undefined) {
+                selected = true;
             }
         }
         return (
-            // <View style={question.solution === question.userInput ? cardStyles.cardChoicesResultSelected : undefined}>
-            <View
-                style={
-                    question.solution[index] ? cardStyles.cardChoicesResultRight : cardStyles.cardChoicesResultWrong
-                }>
-                <Text style={cardStyles.textChoice}>{value}</Text>
+            <View style={selected ? cardStyles.cardChoicesResultSelected : undefined}>
+                <View
+                    style={
+                        question.solution[index] ? cardStyles.cardChoicesResultRight : cardStyles.cardChoicesResultWrong
+                    }>
+                    <Text style={cardStyles.textChoice}>{value}</Text>
+                </View>
             </View>
-            // </View>
         );
     }
 };
