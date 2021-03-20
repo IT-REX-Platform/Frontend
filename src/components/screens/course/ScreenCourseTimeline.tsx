@@ -26,6 +26,7 @@ import { CourseRoles } from "../../../constants/CourseRoles";
 import { IUser } from "../../../types/IUser";
 import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { IChapter } from "../../../types/IChapter";
+import { TextButton } from "../../uiElements/TextButton";
 
 export type ScreenCourseTimelineNavigationProp = CompositeNavigationProp<
     MaterialTopTabNavigationProp<CourseTabParamList, "TIMELINE">,
@@ -98,7 +99,6 @@ export const ScreenCourseTimeline: React.FC = () => {
             style={styles.imageContainer}
             imageStyle={{ opacity: 0.5, position: "absolute", resizeMode: "contain" }}>
             {lecturerEditMode()}
-
             <ScrollView contentContainerStyle={styles.scrollContainer}>
                 {chapters.length === 0 ? (
                     <View>{!edit && <Text style={styles.textStyle}>{i18n.t("itrex.noChapters")}</Text>}</View>

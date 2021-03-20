@@ -10,6 +10,7 @@ import i18n from "../../locales";
 import { LocalizationContext } from "../Context";
 import { useNavigation } from "@react-navigation/native";
 import { IQuiz } from "../../types/IQuiz";
+import { cardStyles } from "./cradStyles";
 
 interface QuestionCardProps {
     question: IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric;
@@ -26,12 +27,12 @@ export const QuestionCard: React.FC<QuestionCardProps> = (props) => {
 
     return (
         <TouchableOpacity
-            style={styles.card}
+            style={cardStyles.card}
             onPress={() =>
                 navigation.navigate("CREATE_QUESTION", { courseId: courseId, quiz: quiz, question: question })
             }>
-            <Text style={styles.cardHeader}>{question.question}</Text>
-            <View style={styles.break} />
+            <Text style={cardStyles.cardHeader}>{question.question}</Text>
+            <View style={cardStyles.break} />
             <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "center" }}>{renderAnswers()}</View>
         </TouchableOpacity>
     );
@@ -42,42 +43,42 @@ export const QuestionCard: React.FC<QuestionCardProps> = (props) => {
                 return (
                     <>
                         {question.solution === "0" ? (
-                            <View style={styles.cardChoicesRight}>
-                                <Text style={styles.textChoice}>{question.choices[0]}</Text>
+                            <View style={cardStyles.cardChoicesRight}>
+                                <Text style={cardStyles.textChoice}>{question.choices[0]}</Text>
                             </View>
                         ) : (
-                            <View style={styles.cardChoicesWrong}>
-                                <Text style={styles.textChoice}>{question.choices[0]}</Text>
+                            <View style={cardStyles.cardChoicesWrong}>
+                                <Text style={cardStyles.textChoice}>{question.choices[0]}</Text>
                             </View>
                         )}
 
                         {question.solution === "1" ? (
-                            <View style={styles.cardChoicesRight}>
-                                <Text style={styles.textChoice}>{question.choices[1]}</Text>
+                            <View style={cardStyles.cardChoicesRight}>
+                                <Text style={cardStyles.textChoice}>{question.choices[1]}</Text>
                             </View>
                         ) : (
-                            <View style={styles.cardChoicesWrong}>
-                                <Text style={styles.textChoice}>{question.choices[1]}</Text>
+                            <View style={cardStyles.cardChoicesWrong}>
+                                <Text style={cardStyles.textChoice}>{question.choices[1]}</Text>
                             </View>
                         )}
 
                         {question.solution === "2" ? (
-                            <View style={styles.cardChoicesRight}>
-                                <Text style={styles.textChoice}>{question.choices[2]}</Text>
+                            <View style={cardStyles.cardChoicesRight}>
+                                <Text style={cardStyles.textChoice}>{question.choices[2]}</Text>
                             </View>
                         ) : (
-                            <View style={styles.cardChoicesWrong}>
-                                <Text style={styles.textChoice}>{question.choices[2]}</Text>
+                            <View style={cardStyles.cardChoicesWrong}>
+                                <Text style={cardStyles.textChoice}>{question.choices[2]}</Text>
                             </View>
                         )}
 
                         {question.solution === "3" ? (
-                            <View style={styles.cardChoicesRight}>
-                                <Text style={styles.textChoice}>{question.choices[3]}</Text>
+                            <View style={cardStyles.cardChoicesRight}>
+                                <Text style={cardStyles.textChoice}>{question.choices[3]}</Text>
                             </View>
                         ) : (
-                            <View style={styles.cardChoicesWrong}>
-                                <Text style={styles.textChoice}>{question.choices[3]}</Text>
+                            <View style={cardStyles.cardChoicesWrong}>
+                                <Text style={cardStyles.textChoice}>{question.choices[3]}</Text>
                             </View>
                         )}
                     </>
@@ -86,42 +87,42 @@ export const QuestionCard: React.FC<QuestionCardProps> = (props) => {
                 return (
                     <>
                         {question.solution[0] === true ? (
-                            <View style={styles.cardChoicesRight}>
-                                <Text style={styles.textChoice}>{question.choices[0]}</Text>
+                            <View style={cardStyles.cardChoicesRight}>
+                                <Text style={cardStyles.textChoice}>{question.choices[0]}</Text>
                             </View>
                         ) : (
-                            <View style={styles.cardChoicesWrong}>
-                                <Text style={styles.textChoice}>{question.choices[0]}</Text>
+                            <View style={cardStyles.cardChoicesWrong}>
+                                <Text style={cardStyles.textChoice}>{question.choices[0]}</Text>
                             </View>
                         )}
 
                         {question.solution[1] === true ? (
-                            <View style={styles.cardChoicesRight}>
-                                <Text style={styles.textChoice}>{question.choices[1]}</Text>
+                            <View style={cardStyles.cardChoicesRight}>
+                                <Text style={cardStyles.textChoice}>{question.choices[1]}</Text>
                             </View>
                         ) : (
-                            <View style={styles.cardChoicesWrong}>
-                                <Text style={styles.textChoice}>{question.choices[1]}</Text>
+                            <View style={cardStyles.cardChoicesWrong}>
+                                <Text style={cardStyles.textChoice}>{question.choices[1]}</Text>
                             </View>
                         )}
 
                         {question.solution[2] === true ? (
-                            <View style={styles.cardChoicesRight}>
-                                <Text style={styles.textChoice}>{question.choices[2]}</Text>
+                            <View style={cardStyles.cardChoicesRight}>
+                                <Text style={cardStyles.textChoice}>{question.choices[2]}</Text>
                             </View>
                         ) : (
-                            <View style={styles.cardChoicesWrong}>
-                                <Text style={styles.textChoice}>{question.choices[2]}</Text>
+                            <View style={cardStyles.cardChoicesWrong}>
+                                <Text style={cardStyles.textChoice}>{question.choices[2]}</Text>
                             </View>
                         )}
 
                         {question.solution[3] === true ? (
-                            <View style={styles.cardChoicesRight}>
-                                <Text style={styles.textChoice}>{question.choices[3]}</Text>
+                            <View style={cardStyles.cardChoicesRight}>
+                                <Text style={cardStyles.textChoice}>{question.choices[3]}</Text>
                             </View>
                         ) : (
-                            <View style={styles.cardChoicesWrong}>
-                                <Text style={styles.textChoice}>{question.choices[3]}</Text>
+                            <View style={cardStyles.cardChoicesWrong}>
+                                <Text style={cardStyles.textChoice}>{question.choices[3]}</Text>
                             </View>
                         )}
                     </>
@@ -134,10 +135,10 @@ export const QuestionCard: React.FC<QuestionCardProps> = (props) => {
                         <DataTable>
                             <DataTable.Header>
                                 <DataTable.Title>
-                                    <Text style={styles.textChoice}>{i18n.t("itrex.category")}</Text>
+                                    <Text style={cardStyles.textChoice}>{i18n.t("itrex.category")}</Text>
                                 </DataTable.Title>
                                 <DataTable.Title numeric>
-                                    <Text style={styles.textChoice}>{i18n.t("itrex.value")}</Text>
+                                    <Text style={cardStyles.textChoice}>{i18n.t("itrex.value")}</Text>
                                 </DataTable.Title>
                             </DataTable.Header>
 
@@ -166,55 +167,3 @@ export const QuestionCard: React.FC<QuestionCardProps> = (props) => {
         }
     }
 };
-
-const styles = StyleSheet.create({
-    card: {
-        shadowRadius: 10,
-        shadowOffset: { width: -1, height: 1 },
-        margin: 8,
-        minWidth: "40%",
-        marginRight: 20,
-        backgroundColor: dark.Opacity.darkBlue1,
-        textAlign: "center",
-    },
-    cardChoicesRight: {
-        margin: 8,
-        minHeight: 40,
-        width: "40%",
-        backgroundColor: dark.Opacity.darkGreen,
-        borderColor: dark.theme.darkGreen,
-        borderWidth: 5,
-        flexDirection: "row",
-        justifyContent: "center",
-        color: "white",
-    },
-    cardChoicesWrong: {
-        minHeight: 40,
-        margin: 8,
-        width: "40%",
-        backgroundColor: dark.Opacity.pink,
-        borderColor: dark.theme.pink,
-        borderWidth: 5,
-        flexDirection: "row",
-        justifyContent: "center",
-        color: "white",
-    },
-    cardHeader: {
-        margin: 8,
-        marginLeft: 16,
-        fontSize: 20,
-        fontWeight: "bold",
-        color: "white",
-        textAlignVertical: "center",
-    },
-    break: {
-        backgroundColor: "white",
-        opacity: 0.5,
-        height: 1,
-        marginTop: 1,
-    },
-    textChoice: {
-        color: "white",
-        fontSize: 20,
-    },
-});
