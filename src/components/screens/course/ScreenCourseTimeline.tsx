@@ -26,6 +26,8 @@ import { CourseRoles } from "../../../constants/CourseRoles";
 import { IUser } from "../../../types/IUser";
 import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { IChapter } from "../../../types/IChapter";
+import { CONTENTREFERENCETYPE, IContent } from "../../../types/IContent";
+import { EndpointsVideo } from "../../../api/endpoints/EndpointsVideo";
 
 export type ScreenCourseTimelineNavigationProp = CompositeNavigationProp<
     MaterialTopTabNavigationProp<CourseTabParamList, "TIMELINE">,
@@ -37,6 +39,7 @@ export const ScreenCourseTimeline: React.FC = () => {
     const [user, setUserInfo] = useState<IUser>({});
 
     const courseEndpoint = new EndpointsCourse();
+    const endpointsVideos: EndpointsVideo = new EndpointsVideo();
 
     const [edit, setEdit] = useState(false);
 
@@ -87,8 +90,66 @@ export const ScreenCourseTimeline: React.FC = () => {
                                 }
                             }
                         }
-                        setMyCourse(receivedCourse);
-                        setChapters(receivedCourse.chapters);
+
+                        const contents: { [key: string]: IContent[] } = {};
+
+                        for (const chapter of receivedCourse.chapters) {
+                            if (chapter.contentReferences !== undefined) {
+                                for (const content of chapter.contentReferences) {
+                                    if (content.contentReferenceType !== undefined && content.contentId !== undefined) {
+                                        if (contents[content.contentReferenceType] === undefined) {
+                                            contents[content.contentReferenceType] = [];
+                                        }
+                                        contents[content.contentReferenceType].push(content);
+                                    }
+                                }
+                            }
+                        }
+                        console.log("bla");
+                        // Get Videos
+                        const getVideoRequest = RequestFactory.createGetRequest();
+
+                        const videoIds: string[] = contents[CONTENTREFERENCETYPE.VIDEO].map((content) => {
+                            if (content.contentId !== undefined) {
+                                return content.contentId;
+                            }
+                            return "";
+                        });
+
+                        const quizIds: string[] =
+                            contents[CONTENTREFERENCETYPE.QUIZ] !== undefined
+                                ? contents[CONTENTREFERENCETYPE.QUIZ].map((content) => {
+                                      if (content.contentId !== undefined) {
+                                          return content.contentId;
+                                      }
+                                      return "";
+                                  })
+                                : [];
+
+                        const videoPromise = new Promise((resolve, reject) => {
+                            if (videoIds !== undefined) {
+                                endpointsVideos.findAllWithIds(getVideoRequest, videoIds).then((videos) => {
+                                    videos.forEach((video) => {
+                                        const contentVideo = contents[CONTENTREFERENCETYPE.VIDEO].find(
+                                            (item) => item.contentId === video.id
+                                        );
+                                        if (contentVideo !== undefined) {
+                                            contentVideo.video = video;
+                                        }
+                                    });
+                                    resolve(true);
+                                });
+                            } else {
+                                reject();
+                            }
+                        });
+
+                        Promise.all([videoPromise]).then((values) => {
+                            setMyCourse(receivedCourse);
+                            if (receivedCourse.chapters !== undefined) {
+                                setChapters(receivedCourse.chapters);
+                            }
+                        });
                     }
                 });
         }
