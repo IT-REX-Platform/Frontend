@@ -8,6 +8,7 @@ import { CourseStackParamList } from "../../../../constants/navigators/Navigatio
 import { QuestionTypes } from "../../../../constants/QuestionTypes";
 import { ResultSingleChoiceCard } from "../../../cards/ResultSingleChoiceCard";
 import { quizStyles } from "../quizStyles";
+import { ResultMultipleChoiceCard } from "../../../cards/ResultMultipleChoiceCard";
 
 type ScreenQuizResultProps = RouteProp<CourseStackParamList, "QUIZ_RESULT">;
 
@@ -19,36 +20,31 @@ export const ScreenQuizResult: React.FC = () => {
 
     const navigation = useNavigation();
     return (
-        <>
-            <ImageBackground
-                source={require("../../../../constants/images/Background1-1.png")}
-                style={quizStyles.image}>
-                <ScrollView>
-                    <Text>Quiz Solution Screen</Text>
-                    <Text>{quiz.name}</Text>
-                    <Text>
-                        You solved {correctlySolved(quiz)} out of {quiz.questions.length} questions
-                    </Text>
+        <ImageBackground source={require("../../../../constants/images/Background1-1.png")} style={quizStyles.image}>
+            <ScrollView>
+                <Text>Quiz Solution Screen</Text>
+                <Text>{quiz.name}</Text>
+                <Text>
+                    You solved {correctlySolved(quiz)} out of {quiz.questions.length} questions
+                </Text>
 
-                    {quiz.questions.map((question) => {
-                        switch (question.type) {
-                            case QuestionTypes.SINGLE_CHOICE:
-                                return <ResultSingleChoiceCard question={question}></ResultSingleChoiceCard>;
-                                return <></>;
-                            case QuestionTypes.MULTIPLE_CHOICE:
-                                return <></>;
-                            case QuestionTypes.NUMERIC:
-                                return <></>;
-                        }
-                    })}
+                {quiz.questions.map((question) => {
+                    switch (question.type) {
+                        case QuestionTypes.SINGLE_CHOICE:
+                            return <ResultSingleChoiceCard question={question}></ResultSingleChoiceCard>;
+                        case QuestionTypes.MULTIPLE_CHOICE:
+                            return <ResultMultipleChoiceCard question={question} />;
+                        case QuestionTypes.NUMERIC:
+                            return <></>;
+                    }
+                })}
 
-                    <TextButton
-                        title={"Return to chapter"}
-                        // Navigate back to Chapter Overview Page
-                        onPress={() => navigation.navigate("INFO", { screen: "OVERVIEW" })}></TextButton>
-                </ScrollView>
-            </ImageBackground>
-        </>
+                <TextButton
+                    title={"Return to chapter"}
+                    // Navigate back to Chapter Overview Page
+                    onPress={() => navigation.navigate("INFO", { screen: "OVERVIEW" })}></TextButton>
+            </ScrollView>
+        </ImageBackground>
     );
 };
 
