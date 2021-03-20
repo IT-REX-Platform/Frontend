@@ -17,25 +17,10 @@ export const SolveMultipleChoiceCard: React.FC<QuestionCardProps> = (props) => {
 
     const { question, onSolutionClicked } = props;
 
-    const [singleAnswerZero, setSingleAnswerZero] = useState<boolean>(false);
-    const [singleAnswerOne, setSingleAnswerOne] = useState<boolean>(false);
-    const [singleAnswerTwo, setSingleAnswerTwo] = useState<boolean>(false);
-    const [singleAnswerThree, setSingleAnswerThree] = useState<boolean>(false);
-
-    const [solution, setSolution] = useState<ISolutionMultipleChoice>();
-
-    // useFocusEffect(
-    //     React.useCallback(() => {
-    //         const solutionObj: ISolutionMultipleChoice = {
-    //             "0": singleAnswerZero,
-    //             "1": singleAnswerOne,
-    //             "2": singleAnswerTwo,
-    //             "3": singleAnswerThree,
-    //         };
-    //         setSolution(solutionObj);
-    //         console.log(solution);
-    //     }, [singleAnswerZero, singleAnswerOne, singleAnswerTwo, singleAnswerThree])
-    // );
+    const [singleAnswerZero, setSingleAnswerZero] = useState<boolean | undefined>(undefined);
+    const [singleAnswerOne, setSingleAnswerOne] = useState<boolean | undefined>(undefined);
+    const [singleAnswerTwo, setSingleAnswerTwo] = useState<boolean | undefined>(undefined);
+    const [singleAnswerThree, setSingleAnswerThree] = useState<boolean | undefined>(undefined);
 
     useEffect(() => {
         const solutionObj: ISolutionMultipleChoice = {
@@ -44,9 +29,7 @@ export const SolveMultipleChoiceCard: React.FC<QuestionCardProps> = (props) => {
             "2": singleAnswerTwo,
             "3": singleAnswerThree,
         };
-        // setSolution(solutionObj);
         onSolutionClicked({ ...question, userInput: solutionObj });
-        console.log(solution);
     }, [singleAnswerZero, singleAnswerOne, singleAnswerTwo, singleAnswerThree]);
 
     return (

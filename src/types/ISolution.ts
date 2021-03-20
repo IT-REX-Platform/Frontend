@@ -1,5 +1,5 @@
 export type ISolutionMultipleChoice = {
-    [index: string]: boolean;
+    [index: string]: boolean | undefined;
 
     // Alternative:
     // "0": boolean,
