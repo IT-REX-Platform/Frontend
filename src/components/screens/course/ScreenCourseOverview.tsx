@@ -62,7 +62,7 @@ export const ScreenCourseOverview: React.FC = () => {
                         {createContentAsOwner()}
                     </View>
                     <TextButton
-                        title={"Klick Me"}
+                        title={"GO TO QUIZ OVERVIEW"}
                         onPress={() => {
                             navigation.navigate("QUIZ_OVERVIEW", {
                                 quiz: quizList[0],

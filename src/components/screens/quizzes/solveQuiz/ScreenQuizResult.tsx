@@ -10,7 +10,7 @@ interface screenQuizResultProps {
     course: ICourse;
 }
 
-export const ScreenQuizOverview: React.FC<screenQuizResultProps> = (props) => {
+export const ScreenQuizResult: React.FC<screenQuizResultProps> = (props) => {
     const { quiz, course } = props;
 
     const navigation = useNavigation();

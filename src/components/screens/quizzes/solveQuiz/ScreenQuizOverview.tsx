@@ -22,8 +22,15 @@ export const ScreenQuizOverview: React.FC = () => {
                 style={quizStyles.image}>
                 <Text>{quiz.name}</Text>
                 <Text>This quiz consists out of {quiz.questions.length} questions</Text>
-                {/* Add Navigation route */}
-                <TextButton title={"Start Quiz"} onPress={() => navigation.navigate("")}></TextButton>
+
+                <TextButton
+                    title={"Start Quiz"}
+                    onPress={() => {
+                        console.log();
+                        navigation.navigate("QUIZ_SOLVE", {
+                            quiz,
+                        });
+                    }}></TextButton>
             </ImageBackground>
         </>
     );

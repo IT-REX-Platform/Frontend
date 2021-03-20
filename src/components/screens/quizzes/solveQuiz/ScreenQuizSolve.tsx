@@ -3,25 +3,28 @@ import { IQuiz } from "../../../../types/IQuiz";
 import { Text } from "react-native";
 import { useNavigation } from "@react-navigation/core";
 import { QuestionCard } from "../../../cards/QuestionCard";
-import { ICourse } from "../../../../types/ICourse";
+import { RouteProp, useRoute } from "@react-navigation/native";
+import { CourseStackParamList } from "../../../../constants/navigators/NavigationRoutes";
 
-interface screenQuizSolveProps {
-    quiz: IQuiz;
-    course: ICourse;
-}
+type ScreenQuizSolveProps = RouteProp<CourseStackParamList, "QUIZ_SOLVE">;
 
-export const ScreenQuizSolve: React.FC<screenQuizSolveProps> = (props) => {
-    const { quiz, course } = props;
+export const ScreenQuizSolve: React.FC = () => {
+    const route = useRoute<ScreenQuizSolveProps>();
+    const quiz: IQuiz = route.params.quiz;
 
     const navigation = useNavigation();
 
+    console.log(quiz.questions);
+
     return (
         <>
-            <Text>{course.name}</Text>
             <Text>{quiz.name}</Text>
+            <Text>TEEEEST</Text>
 
-            {quiz.questions.forEach((question) => {
-                !!course.id && <QuestionCard question={question} quiz={quiz} courseId={course.id}></QuestionCard>;
+            {quiz.questions.map((question) => {
+                console.log(question);
+                return <QuestionCard question={question} quiz={quiz} courseId={question.courseId}></QuestionCard>;
+                // return <Text>HALLO 1 {question.question}</Text>;
             })}
         </>
     );
