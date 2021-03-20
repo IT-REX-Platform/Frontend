@@ -13,15 +13,18 @@ export interface IQuestionSingleChoice extends IQuestion {
     type: QuestionTypes.SINGLE_CHOICE;
     choices: IChoices;
     solution: string;
+    userInput?: string;
 }
 
 export interface IQuestionMultipleChoice extends IQuestion {
     type: QuestionTypes.MULTIPLE_CHOICE;
     choices: IChoices;
     solution: ISolutionMultipleChoice;
+    userInput?: ISolutionMultipleChoice;
 }
 
 export interface IQuestionNumeric extends IQuestion {
     type: QuestionTypes.NUMERIC;
     solution: ISolutionNumeric;
+    userInput?: ISolutionNumeric;
 }

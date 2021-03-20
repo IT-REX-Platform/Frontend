@@ -3,24 +3,23 @@ import React, { useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { IQuestionSingleChoice } from "../../types/IQuestion";
 import { LocalizationContext } from "../Context";
-import { quizStyles } from "../screens/quizzes/quizStyles";
 import { cardStyles } from "./cradStyles";
 
 interface QuestionCardProps {
     question: IQuestionSingleChoice;
+    onSolutionClicked: (question: IQuestionSingleChoice | undefined) => void;
 }
 
 export const SolveSingleChoiceCard: React.FC<QuestionCardProps> = (props) => {
     React.useContext(LocalizationContext);
+
+    const { question, onSolutionClicked } = props;
 
     const [singleAnswerZero, setSingleAnswerZero] = useState<boolean>(false);
     const [singleAnswerOne, setSingleAnswerOne] = useState<boolean>(false);
     const [singleAnswerTwo, setSingleAnswerTwo] = useState<boolean>(false);
     const [singleAnswerThree, setSingleAnswerThree] = useState<boolean>(false);
 
-    const [solution, setSolution] = useState<string | undefined>();
-
-    const question = props.question;
     return (
         <View style={cardStyles.card}>
             <Text style={cardStyles.cardHeader}>{question.question}</Text>
@@ -86,6 +85,6 @@ export const SolveSingleChoiceCard: React.FC<QuestionCardProps> = (props) => {
             setSingleAnswerThree(true);
         }
 
-        setSolution(index);
+        onSolutionClicked({ ...question, userInput: index });
     }
 };
