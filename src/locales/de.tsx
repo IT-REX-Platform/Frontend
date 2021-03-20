@@ -84,7 +84,7 @@ export const de = {
         active: "Aktiv",
         inactive: "Inaktiv",
         noCoursesFilter: "Es wurden keine Kurse für diese Auswahl gefunden!",
-        filterPubUnpub: "Veröffentlichtung",
+        filterPubUnpub: "Veröffentlichung",
         filterActiveInActive: "Aktivität",
         filterLabel: "Filter:",
 
@@ -101,7 +101,7 @@ export const de = {
         chapterMaterial: "Kapitel Materialien",
         myNewChapter: "Mein neues Kapitel",
         save: "Speichern",
-        saveAndReturn: "Speichern & zurückkehren",
+        saveAndReturn: "Speichern & Zurück",
 
         chapterCreatedSuccess: "Das Kapitel wurde erfolgreich angelegt.",
         chapterUpdateSuccess: "Das Kapitel wurde erfolgreich aktualisiert.",

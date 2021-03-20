@@ -70,6 +70,7 @@ const styles = StyleSheet.create({
         margin: 8,
         width: 400,
         backgroundColor: dark.Opacity.grey,
+        zIndex: 10,
     },
     cardHeader: {
         margin: 8,
