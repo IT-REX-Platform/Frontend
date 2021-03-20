@@ -1,11 +1,13 @@
 import * as AuthSession from "expo-auth-session";
 import { loggerFactory } from "../../logger/LoggerConfig";
 import { EndpointsUserInfo } from "../api/endpoints/EndpointsUserInfo";
+import { RequestAuthorization } from "../api/requests/RequestAuthorization";
 import { RequestFactory } from "../api/requests/RequestFactory";
 import { itRexVars } from "../constants/Constants";
 import { ITREXRoles } from "../constants/ITREXRoles";
 import { IUser } from "../types/IUser";
 import { AsyncStorageService, StorageConstants } from "./StorageService";
+import * as WebBrowser from "expo-web-browser";
 
 export const discovery = {
     authorizationEndpoint: itRexVars().authEndpoint,
@@ -109,14 +111,80 @@ export default class AuthenticationService {
     }
 
     private logout() {
-        AuthSession.revokeAsync(
-            {
-                token: this.getToken().accessToken,
-            },
-            {
-                revocationEndpoint: discovery.authTokenRevoke,
+        // WebBrowser.maybeCompleteAuthSession();
+
+        WebBrowser.openBrowserAsync(discovery.authTokenRevoke + "?redirect_uri=http://localhost:19006/logout").then(
+            (value) => {
+                console.log(value);
             }
         );
+        /*
+        try {
+            WebBrowser.openAuthSessionAsync(
+                discovery.authTokenRevoke + "?redirect=http://localhost:19006/",
+                "http://localhost:19006/"
+            )
+                .catch((error) => {
+                    console.log(error);
+                })
+                .then((resp) => {
+                    console.log(resp);
+                    try {
+                        WebBrowser.maybeCompleteAuthSession();
+                    } catch (error) {
+                        console.log(error);
+                    }
+                });
+        } catch (error) {
+            console.log(error);
+        }
+       
+
+
+
+
+        try {
+            const request = RequestAuthorization.createAuthorizedRequest();
+            request.body = "client_id=web_app&refresh_token=" + this.tokenResponse.refreshToken;
+            request.method = "POST";
+            request.headers = {
+                ...request.headers,
+                "Content-Type": "application/x-www-form-urlencoded",
+                "Content-Length": request.body.length.toString(),
+                "Accept-Encoding": "gzip, deflate, br",
+                Host: "keycloak:9080",
+                Origin: "http://localhost:19006/",
+            };
+
+            fetch(discovery.authTokenRevoke, request)
+                .then((response) => {
+                    console.log(response);
+                })
+                // This does not catch HTTP error responses, e.g. 404, 500, etc.
+                .catch((error) => {
+                    console.log(error);
+                });
+        } catch (error) {
+            console.log(error);
+        }
+        */
+        //WebBrowser.openBrowserAsync(discovery.authTokenRevoke).then((value) => {
+        //    console.log(value);
+        //});
+        /*
+        try {
+            AuthSession.revokeAsync(
+                {
+                    token: this.getToken().accessToken,
+                    clientId: "web_app",
+                },
+                {
+                    revocationEndpoint: discovery.authTokenRevoke,
+                }
+            );
+        } catch (error) {
+            console.log(error);
+        }*/
     }
 
     /**

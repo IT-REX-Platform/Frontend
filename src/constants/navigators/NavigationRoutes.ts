@@ -8,6 +8,7 @@ export const config = {
     screens: {
         ROUTE_HOME: "home",
         ROUTE_LOGIN: "login",
+        ROUTE_LOGOUT: "logout",
         ROUTE_CREATE_COURSE: "createCourse",
         ROUTE_JOIN_COURSE: "joinCourse",
         ROUTE_UPLOAD_VIDEO: "uploadVideo",
