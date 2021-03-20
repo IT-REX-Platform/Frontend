@@ -1,12 +1,13 @@
 import React from "react";
 import { IQuiz } from "../../../../types/IQuiz";
-import { Text, View } from "react-native";
+import { Text } from "react-native";
 import { useNavigation } from "@react-navigation/core";
-import { QuestionCard } from "../../../cards/QuestionCard";
 import { RouteProp, useRoute } from "@react-navigation/native";
-import { CourseStackParamList, NavigationRoutes } from "../../../../constants/navigators/NavigationRoutes";
+import { CourseStackParamList } from "../../../../constants/navigators/NavigationRoutes";
 import { TextButton } from "../../../uiElements/TextButton";
 import { ScrollView } from "react-native-gesture-handler";
+import { SolveSingleChoiceCard } from "../../../cards/SolveSingleChoiceCard";
+import { QuestionTypes } from "../../../../constants/QuestionTypes";
 
 type ScreenQuizSolveProps = RouteProp<CourseStackParamList, "QUIZ_SOLVE">;
 
@@ -26,7 +27,10 @@ export const ScreenQuizSolve: React.FC = () => {
 
                 {quiz.questions.map((question) => {
                     console.log(question);
-                    return <QuestionCard question={question} quiz={quiz} courseId={question.courseId}></QuestionCard>;
+                    switch (question.type) {
+                        case QuestionTypes.SINGLE_CHOICE:
+                            return <SolveSingleChoiceCard question={question}></SolveSingleChoiceCard>;
+                    }
                 })}
 
                 <TextButton

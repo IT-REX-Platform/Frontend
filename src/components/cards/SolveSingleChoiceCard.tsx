@@ -1,5 +1,4 @@
 /* eslint-disable complexity */
-import { useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
 import { View, Text } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -12,7 +11,7 @@ interface QuestionCardProps {
     question: IQuestionSingleChoice;
 }
 
-export const SolveQuestionCard: React.FC<QuestionCardProps> = (props) => {
+export const SolveSingleChoiceCard: React.FC<QuestionCardProps> = (props) => {
     React.useContext(LocalizationContext);
 
     const [singleAnswerZero, setSingleAnswerZero] = useState<boolean>();
