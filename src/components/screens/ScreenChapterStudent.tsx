@@ -44,6 +44,7 @@ import { borderRadius } from "react-select/src/theme";
 import { waitFor } from "@testing-library/react-native";
 import { TextButton } from "../uiElements/TextButton";
 import { dateConverter } from "../../helperScripts/validateCourseDates";
+import { emptyString } from "react-select/src/utils";
 
 const endpointsVideo = new EndpointsVideo();
 const endpointsChapter = new EndpointsChapter();
@@ -66,8 +67,6 @@ export const ScreenChapterStudent: React.FC = () => {
     const [chapter, setChapter] = useState<IChapter>({});
     const [chapterList, setChapterList] = useState<IChapter[]>([]);
     const [chapterPlaylist, setChapterPlaylist] = useState<IContent[]>([]);
-
-    const [playlistUpdateIndicator, setPlaylistUpdateIndicator] = useState<number>(0);
 
     const initialVideoState: IVideo[] = [];
     const [isVideoListLoading, setVideoListLoading] = useState(true);
@@ -126,7 +125,6 @@ export const ScreenChapterStudent: React.FC = () => {
                     console.log("Progress of course Init:");
                     console.log(receivedProgress);
                     setCourseProgress(receivedProgress);
-                    setPlaylistUpdateIndicator(playlistUpdateIndicator + 1);
                 });
         }, [course])
     );
@@ -138,11 +136,13 @@ export const ScreenChapterStudent: React.FC = () => {
         if (chapterPlaylist.length > 0) {
             setCurrentVideo(chapterPlaylist[0]);
         }
-    }, [playlistUpdateIndicator, chapterId]);
+    }, [courseProgress, chapterId]);
 
     useEffect(() => {
         if (currentVideo != undefined) restoreWatchProgress();
     }, [currentVideo]);
+
+    //useEffect(() => {}, [currentVideo]);
 
     const myPlaylistItem = ({ item }: { item: IContent }) => {
         let bck: string = " ";
@@ -270,17 +270,26 @@ export const ScreenChapterStudent: React.FC = () => {
         for (const cont of pl) {
             // Get time period  and title of content from time periods
             const week = timePeriods?.find((timePeriod) => timePeriod.value === cont.timePeriodId)?.label;
+            if (weeks.find((date) => date.data !== undefined)) {
+                weeks.find((date) => date.title == week)?.data.push(cont);
+            }
             // Write Content in right week
-            weeks.find((date) => date.title == week)?.data.push(cont);
 
             // Sectiontitle: Week
             // Sectiondata: data[]
         }
 
         setVideos(weeks);
+
+        //setVideos(weeks.filter(((abc: IVideoListSection)=>
+        //    {if (abc.data !== []) {return abc}})));
     }
 
     function heartbeat(status: AVPlaybackStatus) {
+        /*console.log("*Heartbeat*:");
+        console.log(status);*/
+        //player.current?.setProgressUpdateIntervalAsync(5000000);
+
         if (currentVideo == undefined) {
             return;
         }
@@ -288,8 +297,12 @@ export const ScreenChapterStudent: React.FC = () => {
         if (status["isLoaded"] == true) {
             timeSinceLastProgressUpdatePush = timeSinceLastProgressUpdatePush + status["progressUpdateIntervalMillis"];
 
+            console.log(timeSinceLastProgressUpdatePush);
+
             if (timeSinceLastProgressUpdatePush >= 2500) {
                 timeSinceLastProgressUpdatePush = 0;
+
+                console.log("heartbeat");
 
                 changeVideoWatchProgress(currentVideo, Math.floor(status["positionMillis"] * 0.001));
             }
@@ -297,19 +310,16 @@ export const ScreenChapterStudent: React.FC = () => {
     }
 
     function restoreWatchProgress() {
-        if (
+        /*if (
             courseProgress == undefined ||
             courseProgress.contentProgressTrackers == undefined ||
             currentVideo == undefined ||
             currentVideo.id == undefined
         ) {
             return;
-        }
-
+        }*/
         videoPlayer.current?.stopAsync();
-        videoPlayer.current?.playFromPositionAsync(
-            courseProgress.contentProgressTrackers[currentVideo.id]?.progress * 1000
-        );
+        //videoPlayer.current?.playFromPositionAsync(courseProgress.contentProgressTrackers[currentVideo.id]?.progress);
     }
 
     function updateCourseProgress() {
@@ -385,9 +395,6 @@ export const ScreenChapterStudent: React.FC = () => {
             .then((receivedContentProgress) => {
                 console.log("Set content progress to:");
                 console.log(receivedContentProgress);
-            })
-            .finally(() => {
-                contentProgress.progress = newProgress;
             });
     }
 
