@@ -8,6 +8,7 @@ import { TextButton } from "../../../uiElements/TextButton";
 import { ScrollView } from "react-native-gesture-handler";
 import { SolveSingleChoiceCard } from "../../../cards/SolveSingleChoiceCard";
 import { QuestionTypes } from "../../../../constants/QuestionTypes";
+import { SolveMultipleChoiceCard } from "../../../cards/SolveMultipleChoiceCard";
 
 type ScreenQuizSolveProps = RouteProp<CourseStackParamList, "QUIZ_SOLVE">;
 
@@ -30,6 +31,8 @@ export const ScreenQuizSolve: React.FC = () => {
                     switch (question.type) {
                         case QuestionTypes.SINGLE_CHOICE:
                             return <SolveSingleChoiceCard question={question}></SolveSingleChoiceCard>;
+                        case QuestionTypes.MULTIPLE_CHOICE:
+                            return <SolveMultipleChoiceCard question={question}></SolveMultipleChoiceCard>;
                     }
                 })}
 
