@@ -192,6 +192,8 @@ export class ResponseParser {
                     return this._parseAsJson(response);
                 })
                 .then((videoMap: Map<string, IVideo>) => {
+                    videoMap = new Map(Object.entries(videoMap));
+
                     for (const [, video] of Array.from(videoMap.entries())) {
                         video.startDate = this._parseDate(video.startDate);
                         video.endDate = this._parseDate(video.endDate);
