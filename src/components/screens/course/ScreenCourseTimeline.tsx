@@ -99,7 +99,7 @@ export const ScreenCourseTimeline: React.FC = () => {
             imageStyle={{ opacity: 0.5, position: "absolute", resizeMode: "contain" }}>
             {lecturerEditMode()}
 
-            <ScrollView contentContainerStyle={styles.scrollContainer}>
+            <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
                 {chapters.length === 0 ? (
                     <View>{!edit && <Text style={styles.textStyle}>{i18n.t("itrex.noChapters")}</Text>}</View>
                 ) : (

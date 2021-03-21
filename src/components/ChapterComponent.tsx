@@ -50,6 +50,7 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                 <Text style={styles.chapterHeader}>
                     {chapter?.chapterNumber}. {chapter?.name}
                 </Text>
+                <Text style={styles.showWeek}>{getWeeks()}</Text>
                 {/* TODO: add real publish/unpublished state to the chapterss*/}
                 <View style={styles.chapterStatus}>{getPublishedSate(CoursePublishState.PUBLISHED)}</View>
             </View>
@@ -126,6 +127,10 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
         </View>
     );
 
+    function getWeeks(): string {
+        return "hello";
+    }
+
     function getPublishedSate(isPublished: string | undefined) {
         if (isPublished === CoursePublishState.UNPUBLISHED) {
             return (
@@ -181,6 +186,14 @@ const styles = StyleSheet.create({
         position: "absolute",
         color: "white",
         fontWeight: "bold",
+    },
+    showWeek: {
+        position: "absolute",
+        alignSelf: "center",
+        color: dark.theme.pink,
+        fontWeight: "bold",
+        fontStyle: "italic",
+        fontSize: 15,
     },
     chapterMaterialHeader: {
         marginTop: 10,
