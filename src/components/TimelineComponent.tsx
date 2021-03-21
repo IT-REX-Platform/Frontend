@@ -5,14 +5,10 @@ import i18n from "../locales";
 import { LocalizationContext } from "./Context";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { dark } from "../constants/themes/dark";
-import { IChapter } from "../types/IChapter";
-import { MaterialIcons } from "@expo/vector-icons";
-import AuthenticationService from "../services/AuthenticationService";
 import { useNavigation } from "@react-navigation/native";
 import { ITimePeriod, TimePeriodPublishState } from "../types/ITimePeriod";
 import { ChapterComponent } from "./ChapterComponent";
 import { ICourse } from "../types/ICourse";
-import { TextButton } from "./uiElements/TextButton";
 
 interface TimelineComponentProps {
     isLast?: boolean;
@@ -27,7 +23,6 @@ export const TimelineComponent: React.FC<TimelineComponentProps> = (props) => {
 
     return (
         <>
-            <TextButton title="Click meh"></TextButton>
             <View style={styles.circleContainer}>
                 <Text style={styles.periodText}>
                     {props.timePeriod?.startDate}-{props.timePeriod?.endDate}
