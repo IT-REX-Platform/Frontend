@@ -6,6 +6,7 @@ import i18n from "../../locales";
 import { LocalizationContext } from "../Context";
 import { cardStyles } from "./cardStyles";
 import { isNumericResultCorrect } from "../../helperScripts/solveQuizHelpers";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 interface QuestionCardProps {
     question: IQuestionNumeric;
@@ -17,6 +18,13 @@ export const ResultNumericCard: React.FC<QuestionCardProps> = (props) => {
 
     return (
         <View style={cardStyles.card}>
+            <MaterialCommunityIcons
+                name="numeric"
+                color="white"
+                size={26}
+                style={{ position: "absolute", margin: 8 }}
+            />
+
             <Text style={cardStyles.cardHeader}>{question.question}</Text>
             <View style={cardStyles.break} />
             <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "center" }}>

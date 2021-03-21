@@ -1,6 +1,7 @@
 /* eslint-disable complexity */
 import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { IQuestionMultipleChoice } from "../../types/IQuestion";
 import { ISolutionMultipleChoice } from "../../types/ISolution";
 import { LocalizationContext } from "../Context";
@@ -33,6 +34,12 @@ export const SolveMultipleChoiceCard: React.FC<QuestionCardProps> = (props) => {
 
     return (
         <View style={cardStyles.card}>
+            <MaterialCommunityIcons
+                name="check-all"
+                color="white"
+                size={26}
+                style={{ position: "absolute", margin: 8 }}
+            />
             <Text style={cardStyles.cardHeader}>{question.question}</Text>
             <View style={cardStyles.break} />
             <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "center" }}>{renderQuestion()}</View>

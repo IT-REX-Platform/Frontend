@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text } from "react-native";
 import { DataTable } from "react-native-paper";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import NumericInput from "react-numeric-input";
 import { dark } from "../../constants/themes/dark";
 import i18n from "../../locales";
@@ -20,6 +21,13 @@ export const SolveNumericCard: React.FC<QuestionCardProps> = (props) => {
 
     return (
         <View style={cardStyles.card}>
+            <MaterialCommunityIcons
+                name="numeric"
+                color="white"
+                size={26}
+                style={{ position: "absolute", margin: 8 }}
+            />
+
             <Text style={cardStyles.cardHeader}>{question.question}</Text>
             <View style={cardStyles.break} />
             <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "center" }}>{renderQuestion()}</View>

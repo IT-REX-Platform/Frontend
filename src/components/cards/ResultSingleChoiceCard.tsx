@@ -1,6 +1,7 @@
 /* eslint-disable complexity */
 import React from "react";
 import { View, Text } from "react-native";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { IQuestionSingleChoice } from "../../types/IQuestion";
 import { LocalizationContext } from "../Context";
 import { cardStyles } from "./cardStyles";
@@ -15,6 +16,8 @@ export const ResultSingleChoiceCard: React.FC<ResultSingleChoiceCardProps> = (pr
 
     return (
         <View style={cardStyles.card}>
+            <MaterialCommunityIcons name="check" color="white" size={26} style={{ position: "absolute", margin: 8 }} />
+
             <Text style={cardStyles.cardHeader}>{question.question}</Text>
             <View style={cardStyles.break} />
             <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "center" }}>{renderAnswers()}</View>
