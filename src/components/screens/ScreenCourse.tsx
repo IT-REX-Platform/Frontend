@@ -41,6 +41,16 @@ export const ScreenCourse: React.FC = () => {
 
     const courseInitial: ICourse = {};
     const [course, setCourse] = useState(courseInitial);
+
+    // Current Course Context
+    const courseContext = React.useMemo(
+        () => ({
+            course,
+            setCourse,
+        }),
+        [course]
+    );
+
     const [user, setUserInfo] = useState<IUser>({});
 
     const endpointsCourse: EndpointsCourse = new EndpointsCourse();
@@ -54,7 +64,7 @@ export const ScreenCourse: React.FC = () => {
     }, [courseId]);
 
     return (
-        <CourseContext.Provider value={course}>
+        <CourseContext.Provider value={courseContext}>
             <CourseStack.Navigator
                 initialRouteName="INFO"
                 screenOptions={{

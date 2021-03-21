@@ -12,4 +12,9 @@ export const AuthContext = React.createContext({} as IAuthContext);
 
 export const LocalizationContext = React.createContext({} as ILocalizationContext);
 
-export const CourseContext = React.createContext({} as ICourse);
+export const CourseContext = React.createContext({} as ICourseContext);
+
+export type ICourseContext = {
+    course: ICourse;
+    setCourse(arg0: ICourse): void;
+};
