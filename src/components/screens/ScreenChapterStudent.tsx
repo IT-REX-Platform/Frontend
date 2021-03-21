@@ -13,6 +13,8 @@ import {
     StyleProp,
     ViewStyle,
     SectionList,
+    ImageBackgroundBase,
+    ImageBackground,
 } from "react-native";
 import { ListItem } from "react-native-elements";
 import React from "react";
@@ -29,7 +31,6 @@ import { MaterialCommunityIcons, MaterialIcons, Foundation } from "@expo/vector-
 import { createVideoUrl } from "../../services/createVideoUrl";
 //import { ScreenCourseTabsNavigationProp, ScreenCourseTabsRouteProp } from "../../course/ScreenCourseTabs";
 import { RequestFactory } from "../../api/requests/RequestFactory";
-import { ImageBackground } from "react-native";
 import { EndpointsChapter } from "../../api/endpoints/EndpointsChapter";
 import { Icon } from "react-native-vector-icons/Icon";
 import { EndpointsCourse } from "../../api/endpoints/EndpointsCourse";
@@ -40,12 +41,16 @@ import { ContentProgressTrackerState } from "../../constants/ContentProgressTrac
 import { IContentProgressTracker } from "../../types/IContentProgressTracker";
 import { CONTENTREFERENCETYPE, IContent } from "../../types/IContent";
 import { calculateVideoSize } from "../../services/calculateVideoSize";
+import { LinearGradient } from "expo-linear-gradient";
 import { render } from "react-dom";
 import { borderRadius } from "react-select/src/theme";
 import { waitFor } from "@testing-library/react-native";
 import { TextButton } from "../uiElements/TextButton";
 import { dateConverter } from "../../helperScripts/validateCourseDates";
 import { emptyString } from "react-select/src/utils";
+import { ProgressBar } from "react-native-paper";
+import { black } from "react-native-paper/lib/typescript/styles/colors";
+import { BackgroundImage } from "react-native-elements/dist/config";
 
 const endpointsVideo = new EndpointsVideo();
 const endpointsChapter = new EndpointsChapter();
@@ -152,18 +157,14 @@ export const ScreenChapterStudent: React.FC = () => {
     //useEffect(() => {}, [currentVideo]);
 
     const myPlaylistItem = ({ item }: { item: IContent }) => {
+        let brd: string = " ";
         let bck: string = " ";
-        let contentIcon;
+        let progress: number = 1;
 
         console.log("RenderItemID");
         console.log(item.id);
 
         console.log("Entered thisPlaylistItem");
-        if (item.quiz) {
-            contentIcon = '"key"';
-        } else if (item.video) {
-            contentIcon = '"video"';
-        }
 
         if (
             courseProgress.id !== undefined &&
@@ -177,33 +178,85 @@ export const ScreenChapterStudent: React.FC = () => {
                     item.id !== undefined
             );
             const contentProgress: IContentProgressTracker = courseProgress.contentProgressTrackers[item.id];
+            const progressRequest: RequestInit = RequestFactory.createGetRequest();
 
             if (contentProgress == undefined) {
                 console.log("If contentProgress undefined:");
                 console.log(contentProgress == undefined);
 
-                bck = dark.Opacity.pink;
+                //if (item.timePeriodId)
+
+                brd = dark.Opacity.blueGreen;
             } else if (contentProgress.state == ContentProgressTrackerState.STARTED) {
+                if (contentProgress.id === undefined) {
+                    return " ";
+                }
+                endpointsProgress
+                    .getContentProgress(progressRequest, contentProgress.id, undefined, "getContentProgressError")
+                    .then((receivedProgress) => {
+                        console.log("New Progress");
+                        console.log(receivedProgress);
+                    });
+
                 console.log("Else If contentProgress Started:");
                 console.log(contentProgress.state == ContentProgressTrackerState.STARTED);
+                //progress = contentProgress.progress?.toString+"%";
+                progress = contentProgress.progress / 100;
+                console.log("Progress:");
+                console.log(progress);
 
-                bck = dark.Opacity.blueGreen;
+                brd = dark.Opacity.lightGreen;
+                bck = "rgba(181,239,138, 0.5)";
             } else if (contentProgress.state == ContentProgressTrackerState.COMPLETED) {
+                if (contentProgress.id === undefined) {
+                    return " ";
+                }
+                endpointsProgress
+                    .getContentProgress(progressRequest, contentProgress.id, undefined, "getContentProgressError")
+                    .then((receivedProgress) => {
+                        console.log("New Progress");
+                        console.log(receivedProgress);
+                    });
+
                 console.log("Else If contentProgress Completed:");
                 console.log(contentProgress.state == ContentProgressTrackerState.COMPLETED);
 
+                progress = contentProgress.progress / 100;
+                console.log("Progress:");
+                console.log(progress);
+
+                brd = dark.Opacity.lightGreen;
                 bck = dark.Opacity.lightGreen;
             }
         }
 
         const mystyle = {
             marginBottom: "2.5%",
-            backgroundColor: bck,
+            borderColor: brd,
+            borderWidth: 3,
+            backgroundColor: dark.theme.darkBlue1,
+        };
+
+        const progressStyle = {
+            // backgroundColor: bck,
+
+            position: "absolute",
+            left: 0,
+            right: 0,
+            top: 0,
+            height: "100%",
+            //transform: [{ rotateY: "90deg"}],
         };
 
         return (
             <ListItem containerStyle={mystyle}>
-                {/* <TouchableOpacity onPress={() => {changeCurrentVideo(item.id); changeVideoProgress(item); renderListDummy(item)} }> */}
+                <LinearGradient
+                    // Background Linear Gradient
+                    colors={[bck, "transparent"]}
+                    locations={[progress, progress]}
+                    style={progressStyle}
+                    end={{ x: 1.0, y: 0 }}
+                />
 
                 <TouchableOpacity
                     onPress={() => {
@@ -290,10 +343,11 @@ export const ScreenChapterStudent: React.FC = () => {
                             extraData={courseProgress}
                             keyExtractor={(item) => item.id ?? ""}
                             ListEmptyComponent={<Text>Videos here</Text>}
-                            renderSectionHeader={({ section }) =>
-                                section.data.length > 0 ? (
-                                    <Text style={[styles.listItemSubtitle, { marginTop: 5 }]}>{section.title}</Text>
-                                ) : null
+                            renderSectionHeader={
+                                ({ section }) =>
+                                    section.data.length > 0 ? (
+                                        <Text style={[styles.listItemSubtitle, { marginTop: 5 }]}>{section.title}</Text>
+                                    ) : null
                                 //renderSectionHeader={({ section: { title } }) => (
                                 //  <Text style={styles.chapterHeading}>{title}</Text>
                             }
@@ -340,11 +394,31 @@ export const ScreenChapterStudent: React.FC = () => {
         }
     }
 
+    function _getProgressPercent(content: IContentProgressTracker) {
+        if (content.id === undefined || content === undefined) {
+            return;
+        }
+
+        const contentID = content.id;
+
+        const progressRequest: RequestInit = RequestFactory.createGetRequest();
+        endpointsProgress
+            .getContentProgress(progressRequest, contentID, undefined, "getContentProgressError")
+            .then((progress) => {
+                return progress?.progress?.toString + "%";
+            });
+
+        //const progressRequest: RequestInit = RequestFactory.createGetRequest();
+        //endpointsProgress.getContentProgress(progressRequest, content.id, undefined, i18n.t("itrex.getCourseProgressError") )
+        //.then( (progress) => {return progress?.toString + "%"})
+    }
+
     function _splitPlaylist(pl: IContent[]) {
         let weeks: IVideoListSection[] = [];
 
         if (timePeriods == undefined) {
             console.log("Time Periods undefined");
+            console.log(timePeriods);
             return;
         }
 
@@ -662,6 +736,19 @@ const styles = StyleSheet.create({
 
     videoListDownloadingContainer: {},
     loadingIcon: {},
+
+    progressBar: {
+        height: 20,
+        width: "100%",
+        backgroundColor: "#e0e0de",
+        borderRadius: 50,
+        margin: 50,
+    },
+    progressLabels: {
+        padding: 5,
+        color: "white",
+        fontWeight: "bold",
+    },
 
     iconContainer: {
         flex: 1,

@@ -53,8 +53,10 @@
         "react-native-web": "~0.13.12",
         "react-numeric-input": "^2.2.3",
         "react-select": "^4.1.0",
+        "react-sweet-progress": "^1.1.2",
         "react-toastify": "^7.0.3",
-        "use-state-with-callback": "^2.0.3"
+        "use-state-with-callback": "^2.0.3",
+        "expo-linear-gradient": "~8.4.0"
     },
     "devDependencies": {
         "@babel/core": "~7.9.0",
