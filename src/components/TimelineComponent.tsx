@@ -12,6 +12,7 @@ import { useNavigation } from "@react-navigation/native";
 import { ITimePeriod, TimePeriodPublishState } from "../types/ITimePeriod";
 import { ChapterComponent } from "./ChapterComponent";
 import { ICourse } from "../types/ICourse";
+import { dateConverter } from "../helperScripts/validateCourseDates";
 
 interface TimelineComponentProps {
     isLast?: boolean;
@@ -28,7 +29,7 @@ export const TimelineComponent: React.FC<TimelineComponentProps> = (props) => {
         <>
             <View style={styles.circleContainer}>
                 <Text style={styles.periodText}>
-                    {props.timePeriod?.startDate}-{props.timePeriod?.endDate}
+                    {dateConverter(props.timePeriod?.startDate)}-{dateConverter(props.timePeriod?.endDate)}
                 </Text>
                 <View
                     style={[
@@ -106,6 +107,7 @@ const styles = StyleSheet.create({
         height: 50,
         backgroundColor: "#465371",
         width: 5,
+        alignSelf: "center",
     },
     // Published-Styles
     mainCirclePublished: {
