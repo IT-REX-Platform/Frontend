@@ -17,14 +17,12 @@ import { ChapterComponent } from "../../ChapterComponent";
 import { ICourse } from "../../../types/ICourse";
 import AuthenticationService from "../../../services/AuthenticationService";
 import i18n from "../../../locales";
-import { CoursePublishState } from "../../../constants/CoursePublishState";
-import { TimePeriodPublishState } from "../../../types/ITimePeriod";
 import { ScrollView } from "react-native-gesture-handler";
 import { EndpointsCourse } from "../../../api/endpoints/EndpointsCourse";
 import { RequestFactory } from "../../../api/requests/RequestFactory";
 import { CourseRoles } from "../../../constants/CourseRoles";
 import { IUser } from "../../../types/IUser";
-import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 import { IChapter } from "../../../types/IChapter";
 
 export type ScreenCourseTimelineNavigationProp = CompositeNavigationProp<
@@ -139,6 +137,7 @@ export const ScreenCourseTimeline: React.FC = () => {
                         </View>
                     ))
                 )}
+
                 {/*myCourse.timePeriods?.length === 0 ? (
                     <View>{!edit && <Text style={styles.textStyle}>{i18n.t("itrex.noChapters")}</Text>}</View>
                 ) : (
@@ -225,98 +224,6 @@ export const ScreenCourseTimeline: React.FC = () => {
     }
 };
 
-const fakeData: ICourse = {
-    id: "ca8955ca-a849-497a-8583-2e3bcaf45ba1",
-    name: "Forschungsprojekt",
-    startDate: new Date("2021-02-23T00:00:00.000Z"),
-    endDate: new Date("2021-08-23T00:00:00.000Z"),
-    maxFoodSum: 1000,
-    courseDescription: "",
-    publishState: CoursePublishState.PUBLISHED,
-    chapters: ["31a763c9-f765-41be-b16d-51b2118be5be", "1b00bd0e-e43c-4cf2-be03-950e7ffa0c85"],
-    timePeriodObjects: [
-        {
-            id: "0001",
-            title: "Woche 1",
-            chapterObjects: [
-                {
-                    id: "31a763c9-f765-41be-b16d-51b2118be5be",
-                    title: "01: Einführung",
-                    courseId: "ca8955ca-a849-497a-8583-2e3bcaf45ba1",
-                    startDate: new Date("2021-03-08T00:00:00.000Z"),
-                    endDate: new Date("2021-03-14T00:00:00.000Z"),
-                    contents: [],
-                },
-                {
-                    id: "1b00bd0e-e43c-4cf2-be03-950e7ffa0c85",
-                    title: "02: Einführung Part 2",
-                    courseId: "ca8955ca-a849-497a-8583-2e3bcaf45ba1",
-                    startDate: new Date("2021-03-15T00:00:00.000Z"),
-                    endDate: new Date("2021-03-21T00:00:00.000Z"),
-                    contents: ["27c06535-4491-4312-b0ed-c22381fb04fb", "bb725bf5-514f-4eda-8f04-65e95ab03dab"],
-                },
-            ],
-            publishState: TimePeriodPublishState.PUBLISHED,
-        },
-        {
-            id: "0002",
-            title: "Woche 2",
-            chapterObjects: [
-                {
-                    id: "31a763c9-f765-41be-b16d-51b2118be5be",
-                    title: "03: Weiterführung von letzter Woche",
-                    courseId: "ca8955ca-a849-497a-8583-2e3bcaf45ba1",
-                    startDate: new Date("2021-03-08T00:00:00.000Z"),
-                    endDate: new Date("2021-03-14T00:00:00.000Z"),
-                    contents: [],
-                },
-                {
-                    id: "1b00bd0e-e43c-4cf2-be03-950e7ffa0c85",
-                    title: "04: Noch eine Ergänzung",
-                    courseId: "ca8955ca-a849-497a-8583-2e3bcaf45ba1",
-                    startDate: new Date("2021-03-15T00:00:00.000Z"),
-                    endDate: new Date("2021-03-21T00:00:00.000Z"),
-                    contents: ["27c06535-4491-4312-b0ed-c22381fb04fb", "bb725bf5-514f-4eda-8f04-65e95ab03dab"],
-                },
-            ],
-            publishState: TimePeriodPublishState.UNPUBLISHED,
-        },
-        {
-            id: "0003",
-            title: "Woche 3",
-            publishState: TimePeriodPublishState.NOTSTARTED,
-        },
-        {
-            id: "0004",
-            title: "Woche 4",
-            publishState: TimePeriodPublishState.NOTSTARTED,
-        },
-        {
-            id: "0005",
-            title: "Woche 5",
-            publishState: TimePeriodPublishState.NOTSTARTED,
-        },
-    ],
-    chapterObjects: [
-        {
-            id: "31a763c9-f765-41be-b16d-51b2118be5be",
-            title: "01: Einführung",
-            courseId: "ca8955ca-a849-497a-8583-2e3bcaf45ba1",
-            startDate: new Date("2021-03-08T00:00:00.000Z"),
-            endDate: new Date("2021-03-14T00:00:00.000Z"),
-            contents: [],
-        },
-        {
-            id: "1b00bd0e-e43c-4cf2-be03-950e7ffa0c85",
-            title: "02: Bla Bla Blaa",
-            courseId: "ca8955ca-a849-497a-8583-2e3bcaf45ba1",
-            startDate: new Date("2021-03-15T00:00:00.000Z"),
-            endDate: new Date("2021-03-21T00:00:00.000Z"),
-            contents: ["27c06535-4491-4312-b0ed-c22381fb04fb", "bb725bf5-514f-4eda-8f04-65e95ab03dab"],
-        },
-    ],
-};
-
 const styles = StyleSheet.create({
     imageContainer: {
         flex: 1,
@@ -334,7 +241,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "center",
         alignItems: "center",
-        marginTop: "10px",
+        marginTop: 5,
     },
     editMode: {
         alignSelf: "flex-end",
@@ -351,6 +258,7 @@ const styles = StyleSheet.create({
     addChapterContainer: {
         backgroundColor: "rgba(0,0,0,0.3)",
         height: "100px",
+        marginRight: 30,
         width: "80%",
         marginTop: "1%",
         padding: "0.5%",
