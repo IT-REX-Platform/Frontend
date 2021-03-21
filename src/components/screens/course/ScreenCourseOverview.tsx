@@ -25,7 +25,6 @@ import { CourseRoles } from "../../../constants/CourseRoles";
 import { IUser } from "../../../types/IUser";
 import { InfoPublished } from "../../uiElements/InfoPublished";
 import { InfoUnpublished } from "../../uiElements/InfoUnpublished";
-import { quizList } from "../../../constants/fixtures/quizzes.fixture";
 
 export type ScreenCourseOverviewNavigationProp = CompositeNavigationProp<
     MaterialTopTabNavigationProp<CourseTabParamList, "OVERVIEW">,
@@ -61,13 +60,6 @@ export const ScreenCourseOverview: React.FC = () => {
                         <Text style={styles.textWhite}>{course.courseDescription}</Text>
                         {createContentAsOwner()}
                     </View>
-                    <TextButton
-                        title={"GO TO QUIZ OVERVIEW"}
-                        onPress={() => {
-                            navigation.navigate("QUIZ_OVERVIEW", {
-                                quiz: quizList[0],
-                            });
-                        }}></TextButton>
                 </View>
             </ImageBackground>
         </View>

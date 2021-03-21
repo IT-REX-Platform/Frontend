@@ -13,7 +13,11 @@ import { ICourse } from "../types/ICourse";
 import { useNavigation } from "@react-navigation/native";
 import { CoursePublishState } from "../constants/CoursePublishState";
 import { dateConverter } from "../helperScripts/validateCourseDates";
-import { CONTENTREFERENCETYPE } from "../types/IContent";
+import { CONTENTREFERENCETYPE, IContent } from "../types/IContent";
+import { ITimePeriod } from "../types/ITimePeriod";
+import { EndpointsQuiz } from "../api/endpoints/EndpointsQuiz";
+import { RequestFactory } from "../api/requests/RequestFactory";
+import { IQuiz } from "../types/IQuiz";
 
 interface ChapterComponentProps {
     chapter?: IChapter;
@@ -22,6 +26,7 @@ interface ChapterComponentProps {
     course: ICourse;
 }
 
+const endpointsQuiz = new EndpointsQuiz();
 export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
     React.useContext(LocalizationContext);
     const navigation = useNavigation();
@@ -44,6 +49,33 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
         };
     });
 
+    function getQuizComponent(contentReference: IContent) {
+        return (
+            <TouchableOpacity
+                style={{ flexDirection: "row" }}
+                onPress={() => {
+                    console.log(contentReference);
+                    navigateToQuiz(contentReference.contentId);
+                }}>
+                <MaterialCommunityIcons name="file-question-outline" size={28} color="white" style={styles.icon} />
+
+                <View
+                    style={{
+                        flex: 1,
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                    }}>
+                    <Text style={styles.chapterMaterialElementText}>{contentReference.contentId}</Text>
+                    <Text style={styles.chapterMaterialElementText}>
+                        {timePeriods !== undefined &&
+                            timePeriods.find((timePeriod) => timePeriod.value === contentReference.timePeriodId)?.label}
+                    </Text>
+                </View>
+            </TouchableOpacity>
+        );
+    }
+
     return (
         <View style={styles.chapterContainer}>
             <View style={styles.chapterTopRow}>
@@ -61,45 +93,36 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                             return (
                                 <View style={styles.chapterMaterialElement}>
                                     {contentReference.contentReferenceType == CONTENTREFERENCETYPE.VIDEO ? (
-                                        <MaterialIcons name="attach-file" size={28} color="white" style={styles.icon} />
+                                        <>
+                                            <MaterialIcons
+                                                name="attach-file"
+                                                size={28}
+                                                color="white"
+                                                style={styles.icon}
+                                            />
+                                            <View
+                                                style={{
+                                                    flex: 1,
+                                                    flexDirection: "row",
+                                                    justifyContent: "space-between",
+                                                    alignItems: "center",
+                                                }}>
+                                                <Text style={styles.chapterMaterialElementText}>
+                                                    {contentReference.contentId}
+                                                </Text>
+                                                <Text style={styles.chapterMaterialElementText}>
+                                                    {
+                                                        timePeriods.find(
+                                                            (timePeriod) =>
+                                                                timePeriod.value === contentReference.timePeriodId
+                                                        )?.label
+                                                    }
+                                                </Text>
+                                            </View>
+                                        </>
                                     ) : (
-                                        <MaterialCommunityIcons
-                                            name="file-question-outline"
-                                            size={28}
-                                            color="white"
-                                            style={styles.icon}
-                                        />
+                                        getQuizComponent(contentReference)
                                     )}
-
-                                    <View
-                                        style={{
-                                            flex: 1,
-                                            flexDirection: "row",
-                                            justifyContent: "space-between",
-                                            alignItems: "center",
-                                        }}>
-                                        <Text style={styles.chapterMaterialElementText}>
-                                            {contentReference.contentId}
-                                        </Text>
-                                        <Text style={styles.chapterMaterialElementText}>
-                                            {
-                                                timePeriods.find(
-                                                    (timePeriod) => timePeriod.value === contentReference.timePeriodId
-                                                )?.label
-                                            }
-                                        </Text>
-                                        {/*props.editMode ? (
-                                                <DropDown
-                                                    options={timePeriods}
-                                                    defaultValue={timePeriods.find(
-                                                        (timePeriod) => timePeriod.value === contentReference.timePeriodId
-                                                    )}
-                                                    menuPortalTarget={document.body}
-                                                    menuPosition={"fixed"}></DropDown>
-                                            ) : (
-                                                
-                                            )*/}
-                                    </View>
                                 </View>
                             );
                         })}
@@ -125,6 +148,20 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
             )}
         </View>
     );
+
+    function navigateToQuiz(contentId: string) {
+        console.log(contentId);
+        if (contentId !== undefined) {
+            const request: RequestInit = RequestFactory.createGetRequest();
+            const response = endpointsQuiz.getQuiz(request, contentId);
+            response.then((quiz) => {
+                console.log(quiz),
+                    navigation.navigate("QUIZ_OVERVIEW", {
+                        quiz: quiz,
+                    });
+            });
+        }
+    }
 
     function getPublishedSate(isPublished: string | undefined) {
         if (isPublished === CoursePublishState.UNPUBLISHED) {
