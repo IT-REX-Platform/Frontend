@@ -10,6 +10,7 @@ export type ITimePeriod = {
     // Temporary
     chapters?: IChapter[];
     name?: string;
+    fullName?: string;
 };
 
 //???

@@ -83,13 +83,7 @@ export const ScreenAddChapter: React.FC = () => {
     const timePeriods = course.timePeriods?.map((timePeriod, idx) => {
         return {
             value: timePeriod.id,
-            label:
-                timePeriod.name +
-                " (" +
-                dateConverter(timePeriod.startDate) +
-                " - " +
-                dateConverter(timePeriod.endDate) +
-                ")",
+            label: timePeriod.fullName,
         };
     });
 

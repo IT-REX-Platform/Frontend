@@ -25,6 +25,7 @@ import { CourseRoles } from "../../../constants/CourseRoles";
 import { IUser } from "../../../types/IUser";
 import { MaterialIcons } from "@expo/vector-icons";
 import { IChapter } from "../../../types/IChapter";
+import { dateConverter } from "../../../helperScripts/validateCourseDates";
 
 export type ScreenCourseTimelineNavigationProp = CompositeNavigationProp<
     MaterialTopTabNavigationProp<CourseTabParamList, "TIMELINE">,
@@ -89,8 +90,15 @@ export const ScreenCourseTimeline: React.FC = () => {
                         }
 
                         // Set TimePeriodNames
-                        course.timePeriods?.forEach((timePeriod, idx) => {
+                        receivedCourse.timePeriods?.forEach((timePeriod, idx) => {
                             timePeriod.name = i18n.t("itrex.week") + " " + (idx + 1);
+                            timePeriod.fullName =
+                                timePeriod.name +
+                                " ( " +
+                                dateConverter(timePeriod?.startDate) +
+                                " - " +
+                                dateConverter(timePeriod?.endDate) +
+                                " )";
                         });
 
                         setMyCourse(receivedCourse);
@@ -130,7 +138,7 @@ export const ScreenCourseTimeline: React.FC = () => {
                                 key={chapter.id}
                                 editMode={edit}
                                 chapter={chapter}
-                                course={course}></ChapterComponent>
+                                course={myCourse}></ChapterComponent>
                             {edit && (
                                 <View style={styles.chapterArrows}>
                                     {idx !== 0 && (

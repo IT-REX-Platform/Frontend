@@ -28,9 +28,7 @@ export const TimelineComponent: React.FC<TimelineComponentProps> = (props) => {
     return (
         <>
             <View style={styles.circleContainer}>
-                <Text style={styles.periodText}>
-                    {dateConverter(props.timePeriod?.startDate)}-{dateConverter(props.timePeriod?.endDate)}
-                </Text>
+                <Text style={styles.periodText}>{props.timePeriod?.fullName}</Text>
                 <View
                     style={[
                         styles.mainCircle,
