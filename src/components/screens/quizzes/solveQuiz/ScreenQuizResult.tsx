@@ -11,7 +11,8 @@ import { quizStyles } from "../quizStyles";
 import { ResultMultipleChoiceCard } from "../../../cards/ResultMultipleChoiceCard";
 import i18n from "../../../../locales";
 import { LocalizationContext } from "../../../Context";
-import { isNumericResultCorrect, ResultNumericCard } from "../../../cards/ResultNumericCard";
+import { ResultNumericCard } from "../../../cards/ResultNumericCard";
+import { clearQuizEntries, correctlySolved, correctnessPercentage } from "../../../../helperScripts/solveQuizHelpers";
 
 type ScreenQuizResultProps = RouteProp<CourseStackParamList, "QUIZ_RESULT">;
 
@@ -56,43 +57,3 @@ export const ScreenQuizResult: React.FC = () => {
         </ImageBackground>
     );
 };
-
-function correctlySolved(quiz: IQuiz): number {
-    let amountCorrectlySolved = 0;
-
-    // eslint-disable-next-line complexity
-    quiz.questions.map((question) => {
-        switch (question.type) {
-            case QuestionTypes.SINGLE_CHOICE:
-                if (question.solution === question.userInput) {
-                    amountCorrectlySolved += 1;
-                }
-                break;
-            case QuestionTypes.MULTIPLE_CHOICE:
-                if (JSON.stringify(question.solution) === JSON.stringify(question.userInput)) {
-                    amountCorrectlySolved += 1;
-                }
-                break;
-            case QuestionTypes.NUMERIC:
-                if (isNumericResultCorrect(question)) {
-                    amountCorrectlySolved += 1;
-                }
-        }
-    });
-
-    return amountCorrectlySolved;
-}
-
-export function clearQuizEntries(quiz: IQuiz): void {
-    quiz.questions.map((question) => {
-        question.userInput = undefined;
-    });
-}
-
-function correctnessPercentage(quiz: IQuiz): number {
-    const amountCorrectlySolved: number = correctlySolved(quiz);
-
-    const percentage: number = (amountCorrectlySolved * 100) / quiz.questions.length;
-
-    return Math.round(percentage);
-}

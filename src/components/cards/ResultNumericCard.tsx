@@ -1,4 +1,3 @@
-/* eslint-disable complexity */
 import React from "react";
 import { View, Text } from "react-native";
 import { IQuestionNumeric } from "../../types/IQuestion";
@@ -6,6 +5,7 @@ import { DataTable } from "react-native-paper";
 import i18n from "../../locales";
 import { LocalizationContext } from "../Context";
 import { cardStyles } from "./cardStyles";
+import { isNumericResultCorrect } from "../../helperScripts/solveQuizHelpers";
 
 interface QuestionCardProps {
     question: IQuestionNumeric;
@@ -64,17 +64,3 @@ export const ResultNumericCard: React.FC<QuestionCardProps> = (props) => {
         );
     }
 };
-
-export function isNumericResultCorrect(question: IQuestionNumeric): boolean {
-    const correctSolution = question.solution.result;
-    const acceptableEpsilon = question.solution.epsilon;
-    const userInput = question.userInput;
-
-    if (userInput === undefined) {
-        return false;
-    }
-    if (userInput <= correctSolution + acceptableEpsilon && userInput >= correctSolution - acceptableEpsilon) {
-        return true;
-    }
-    return false;
-}

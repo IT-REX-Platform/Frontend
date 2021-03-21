@@ -8,7 +8,7 @@ import { IQuiz } from "../../../../types/IQuiz";
 import { quizStyles } from "../quizStyles";
 import i18n from "../../../../locales";
 import { LocalizationContext } from "../../../Context";
-import { clearQuizEntries } from "./ScreenQuizResult";
+import { clearQuizEntries } from "../../../../helperScripts/solveQuizHelpers";
 
 type ScreenQuizOverviewProps = RouteProp<CourseStackParamList, "QUIZ_OVERVIEW">;
 
