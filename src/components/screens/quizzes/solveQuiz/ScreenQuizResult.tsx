@@ -83,7 +83,7 @@ function correctlySolved(quiz: IQuiz): number {
     return amountCorrectlySolved;
 }
 
-function clearQuizEntries(quiz: IQuiz): void {
+export function clearQuizEntries(quiz: IQuiz): void {
     quiz.questions.map((question) => {
         question.userInput = undefined;
     });
