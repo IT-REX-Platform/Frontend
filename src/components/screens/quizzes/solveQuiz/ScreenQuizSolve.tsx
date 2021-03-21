@@ -1,6 +1,6 @@
 import React from "react";
 import { IQuiz } from "../../../../types/IQuiz";
-import { ImageBackground, Text } from "react-native";
+import { ImageBackground, Text, View } from "react-native";
 import { useNavigation } from "@react-navigation/core";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { CourseStackParamList } from "../../../../constants/navigators/NavigationRoutes";
@@ -12,6 +12,7 @@ import { SolveMultipleChoiceCard } from "../../../cards/SolveMultipleChoiceCard"
 import { IQuestionMultipleChoice, IQuestionNumeric, IQuestionSingleChoice } from "../../../../types/IQuestion";
 import { SolveNumericCard } from "../../../cards/SolveNumericCard";
 import { quizStyles } from "../quizStyles";
+import i18n from "../../../../locales";
 
 type ScreenQuizSolveProps = RouteProp<CourseStackParamList, "QUIZ_SOLVE">;
 
@@ -33,9 +34,8 @@ export const ScreenQuizSolve: React.FC = () => {
             <ImageBackground
                 source={require("../../../../constants/images/Background1-1.png")}
                 style={quizStyles.image}>
+                <Text style={quizStyles.quizTitle}>{quiz.name}</Text>
                 <ScrollView>
-                    <Text>{quiz.name}</Text>
-
                     {quiz.questions.map((question) => {
                         switch (question.type) {
                             case QuestionTypes.SINGLE_CHOICE:
@@ -58,14 +58,15 @@ export const ScreenQuizSolve: React.FC = () => {
                                 );
                         }
                     })}
-
-                    <TextButton
-                        title={"Finish Quiz"}
-                        onPress={() => {
-                            navigation.navigate("QUIZ_RESULT", {
-                                quiz,
-                            });
-                        }}></TextButton>
+                    <View style={quizStyles.buttonQuizzes}>
+                        <TextButton
+                            title={i18n.t("itrex.finishQuiz")}
+                            onPress={() => {
+                                navigation.navigate("QUIZ_RESULT", {
+                                    quiz,
+                                });
+                            }}></TextButton>
+                    </View>
                 </ScrollView>
             </ImageBackground>
         </>

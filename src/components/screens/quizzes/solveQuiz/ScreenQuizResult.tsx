@@ -1,6 +1,6 @@
 import React from "react";
 import { IQuiz } from "../../../../types/IQuiz";
-import { ImageBackground, ScrollView, Text } from "react-native";
+import { ImageBackground, ScrollView, Text, View } from "react-native";
 import { TextButton } from "../../../uiElements/TextButton";
 import { useNavigation } from "@react-navigation/core";
 import { RouteProp, useRoute } from "@react-navigation/native";
@@ -22,12 +22,12 @@ export const ScreenQuizResult: React.FC = () => {
     const navigation = useNavigation();
     return (
         <ImageBackground source={require("../../../../constants/images/Background1-1.png")} style={quizStyles.image}>
+            <Text style={quizStyles.quizTitle}>{quiz.name}</Text>
+            <Text style={quizStyles.quizContent}>{correctnessPercentage(quiz)}%</Text>
+            <Text style={quizStyles.quizContent}>
+                {correctlySolved(quiz)} out of {quiz.questions.length} questions were answered correctly.
+            </Text>
             <ScrollView>
-                <Text>{quiz.name}</Text>
-                <Text>
-                    You solved {correctlySolved(quiz)} out of {quiz.questions.length} questions
-                </Text>
-
                 {quiz.questions.map((question) => {
                     switch (question.type) {
                         case QuestionTypes.SINGLE_CHOICE:
@@ -38,13 +38,14 @@ export const ScreenQuizResult: React.FC = () => {
                             return <ResultNumericCard question={question} />;
                     }
                 })}
-
-                <TextButton
-                    title={"Return to chapter"}
-                    onPress={() => {
-                        clearQuizEntries(quiz);
-                        navigation.navigate("INFO", { screen: "OVERVIEW" });
-                    }}></TextButton>
+                <View style={quizStyles.buttonQuizzes}>
+                    <TextButton
+                        title={"Return to chapter"}
+                        onPress={() => {
+                            clearQuizEntries(quiz);
+                            navigation.navigate("INFO", { screen: "OVERVIEW" });
+                        }}></TextButton>
+                </View>
             </ScrollView>
         </ImageBackground>
     );
@@ -66,4 +67,12 @@ function clearQuizEntries(quiz: IQuiz): void {
     quiz.questions.map((question) => {
         question.userInput = undefined;
     });
+}
+
+function correctnessPercentage(quiz: IQuiz): number {
+    const amountCorrectlySolved: number = correctlySolved(quiz);
+
+    const percentage: number = (amountCorrectlySolved * 100) / quiz.questions.length;
+
+    return Math.round(percentage);
 }

@@ -139,6 +139,9 @@ export const en = {
         invalidQuizName: "Please define a quiz name.",
         invalidQuestionsObject: "Please add at least one question  to the quiz.",
         noQuestions: "No questions have been added yet!",
+        quizConsists: "This quiz consists out of ",
+        quizQuestions: " questions.",
+        finishQuiz: "Finish Quiz",
 
         questions: "Questions: ",
         deleteQuizSuccess: "The quiz was deleted successfully.",
