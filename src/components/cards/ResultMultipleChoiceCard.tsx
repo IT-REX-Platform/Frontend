@@ -28,7 +28,7 @@ export const ResultMultipleChoiceCard: React.FC<ResultMultipleChoiceCardProps> =
     function renderAnswer(question: IQuestionMultipleChoice, index: string, value: string) {
         let selected = false;
         if (question.userInput) {
-            if (question.userInput[index] !== undefined) {
+            if (question.userInput[index]) {
                 selected = true;
             }
         }

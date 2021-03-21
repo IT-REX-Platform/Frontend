@@ -16,10 +16,10 @@ export const SolveMultipleChoiceCard: React.FC<QuestionCardProps> = (props) => {
 
     const { question, onSolutionClicked } = props;
 
-    const [singleAnswerZero, setSingleAnswerZero] = useState<boolean | undefined>(undefined);
-    const [singleAnswerOne, setSingleAnswerOne] = useState<boolean | undefined>(undefined);
-    const [singleAnswerTwo, setSingleAnswerTwo] = useState<boolean | undefined>(undefined);
-    const [singleAnswerThree, setSingleAnswerThree] = useState<boolean | undefined>(undefined);
+    const [singleAnswerZero, setSingleAnswerZero] = useState<boolean>(false);
+    const [singleAnswerOne, setSingleAnswerOne] = useState<boolean>(false);
+    const [singleAnswerTwo, setSingleAnswerTwo] = useState<boolean>(false);
+    const [singleAnswerThree, setSingleAnswerThree] = useState<boolean>(false);
 
     useEffect(() => {
         const solutionObj: ISolutionMultipleChoice = {
