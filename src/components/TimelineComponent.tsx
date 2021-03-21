@@ -69,17 +69,6 @@ export const TimelineComponent: React.FC<TimelineComponentProps> = (props) => {
                         editMode={props.edit}
                         course={props.course}></ChapterComponent>
                 ))}
-            {props.edit && (
-                <View style={styles.addChapterContainer}>
-                    <TouchableOpacity
-                        style={styles.btnAdd}
-                        onPress={() => {
-                            navigation.navigate("CHAPTER", { chapterId: undefined });
-                        }}>
-                        <Text style={styles.txtAddChapter}>{i18n.t("itrex.addChapter")}</Text>
-                    </TouchableOpacity>
-                </View>
-            )}
             <View style={styles.verticalLine}></View>
         </>
     );
