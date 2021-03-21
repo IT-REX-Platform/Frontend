@@ -36,7 +36,7 @@ export default class ProgressService {
 
     /**
      * Gets the course progress for a given course id and provides a consumer to react to it.
-     * The consumer is need as it can be a delayed return when needing to get the progress from the backend first.
+     * The consumer is needed as it can be a delayed return when needing to get the progress from the backend first.
      * Will only update the saved progress when it's not there yet.
      *
      * @param courseId the course id to get the course progress from.
@@ -48,6 +48,42 @@ export default class ProgressService {
         } else {
             consumer(this.courseProgresses[courseId]);
         }
+    }
+
+    /**
+     * Gets the course progress info for a given course id and provides a consumer to react to it.
+     * The consumer, in addition to the course progress also provided by getCourseProgressFor(), also
+     * gets a numeric information about started progress items and the total.
+     *
+     * @param courseId the course id to get the course progress from.
+     * @param consumer the consumer to reac to the course progress.
+     */
+    public getCourseProgressInfo(
+        courseId: string,
+        consumer: (
+            courseProgress: ICourseProgressTracker,
+            progress: { total: number; totalMax: number; all: number[] }
+        ) => void
+    ): void {
+        this.getCourseProgressFor(courseId, (courseProgress) => {
+            const progress: { total: number; totalMax: number; all: number[] } = { total: 0, totalMax: 0, all: [] };
+
+            if (courseProgress.contentProgressTrackers === undefined) {
+                consumer(courseProgress, progress);
+                return;
+            }
+
+            // TODO: Get all possible progress candidates, currently only checks existing trackers.
+            for (const curContentRefId in courseProgress.contentProgressTrackers) {
+                const curContentTracker = courseProgress.contentProgressTrackers[curContentRefId];
+
+                progress.totalMax += 1;
+                progress.total += curContentTracker.progress ?? 0;
+                progress.all.push(curContentTracker.progress ?? 0);
+            }
+
+            consumer(courseProgress, progress);
+        });
     }
 
     /**
@@ -108,23 +144,6 @@ export default class ProgressService {
             } else {
                 consumer(contentProgress.state, contentProgress.progress ?? 0);
             }
-        });
-    }
-
-    /**
-     * Gets the content progress status for the given course id and content reference.
-     *
-     * @param courseId the course id to get the content progress status for.
-     * @param contentRef the content reference to get the status for.
-     * @param consumer the consumer to react to the content progress status.
-     */
-    public getContentProgressStatus(
-        courseId: string,
-        contentRef: IContent,
-        consumer: (status: ContentProgressTrackerState | undefined) => void
-    ): void {
-        this.getContentProgressInfo(courseId, contentRef, (status) => {
-            consumer(status);
         });
     }
 
@@ -268,7 +287,9 @@ export default class ProgressService {
     private updateLastAccessedContent(
         courseId: string,
         toContentRef: IContent,
-        consumer: (courseProgress: ICourseProgressTracker) => void = (progress) => console.log(progress)
+        consumer: (courseProgress: ICourseProgressTracker) => void = () => {
+            /*empty consumer by default*/
+        }
     ): void {
         // TODO: Better way of handling response here/in calling methods.
         this.getCourseProgressFor(courseId, (courseProgress) => {
