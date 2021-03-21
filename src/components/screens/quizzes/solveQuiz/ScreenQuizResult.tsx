@@ -1,6 +1,6 @@
 import React from "react";
 import { IQuiz } from "../../../../types/IQuiz";
-import { ImageBackground, ScrollView, StyleSheet, Text } from "react-native";
+import { ImageBackground, ScrollView, Text } from "react-native";
 import { TextButton } from "../../../uiElements/TextButton";
 import { useNavigation } from "@react-navigation/core";
 import { RouteProp, useRoute } from "@react-navigation/native";
@@ -22,7 +22,7 @@ export const ScreenQuizResult: React.FC = () => {
     return (
         <ImageBackground source={require("../../../../constants/images/Background1-1.png")} style={quizStyles.image}>
             <ScrollView>
-                <Text style={styles.QuizHeader}>{quiz.name}</Text>
+                <Text>{quiz.name}</Text>
                 <Text>
                     You solved {correctlySolved(quiz)} out of {quiz.questions.length} questions
                 </Text>
