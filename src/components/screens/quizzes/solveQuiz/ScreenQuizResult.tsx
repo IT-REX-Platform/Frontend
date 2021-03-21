@@ -9,6 +9,7 @@ import { QuestionTypes } from "../../../../constants/QuestionTypes";
 import { ResultSingleChoiceCard } from "../../../cards/ResultSingleChoiceCard";
 import { quizStyles } from "../quizStyles";
 import { ResultMultipleChoiceCard } from "../../../cards/ResultMultipleChoiceCard";
+import { ResultNumericCard } from "../../../cards/ResultNumericCard";
 
 type ScreenQuizResultProps = RouteProp<CourseStackParamList, "QUIZ_RESULT">;
 
@@ -30,11 +31,11 @@ export const ScreenQuizResult: React.FC = () => {
                 {quiz.questions.map((question) => {
                     switch (question.type) {
                         case QuestionTypes.SINGLE_CHOICE:
-                            return <ResultSingleChoiceCard question={question}></ResultSingleChoiceCard>;
+                            return <ResultSingleChoiceCard question={question} />;
                         case QuestionTypes.MULTIPLE_CHOICE:
                             return <ResultMultipleChoiceCard question={question} />;
                         case QuestionTypes.NUMERIC:
-                            return <></>;
+                            return <ResultNumericCard question={question} />;
                     }
                 })}
 

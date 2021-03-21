@@ -1,8 +1,7 @@
 /* eslint-disable complexity */
 import React from "react";
-import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import { QuestionTypes } from "../../constants/QuestionTypes";
-import { dark } from "../../constants/themes/dark";
 import { IQuestionMultipleChoice, IQuestionNumeric, IQuestionSingleChoice } from "../../types/IQuestion";
 import { ISolutionNumeric } from "../../types/ISolution";
 import { DataTable } from "react-native-paper";

@@ -86,6 +86,16 @@ export const cardStyles = StyleSheet.create({
         justifyContent: "center",
         color: "white",
     },
+    cardChoiceNumericWrong: {
+        color: "white",
+        backgroundColor: dark.Opacity.pink,
+        padding: 16,
+    },
+    cardChoiceNumericRight: {
+        color: "white",
+        backgroundColor: dark.Opacity.darkGreen,
+        padding: 16,
+    },
     cardHeader: {
         margin: 8,
         marginLeft: 16,
