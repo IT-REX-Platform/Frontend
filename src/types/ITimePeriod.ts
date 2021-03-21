@@ -9,6 +9,7 @@ export type ITimePeriod = {
     contentReferenceIds?: string[];
     // Temporary
     chapters?: IChapter[];
+    name?: string;
 };
 
 //???

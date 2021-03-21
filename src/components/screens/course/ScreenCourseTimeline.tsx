@@ -85,6 +85,12 @@ export const ScreenCourseTimeline: React.FC = () => {
                                 }
                             }
                         }
+
+                        // Set TimePeriodNames
+                        course.timePeriods?.forEach((timePeriod, idx) => {
+                            timePeriod.name = i18n.t("itrex.week") + " " + (idx + 1);
+                        });
+
                         setMyCourse(receivedCourse);
                         setChapters(receivedCourse.chapters);
                     }
