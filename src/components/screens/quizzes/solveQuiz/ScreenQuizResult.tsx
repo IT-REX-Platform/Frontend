@@ -11,7 +11,7 @@ import { quizStyles } from "../quizStyles";
 import { ResultMultipleChoiceCard } from "../../../cards/ResultMultipleChoiceCard";
 import i18n from "../../../../locales";
 import { LocalizationContext } from "../../../Context";
-import { isResultCorrect, ResultNumericCard } from "../../../cards/ResultNumericCard";
+import { isNumericResultCorrect, ResultNumericCard } from "../../../cards/ResultNumericCard";
 
 type ScreenQuizResultProps = RouteProp<CourseStackParamList, "QUIZ_RESULT">;
 
@@ -19,8 +19,6 @@ export const ScreenQuizResult: React.FC = () => {
     React.useContext(LocalizationContext);
     const route = useRoute<ScreenQuizResultProps>();
     const quiz: IQuiz = route.params.quiz;
-
-    console.log(quiz);
 
     const navigation = useNavigation();
     return (
@@ -76,7 +74,7 @@ function correctlySolved(quiz: IQuiz): number {
                 }
                 break;
             case QuestionTypes.NUMERIC:
-                if (isResultCorrect(question)) {
+                if (isNumericResultCorrect(question)) {
                     amountCorrectlySolved += 1;
                 }
         }

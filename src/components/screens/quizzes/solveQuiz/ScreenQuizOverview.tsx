@@ -32,7 +32,7 @@ export const ScreenQuizOverview: React.FC = () => {
                     </Text>
 
                     <TextButton
-                        title={"Start Quiz"}
+                        title={i18n.t("itrex.startQuiz")}
                         onPress={() => {
                             navigation.navigate("QUIZ_SOLVE", {
                                 quiz,

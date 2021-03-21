@@ -51,7 +51,7 @@ export const ResultNumericCard: React.FC<QuestionCardProps> = (props) => {
                         <DataTable.Cell numeric>
                             <Text
                                 style={
-                                    isResultCorrect(question)
+                                    isNumericResultCorrect(question)
                                         ? cardStyles.cardChoiceNumericRight
                                         : cardStyles.cardChoiceNumericWrong
                                 }>
@@ -65,7 +65,7 @@ export const ResultNumericCard: React.FC<QuestionCardProps> = (props) => {
     }
 };
 
-export function isResultCorrect(question: IQuestionNumeric): boolean {
+export function isNumericResultCorrect(question: IQuestionNumeric): boolean {
     const correctSolution = question.solution.result;
     const acceptableEpsilon = question.solution.epsilon;
     const userInput = question.userInput;
