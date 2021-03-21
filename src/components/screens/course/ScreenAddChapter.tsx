@@ -184,7 +184,7 @@ export const ScreenAddChapter: React.FC = () => {
                                     onChange={(option) => {
                                         if (item.id !== undefined) {
                                             const itemId = item.id;
-                                            const value = option;
+                                            const value = option?.value;
                                             if (itemId !== undefined && value !== undefined) {
                                                 selectedValues[itemId] = value;
                                                 setSelectedValues(selectedValues);

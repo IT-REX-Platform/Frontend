@@ -8,7 +8,7 @@ interface DropdownProps {
     defaultValue?: any;
     menuPortalTarget?: any;
     menuPosition?: any;
-    onChange?: (event: string) => any;
+    onChange?: (event: any) => any;
 }
 
 export const DropDown: React.FC<DropdownProps> = (props) => {
