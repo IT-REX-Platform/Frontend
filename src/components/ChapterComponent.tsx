@@ -148,6 +148,9 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                 }
                 return 0;
             });
+            if (tmpContentReferences.length == 0) {
+                return "";
+            }
 
             const lowestTimePeriod = course.timePeriods?.find(
                 (timePeriod) => timePeriod.id == tmpContentReferences[0].timePeriodId
