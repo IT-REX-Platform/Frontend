@@ -14,10 +14,8 @@ import { useNavigation } from "@react-navigation/native";
 import { CoursePublishState } from "../constants/CoursePublishState";
 import { dateConverter } from "../helperScripts/validateCourseDates";
 import { CONTENTREFERENCETYPE, IContent } from "../types/IContent";
-import { ITimePeriod } from "../types/ITimePeriod";
 import { EndpointsQuiz } from "../api/endpoints/EndpointsQuiz";
 import { RequestFactory } from "../api/requests/RequestFactory";
-import { IQuiz } from "../types/IQuiz";
 
 interface ChapterComponentProps {
     chapter?: IChapter;
@@ -26,7 +24,6 @@ interface ChapterComponentProps {
     course: ICourse;
 }
 
-const endpointsQuiz = new EndpointsQuiz();
 export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
     React.useContext(LocalizationContext);
     const navigation = useNavigation();
@@ -55,7 +52,9 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                 style={{ flexDirection: "row" }}
                 onPress={() => {
                     console.log(contentReference);
-                    navigateToQuiz(contentReference.contentId);
+                    {
+                        contentReference !== undefined && navigateToQuiz(contentReference.contentId);
+                    }
                 }}>
                 <MaterialCommunityIcons name="file-question-outline" size={28} color="white" style={styles.icon} />
 
@@ -149,9 +148,9 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
         </View>
     );
 
-    function navigateToQuiz(contentId: string) {
-        console.log(contentId);
+    function navigateToQuiz(contentId: string | undefined) {
         if (contentId !== undefined) {
+            const endpointsQuiz = new EndpointsQuiz();
             const request: RequestInit = RequestFactory.createGetRequest();
             const response = endpointsQuiz.getQuiz(request, contentId);
             response.then((quiz) => {
