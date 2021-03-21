@@ -13,10 +13,12 @@ import { IQuestionMultipleChoice, IQuestionNumeric, IQuestionSingleChoice } from
 import { SolveNumericCard } from "../../../cards/SolveNumericCard";
 import { quizStyles } from "../quizStyles";
 import i18n from "../../../../locales";
+import { LocalizationContext } from "../../../Context";
 
 type ScreenQuizSolveProps = RouteProp<CourseStackParamList, "QUIZ_SOLVE">;
 
 export const ScreenQuizSolve: React.FC = () => {
+    React.useContext(LocalizationContext);
     const route = useRoute<ScreenQuizSolveProps>();
     const quiz: IQuiz = route.params.quiz;
 

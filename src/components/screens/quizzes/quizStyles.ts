@@ -201,4 +201,9 @@ export const quizStyles = StyleSheet.create({
         alignItems: "center",
         marginBottom: 8,
     },
+    solutionContent: {
+        paddingLeft: 16,
+        fontSize: 16,
+        color: "white",
+    },
 });

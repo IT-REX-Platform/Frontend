@@ -142,6 +142,10 @@ export const de = {
         quizConsists: "Dieses Quiz besteht aus ",
         quizQuestions: " Fragen.",
         finishQuiz: "Quiz Beenden",
+        youReached: "Du hast ",
+        percentageOf: "% von 100% erreicht.",
+        outOf: "von",
+        solvedCorrectly: "Fragen wurden korrekt beantwortet.",
 
         questions: "Fragen: ",
         deleteQuizSuccess: "Das Quiz wurde erfolgreich gelöscht.",

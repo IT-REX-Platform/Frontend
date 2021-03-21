@@ -7,10 +7,12 @@ import { CourseStackParamList } from "../../../../constants/navigators/Navigatio
 import { IQuiz } from "../../../../types/IQuiz";
 import { quizStyles } from "../quizStyles";
 import i18n from "../../../../locales";
+import { LocalizationContext } from "../../../Context";
 
 type ScreenQuizOverviewProps = RouteProp<CourseStackParamList, "QUIZ_OVERVIEW">;
 
 export const ScreenQuizOverview: React.FC = () => {
+    React.useContext(LocalizationContext);
     const route = useRoute<ScreenQuizOverviewProps>();
     const quiz: IQuiz = route.params.quiz;
 

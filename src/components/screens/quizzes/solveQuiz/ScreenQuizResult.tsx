@@ -10,10 +10,13 @@ import { ResultSingleChoiceCard } from "../../../cards/ResultSingleChoiceCard";
 import { quizStyles } from "../quizStyles";
 import { ResultMultipleChoiceCard } from "../../../cards/ResultMultipleChoiceCard";
 import { ResultNumericCard } from "../../../cards/ResultNumericCard";
+import i18n from "../../../../locales";
+import { LocalizationContext } from "../../../Context";
 
 type ScreenQuizResultProps = RouteProp<CourseStackParamList, "QUIZ_RESULT">;
 
 export const ScreenQuizResult: React.FC = () => {
+    React.useContext(LocalizationContext);
     const route = useRoute<ScreenQuizResultProps>();
     const quiz: IQuiz = route.params.quiz;
 
@@ -23,11 +26,16 @@ export const ScreenQuizResult: React.FC = () => {
     return (
         <ImageBackground source={require("../../../../constants/images/Background1-1.png")} style={quizStyles.image}>
             <Text style={quizStyles.quizTitle}>{quiz.name}</Text>
-            <Text style={quizStyles.quizContent}>{correctnessPercentage(quiz)}%</Text>
-            <Text style={quizStyles.quizContent}>
-                {correctlySolved(quiz)} out of {quiz.questions.length} questions were answered correctly.
-            </Text>
             <ScrollView>
+                <Text style={quizStyles.solutionContent}>
+                    {i18n.t("itrex.youReached")}
+                    {correctnessPercentage(quiz)}
+                    {i18n.t("itrex.percentageOf")}
+                </Text>
+                <Text style={quizStyles.solutionContent}>
+                    {correctlySolved(quiz)} {i18n.t("itrex.outOf")} {quiz.questions.length}{" "}
+                    {i18n.t("itrex.solvedCorrectly")}
+                </Text>
                 {quiz.questions.map((question) => {
                     switch (question.type) {
                         case QuestionTypes.SINGLE_CHOICE:

@@ -142,6 +142,11 @@ export const en = {
         quizConsists: "This quiz consists out of ",
         quizQuestions: " questions.",
         finishQuiz: "Finish Quiz",
+        youReached: "You have reached ",
+        percentageOf: "% of 100%.",
+
+        outOf: "out of",
+        solvedCorrectly: "questions were answered correctly.",
 
         questions: "Questions: ",
         deleteQuizSuccess: "The quiz was deleted successfully.",
