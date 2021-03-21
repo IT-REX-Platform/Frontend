@@ -78,6 +78,10 @@ export const ScreenChapterStudent: React.FC = () => {
     const [isVideoListLoading, setVideoListLoading] = useState(true);
     //Store URL of Current Video here:
 
+    // update indicators
+    const [playlistShouldUpdate, updatePlaylist] = useState<number>();
+    const [playerShouldRestoreProgress, restorePlayerProgress] = useState<number>();
+
     let [currentVideo, setCurrentVideo] = useState<IContent>();
 
     const [videos, setVideos] = useState<IVideoListSection[]>([]);
@@ -130,14 +134,16 @@ export const ScreenChapterStudent: React.FC = () => {
             console.log("In Callback");
             _getAllChapters();
 
-            const progressRequest: RequestInit = RequestFactory.createGetRequest();
+            updateCourseProgress();
+
+            /*const progressRequest: RequestInit = RequestFactory.createGetRequest();
             endpointsProgress
                 .getCourseProgress(progressRequest, course.id, undefined, i18n.t("itrex.getCourseProgressError"))
                 .then((receivedProgress) => {
                     console.log("Progress of course Init:");
                     console.log(receivedProgress);
                     setCourseProgress(receivedProgress);
-                });
+                });*/
         }, [course])
     );
 
@@ -145,16 +151,22 @@ export const ScreenChapterStudent: React.FC = () => {
         _getChapter();
         //_getAllVideos();
         _splitPlaylist(chapterPlaylist);
-        if (chapterPlaylist.length > 0) {
-            setCurrentVideo(chapterPlaylist[0]);
-        }
+        setIndicatorForUpdate(updatePlaylist);
     }, [courseProgress, chapterId]);
 
     useEffect(() => {
-        if (currentVideo != undefined) restoreWatchProgress();
+        if (chapterPlaylist.length > 0 && currentVideo == undefined) {
+            setCurrentVideo(chapterPlaylist[0]);
+        }
+    }, [playlistShouldUpdate]);
+
+    useEffect(() => {
+        setIndicatorForUpdate(restorePlayerProgress);
     }, [currentVideo]);
 
-    //useEffect(() => {}, [currentVideo]);
+    useEffect(() => {
+        if (currentVideo != undefined) restoreWatchProgress();
+    }, [playerShouldRestoreProgress]);
 
     const myPlaylistItem = ({ item }: { item: IContent }) => {
         let brd: string = " ";
@@ -340,7 +352,7 @@ export const ScreenChapterStudent: React.FC = () => {
                             renderItem={myPlaylistItem}
                             //ListHeaderComponent={<Text style={styles.videoTitle}>Playlist</Text>}
                             //renderItem={thisPlaylistItem}
-                            extraData={courseProgress}
+                            extraData={playlistShouldUpdate}
                             keyExtractor={(item) => item.id ?? ""}
                             ListEmptyComponent={<Text>Videos here</Text>}
                             renderSectionHeader={
@@ -357,6 +369,10 @@ export const ScreenChapterStudent: React.FC = () => {
             </View>
         </View>
     );
+
+    function setIndicatorForUpdate(indicatorSetter: React.Dispatch<React.SetStateAction<number | undefined>>) {
+        indicatorSetter(Date.now);
+    }
 
     function getContentIcon(item: IContent) {
         switch (item.contentReferenceType) {
@@ -444,11 +460,7 @@ export const ScreenChapterStudent: React.FC = () => {
         //   {if (abc.data !== undefined) {return abc}})));
     }
 
-    function heartbeat(status: AVPlaybackStatus) {
-        /*console.log("*Heartbeat*:");
-        console.log(status);*/
-        //player.current?.setProgressUpdateIntervalAsync(5000000);
-
+    async function heartbeat(status: AVPlaybackStatus) {
         if (currentVideo == undefined) {
             return;
         }
@@ -456,29 +468,47 @@ export const ScreenChapterStudent: React.FC = () => {
         if (status["isLoaded"] == true) {
             timeSinceLastProgressUpdatePush = timeSinceLastProgressUpdatePush + status["progressUpdateIntervalMillis"];
 
-            console.log(timeSinceLastProgressUpdatePush);
-
             if (timeSinceLastProgressUpdatePush >= 2500) {
                 timeSinceLastProgressUpdatePush = 0;
 
-                console.log("heartbeat");
+                await createContentProgressIfNecessary(currentVideo).then(async () => {
+                    changeVideoWatchProgress(currentVideo, Math.floor(status["positionMillis"] * 0.001));
+                    setVideoCompletedIfNecessary(currentVideo, status);
+                });
+            }
+        }
+    }
 
-                changeVideoWatchProgress(currentVideo, Math.floor(status["positionMillis"] * 0.001));
+    async function createContentProgressIfNecessary(contentRef: IContent) {
+        const contentProgress = courseProgress.contentProgressTrackers[contentRef.id];
+        if (contentProgress === undefined || contentProgress.id === undefined) {
+            await changeVideoProgress(contentRef);
+        }
+    }
+
+    async function setVideoCompletedIfNecessary(contentRef: IContent, status: AVPlaybackStatus) {
+        const contentProgress: IContentProgressTracker = courseProgress.contentProgressTrackers[contentRef.id];
+        if (contentProgress != undefined && contentProgress.state != ContentProgressTrackerState.COMPLETED) {
+            const position = status["positionMillis"];
+            const duration = status["durationMillis"];
+            if (duration != undefined && position + 15000 > duration) {
+                completeVideo(contentRef);
             }
         }
     }
 
     function restoreWatchProgress() {
-        /*if (
+        if (
             courseProgress == undefined ||
             courseProgress.contentProgressTrackers == undefined ||
             currentVideo == undefined ||
             currentVideo.id == undefined
         ) {
             return;
-        }*/
-        videoPlayer.current?.stopAsync();
-        //videoPlayer.current?.playFromPositionAsync(courseProgress.contentProgressTrackers[currentVideo.id]?.progress);
+        }
+        let progress = courseProgress.contentProgressTrackers[currentVideo.id]?.progress;
+        if (progress == undefined) progress = 0;
+        videoPlayer.current?.setPositionAsync(progress * 1000);
     }
 
     function updateCourseProgress() {
@@ -492,7 +522,7 @@ export const ScreenChapterStudent: React.FC = () => {
             .then((receivedProgress) => setCourseProgress(receivedProgress));
     }
 
-    function changeVideoProgress(contentRef: IContent) {
+    async function changeVideoProgress(contentRef: IContent) {
         // TODO: Adjust and/or reuse this for actual progress.
         // For now it just touches the content once or completes it when touched.
 
@@ -513,17 +543,19 @@ export const ScreenChapterStudent: React.FC = () => {
             const postReq = RequestFactory.createPostRequestWithBody(contentRef);
             console.log("Content Ref in changeProgress:");
             console.log(contentRef);
-            endpointsProgress.createContentProgress(postReq, courseProgress.id).then((receivedContentProgress) => {
-                console.log("Created content progress:");
-                console.log(receivedContentProgress);
+            await endpointsProgress
+                .createContentProgress(postReq, courseProgress.id)
+                .then((receivedContentProgress) => {
+                    console.log("Created content progress:");
+                    console.log(receivedContentProgress);
 
-                updateLastAccessedContent(contentRef);
-                updateCourseProgress();
-            });
+                    updateLastAccessedContent(contentRef);
+                    updateCourseProgress();
+                });
         }
     }
 
-    function changeVideoWatchProgress(contentRef: IContent, newProgress: number) {
+    async function changeVideoWatchProgress(contentRef: IContent, newProgress: number) {
         // TODO: Adjust and/or reuse this for actual progress.
         // For now it just touches the content once or completes it when touched.
 
@@ -538,26 +570,25 @@ export const ScreenChapterStudent: React.FC = () => {
             return;
         }
 
-        var contentProgress = courseProgress.contentProgressTrackers[contentRef.id];
-        if (contentProgress === undefined || contentProgress.id === undefined) {
-            changeVideoProgress(contentRef);
-            contentProgress = courseProgress.contentProgressTrackers[contentRef.id];
-        }
-
+        const contentProgress = courseProgress.contentProgressTrackers[contentRef.id];
         if (contentProgress === undefined || contentProgress.id === undefined) {
             return;
         }
 
         const putReq = RequestFactory.createPutRequest({});
-        endpointsProgress
+        await endpointsProgress
             .updateContentProgress(putReq, contentProgress.id, newProgress)
             .then((receivedContentProgress) => {
                 console.log("Set content progress to:");
                 console.log(receivedContentProgress);
+
+                // may result in a race condition i think, but this is unlikely and not dangerous in case it happens
+                updateLastAccessedContent(contentRef);
+                courseProgress.contentProgressTrackers[contentRef.id] = receivedContentProgress;
             });
     }
 
-    function completeVideo(contentRef: IContent) {
+    async function completeVideo(contentRef: IContent) {
         // Update the status to complete.
         if (
             courseProgress.id === undefined ||
@@ -570,21 +601,22 @@ export const ScreenChapterStudent: React.FC = () => {
         }
         const contentProgress = courseProgress.contentProgressTrackers[contentRef.id];
         const putReq = RequestFactory.createPutRequest({});
-        endpointsProgress.setContentStateComplete(putReq, contentProgress.id).then((receivedContentProgress) => {
+        await endpointsProgress.setContentStateComplete(putReq, contentProgress.id).then((receivedContentProgress) => {
             console.log("Set content progress to complete:");
             console.log(receivedContentProgress);
 
             updateLastAccessedContent(contentRef);
+            updateCourseProgress();
         });
     }
 
-    function updateLastAccessedContent(contentRef: IContent): void {
+    async function updateLastAccessedContent(contentRef: IContent): void {
         if (courseProgress.id === undefined) {
             return;
         }
 
         const putReq = RequestFactory.createPutRequest(contentRef);
-        endpointsProgress
+        await endpointsProgress
             .updateLastAccessedContentProgress(putReq, courseProgress.id)
             .then((receivedCourseProgress) => {
                 console.log("Updated last accessed content:");
