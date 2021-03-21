@@ -43,7 +43,7 @@ export const VideoPoolComponent: React.FC = () => {
     React.useContext(LocalizationContext);
 
     // Get course infos from context.
-    const course: ICourse = React.useContext(CourseContext);
+    const { course } = React.useContext(CourseContext);
 
     // States.
     const [isVideoUploading, setVideoUploading] = useState(false);

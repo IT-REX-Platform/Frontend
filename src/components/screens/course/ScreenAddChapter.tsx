@@ -62,7 +62,7 @@ export const ScreenAddChapter: React.FC = () => {
     // Loading icon state.
     const [isLoading, setLoading] = useState(true);
 
-    const course: ICourse = React.useContext(CourseContext);
+    const { course } = React.useContext(CourseContext);
 
     const initialCourseName = chapterId == undefined ? i18n.t("itrex.myNewChapter") : "";
     const chapterEndpoint = new EndpointsChapter();

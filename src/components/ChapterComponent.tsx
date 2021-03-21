@@ -90,7 +90,12 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                                             alignItems: "center",
                                         }}>
                                         <Text style={styles.chapterMaterialElementText}>
-                                            {contentReference.contentId}
+                                            {contentReference.contentReferenceType == CONTENTREFERENCETYPE.VIDEO
+                                                ? contentReference?.video?.title
+                                                : ""}
+                                            {contentReference.contentReferenceType == CONTENTREFERENCETYPE.QUIZ
+                                                ? contentReference?.quiz?.name
+                                                : ""}
                                         </Text>
                                         <Text style={styles.chapterMaterialElementText}>
                                             {
@@ -143,6 +148,9 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                 }
                 return 0;
             });
+            if (tmpContentReferences.length == 0) {
+                return "";
+            }
 
             const lowestTimePeriod = course.timePeriods?.find(
                 (timePeriod) => timePeriod.id == tmpContentReferences[0].timePeriodId

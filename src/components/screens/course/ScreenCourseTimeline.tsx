@@ -25,6 +25,8 @@ import { CourseRoles } from "../../../constants/CourseRoles";
 import { IUser } from "../../../types/IUser";
 import { MaterialIcons } from "@expo/vector-icons";
 import { IChapter } from "../../../types/IChapter";
+import { CONTENTREFERENCETYPE, IContent } from "../../../types/IContent";
+import { EndpointsVideo } from "../../../api/endpoints/EndpointsVideo";
 import { dateConverter } from "../../../helperScripts/validateCourseDates";
 
 export type ScreenCourseTimelineNavigationProp = CompositeNavigationProp<
@@ -37,14 +39,14 @@ export const ScreenCourseTimeline: React.FC = () => {
     const [user, setUserInfo] = useState<IUser>({});
 
     const courseEndpoint = new EndpointsCourse();
+    const endpointsVideos: EndpointsVideo = new EndpointsVideo();
 
     const [edit, setEdit] = useState(false);
 
     React.useContext(LocalizationContext);
 
-    const course: ICourse = React.useContext(CourseContext);
+    const { course, setCourse } = React.useContext(CourseContext);
 
-    const [myCourse, setMyCourse] = useState<ICourse>({});
     const [chapters, setChapters] = useState<IChapter[]>([]);
 
     const isFocused = useIsFocused();
@@ -101,8 +103,78 @@ export const ScreenCourseTimeline: React.FC = () => {
                                 " )";
                         });
 
-                        setMyCourse(receivedCourse);
-                        setChapters(receivedCourse.chapters);
+                        const contents: { [key: string]: IContent[] } = {};
+
+                        // Map Contents to different dictionaries, later we can pass the contentIds to the correct service
+                        for (const chapter of receivedCourse.chapters) {
+                            if (chapter.contentReferences !== undefined) {
+                                for (const content of chapter.contentReferences) {
+                                    if (content.contentReferenceType !== undefined && content.contentId !== undefined) {
+                                        if (contents[content.contentReferenceType] === undefined) {
+                                            contents[content.contentReferenceType] = [];
+                                        }
+                                        contents[content.contentReferenceType].push(content);
+                                    }
+                                }
+                            }
+                        }
+                        // Get Videos by ContentIds
+                        const getVideoRequest = RequestFactory.createGetRequest();
+
+                        // Array of contentId's from die video List
+                        const videoIds: string[] =
+                            contents[CONTENTREFERENCETYPE.VIDEO] !== undefined
+                                ? contents[CONTENTREFERENCETYPE.VIDEO].map((content) => {
+                                      if (content.contentId !== undefined) {
+                                          return content.contentId;
+                                      }
+                                      return "";
+                                  })
+                                : [];
+
+                        // Array of contentId's from die quiz List
+                        const quizIds: string[] =
+                            contents[CONTENTREFERENCETYPE.QUIZ] !== undefined
+                                ? contents[CONTENTREFERENCETYPE.QUIZ].map((content) => {
+                                      if (content.contentId !== undefined) {
+                                          return content.contentId;
+                                      }
+                                      return "";
+                                  })
+                                : [];
+
+                        // Ask the MediaService for the video metadata
+                        const videoPromise = new Promise((resolve, reject) => {
+                            if (videoIds !== undefined) {
+                                endpointsVideos.findAllWithIds(getVideoRequest, videoIds).then((videos) => {
+                                    videos.forEach((video) => {
+                                        const contentVideo = contents[CONTENTREFERENCETYPE.VIDEO].filter(
+                                            (item) => item.contentId === video.id
+                                        );
+                                        if (contentVideo !== undefined) {
+                                            for (const currContent of contentVideo) {
+                                                currContent.video = video;
+                                            }
+                                        }
+                                    });
+                                    resolve(true);
+                                });
+                            } else {
+                                reject();
+                            }
+                        });
+
+                        //TODO: to be implemented
+                        const quizPromise = new Promise((resolve, reject) => {
+                            resolve(true);
+                        });
+
+                        Promise.all([videoPromise, quizPromise]).then((values) => {
+                            setCourse(receivedCourse);
+                            if (receivedCourse.chapters !== undefined) {
+                                setChapters(receivedCourse.chapters);
+                            }
+                        });
                     }
                 });
         }
@@ -117,15 +189,15 @@ export const ScreenCourseTimeline: React.FC = () => {
 
             <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
                 {edit === false ? (
-                    myCourse.timePeriods !== undefined &&
-                    myCourse.timePeriods?.length > 0 && (
+                    course.timePeriods !== undefined &&
+                    course.timePeriods?.length > 0 && (
                         <View style={{ width: "80%" }}>
-                            {myCourse.timePeriods?.map((timePeriod) => (
+                            {course.timePeriods?.map((timePeriod) => (
                                 <TimelineComponent
                                     key={timePeriod.id}
                                     edit={edit}
                                     timePeriod={timePeriod}
-                                    course={myCourse}></TimelineComponent>
+                                    course={course}></TimelineComponent>
                             ))}
                         </View>
                     )
@@ -138,7 +210,7 @@ export const ScreenCourseTimeline: React.FC = () => {
                                 key={chapter.id}
                                 editMode={edit}
                                 chapter={chapter}
-                                course={myCourse}></ChapterComponent>
+                                course={course}></ChapterComponent>
                             {edit && (
                                 <View style={styles.chapterArrows}>
                                     {idx !== 0 && (
@@ -204,15 +276,15 @@ export const ScreenCourseTimeline: React.FC = () => {
                         ))
                                         )*/}
 
-                {/*myCourse.timePeriods?.length === 0 ? (
+                {/*course.timePeriods?.length === 0 ? (
                     <View>{!edit && <Text style={styles.textStyle}>{i18n.t("itrex.noChapters")}</Text>}</View>
                 ) : (
-                    myCourse.timePeriods?.map((timePeriod) => (
+                    course.timePeriods?.map((timePeriod) => (
                         <TimelineComponent
                             key={timePeriod.id}
                             edit={edit}
                             timePeriod={timePeriod}
-                            course={myCourse}></TimelineComponent>
+                            course={course}></TimelineComponent>
                     ))
                     )*/}
                 {edit && (
@@ -249,7 +321,7 @@ export const ScreenCourseTimeline: React.FC = () => {
         });
 
         const tmpCourse: ICourse = {
-            id: myCourse.id,
+            id: course.id,
             chapters: tmpChapterList,
         };
         const patchRequest: RequestInit = RequestFactory.createPatchRequest(tmpCourse);
