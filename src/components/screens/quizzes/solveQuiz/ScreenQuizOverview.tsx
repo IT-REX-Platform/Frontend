@@ -1,5 +1,5 @@
 import React from "react";
-import { ImageBackground, Text } from "react-native";
+import { ImageBackground, Text, StyleSheet, View } from "react-native";
 import { TextButton } from "../../../uiElements/TextButton";
 import { useNavigation, useRoute } from "@react-navigation/core";
 import { RouteProp } from "@react-navigation/native";
@@ -20,17 +20,34 @@ export const ScreenQuizOverview: React.FC = () => {
             <ImageBackground
                 source={require("../../../../constants/images/Background1-1.png")}
                 style={quizStyles.image}>
-                <Text>{quiz.name}</Text>
-                <Text>This quiz consists out of {quiz.questions.length} questions</Text>
+                <View style={styles.container}>
+                    <Text style={styles.quizTitle}>{quiz.name}</Text>
+                    <Text style={styles.quizContent}>This quiz consists out of {quiz.questions.length} questions</Text>
 
-                <TextButton
-                    title={"Start Quiz"}
-                    onPress={() => {
-                        navigation.navigate("QUIZ_SOLVE", {
-                            quiz,
-                        });
-                    }}></TextButton>
+                    <TextButton
+                        title={"Start Quiz"}
+                        onPress={() => {
+                            navigation.navigate("QUIZ_SOLVE", {
+                                quiz,
+                            });
+                        }}></TextButton>
+                </View>
             </ImageBackground>
         </>
     );
 };
+
+const styles = StyleSheet.create({
+    container: {
+        margin: 16,
+    },
+    quizTitle: {
+        fontSize: 24,
+        color: "white",
+        marginBottom: 24,
+    },
+    quizContent: {
+        fontSize: 16,
+        color: "white",
+    },
+});
