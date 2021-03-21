@@ -147,6 +147,7 @@ export const de = {
         percentageOf: "% von 100% erreicht.",
         outOf: "von",
         solvedCorrectly: "Fragen wurden korrekt beantwortet.",
+        returnToTimeline: "Zurück zum Zeitplan",
 
         questions: "Fragen: ",
         deleteQuizSuccess: "Das Quiz wurde erfolgreich gelöscht.",

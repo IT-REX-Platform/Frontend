@@ -105,7 +105,6 @@ export const quizStyles = StyleSheet.create({
         fontSize: 20,
         fontWeight: "bold",
         color: "white",
-        flexGrow: 1,
     },
     filterContainer: {
         flexGrow: 4,

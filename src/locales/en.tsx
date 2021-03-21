@@ -148,6 +148,7 @@ export const en = {
 
         outOf: "out of",
         solvedCorrectly: "questions were answered correctly.",
+        returnToTimeline: "Return to Timeline",
 
         questions: "Questions: ",
         deleteQuizSuccess: "The quiz was deleted successfully.",

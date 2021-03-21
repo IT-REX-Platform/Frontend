@@ -24,9 +24,8 @@ import { EndpointsCourse } from "../../../api/endpoints/EndpointsCourse";
 import { RequestFactory } from "../../../api/requests/RequestFactory";
 import { CourseRoles } from "../../../constants/CourseRoles";
 import { IUser } from "../../../types/IUser";
-import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 import { IChapter } from "../../../types/IChapter";
-import { TextButton } from "../../uiElements/TextButton";
 
 export type ScreenCourseTimelineNavigationProp = CompositeNavigationProp<
     MaterialTopTabNavigationProp<CourseTabParamList, "TIMELINE">,

@@ -38,28 +38,30 @@ export const ScreenQuizSolve: React.FC = () => {
                 style={quizStyles.image}>
                 <Text style={quizStyles.quizTitle}>{quiz.name}</Text>
                 <ScrollView>
-                    {quiz.questions.map((question) => {
-                        switch (question.type) {
-                            case QuestionTypes.SINGLE_CHOICE:
-                                return (
-                                    <SolveSingleChoiceCard
-                                        question={question}
-                                        onSolutionClicked={solutionClickCallback}></SolveSingleChoiceCard>
-                                );
-                            case QuestionTypes.MULTIPLE_CHOICE:
-                                return (
-                                    <SolveMultipleChoiceCard
-                                        question={question}
-                                        onSolutionClicked={solutionClickCallback}></SolveMultipleChoiceCard>
-                                );
-                            case QuestionTypes.NUMERIC:
-                                return (
-                                    <SolveNumericCard
-                                        question={question}
-                                        onSolutionClicked={solutionClickCallback}></SolveNumericCard>
-                                );
-                        }
-                    })}
+                    <View>
+                        {quiz.questions.map((question) => {
+                            switch (question.type) {
+                                case QuestionTypes.SINGLE_CHOICE:
+                                    return (
+                                        <SolveSingleChoiceCard
+                                            question={question}
+                                            onSolutionClicked={solutionClickCallback}></SolveSingleChoiceCard>
+                                    );
+                                case QuestionTypes.MULTIPLE_CHOICE:
+                                    return (
+                                        <SolveMultipleChoiceCard
+                                            question={question}
+                                            onSolutionClicked={solutionClickCallback}></SolveMultipleChoiceCard>
+                                    );
+                                case QuestionTypes.NUMERIC:
+                                    return (
+                                        <SolveNumericCard
+                                            question={question}
+                                            onSolutionClicked={solutionClickCallback}></SolveNumericCard>
+                                    );
+                            }
+                        })}
+                    </View>
                     <View style={quizStyles.buttonQuizzes}>
                         <TextButton
                             title={i18n.t("itrex.finishQuiz")}

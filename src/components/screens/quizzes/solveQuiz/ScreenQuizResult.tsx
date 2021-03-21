@@ -47,10 +47,12 @@ export const ScreenQuizResult: React.FC = () => {
                 })}
                 <View style={quizStyles.buttonQuizzes}>
                     <TextButton
-                        title={"Return to chapter"}
+                        title={i18n.t("itrex.returnToTimeline")}
                         onPress={() => {
                             clearQuizEntries(quiz);
-                            navigation.navigate("INFO", { screen: "OVERVIEW" });
+
+                            // Navigate back to Timeline
+                            navigation.navigate("INFO", { screen: "TIMELINE" });
                         }}></TextButton>
                 </View>
             </ScrollView>
