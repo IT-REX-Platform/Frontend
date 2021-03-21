@@ -122,12 +122,15 @@ export const ScreenCourseTimeline: React.FC = () => {
                         const getVideoRequest = RequestFactory.createGetRequest();
 
                         // Array of contentId's from die video List
-                        const videoIds: string[] = contents[CONTENTREFERENCETYPE.VIDEO].map((content) => {
-                            if (content.contentId !== undefined) {
-                                return content.contentId;
-                            }
-                            return "";
-                        });
+                        const videoIds: string[] =
+                            contents[CONTENTREFERENCETYPE.VIDEO] !== undefined
+                                ? contents[CONTENTREFERENCETYPE.VIDEO].map((content) => {
+                                      if (content.contentId !== undefined) {
+                                          return content.contentId;
+                                      }
+                                      return "";
+                                  })
+                                : [];
 
                         // Array of contentId's from die quiz List
                         const quizIds: string[] =
