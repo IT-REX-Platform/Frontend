@@ -171,7 +171,7 @@ export const ScreenChapterStudent: React.FC = () => {
     const myPlaylistItem = ({ item }: { item: IContent }) => {
         let brd: string = " ";
         let bck: string = " ";
-        let progress: number = 1;
+        let progress: number = 0;
 
         console.log("RenderItemID");
         console.log(item.id);
@@ -190,7 +190,7 @@ export const ScreenChapterStudent: React.FC = () => {
                     item.id !== undefined
             );
             const contentProgress: IContentProgressTracker = courseProgress.contentProgressTrackers[item.id];
-            const progressRequest: RequestInit = RequestFactory.createGetRequest();
+            //const progressRequest: RequestInit = RequestFactory.createGetRequest();
 
             if (contentProgress == undefined) {
                 console.log("If contentProgress undefined:");
@@ -200,15 +200,15 @@ export const ScreenChapterStudent: React.FC = () => {
 
                 brd = dark.Opacity.blueGreen;
             } else if (contentProgress.state == ContentProgressTrackerState.STARTED) {
-                if (contentProgress.id === undefined) {
-                    return " ";
-                }
-                endpointsProgress
-                    .getContentProgress(progressRequest, contentProgress.id, undefined, "getContentProgressError")
-                    .then((receivedProgress) => {
-                        console.log("New Progress");
-                        console.log(receivedProgress);
-                    });
+                //if (contentProgress.id === undefined) {
+                //   return " ";
+                //}
+                //endpointsProgress
+                //   .getContentProgress(progressRequest, contentProgress.id, undefined, "getContentProgressError")
+                //   .then((receivedProgress) => {
+                //        console.log("New Progress");
+                //        console.log(receivedProgress);
+                //    });
 
                 console.log("Else If contentProgress Started:");
                 console.log(contentProgress.state == ContentProgressTrackerState.STARTED);
@@ -220,15 +220,15 @@ export const ScreenChapterStudent: React.FC = () => {
                 brd = dark.Opacity.lightGreen;
                 bck = "rgba(181,239,138, 0.5)";
             } else if (contentProgress.state == ContentProgressTrackerState.COMPLETED) {
-                if (contentProgress.id === undefined) {
-                    return " ";
-                }
-                endpointsProgress
-                    .getContentProgress(progressRequest, contentProgress.id, undefined, "getContentProgressError")
-                    .then((receivedProgress) => {
-                        console.log("New Progress");
-                        console.log(receivedProgress);
-                    });
+                //if (contentProgress.id === undefined) {
+                //    return " ";
+                //}
+                //endpointsProgress
+                //  .getContentProgress(progressRequest, contentProgress.id, undefined, "getContentProgressError")
+                //  .then((receivedProgress) => {
+                //      console.log("New Progress");
+                //      console.log(receivedProgress);
+                //  });
 
                 console.log("Else If contentProgress Completed:");
                 console.log(contentProgress.state == ContentProgressTrackerState.COMPLETED);
@@ -265,7 +265,7 @@ export const ScreenChapterStudent: React.FC = () => {
                 <LinearGradient
                     // Background Linear Gradient
                     colors={[bck, "transparent"]}
-                    locations={[progress, progress]}
+                    locations={[progress]}
                     style={progressStyle}
                     end={{ x: 1.0, y: 0 }}
                 />
@@ -273,7 +273,7 @@ export const ScreenChapterStudent: React.FC = () => {
                 <TouchableOpacity
                     onPress={() => {
                         changeCurrentVideo(item);
-                        changeVideoProgress(item);
+                        item;
                     }}>
                     {getContentIcon(item)}
                     <ListItem.Content>
