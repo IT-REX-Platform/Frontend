@@ -111,7 +111,7 @@ export const ScreenCourseTimeline: React.FC = () => {
                                 chapter={chapter}
                                 course={course}></ChapterComponent>
                             {edit && (
-                                <View>
+                                <View style={styles.chapterArrows}>
                                     {idx !== 0 && (
                                         <TouchableOpacity onPress={() => reorderChapters(idx - 1, idx)}>
                                             <MaterialIcons
@@ -243,6 +243,9 @@ const styles = StyleSheet.create({
         alignItems: "center",
         marginTop: 5,
     },
+    chapterArrows: {
+        flex: 1,
+    },
     editMode: {
         alignSelf: "flex-end",
         flexDirection: "row",
@@ -258,7 +261,6 @@ const styles = StyleSheet.create({
     addChapterContainer: {
         backgroundColor: "rgba(0,0,0,0.3)",
         height: "100px",
-        marginRight: 30,
         width: "80%",
         marginTop: "1%",
         padding: "0.5%",

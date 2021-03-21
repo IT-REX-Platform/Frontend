@@ -55,6 +55,24 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
             </View>
             <View style={styles.chapterBottomRow}>
                 <Text style={styles.chapterMaterialHeader}>{i18n.t("itrex.chapterMaterial")}</Text>
+                {props.editMode && AuthenticationService.getInstance().isLecturer() && (
+                    <View style={styles.chapterEditRow}>
+                        {/**<TouchableOpacity
+                            onPress={() => {
+                                courseService.deleteChapter(chapter?.id);
+                            }}>
+                            <MaterialCommunityIcons name="trash-can" size={28} color="white" style={styles.icon} />
+                        </TouchableOpacity> */}
+                        <TouchableOpacity
+                            onPress={() => {
+                                navigation.navigate("CHAPTER", {
+                                    chapterId: chapter?.id,
+                                });
+                            }}>
+                            <MaterialIcons name="edit" size={28} color="white" style={styles.icon} />
+                        </TouchableOpacity>
+                    </View>
+                )}
                 <View style={styles.chapterMaterialElements}>
                     {timePeriods !== undefined &&
                         chapter?.contentReferences?.map((contentReference) => {
@@ -105,24 +123,6 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                         })}
                 </View>
             </View>
-            {props.editMode && AuthenticationService.getInstance().isLecturer() && (
-                <View style={styles.chapterEditRow}>
-                    {/**<TouchableOpacity
-                        onPress={() => {
-                            courseService.deleteChapter(chapter?.id);
-                        }}>
-                        <MaterialCommunityIcons name="trash-can" size={28} color="white" style={styles.icon} />
-                    </TouchableOpacity> */}
-                    <TouchableOpacity
-                        onPress={() => {
-                            navigation.navigate("CHAPTER", {
-                                chapterId: chapter?.id,
-                            });
-                        }}>
-                        <MaterialIcons name="edit" size={28} color="white" style={styles.icon} />
-                    </TouchableOpacity>
-                </View>
-            )}
         </View>
     );
 
@@ -167,9 +167,8 @@ const styles = StyleSheet.create({
         paddingTop: "1%",
     },
     chapterEditRow: {
-        width: "100%",
-        flex: 2,
-        flexDirection: "row-reverse",
+        position: "absolute",
+        right: 0,
     },
     chapterHeader: {
         alignSelf: "flex-start",
@@ -207,6 +206,7 @@ const styles = StyleSheet.create({
     chapterMaterialElementText: {
         color: "white",
         fontWeight: "bold",
+        margin: 5,
     },
     icon: {
         paddingLeft: 10,
