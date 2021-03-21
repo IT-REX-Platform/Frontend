@@ -66,7 +66,7 @@ export const ResultNumericCard: React.FC<QuestionCardProps> = (props) => {
     }
 };
 
-function isResultCorrect(question: IQuestionNumeric): boolean {
+export function isResultCorrect(question: IQuestionNumeric): boolean {
     const correctSolution = question.solution.result;
     const acceptableEpsilon = question.solution.epsilon;
     const userInput = question.userInput;

@@ -9,9 +9,9 @@ import { QuestionTypes } from "../../../../constants/QuestionTypes";
 import { ResultSingleChoiceCard } from "../../../cards/ResultSingleChoiceCard";
 import { quizStyles } from "../quizStyles";
 import { ResultMultipleChoiceCard } from "../../../cards/ResultMultipleChoiceCard";
-import { ResultNumericCard } from "../../../cards/ResultNumericCard";
 import i18n from "../../../../locales";
 import { LocalizationContext } from "../../../Context";
+import { isResultCorrect, ResultNumericCard } from "../../../cards/ResultNumericCard";
 
 type ScreenQuizResultProps = RouteProp<CourseStackParamList, "QUIZ_RESULT">;
 
@@ -62,9 +62,18 @@ export const ScreenQuizResult: React.FC = () => {
 function correctlySolved(quiz: IQuiz): number {
     let amountCorrectlySolved = 0;
 
+    // eslint-disable-next-line complexity
     quiz.questions.map((question) => {
-        if (JSON.stringify(question.solution) === JSON.stringify(question.userInput)) {
-            amountCorrectlySolved += 1;
+        switch (question.type) {
+            case QuestionTypes.SINGLE_CHOICE || QuestionTypes.MULTIPLE_CHOICE:
+                if (JSON.stringify(question.solution) === JSON.stringify(question.userInput)) {
+                    amountCorrectlySolved += 1;
+                }
+                break;
+            case QuestionTypes.NUMERIC:
+                if (isResultCorrect(question)) {
+                    amountCorrectlySolved += 1;
+                }
         }
     });
 
