@@ -84,8 +84,7 @@ export const ScreenAddChapter: React.FC = () => {
         return {
             value: timePeriod.id,
             label:
-                "Week " +
-                (idx + 1) +
+                timePeriod.name +
                 " (" +
                 dateConverter(timePeriod.startDate) +
                 " - " +

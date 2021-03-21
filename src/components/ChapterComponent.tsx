@@ -33,9 +33,7 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
         return {
             value: timePeriod.id,
             label:
-                i18n.t("itrex.week") +
-                " " +
-                (idx + 1) +
+                timePeriod.name +
                 " (" +
                 dateConverter(timePeriod.startDate) +
                 " - " +
@@ -127,8 +125,46 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
         </View>
     );
 
-    function getWeeks(): string {
-        return "hello";
+    /**
+     * Returns the lowest and the highest week of the contentReferences
+     * @returns Week String
+     */
+    function getWeeks(): string | undefined {
+        if (chapter?.contentReferences !== undefined) {
+            // Sort ContentReferences
+            const tmpContentReferences = [...chapter.contentReferences];
+
+            tmpContentReferences.sort((contentA, contentB) => {
+                const timePeriodA = course.timePeriods?.find((timePeriod) => timePeriod.id === contentA.timePeriodId);
+                const timePeriodB = course.timePeriods?.find((timePeriod) => timePeriod.id === contentB.timePeriodId);
+
+                if (timePeriodA?.startDate !== undefined && timePeriodB?.startDate !== undefined) {
+                    if (timePeriodA?.startDate < timePeriodB?.startDate) {
+                        return -1;
+                    }
+                    if (timePeriodA?.startDate > timePeriodB?.startDate) {
+                        return 1;
+                    }
+                    return 0;
+                }
+                return 0;
+            });
+
+            const lowestTimePeriod = course.timePeriods?.find(
+                (timePeriod) => timePeriod.id == tmpContentReferences[0].timePeriodId
+            );
+
+            const highestTimePeriod = course.timePeriods?.find(
+                (timePeriod) => timePeriod.id == tmpContentReferences[tmpContentReferences.length - 1].timePeriodId
+            );
+
+            if (lowestTimePeriod == highestTimePeriod) {
+                return lowestTimePeriod?.name;
+            }
+
+            return lowestTimePeriod?.name + " - " + highestTimePeriod?.name;
+        }
+        return "";
     }
 
     function getPublishedSate(isPublished: string | undefined) {
