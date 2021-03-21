@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 /* eslint-disable complexity */
 import React, { useEffect, useState } from "react";
-import { Text, ImageBackground, StyleSheet, View, TouchableOpacity, Switch } from "react-native";
+import { Text, ImageBackground, StyleSheet, View, TouchableOpacity, Switch, unstable_enableLogBox } from "react-native";
 import { CompositeNavigationProp, useIsFocused, useNavigation } from "@react-navigation/native";
 import { dark } from "../../../constants/themes/dark";
 import {
@@ -241,6 +241,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "center",
         alignItems: "center",
+        minHeight: "unset",
         marginTop: 5,
     },
     chapterArrows: {
