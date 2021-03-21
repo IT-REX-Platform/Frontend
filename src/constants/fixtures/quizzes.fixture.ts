@@ -11,7 +11,7 @@ const choicesSingleChoice: IChoices = {
     "2": "42",
     "3": "4",
 };
-const questionSingleChoice: IQuestionSingleChoice = {
+export const questionSingleChoice: IQuestionSingleChoice = {
     courseId: "",
     id: "uuid_1",
     type: QuestionTypes.SINGLE_CHOICE,
@@ -27,13 +27,13 @@ const choicesMultipleChoice: IChoices = {
     "2": "Mai",
     "3": "August",
 };
-const solutionMultipleChoice: ISolutionMultipleChoice = {
+export const solutionMultipleChoice: ISolutionMultipleChoice = {
     "0": true,
     "1": true,
     "2": false,
     "3": false,
 };
-const questionMultipleChoice: IQuestionMultipleChoice = {
+export const questionMultipleChoice: IQuestionMultipleChoice = {
     courseId: "",
     id: "uuid_2",
     type: QuestionTypes.MULTIPLE_CHOICE,
@@ -75,7 +75,7 @@ const solutionNumeric: ISolutionNumeric = {
     result: 3.1412,
     epsilon: 0.1,
 };
-const questionNumeric: IQuestionNumeric = {
+export const questionNumeric: IQuestionNumeric = {
     courseId: "",
     id: "uuid_3",
     type: QuestionTypes.NUMERIC,
