@@ -73,8 +73,6 @@ export const cardStyles = StyleSheet.create({
         margin: 8,
         minHeight: 40,
         width: "40%",
-        borderColor: dark.Opacity.invisible,
-        borderWidth: 5,
         flexDirection: "row",
         justifyContent: "center",
         color: "white",
