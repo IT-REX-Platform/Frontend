@@ -65,7 +65,12 @@ function correctlySolved(quiz: IQuiz): number {
     // eslint-disable-next-line complexity
     quiz.questions.map((question) => {
         switch (question.type) {
-            case QuestionTypes.SINGLE_CHOICE || QuestionTypes.MULTIPLE_CHOICE:
+            case QuestionTypes.SINGLE_CHOICE:
+                if (question.solution === question.userInput) {
+                    amountCorrectlySolved += 1;
+                }
+                break;
+            case QuestionTypes.MULTIPLE_CHOICE:
                 if (JSON.stringify(question.solution) === JSON.stringify(question.userInput)) {
                     amountCorrectlySolved += 1;
                 }

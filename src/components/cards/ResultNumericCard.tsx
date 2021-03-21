@@ -6,7 +6,6 @@ import { DataTable } from "react-native-paper";
 import i18n from "../../locales";
 import { LocalizationContext } from "../Context";
 import { cardStyles } from "./cardStyles";
-import { color } from "react-native-reanimated";
 
 interface QuestionCardProps {
     question: IQuestionNumeric;
