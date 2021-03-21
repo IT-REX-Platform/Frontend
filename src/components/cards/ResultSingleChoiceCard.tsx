@@ -25,7 +25,6 @@ export const ResultSingleChoiceCard: React.FC<ResultSingleChoiceCardProps> = (pr
     );
 
     function renderAnswers() {
-        console.log(question.solution + " " + question.userInput);
         return (
             <>
                 {/* First Question */}

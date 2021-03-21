@@ -51,10 +51,7 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
             <TouchableOpacity
                 style={{ flexDirection: "row" }}
                 onPress={() => {
-                    console.log(contentReference);
-                    {
-                        contentReference !== undefined && navigateToQuiz(contentReference.contentId);
-                    }
+                    contentReference !== undefined && navigateToQuiz(contentReference.contentId);
                 }}>
                 <MaterialCommunityIcons name="file-question-outline" size={28} color="white" style={styles.icon} />
 
@@ -154,10 +151,9 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
             const request: RequestInit = RequestFactory.createGetRequest();
             const response = endpointsQuiz.getQuiz(request, contentId);
             response.then((quiz) => {
-                console.log(quiz),
-                    navigation.navigate("QUIZ_OVERVIEW", {
-                        quiz: quiz,
-                    });
+                navigation.navigate("QUIZ_OVERVIEW", {
+                    quiz: quiz,
+                });
             });
         }
     }

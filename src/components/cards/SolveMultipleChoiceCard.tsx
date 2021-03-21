@@ -52,7 +52,6 @@ export const SolveMultipleChoiceCard: React.FC<QuestionCardProps> = (props) => {
                 <TouchableOpacity
                     style={singleAnswerZero ? cardStyles.cardChoicesRight : cardStyles.cardChoicesSelect}
                     onPress={() => {
-                        console.log(!singleAnswerZero);
                         setSingleAnswerZero(!singleAnswerZero);
                     }}>
                     <Text style={cardStyles.textChoice}>{question.choices[0]}</Text>
