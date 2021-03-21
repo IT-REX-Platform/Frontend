@@ -20,6 +20,7 @@ export const cardStyles = StyleSheet.create({
         borderWidth: 5,
         flexDirection: "row",
         justifyContent: "center",
+        alignItems: "center",
         color: "white",
     },
     cardChoicesResultRight: {
@@ -39,6 +40,7 @@ export const cardStyles = StyleSheet.create({
         backgroundColor: dark.Opacity.pink,
         flexDirection: "row",
         justifyContent: "center",
+        alignItems: "center",
         color: "white",
     },
     cardChoicesResultSelected: {
@@ -47,6 +49,7 @@ export const cardStyles = StyleSheet.create({
         width: "40%",
         flexDirection: "row",
         justifyContent: "center",
+        alignItems: "center",
         color: "white",
         borderColor: "white",
         borderWidth: 2,
@@ -63,6 +66,7 @@ export const cardStyles = StyleSheet.create({
         borderWidth: 5,
         flexDirection: "row",
         justifyContent: "center",
+        alignItems: "center",
         color: "white",
     },
     cardChoicesNotSelect: {
@@ -84,6 +88,7 @@ export const cardStyles = StyleSheet.create({
         borderWidth: 5,
         flexDirection: "row",
         justifyContent: "center",
+        alignItems: "center",
         color: "white",
     },
     cardChoiceNumericWrong: {
