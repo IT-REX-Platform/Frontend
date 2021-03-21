@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 /* eslint-disable complexity */
 import React, { useEffect, useState } from "react";
-import { Text, ImageBackground, StyleSheet, View, TouchableOpacity, Switch } from "react-native";
+import { Text, ImageBackground, StyleSheet, View, TouchableOpacity, Switch, unstable_enableLogBox } from "react-native";
 import { CompositeNavigationProp, useIsFocused, useNavigation } from "@react-navigation/native";
 import { dark } from "../../../constants/themes/dark";
 import {
@@ -14,20 +14,20 @@ import { MaterialTopTabNavigationProp } from "@react-navigation/material-top-tab
 import { StackNavigationProp } from "@react-navigation/stack";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { ChapterComponent } from "../../ChapterComponent";
+import { TimelineComponent } from "../../TimelineComponent";
 import { ICourse } from "../../../types/ICourse";
 import AuthenticationService from "../../../services/AuthenticationService";
 import i18n from "../../../locales";
-import { CoursePublishState } from "../../../constants/CoursePublishState";
-import { TimePeriodPublishState } from "../../../types/ITimePeriod";
 import { ScrollView } from "react-native-gesture-handler";
 import { EndpointsCourse } from "../../../api/endpoints/EndpointsCourse";
 import { RequestFactory } from "../../../api/requests/RequestFactory";
 import { CourseRoles } from "../../../constants/CourseRoles";
 import { IUser } from "../../../types/IUser";
-import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 import { IChapter } from "../../../types/IChapter";
 import { CONTENTREFERENCETYPE, IContent } from "../../../types/IContent";
 import { EndpointsVideo } from "../../../api/endpoints/EndpointsVideo";
+import { dateConverter } from "../../../helperScripts/validateCourseDates";
 
 export type ScreenCourseTimelineNavigationProp = CompositeNavigationProp<
     MaterialTopTabNavigationProp<CourseTabParamList, "TIMELINE">,
@@ -72,7 +72,7 @@ export const ScreenCourseTimeline: React.FC = () => {
 
                                         // Search for chapter in timePeriod
                                         let foundChapter = timePeriod.chapters.find(
-                                            (tmpChapter) => tmpChapter === chapter.id
+                                            (tmpChapter) => tmpChapter.id === chapter.id
                                         );
 
                                         if (foundChapter === undefined) {
@@ -80,6 +80,7 @@ export const ScreenCourseTimeline: React.FC = () => {
                                                 courseId: chapter.courseId,
                                                 id: chapter.id,
                                                 name: chapter.name,
+                                                chapterNumber: chapter.chapterNumber,
                                             };
                                             foundChapter.contentReferences = [];
                                             timePeriod.chapters.push(foundChapter);
@@ -91,8 +92,21 @@ export const ScreenCourseTimeline: React.FC = () => {
                             }
                         }
 
+                        // Set TimePeriodNames
+                        receivedCourse.timePeriods?.forEach((timePeriod, idx) => {
+                            timePeriod.name = i18n.t("itrex.week") + " " + (idx + 1);
+                            timePeriod.fullName =
+                                timePeriod.name +
+                                " ( " +
+                                dateConverter(timePeriod?.startDate) +
+                                " - " +
+                                dateConverter(timePeriod?.endDate) +
+                                " )";
+                        });
+
                         const contents: { [key: string]: IContent[] } = {};
 
+                        // Map Contents to different dictionaries, later we can pass the contentIds to the correct service
                         for (const chapter of receivedCourse.chapters) {
                             if (chapter.contentReferences !== undefined) {
                                 for (const content of chapter.contentReferences) {
@@ -105,10 +119,10 @@ export const ScreenCourseTimeline: React.FC = () => {
                                 }
                             }
                         }
-                        console.log("bla");
-                        // Get Videos
+                        // Get Videos by ContentIds
                         const getVideoRequest = RequestFactory.createGetRequest();
 
+                        // Array of contentId's from die video List
                         const videoIds: string[] = contents[CONTENTREFERENCETYPE.VIDEO].map((content) => {
                             if (content.contentId !== undefined) {
                                 return content.contentId;
@@ -116,6 +130,7 @@ export const ScreenCourseTimeline: React.FC = () => {
                             return "";
                         });
 
+                        // Array of contentId's from die quiz List
                         const quizIds: string[] =
                             contents[CONTENTREFERENCETYPE.QUIZ] !== undefined
                                 ? contents[CONTENTREFERENCETYPE.QUIZ].map((content) => {
@@ -126,6 +141,7 @@ export const ScreenCourseTimeline: React.FC = () => {
                                   })
                                 : [];
 
+                        // Ask the MediaService for the video metadata
                         const videoPromise = new Promise((resolve, reject) => {
                             if (videoIds !== undefined) {
                                 endpointsVideos.findAllWithIds(getVideoRequest, videoIds).then((videos) => {
@@ -144,7 +160,12 @@ export const ScreenCourseTimeline: React.FC = () => {
                             }
                         });
 
-                        Promise.all([videoPromise]).then((values) => {
+                        //TODO: to be implemented
+                        const quizPromise = new Promise((resolve, reject) => {
+                            resolve(true);
+                        });
+
+                        Promise.all([videoPromise, quizPromise]).then((values) => {
                             setMyCourse(receivedCourse);
                             if (receivedCourse.chapters !== undefined) {
                                 setChapters(receivedCourse.chapters);
@@ -162,8 +183,21 @@ export const ScreenCourseTimeline: React.FC = () => {
             imageStyle={{ opacity: 0.5, position: "absolute", resizeMode: "contain" }}>
             {lecturerEditMode()}
 
-            <ScrollView contentContainerStyle={styles.scrollContainer}>
-                {chapters.length === 0 ? (
+            <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+                {edit === false ? (
+                    myCourse.timePeriods !== undefined &&
+                    myCourse.timePeriods?.length > 0 && (
+                        <View style={{ width: "80%" }}>
+                            {myCourse.timePeriods?.map((timePeriod) => (
+                                <TimelineComponent
+                                    key={timePeriod.id}
+                                    edit={edit}
+                                    timePeriod={timePeriod}
+                                    course={myCourse}></TimelineComponent>
+                            ))}
+                        </View>
+                    )
+                ) : chapters.length === 0 ? (
                     <View>{!edit && <Text style={styles.textStyle}>{i18n.t("itrex.noChapters")}</Text>}</View>
                 ) : (
                     chapters.map((chapter, idx) => (
@@ -172,9 +206,9 @@ export const ScreenCourseTimeline: React.FC = () => {
                                 key={chapter.id}
                                 editMode={edit}
                                 chapter={chapter}
-                                course={course}></ChapterComponent>
+                                course={myCourse}></ChapterComponent>
                             {edit && (
-                                <View>
+                                <View style={styles.chapterArrows}>
                                     {idx !== 0 && (
                                         <TouchableOpacity onPress={() => reorderChapters(idx - 1, idx)}>
                                             <MaterialIcons
@@ -200,6 +234,44 @@ export const ScreenCourseTimeline: React.FC = () => {
                         </View>
                     ))
                 )}
+                {/*chapters.length === 0 ? (
+                        <View>{!edit && <Text style={styles.textStyle}>{i18n.t("itrex.noChapters")}</Text>}</View>
+                    ) : (
+                        chapters.map((chapter, idx) => (
+                            <View style={styles.chapterContainer}>
+                                <ChapterComponent
+                                    key={chapter.id}
+                                    editMode={edit}
+                                    chapter={chapter}
+                                    course={course}></ChapterComponent>
+                                {edit && (
+                                    <View style={styles.chapterArrows}>
+                                        {idx !== 0 && (
+                                            <TouchableOpacity onPress={() => reorderChapters(idx - 1, idx)}>
+                                                <MaterialIcons
+                                                    name="keyboard-arrow-up"
+                                                    size={28}
+                                                    color="white"
+                                                    style={{}}
+                                                />
+                                            </TouchableOpacity>
+                                        )}
+                                        {idx !== chapters.length - 1 && (
+                                            <TouchableOpacity onPress={() => reorderChapters(idx + 1, idx)}>
+                                                <MaterialIcons
+                                                    name="keyboard-arrow-down"
+                                                    size={28}
+                                                    color="white"
+                                                    style={{}}
+                                                />
+                                            </TouchableOpacity>
+                                        )}
+                                    </View>
+                                )}
+                            </View>
+                        ))
+                                        )*/}
+
                 {/*myCourse.timePeriods?.length === 0 ? (
                     <View>{!edit && <Text style={styles.textStyle}>{i18n.t("itrex.noChapters")}</Text>}</View>
                 ) : (
@@ -286,98 +358,6 @@ export const ScreenCourseTimeline: React.FC = () => {
     }
 };
 
-const fakeData: ICourse = {
-    id: "ca8955ca-a849-497a-8583-2e3bcaf45ba1",
-    name: "Forschungsprojekt",
-    startDate: new Date("2021-02-23T00:00:00.000Z"),
-    endDate: new Date("2021-08-23T00:00:00.000Z"),
-    maxFoodSum: 1000,
-    courseDescription: "",
-    publishState: CoursePublishState.PUBLISHED,
-    chapters: ["31a763c9-f765-41be-b16d-51b2118be5be", "1b00bd0e-e43c-4cf2-be03-950e7ffa0c85"],
-    timePeriodObjects: [
-        {
-            id: "0001",
-            title: "Woche 1",
-            chapterObjects: [
-                {
-                    id: "31a763c9-f765-41be-b16d-51b2118be5be",
-                    title: "01: Einführung",
-                    courseId: "ca8955ca-a849-497a-8583-2e3bcaf45ba1",
-                    startDate: new Date("2021-03-08T00:00:00.000Z"),
-                    endDate: new Date("2021-03-14T00:00:00.000Z"),
-                    contents: [],
-                },
-                {
-                    id: "1b00bd0e-e43c-4cf2-be03-950e7ffa0c85",
-                    title: "02: Einführung Part 2",
-                    courseId: "ca8955ca-a849-497a-8583-2e3bcaf45ba1",
-                    startDate: new Date("2021-03-15T00:00:00.000Z"),
-                    endDate: new Date("2021-03-21T00:00:00.000Z"),
-                    contents: ["27c06535-4491-4312-b0ed-c22381fb04fb", "bb725bf5-514f-4eda-8f04-65e95ab03dab"],
-                },
-            ],
-            publishState: TimePeriodPublishState.PUBLISHED,
-        },
-        {
-            id: "0002",
-            title: "Woche 2",
-            chapterObjects: [
-                {
-                    id: "31a763c9-f765-41be-b16d-51b2118be5be",
-                    title: "03: Weiterführung von letzter Woche",
-                    courseId: "ca8955ca-a849-497a-8583-2e3bcaf45ba1",
-                    startDate: new Date("2021-03-08T00:00:00.000Z"),
-                    endDate: new Date("2021-03-14T00:00:00.000Z"),
-                    contents: [],
-                },
-                {
-                    id: "1b00bd0e-e43c-4cf2-be03-950e7ffa0c85",
-                    title: "04: Noch eine Ergänzung",
-                    courseId: "ca8955ca-a849-497a-8583-2e3bcaf45ba1",
-                    startDate: new Date("2021-03-15T00:00:00.000Z"),
-                    endDate: new Date("2021-03-21T00:00:00.000Z"),
-                    contents: ["27c06535-4491-4312-b0ed-c22381fb04fb", "bb725bf5-514f-4eda-8f04-65e95ab03dab"],
-                },
-            ],
-            publishState: TimePeriodPublishState.UNPUBLISHED,
-        },
-        {
-            id: "0003",
-            title: "Woche 3",
-            publishState: TimePeriodPublishState.NOTSTARTED,
-        },
-        {
-            id: "0004",
-            title: "Woche 4",
-            publishState: TimePeriodPublishState.NOTSTARTED,
-        },
-        {
-            id: "0005",
-            title: "Woche 5",
-            publishState: TimePeriodPublishState.NOTSTARTED,
-        },
-    ],
-    chapterObjects: [
-        {
-            id: "31a763c9-f765-41be-b16d-51b2118be5be",
-            title: "01: Einführung",
-            courseId: "ca8955ca-a849-497a-8583-2e3bcaf45ba1",
-            startDate: new Date("2021-03-08T00:00:00.000Z"),
-            endDate: new Date("2021-03-14T00:00:00.000Z"),
-            contents: [],
-        },
-        {
-            id: "1b00bd0e-e43c-4cf2-be03-950e7ffa0c85",
-            title: "02: Bla Bla Blaa",
-            courseId: "ca8955ca-a849-497a-8583-2e3bcaf45ba1",
-            startDate: new Date("2021-03-15T00:00:00.000Z"),
-            endDate: new Date("2021-03-21T00:00:00.000Z"),
-            contents: ["27c06535-4491-4312-b0ed-c22381fb04fb", "bb725bf5-514f-4eda-8f04-65e95ab03dab"],
-        },
-    ],
-};
-
 const styles = StyleSheet.create({
     imageContainer: {
         flex: 1,
@@ -391,11 +371,14 @@ const styles = StyleSheet.create({
     },
     chapterContainer: {
         width: "80%",
-        flex: 1,
         flexDirection: "row",
         justifyContent: "center",
         alignItems: "center",
-        marginTop: "10px",
+        minHeight: "unset",
+        marginTop: 5,
+    },
+    chapterArrows: {
+        flex: 1,
     },
     editMode: {
         alignSelf: "flex-end",

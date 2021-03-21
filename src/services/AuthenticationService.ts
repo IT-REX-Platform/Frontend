@@ -106,7 +106,10 @@ export default class AuthenticationService {
         if (this.refreshTimeout !== undefined) {
             clearTimeout(this.refreshTimeout);
         }
-        this.logout();
+        if (this.tokenResponse !== undefined) {
+            this.logout();
+        }
+
         new AsyncStorageService().deleteItem(StorageConstants.OAUTH_REFRESH_TOKEN);
         this.setTokenResponse({} as AuthSession.TokenResponseConfig);
     }
