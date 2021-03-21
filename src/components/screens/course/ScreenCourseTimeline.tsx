@@ -14,6 +14,7 @@ import { MaterialTopTabNavigationProp } from "@react-navigation/material-top-tab
 import { StackNavigationProp } from "@react-navigation/stack";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { ChapterComponent } from "../../ChapterComponent";
+import { TimelineComponent } from "../../TimelineComponent";
 import { ICourse } from "../../../types/ICourse";
 import AuthenticationService from "../../../services/AuthenticationService";
 import i18n from "../../../locales";
@@ -67,7 +68,7 @@ export const ScreenCourseTimeline: React.FC = () => {
 
                                         // Search for chapter in timePeriod
                                         let foundChapter = timePeriod.chapters.find(
-                                            (tmpChapter) => tmpChapter === chapter.id
+                                            (tmpChapter) => tmpChapter.id === chapter.id
                                         );
 
                                         if (foundChapter === undefined) {
@@ -75,6 +76,7 @@ export const ScreenCourseTimeline: React.FC = () => {
                                                 courseId: chapter.courseId,
                                                 id: chapter.id,
                                                 name: chapter.name,
+                                                chapterNumber: chapter.chapterNumber,
                                             };
                                             foundChapter.contentReferences = [];
                                             timePeriod.chapters.push(foundChapter);
@@ -106,7 +108,20 @@ export const ScreenCourseTimeline: React.FC = () => {
             {lecturerEditMode()}
 
             <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
-                {chapters.length === 0 ? (
+                {edit === false ? (
+                    myCourse.timePeriods !== undefined &&
+                    myCourse.timePeriods?.length > 0 && (
+                        <View style={{ width: "80%" }}>
+                            {myCourse.timePeriods?.map((timePeriod) => (
+                                <TimelineComponent
+                                    key={timePeriod.id}
+                                    edit={edit}
+                                    timePeriod={timePeriod}
+                                    course={myCourse}></TimelineComponent>
+                            ))}
+                        </View>
+                    )
+                ) : chapters.length === 0 ? (
                     <View>{!edit && <Text style={styles.textStyle}>{i18n.t("itrex.noChapters")}</Text>}</View>
                 ) : (
                     chapters.map((chapter, idx) => (
@@ -143,6 +158,43 @@ export const ScreenCourseTimeline: React.FC = () => {
                         </View>
                     ))
                 )}
+                {/*chapters.length === 0 ? (
+                        <View>{!edit && <Text style={styles.textStyle}>{i18n.t("itrex.noChapters")}</Text>}</View>
+                    ) : (
+                        chapters.map((chapter, idx) => (
+                            <View style={styles.chapterContainer}>
+                                <ChapterComponent
+                                    key={chapter.id}
+                                    editMode={edit}
+                                    chapter={chapter}
+                                    course={course}></ChapterComponent>
+                                {edit && (
+                                    <View style={styles.chapterArrows}>
+                                        {idx !== 0 && (
+                                            <TouchableOpacity onPress={() => reorderChapters(idx - 1, idx)}>
+                                                <MaterialIcons
+                                                    name="keyboard-arrow-up"
+                                                    size={28}
+                                                    color="white"
+                                                    style={{}}
+                                                />
+                                            </TouchableOpacity>
+                                        )}
+                                        {idx !== chapters.length - 1 && (
+                                            <TouchableOpacity onPress={() => reorderChapters(idx + 1, idx)}>
+                                                <MaterialIcons
+                                                    name="keyboard-arrow-down"
+                                                    size={28}
+                                                    color="white"
+                                                    style={{}}
+                                                />
+                                            </TouchableOpacity>
+                                        )}
+                                    </View>
+                                )}
+                            </View>
+                        ))
+                                        )*/}
 
                 {/*myCourse.timePeriods?.length === 0 ? (
                     <View>{!edit && <Text style={styles.textStyle}>{i18n.t("itrex.noChapters")}</Text>}</View>
@@ -243,7 +295,6 @@ const styles = StyleSheet.create({
     },
     chapterContainer: {
         width: "80%",
-        flex: 1,
         flexDirection: "row",
         justifyContent: "center",
         alignItems: "center",
