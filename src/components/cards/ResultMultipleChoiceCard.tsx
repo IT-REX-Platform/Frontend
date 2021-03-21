@@ -1,7 +1,6 @@
 /* eslint-disable complexity */
 import React from "react";
 import { View, Text } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { IQuestionMultipleChoice } from "../../types/IQuestion";
 import { cardStyles } from "./cardStyles";
 

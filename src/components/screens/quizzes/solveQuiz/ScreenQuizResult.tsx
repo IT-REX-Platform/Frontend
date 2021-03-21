@@ -41,8 +41,10 @@ export const ScreenQuizResult: React.FC = () => {
 
                 <TextButton
                     title={"Return to chapter"}
-                    // Navigate back to Chapter Overview Page
-                    onPress={() => navigation.navigate("INFO", { screen: "OVERVIEW" })}></TextButton>
+                    onPress={() => {
+                        clearQuizEntries(quiz);
+                        navigation.navigate("INFO", { screen: "OVERVIEW" });
+                    }}></TextButton>
             </ScrollView>
         </ImageBackground>
     );
@@ -58,4 +60,10 @@ function correctlySolved(quiz: IQuiz): number {
     });
 
     return amountCorrectlySolved;
+}
+
+function clearQuizEntries(quiz: IQuiz): void {
+    quiz.questions.map((question) => {
+        question.userInput = undefined;
+    });
 }
