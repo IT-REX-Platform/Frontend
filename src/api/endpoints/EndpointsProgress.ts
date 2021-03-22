@@ -1,8 +1,8 @@
-import { sendRequest } from "./sendRequest";
+import { sendRequest } from "../requests/sendRequest";
 import { itRexVars } from "../../constants/Constants";
 import { ApiUrls } from "../../constants/ApiUrls";
 import { loggerFactory } from "../../../logger/LoggerConfig";
-import { ResponseParser } from "./ResponseParser";
+import { ResponseParser } from "../responses/ResponseParser";
 import { IEndpointsProgress } from "../endpoints_interfaces/IEndpointsProgress";
 import { IContentProgressTracker } from "../../types/IContentProgressTracker";
 import { ProgressUrlPart } from "../../constants/ProgressUrlPart";
