@@ -20,57 +20,25 @@ export const ResultSingleChoiceCard: React.FC<ResultSingleChoiceCardProps> = (pr
 
             <Text style={cardStyles.cardHeader}>{question.question}</Text>
             <View style={cardStyles.break} />
-            <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "center" }}>{renderAnswers()}</View>
+            <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "center" }}>
+                {Object.entries(question.choices).map((choice) => {
+                    const index: string = choice[0];
+                    return renderAnswer(question, index);
+                })}
+            </View>
         </View>
     );
 
-    function renderAnswers() {
-        return (
-            <>
-                {/* First Question */}
-                <View
-                    style={
-                        "0" === question.userInput
-                            ? cardStyles.cardChoicesResultSelected
-                            : cardStyles.cardChoicesNotSelect
-                    }>
-                    {renderAnswer(question, "0")}
-                </View>
-                {/* Second Question */}
-                <View
-                    style={
-                        "1" === question.userInput
-                            ? cardStyles.cardChoicesResultSelected
-                            : cardStyles.cardChoicesNotSelect
-                    }>
-                    {renderAnswer(question, "1")}
-                </View>
-
-                {/* Third Question */}
-                <View
-                    style={
-                        "2" === question.userInput
-                            ? cardStyles.cardChoicesResultSelected
-                            : cardStyles.cardChoicesNotSelect
-                    }>
-                    {renderAnswer(question, "2")}
-                </View>
-                {/* Fourth Question */}
-                <View
-                    style={
-                        "3" === question.userInput
-                            ? cardStyles.cardChoicesResultSelected
-                            : cardStyles.cardChoicesNotSelect
-                    }>
-                    {renderAnswer(question, "3")}
-                </View>
-            </>
-        );
-    }
-
     function renderAnswer(question: IQuestionSingleChoice, index: string) {
+        let selected = false;
+        if (question.userInput) {
+            // userInput = index of selected question
+            if (question.userInput === index) {
+                selected = true;
+            }
+        }
         return (
-            <>
+            <View style={selected ? cardStyles.cardChoicesResultSelected : cardStyles.cardChoicesNotSelect}>
                 <View
                     style={
                         question.solution === index
@@ -79,7 +47,7 @@ export const ResultSingleChoiceCard: React.FC<ResultSingleChoiceCardProps> = (pr
                     }>
                     <Text style={cardStyles.textChoice}>{question.choices[Number(index)]}</Text>
                 </View>
-            </>
+            </View>
         );
     }
 };
