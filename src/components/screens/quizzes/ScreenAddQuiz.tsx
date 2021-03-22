@@ -214,7 +214,6 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = (props) => {
         if (quizWithQuestions?.id === undefined) {
             return;
         }
-
         const request: RequestInit = RequestFactory.createDeleteRequest();
         const quizId = quizWithQuestions.id;
         const response = endpointsQuiz.deleteQuiz(

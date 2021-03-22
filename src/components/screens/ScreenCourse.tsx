@@ -20,11 +20,11 @@ import { ScreenAddChapter } from "./course/ScreenAddChapter";
 import { ScreenAddQuiz } from "./quizzes/ScreenAddQuiz";
 import { CourseRoles } from "../../constants/CourseRoles";
 import { IUser } from "../../types/IUser";
-import { EndpointsProgress } from "../../api/endpoints/EndpointsProgress";
-import { ICourseProgressTracker } from "../../types/ICourseProgressTracker";
 import { ScreenChapterStudent } from "./ScreenChapterStudent";
 import { ScreenAddQuestion } from "./quizzes/questions/ScreenAddQuestion";
 import { QuizPoolComponent } from "../ContentPoolComponents/QuizPoolComponent";
+import { ICourseProgressTracker } from "../../types/ICourseProgressTracker";
+import ProgressService from "../../services/ProgressService";
 
 export type ScreenCourseNavigationProp = DrawerNavigationProp<RootDrawerParamList, "ROUTE_COURSE_DETAILS">;
 export type ScreenCourseRouteProp = RouteProp<RootDrawerParamList, "ROUTE_COURSE_DETAILS">;
@@ -47,7 +47,6 @@ export const ScreenCourse: React.FC = () => {
     const [courseProgress, setCourseProgress] = useState<ICourseProgressTracker>({});
 
     const endpointsCourse: EndpointsCourse = new EndpointsCourse();
-    const endpointsProgress: EndpointsProgress = new EndpointsProgress();
 
     useEffect(() => {
         AuthenticationService.getInstance().getUserInfo(setUserInfo);
@@ -56,14 +55,12 @@ export const ScreenCourse: React.FC = () => {
             .getCourse(request, courseId, undefined, i18n.t("itrex.getCourseError"))
             .then((receivedCourse) => setCourse(receivedCourse));
 
-        const progressRequest: RequestInit = RequestFactory.createGetRequest();
-        endpointsProgress
-            .getCourseProgress(progressRequest, courseId, undefined, i18n.t("itrex.getCourseProgressError"))
-            .then((receivedProgress) => {
-                console.log("Progress of course:");
-                console.log(receivedProgress);
-                setCourseProgress(receivedProgress);
-            });
+        // Update the progress.
+        ProgressService.getInstance().updateCourseProgressFor(courseId, (receivedProgress) => {
+            console.log("Progress of course:");
+            console.log(receivedProgress);
+            setCourseProgress(receivedProgress);
+        });
     }, [courseId]);
 
     return (

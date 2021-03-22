@@ -1,5 +1,5 @@
 /* eslint-disable complexity */
-import React from "react";
+import React, { useEffect, useState } from "react";
 import i18n from "../locales";
 import { LocalizationContext } from "./Context";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -10,10 +10,15 @@ import AuthenticationService from "../services/AuthenticationService";
 import { InfoPublished } from "./uiElements/InfoPublished";
 import { InfoUnpublished } from "./uiElements/InfoUnpublished";
 import { ICourse } from "../types/ICourse";
+import { IContent } from "../types/IContent";
+import { ICourseProgressTracker } from "../types/ICourseProgressTracker";
 import { useNavigation } from "@react-navigation/native";
 import { CoursePublishState } from "../constants/CoursePublishState";
 import { dateConverter } from "../helperScripts/validateCourseDates";
 import { CONTENTREFERENCETYPE } from "../types/IContent";
+import { ContentProgressInfo } from "./uiElements/ContentProgressInfo";
+import ProgressService from "../services/ProgressService";
+import { ContentProgressTrackerState } from "../constants/ContentProgressTrackerState";
 
 interface ChapterComponentProps {
     chapter?: IChapter;
@@ -44,8 +49,17 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
         };
     });
 
+    const [courseProgress, setCourseProgress] = useState<ICourseProgressTracker>({});
+    useEffect(() => {
+        updateCourseProgress();
+    }, []);
+
     return (
-        <View style={styles.chapterContainer}>
+        <TouchableOpacity
+            style={styles.chapterContainer}
+            onPress={() => {
+                navigation.navigate("CHAPTER_CONTENT", { chapterId: chapter?.id });
+            }}>
             <View style={styles.chapterTopRow}>
                 <Text style={styles.chapterHeader}>
                     {chapter?.chapterNumber}. {chapter?.name}
@@ -53,17 +67,15 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                 {/* TODO: add real publish/unpublished state to the chapterss*/}
                 <View style={styles.chapterStatus}>{getPublishedSate(CoursePublishState.PUBLISHED)}</View>
             </View>
-            <TouchableOpacity
-                style={styles.chapterBottomRow}
-                onPress={() => {
-                    navigation.navigate("CHAPTER_CONTENT", { chapterId: chapter?.id });
-                }}>
+            <View style={styles.chapterBottomRow}>
                 <Text style={styles.chapterMaterialHeader}>{i18n.t("itrex.chapterMaterial")}</Text>
                 <View style={styles.chapterMaterialElements}>
                     {timePeriods !== undefined &&
                         chapter?.contentReferences?.map((contentReference) => {
                             return (
-                                <View style={styles.chapterMaterialElement}>
+                                <TouchableOpacity
+                                    style={styles.chapterMaterialElement}
+                                    onPress={() => markProgress(contentReference)}>
                                     {contentReference.contentReferenceType == CONTENTREFERENCETYPE.VIDEO ? (
                                         <MaterialIcons name="attach-file" size={28} color="white" style={styles.icon} />
                                     ) : (
@@ -92,38 +104,24 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                                                 )?.label
                                             }
                                         </Text>
+                                        {getProgressInfo(contentReference)}
                                         {/*props.editMode ? (
-                                                <Select
+                                                <DropDown
                                                     options={timePeriods}
                                                     defaultValue={timePeriods.find(
                                                         (timePeriod) => timePeriod.value === contentReference.timePeriodId
                                                     )}
-                                                    theme={(theme) => ({
-                                                        ...theme,
-                                                        borderRadius: 5,
-                                                        colors: {
-                                                            ...theme.colors,
-                                                            primary25: dark.Opacity.darkBlue1,
-                                                            primary: dark.Opacity.pink,
-                                                            backgroundColor: dark.Opacity.darkBlue1,
-                                                        },
-                                                    })}
                                                     menuPortalTarget={document.body}
-                                                    menuPosition={"fixed"}
-                                                    styles={{
-                                                        container: () => ({
-                                                            width: 300,
-                                                        }),
-                                                    }}></Select>
+                                                    menuPosition={"fixed"}></DropDown>
                                             ) : (
 
                                             )*/}
                                     </View>
-                                </View>
+                                </TouchableOpacity>
                             );
                         })}
                 </View>
-            </TouchableOpacity>
+            </View>
             {props.editMode && AuthenticationService.getInstance().isLecturer() && (
                 <View style={styles.chapterEditRow}>
                     {/**<TouchableOpacity
@@ -142,8 +140,79 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                     </TouchableOpacity>
                 </View>
             )}
-        </View>
+        </TouchableOpacity>
     );
+
+    function updateCourseProgress() {
+        if (course.id === undefined) {
+            return;
+        }
+
+        ProgressService.getInstance().updateCourseProgressFor(course.id, (receivedProgress) => {
+            setCourseProgress(receivedProgress);
+        });
+    }
+
+    function markProgress(contentRef: IContent) {
+        // TODO: Adjust and/or reuse this for actual progress.
+        // For now it just touches the content once or completes it when touched.
+
+        if (course.id === undefined) {
+            return;
+        }
+
+        const progressService = ProgressService.getInstance();
+
+        progressService.getContentProgressInfo(course.id, contentRef, (status, progress) => {
+            // New progress if needed.
+            const newProgress = progress + 0.1;
+
+            switch (status) {
+                case ContentProgressTrackerState.STARTED:
+                    progressService.updateContentProgress(course.id, contentRef, newProgress, (createdProgress) => {
+                        console.log("Updated progress: ");
+                        console.log(createdProgress);
+
+                        if (newProgress >= 1) {
+                            progressService.completeContentProgress(course.id, contentRef, (completedProgress) => {
+                                console.log("Completed progress: ");
+                                console.log(completedProgress);
+
+                                updateCourseProgress();
+                            });
+                        } else {
+                            updateCourseProgress();
+                        }
+                    });
+                    break;
+
+                case undefined:
+                    progressService.createContentProgress(course.id, contentRef, (createdProgress) => {
+                        console.log("Created progress: ");
+                        console.log(createdProgress);
+
+                        updateCourseProgress();
+                    });
+                    break;
+
+                case ContentProgressTrackerState.COMPLETED:
+                default:
+                    // Do nothing.
+                    break;
+            }
+        });
+    }
+
+    function getProgressInfo(contentRef: IContent) {
+        if (courseProgress.contentProgressTrackers === undefined) {
+            return;
+        }
+        if (contentRef.id === undefined) {
+            return;
+        }
+
+        return <ContentProgressInfo contentTracker={courseProgress.contentProgressTrackers[contentRef.id]} />;
+    }
 
     function getPublishedSate(isPublished: string | undefined) {
         if (isPublished === CoursePublishState.UNPUBLISHED) {

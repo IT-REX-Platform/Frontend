@@ -2,9 +2,10 @@ import { RequestAuthorization } from "./RequestAuthorization";
 import { ICourse } from "../../types/ICourse";
 import { IVideo } from "../../types/IVideo";
 import { IChapter } from "../../types/IChapter";
-import { IContent } from "../../types/IContent";
 import { IQuiz } from "../../types/IQuiz";
 import { IQuestionMultipleChoice, IQuestionNumeric, IQuestionSingleChoice } from "../../types/IQuestion";
+import { IContent } from "../../types/IContent";
+
 /**
  * Class for backend request creation.
  */

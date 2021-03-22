@@ -1,4 +1,5 @@
 /* eslint-disable max-lines */
+/* eslint-disable complexity */
 import { ICourse } from "../../types/ICourse";
 import { IVideo } from "../../types/IVideo";
 import { IUser } from "../../types/IUser";
