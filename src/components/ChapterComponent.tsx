@@ -53,7 +53,11 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                 {/* TODO: add real publish/unpublished state to the chapterss*/}
                 <View style={styles.chapterStatus}>{getPublishedSate(CoursePublishState.PUBLISHED)}</View>
             </View>
-            <View style={styles.chapterBottomRow}>
+            <TouchableOpacity
+                style={styles.chapterBottomRow}
+                onPress={() => {
+                    navigation.navigate("CHAPTER_CONTENT", { chapterId: chapter?.id });
+                }}>
                 <Text style={styles.chapterMaterialHeader}>{i18n.t("itrex.chapterMaterial")}</Text>
                 <View style={styles.chapterMaterialElements}>
                     {timePeriods !== undefined &&
@@ -112,14 +116,14 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                                                         }),
                                                     }}></Select>
                                             ) : (
-                                                
+
                                             )*/}
                                     </View>
                                 </View>
                             );
                         })}
                 </View>
-            </View>
+            </TouchableOpacity>
             {props.editMode && AuthenticationService.getInstance().isLecturer() && (
                 <View style={styles.chapterEditRow}>
                     {/**<TouchableOpacity
