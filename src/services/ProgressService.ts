@@ -190,22 +190,26 @@ export default class ProgressService {
      * @param courseId the course id to update the content progress for.
      * @param contentRef the content reference for which to update the content progress for.
      * @param progress the progress to which to update the content progress.
-     * @param consumer the consumer to react to the changed content progress tracker.
+     * @param consumer the consumer to react to the changed content progress tracker, has info whether the update had to create the tracker first.
      */
     public updateContentProgress(
         courseId: string,
         contentRef: IContent,
         progress: number,
-        consumer: (contentProgress: IContentProgressTracker) => void
+        consumer: (contentProgress: IContentProgressTracker, hasCreated: boolean) => void
     ): void {
         this.getContentProgressFor(courseId, contentRef, (contentProgress) => {
             if (contentProgress === undefined) {
                 // No progress yet, create it first.
                 this.createContentProgress(courseId, contentRef, (createdProgress) => {
-                    this.updateContentProgressWithTracker(courseId, createdProgress, progress, consumer);
+                    this.updateContentProgressWithTracker(courseId, createdProgress, progress, (contentProgress) =>
+                        consumer(contentProgress, true)
+                    );
                 });
             } else {
-                this.updateContentProgressWithTracker(courseId, contentProgress, progress, consumer);
+                this.updateContentProgressWithTracker(courseId, contentProgress, progress, (contentProgress) =>
+                    consumer(contentProgress, false)
+                );
             }
         });
     }
