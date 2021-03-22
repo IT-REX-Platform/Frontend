@@ -165,8 +165,8 @@ export const ScreenHome: React.FC<ScreenHomeProps> = (props) => {
 
     return (
         <View style={styles.container}>
-            <Header title={i18n.t("itrex.home")} />
             <ImageBackground source={require("../../constants/images/Background2.png")} style={styles.image}>
+                <Header title={i18n.t("itrex.home")} />
                 {renderFilters()}
                 {courseList()}
             </ImageBackground>
