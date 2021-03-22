@@ -17,18 +17,25 @@ interface CourseCardProps {
     course: ICourse;
 }
 
+interface CourseProgressInfo {
+    total: number;
+    totalMax: number;
+}
+
 export const CourseCard: React.FC<CourseCardProps> = (props) => {
     const { course } = props;
     const navigation = useNavigation();
 
     const [courseProgress, setCourseProgress] = useState<ICourseProgressTracker>({});
+    const [courseProgressInfo, setCourseProgressInfo] = useState<CourseProgressInfo>({ total: 0, totalMax: 0 });
     useEffect(() => {
         if (course.id === undefined) {
             return;
         }
 
-        ProgressService.getInstance().updateCourseProgressFor(course.id, (receivedProgress) => {
+        ProgressService.getInstance().getCourseProgressInfo(course.id, (receivedProgress, numberProgress) => {
             setCourseProgress(receivedProgress);
+            setCourseProgressInfo(numberProgress);
         });
     }, [course.id]);
 
@@ -78,6 +85,20 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
         );
     }
 
+    function getProgressInfo() {
+        const progressPercent = Math.floor((courseProgressInfo.total / courseProgressInfo.totalMax) * 100);
+        if (isNaN(progressPercent)) {
+            return <></>;
+        }
+
+        return (
+            <Text style={styles.cardContent}>
+                <Text style={{ fontWeight: "bold", marginEnd: 10 }}>{i18n.t("itrex.courseProgressTitle")}</Text>
+                <Text>{progressPercent}%</Text>
+            </Text>
+        );
+    }
+
     function navigateToCourse(course: ICourse) {
         navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, {
             courseId: course.id,
@@ -94,6 +115,7 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
             {getDate(course.startDate, i18n.t("itrex.startDate"))}
             {getDate(course.endDate, i18n.t("itrex.endDate"))}
             {getNavToLastContent()}
+            {getProgressInfo()}
         </TouchableOpacity>
     );
 };

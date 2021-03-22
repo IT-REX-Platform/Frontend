@@ -79,6 +79,7 @@ export const en = {
         noEndDate: "No end date entered.",
         startDateInvalid: "Start date can't come after end date.",
 
+        courseProgressTitle: "Progress for this course",
         courseProgressLastAccessed: "To last accessed content",
         contentProgressUntouched: "No Progress",
         contentProgressStarted: "Started",
