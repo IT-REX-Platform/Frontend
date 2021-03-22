@@ -4,7 +4,7 @@ import { ICourse } from "../../types/ICourse";
 import { dark } from "../../constants/themes/dark";
 import { dateConverter } from "../../helperScripts/validateCourseDates";
 import { NavigationRoutes } from "../../constants/navigators/NavigationRoutes";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import i18n from "../../locales";
 import { CoursePublishState } from "../../constants/CoursePublishState";
 import { InfoUnpublished } from "../uiElements/InfoUnpublished";
@@ -28,16 +28,18 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
 
     const [courseProgress, setCourseProgress] = useState<ICourseProgressTracker>({});
     const [courseProgressInfo, setCourseProgressInfo] = useState<CourseProgressInfo>({ total: 0, totalMax: 0 });
-    useEffect(() => {
-        if (course.id === undefined) {
-            return;
-        }
+    useFocusEffect(
+        React.useCallback(() => {
+            if (course.id === undefined) {
+                return;
+            }
 
-        ProgressService.getInstance().getCourseProgressInfo(course.id, (receivedProgress, numberProgress) => {
-            setCourseProgress(receivedProgress);
-            setCourseProgressInfo(numberProgress);
-        });
-    }, [course.id]);
+            ProgressService.getInstance().getCourseProgressInfo(course.id, (receivedProgress, numberProgress) => {
+                setCourseProgress(receivedProgress);
+                setCourseProgressInfo(numberProgress);
+            });
+        }, [])
+    );
 
     function getPublishedSate(isPublished: CoursePublishState | undefined) {
         if (isPublished === CoursePublishState.UNPUBLISHED) {
@@ -77,7 +79,11 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
                     onPress={() => {
                         // TODO: Navigate to the content page.
                         navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, {
-                            courseId: course.id,
+                            screen: "CHAPTER_CONTENT",
+                            params: {
+                                courseId: course.id,
+                                chapterId: courseProgress.lastContentReference?.chapterId,
+                            },
                         });
                     }}
                 />
