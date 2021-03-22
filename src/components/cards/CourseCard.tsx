@@ -100,7 +100,9 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
         return (
             <Text style={styles.cardContent}>
                 <Text style={{ fontWeight: "bold", marginEnd: 10 }}>{i18n.t("itrex.courseProgressTitle")}</Text>
-                <Text>{progressPercent}%</Text>
+                <Text>
+                    {progressPercent}% ({courseProgressInfo.total} / {courseProgressInfo.totalMax})
+                </Text>
             </Text>
         );
     }
