@@ -80,6 +80,9 @@ export const de = {
         startDateInvalid: "Startdatum kann nicht dem Enddatum folgen.",
 
         courseProgressLastAccessed: "Zum zuletzt genutzten Inhalt",
+        contentProgressUntouched: "Kein Fortschritt",
+        contentProgressStarted: "Gestartet",
+        contentProgressCompleted: "Beendet",
 
         unpublished: "Unveröffentlicht",
         published: "Veröffentlicht",
@@ -87,7 +90,7 @@ export const de = {
         active: "Aktiv",
         inactive: "Inaktiv",
         noCoursesFilter: "Es wurden keine Kurse für diese Auswahl gefunden!",
-        filterPubUnpub: "Veröffentlichtung",
+        filterPubUnpub: "Veröffentlichung",
         filterActiveInActive: "Aktivität",
         filterLabel: "Filter:",
 
@@ -106,7 +109,8 @@ export const de = {
         save: "Speichern",
         nextChapter: "Nächstes Kapitel",
         lastChapter: "Letzes Kapitel",
-        saveAndReturn: "Speichern & zurückkehren",
+
+        saveAndReturn: "Speichern & Zurück",
 
         chapterCreatedSuccess: "Das Kapitel wurde erfolgreich angelegt.",
         chapterUpdateSuccess: "Das Kapitel wurde erfolgreich aktualisiert.",

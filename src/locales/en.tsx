@@ -80,6 +80,9 @@ export const en = {
         startDateInvalid: "Start date can't come after end date.",
 
         courseProgressLastAccessed: "To last accessed content",
+        contentProgressUntouched: "No Progress",
+        contentProgressStarted: "Started",
+        contentProgressCompleted: "Completed",
 
         unpublished: "Unpublished",
         published: "Published",
@@ -107,7 +110,7 @@ export const en = {
         nextChapter: "Next Chapter",
         lastChapter: "Last Chapter",
 
-        saveAndReturn: "Save & return",
+        saveAndReturn: "Save & Return",
 
         chapterCreatedSuccess: "The chapter was created successfully.",
         chapterUpdateSuccess: "The chapter was updated successfully.",
