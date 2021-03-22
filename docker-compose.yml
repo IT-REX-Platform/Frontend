@@ -1,0 +1,12 @@
+version: "2"
+services:
+    it-rex-frontend:
+        build: .
+        ports:
+            - "8085:80"
+        networks:
+            - it-rex
+
+networks:
+    it-rex:
+        external: true
