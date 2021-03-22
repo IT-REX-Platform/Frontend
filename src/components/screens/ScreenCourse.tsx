@@ -26,6 +26,7 @@ import { QuizPoolComponent } from "../contentPoolComponents/QuizPoolComponent";
 import { ScreenQuizOverview } from "./quizzes/solveQuiz/ScreenQuizOverview";
 import { ScreenQuizSolve } from "./quizzes/solveQuiz/ScreenQuizSolve";
 import { ScreenQuizResult } from "./quizzes/solveQuiz/ScreenQuizResult";
+import { Header } from "../../constants/navigators/Header";
 
 export type ScreenCourseNavigationProp = DrawerNavigationProp<RootDrawerParamList, "ROUTE_COURSE_DETAILS">;
 export type ScreenCourseRouteProp = RouteProp<RootDrawerParamList, "ROUTE_COURSE_DETAILS">;
@@ -46,7 +47,7 @@ export const ScreenCourse: React.FC = () => {
     if (route.params.courseId == undefined || route.params.courseId == "undefined") {
         return _renderEmptyCourse();
     }
-    const courseId = route.params.courseId;
+    const courseId: string | undefined = route.params.courseId;
 
     // Hooks.
     React.useContext(LocalizationContext);
@@ -129,11 +130,16 @@ export const ScreenCourse: React.FC = () => {
 
     function _renderEmptyCourse() {
         return (
-            <ImageBackground source={require("../../constants/images/Background2.png")} style={styles.imageContainer}>
-                <View style={styles.infoTextBox}>
-                    <Text style={styles.infoText}>{i18n.t("itrex.noCourseAccessed")}</Text>
-                </View>
-            </ImageBackground>
+            <>
+                <Header title="..." />
+                <ImageBackground
+                    source={require("../../constants/images/Background2.png")}
+                    style={styles.imageContainer}>
+                    <View style={styles.infoTextBox}>
+                        <Text style={styles.infoText}>{i18n.t("itrex.noCourseAccessed")}</Text>
+                    </View>
+                </ImageBackground>
+            </>
         );
     }
 

@@ -45,23 +45,24 @@ export const JoinCourseComponent: React.FC = () => {
     }, [isFocused]);
 
     return (
-        <ImageBackground source={require("../constants/images/Background2.png")} style={styles.imageContainer}>
+        <>
             <Header title={i18n.t("itrex.joinCourse")} />
+            <ImageBackground source={require("../constants/images/Background2.png")} style={styles.imageContainer}>
+                <View style={styles.container}>
+                    <View style={{ marginTop: 70 }} />
 
-            <View style={styles.container}>
-                <View style={{ marginTop: 70 }} />
+                    <Text style={styles.textStyle}>{i18n.t("itrex.enterCouseId")}</Text>
+                    <TextInput
+                        style={[styles.textInput, styles.separator]}
+                        value={courseId}
+                        onChangeText={(id: string) => setCourseId(id)}
+                        testID="courseIdInput"
+                    />
 
-                <Text style={styles.textStyle}>{i18n.t("itrex.enterCouseId")}</Text>
-                <TextInput
-                    style={[styles.textInput, styles.separator]}
-                    value={courseId}
-                    onChangeText={(id: string) => setCourseId(id)}
-                    testID="courseIdInput"
-                />
-
-                <TextButton title={i18n.t("itrex.joinCourse")} onPress={joinCourse}></TextButton>
-            </View>
-        </ImageBackground>
+                    <TextButton title={i18n.t("itrex.joinCourse")} onPress={joinCourse}></TextButton>
+                </View>
+            </ImageBackground>
+        </>
     );
 
     function getPublishedCourses(): void {

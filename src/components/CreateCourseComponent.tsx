@@ -58,51 +58,52 @@ export const CreateCourseComponent: React.FC = () => {
     };
 
     return (
-        <ImageBackground source={require("../constants/images/Background2.png")} style={styles.imageContainer}>
+        <>
             <Header title={i18n.t("itrex.toCourse")} />
+            <ImageBackground source={require("../constants/images/Background2.png")} style={styles.imageContainer}>
+                <View style={styles.container}>
+                    <View style={{ marginTop: 70 }} />
 
-            <View style={styles.container}>
-                <View style={{ marginTop: 70 }} />
-
-                <Text style={styles.textStyle}>{i18n.t("itrex.enterCourseName")}</Text>
-                <TextInput
-                    style={[styles.nameInput, styles.separator]}
-                    value={courseName}
-                    onChangeText={(text: string) => setCourseName(text)}
-                    testID="courseNameInput"
-                />
-
-                <Text style={styles.textStyle}>{i18n.t("itrex.enterCourseDescription")}</Text>
-                <TextInput
-                    style={[styles.descriptionInput, styles.separator]}
-                    value={courseDescription}
-                    onChangeText={(text: string) => setCourseDescription(text)}
-                    multiline={true}
-                    testID="courseDescriptionInput"
-                />
-
-                <View style={[styles.horizontalContainer, styles.separator]}>
-                    {/* <View style={styles.horizontalContainer}> */}
-                    <DatePickerComponent
-                        title={i18n.t("itrex.startDate")}
-                        date={startDate}
-                        onDateChanged={startDateChanged}
-                        maxDate={endDate}
+                    <Text style={styles.textStyle}>{i18n.t("itrex.enterCourseName")}</Text>
+                    <TextInput
+                        style={[styles.nameInput, styles.separator]}
+                        value={courseName}
+                        onChangeText={(text: string) => setCourseName(text)}
+                        testID="courseNameInput"
                     />
 
-                    <View style={{ margin: 20 }} />
-
-                    <DatePickerComponent
-                        title={i18n.t("itrex.endDate")}
-                        date={endDate}
-                        onDateChanged={endDateChanged}
-                        minDate={startDate}
+                    <Text style={styles.textStyle}>{i18n.t("itrex.enterCourseDescription")}</Text>
+                    <TextInput
+                        style={[styles.descriptionInput, styles.separator]}
+                        value={courseDescription}
+                        onChangeText={(text: string) => setCourseDescription(text)}
+                        multiline={true}
+                        testID="courseDescriptionInput"
                     />
+
+                    <View style={[styles.horizontalContainer, styles.separator]}>
+                        {/* <View style={styles.horizontalContainer}> */}
+                        <DatePickerComponent
+                            title={i18n.t("itrex.startDate")}
+                            date={startDate}
+                            onDateChanged={startDateChanged}
+                            maxDate={endDate}
+                        />
+
+                        <View style={{ margin: 20 }} />
+
+                        <DatePickerComponent
+                            title={i18n.t("itrex.endDate")}
+                            date={endDate}
+                            onDateChanged={endDateChanged}
+                            minDate={startDate}
+                        />
+                    </View>
+
+                    <TextButton title={i18n.t("itrex.createCourse")} size="medium" onPress={_createCourse}></TextButton>
                 </View>
-
-                <TextButton title={i18n.t("itrex.createCourse")} size="medium" onPress={_createCourse}></TextButton>
-            </View>
-        </ImageBackground>
+            </ImageBackground>
+        </>
     );
 
     // eslint-disable-next-line complexity

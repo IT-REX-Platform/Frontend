@@ -1,6 +1,5 @@
-import { ImageBackground, StyleSheet, Text, View, Button } from "react-native";
-
 import React, { useEffect, useState } from "react";
+import { ImageBackground, StyleSheet, Text, View } from "react-native";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { CourseList } from "../CourseList";
 import i18n from "../../locales";
@@ -11,10 +10,8 @@ import { RequestFactory } from "../../api/requests/RequestFactory";
 import { EndpointsCourse } from "../../api/endpoints/EndpointsCourse";
 import { CoursePublishState } from "../../constants/CoursePublishState";
 import { CourseActivityState } from "../../constants/CourseActivityState";
-import { dark } from "../../constants/themes/dark";
 import { NavigationRoutes } from "../../constants/navigators/NavigationRoutes";
 import { ITREXRoles } from "../../constants/ITREXRoles";
-import { createAlert } from "../../helperScripts/createAlert";
 import { ScrollView } from "react-native-gesture-handler";
 import { DropDown } from "../uiElements/Dropdown";
 import { TextButton } from "../uiElements/TextButton";
@@ -124,7 +121,7 @@ export const ScreenHome: React.FC<ScreenHomeProps> = (props) => {
         );
     }
 
-    function courseList() {
+    function renderCourseList() {
         if (allCourses.length < 1) {
             return noCoursesAvailable();
         }
@@ -150,6 +147,7 @@ export const ScreenHome: React.FC<ScreenHomeProps> = (props) => {
                 </View>
             );
         }
+
         return (
             <View style={styles.cardView}>
                 <View style={[{ marginTop: 15 }]}>
@@ -164,13 +162,13 @@ export const ScreenHome: React.FC<ScreenHomeProps> = (props) => {
     }
 
     return (
-        <View style={styles.container}>
+        <>
+            <Header title={i18n.t("itrex.home")} />
             <ImageBackground source={require("../../constants/images/Background2.png")} style={styles.image}>
-                <Header title={i18n.t("itrex.home")} />
                 {renderFilters()}
-                {courseList()}
+                {renderCourseList()}
             </ImageBackground>
-        </View>
+        </>
     );
 };
 
@@ -187,11 +185,6 @@ function getEndDateBasedOnFilter(setSelectedActiveState: CourseActivityState | u
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        flexDirection: "column",
-        justifyContent: "flex-start",
-    },
     image: {
         flex: 1,
         resizeMode: "stretch",
@@ -204,7 +197,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "flex-start",
         zIndex: 11,
-        // backgroundColor: dark.Opacity.grey,
     },
     cardHeader: {
         padding: 16,
