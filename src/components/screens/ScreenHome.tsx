@@ -17,6 +17,7 @@ import { ITREXRoles } from "../../constants/ITREXRoles";
 import { createAlert } from "../../helperScripts/createAlert";
 import { ScrollView } from "react-native-gesture-handler";
 import { DropDown } from "../uiElements/Dropdown";
+import { TextButton } from "../uiElements/TextButton";
 
 interface ScreenHomeProps {
     userRole: ITREXRoles;
@@ -125,8 +126,7 @@ export const ScreenHome: React.FC<ScreenHomeProps> = (props) => {
 
     function courseList() {
         if (allCourses.length < 1) {
-            noCoursesAvailable();
-            return;
+            return noCoursesAvailable();
         }
 
         return (
@@ -140,11 +140,11 @@ export const ScreenHome: React.FC<ScreenHomeProps> = (props) => {
         if (userRole === ITREXRoles.ROLE_STUDENT) {
             return (
                 <View style={styles.cardView}>
-                    <View style={[{ width: "20%", marginTop: 15 }]}>
-                        <Button
-                            color={dark.Opacity.blueGreen}
+                    <View style={[{ marginTop: 15 }]}>
+                        <TextButton
+                            color="dark"
                             title="Join a course"
-                            onPress={() => createAlert("Navigate to a Course Search Page to join a Course")}
+                            onPress={() => navigation.navigate(NavigationRoutes.ROUTE_JOIN_COURSE)}
                         />
                     </View>
                 </View>
@@ -152,9 +152,9 @@ export const ScreenHome: React.FC<ScreenHomeProps> = (props) => {
         }
         return (
             <View style={styles.cardView}>
-                <View style={[{ width: "20%", marginTop: 15 }]}>
-                    <Button
-                        color={dark.Opacity.blueGreen}
+                <View style={[{ marginTop: 15 }]}>
+                    <TextButton
+                        color="dark"
                         title={i18n.t("itrex.createCourse")}
                         onPress={() => navigation.navigate(NavigationRoutes.ROUTE_CREATE_COURSE)}
                     />
