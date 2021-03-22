@@ -157,26 +157,24 @@ export const SingleChoiceQuestion: React.FC<QuizProps> = (props) => {
             setCheckboxOne(false);
             setCheckboxTwo(false);
             setCheckboxThree(false);
-            setSolution("0");
         } else if (index === "1") {
             setCheckboxZero(false);
             setCheckboxOne(true);
             setCheckboxTwo(false);
             setCheckboxThree(false);
-            setSolution("1");
         } else if (index === "2") {
             setCheckboxZero(false);
             setCheckboxOne(false);
             setCheckboxTwo(true);
             setCheckboxThree(false);
-            setSolution("2");
         } else if (index === "3") {
             setCheckboxZero(false);
             setCheckboxOne(false);
             setCheckboxTwo(false);
             setCheckboxThree(true);
-            setSolution("3");
         }
+
+        setSolution(index);
     }
 
     /**

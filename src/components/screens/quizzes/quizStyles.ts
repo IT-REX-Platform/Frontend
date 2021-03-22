@@ -20,6 +20,11 @@ export const quizStyles = StyleSheet.create({
         fontWeight: "bold",
         width: "100%",
     },
+    titleFont: {
+        color: "white",
+        fontSize: 24,
+        fontWeight: "bold",
+    },
     icon: {
         position: "relative",
         alignItems: "flex-start",
@@ -94,6 +99,12 @@ export const quizStyles = StyleSheet.create({
         color: "white",
         textAlign: "center",
         flexGrow: 1,
+    },
+    quizTitle: {
+        padding: 16,
+        fontSize: 20,
+        fontWeight: "bold",
+        color: "white",
     },
     filterContainer: {
         flexGrow: 4,
@@ -172,5 +183,26 @@ export const quizStyles = StyleSheet.create({
         borderStyle: "dotted",
         alignItems: "center",
         justifyContent: "center",
+    },
+    quizOverview: {
+        flex: 1,
+        margin: 15,
+        color: "white",
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    quizContent: {
+        margin: 16,
+        fontSize: 16,
+        color: "white",
+    },
+    buttonQuizzes: {
+        alignItems: "center",
+        marginBottom: 8,
+    },
+    solutionContent: {
+        paddingLeft: 16,
+        fontSize: 16,
+        color: "white",
     },
 });

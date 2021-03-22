@@ -2,7 +2,6 @@ import * as Linking from "expo-linking";
 import { LinkingOptions, NavigatorScreenParams } from "@react-navigation/native";
 import { IVideo } from "../../types/IVideo";
 import { IQuiz } from "../../types/IQuiz";
-import { ISolutionMultipleChoice } from "../../types/ISolution";
 import { IQuestionMultipleChoice, IQuestionNumeric, IQuestionSingleChoice } from "../../types/IQuestion";
 import { IChapter } from "../../types/IChapter";
 
@@ -42,6 +41,9 @@ export const config = {
                     path: "chapter/createQuiz/createQuestion/:chapterId",
                     screens: {},
                 },
+                QUIZ_OVERVIEW: "QUIZ_OVERVIEW",
+                QUIZ_RESULT: "QUIZ_RESULT",
+                QUIZ_SOLVE: "QUIZ_SOLVE",
             },
         },
     },
@@ -76,6 +78,15 @@ export type CourseStackParamList = {
         courseId?: string;
         question?: IQuestionMultipleChoice | IQuestionNumeric | IQuestionSingleChoice;
     };
+    QUIZ_OVERVIEW: {
+        quiz: IQuiz;
+    };
+    QUIZ_RESULT: {
+        quiz: IQuiz;
+    };
+    QUIZ_SOLVE: {
+        quiz: IQuiz;
+    };
     CHAPTER: {
         chapterId: string | undefined;
     };
@@ -102,6 +113,9 @@ export class NavigationRoutes {
     static ROUTE_CREATE_QUIZ = "ROUTE_CREATE_QUIZ";
     static ROUTE_CREATE_QUESTION = "ROUTE_CREATE_QUESTION";
     static ROUTE_CHAPTER_CONTENT = "ROUTE_CHAPTER_CONTENT";
+    static ROUTE_QUIZ_OVERVIEW = "ROUTE_QUIZ_OVERVIEW";
+    static ROUTE_QUIZ_SOLVE = "ROUTE_QUIZ_SOLVE";
+    static ROUTE_QUIZ_RESULT = "ROUTE_QUIZ_RESULT";
 
     static linking: LinkingOptions = {
         prefixes: [prefix],
