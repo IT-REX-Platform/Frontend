@@ -133,6 +133,8 @@ export const ScreenChapterStudent: React.FC = () => {
     // Call following function/s only once when this screen is shown.
     useFocusEffect(
         React.useCallback(() => {
+            console.log("%cON FOCUS CALLBACK", "color:red;");
+
             console.log("In Callback");
             _getAllChapters();
 
@@ -150,23 +152,39 @@ export const ScreenChapterStudent: React.FC = () => {
     );
 
     useEffect(() => {
-        _getChapter();
+        console.log("%cCOURSE PROGRESS/CHAPTERID CALLBACK", "color:red;");
+        console.log("%cnew chapter id: %s", "color:red;", chapterId);
+        _getChapter((chapter) => {
+            // Indicate an update of the playlist.
+            setIndicatorForUpdate(updatePlaylist);
+        });
         //_getAllVideos();
-        _splitPlaylist(chapterPlaylist);
-        setIndicatorForUpdate(updatePlaylist);
     }, [courseProgress, chapterId]);
 
     useEffect(() => {
-        if (chapterPlaylist.length > 0 && (currentVideo == undefined || currentVideo.chapterId != chapterId)) {
-            setCurrentVideo(chapterPlaylist[0]);
+        console.log("%cPLAYLIST UPDATE CALLBACK", "color:red;");
+
+        // Split playlist on update.
+        _splitPlaylist(chapterPlaylist);
+
+        // TODO: This is the point at which the first video is being selected. Expand for quizzez.
+        const firstVideo = chapterPlaylist.find(
+            (content) => content.contentReferenceType == CONTENTREFERENCETYPE.VIDEO
+        );
+        if (firstVideo !== undefined && (currentVideo == undefined || currentVideo.chapterId != chapterId)) {
+            setCurrentVideo(firstVideo);
         }
     }, [playlistShouldUpdate]);
 
     useEffect(() => {
+        console.log("%cCURRENT VIDEO CALLBACK", "color:red; font-size:4rem;");
+
         setIndicatorForUpdate(restorePlayerProgress);
     }, [currentVideo]);
 
     useEffect(() => {
+        console.log("%cRESTORE PROGRESS CALLBACK", "color:red; font-size:4rem;");
+
         if (currentVideo != undefined) restoreWatchProgress();
     }, [playerShouldRestoreProgress]);
 
@@ -483,7 +501,6 @@ export const ScreenChapterStudent: React.FC = () => {
         }
 
         setVideos(weeks);
-
         //setVideos(weeks.filter(((abc: IVideoListSection)=>
         //   {if (abc.data !== undefined) {return abc}})));
     }
@@ -683,7 +700,7 @@ export const ScreenChapterStudent: React.FC = () => {
         });
     }
 
-    function _getChapter() {
+    function _getChapter(consumer: (chapter: IChapter) => void) {
         const request: RequestInit = RequestFactory.createGetRequest();
         setVideoListLoading(true);
         endpointsChapter
@@ -694,6 +711,9 @@ export const ScreenChapterStudent: React.FC = () => {
                 if (chapterReceived.contentReferences !== undefined) {
                     console.log(chapterReceived.contentReferences);
                     setChapterPlaylist(chapterReceived.contentReferences);
+
+                    // Call a delayed consumer once everything has been finished.
+                    consumer(chapterReceived);
                 }
             })
             .finally(async () => setVideoListLoading(false));
