@@ -213,7 +213,9 @@ export const ScreenChapterStudent: React.FC = () => {
                 console.log("Else If contentProgress Started:");
                 console.log(contentProgress.state == ContentProgressTrackerState.STARTED);
                 //progress = contentProgress.progress?.toString+"%";
-                progress = contentProgress.progress / 100;
+                progress = getContentProgress(item, contentProgress);
+                //progress = contentProgress.progress / item.video?.length
+                console.log("Progress:");
                 console.log("Progress:");
                 console.log(progress);
 
@@ -233,7 +235,10 @@ export const ScreenChapterStudent: React.FC = () => {
                 console.log("Else If contentProgress Completed:");
                 console.log(contentProgress.state == ContentProgressTrackerState.COMPLETED);
 
-                progress = contentProgress.progress / 100;
+                console.log("Video length");
+                console.log(item.video?.length);
+                progress = getContentProgress(item, contentProgress);
+
                 console.log("Progress:");
                 console.log(progress);
 
@@ -265,7 +270,7 @@ export const ScreenChapterStudent: React.FC = () => {
                 <LinearGradient
                     // Background Linear Gradient
                     colors={[bck, "transparent"]}
-                    locations={[progress]}
+                    locations={[progress, progress]}
                     style={progressStyle}
                     end={{ x: 1.0, y: 0 }}
                 />
@@ -407,6 +412,23 @@ export const ScreenChapterStudent: React.FC = () => {
                         {i18n.t("itrex.questions")} {item.quiz?.questions.length}
                     </Text>
                 );
+        }
+    }
+
+    function getContentProgress(item: IContent, contentProgress: IContentProgressTracker) {
+        let itemProgress: number;
+        switch (item.contentReferenceType) {
+            case CONTENTREFERENCETYPE.VIDEO:
+                itemProgress = contentProgress.progress / item.video?.length;
+                return itemProgress;
+            case CONTENTREFERENCETYPE.QUIZ:
+                if (contentProgress.state == "COMPLETED") {
+                    itemProgress = 1;
+                } else {
+                    itemProgress = 0;
+                }
+
+                return itemProgress;
         }
     }
 
