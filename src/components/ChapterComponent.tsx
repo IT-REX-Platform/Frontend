@@ -34,15 +34,7 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
     const timePeriods = course.timePeriods?.map((timePeriod, idx) => {
         return {
             value: timePeriod.id,
-            label:
-                i18n.t("itrex.week") +
-                " " +
-                (idx + 1) +
-                " (" +
-                dateConverter(timePeriod.startDate) +
-                " - " +
-                dateConverter(timePeriod.endDate) +
-                ")",
+            label: timePeriod.fullName,
         };
     });
 
@@ -78,11 +70,30 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                 <Text style={styles.chapterHeader}>
                     {chapter?.chapterNumber}. {chapter?.name}
                 </Text>
+                <Text style={styles.showWeek}>{getWeeks()}</Text>
                 {/* TODO: add real publish/unpublished state to the chapterss*/}
                 <View style={styles.chapterStatus}>{getPublishedSate(CoursePublishState.PUBLISHED)}</View>
             </View>
             <View style={styles.chapterBottomRow}>
                 <Text style={styles.chapterMaterialHeader}>{i18n.t("itrex.chapterMaterial")}</Text>
+                {props.editMode && AuthenticationService.getInstance().isLecturer() && (
+                    <View style={styles.chapterEditRow}>
+                        {/**<TouchableOpacity
+                            onPress={() => {
+                                courseService.deleteChapter(chapter?.id);
+                            }}>
+                            <MaterialCommunityIcons name="trash-can" size={28} color="white" style={styles.icon} />
+                        </TouchableOpacity> */}
+                        <TouchableOpacity
+                            onPress={() => {
+                                navigation.navigate("CHAPTER", {
+                                    chapterId: chapter?.id,
+                                });
+                            }}>
+                            <MaterialIcons name="edit" size={28} color="white" style={styles.icon} />
+                        </TouchableOpacity>
+                    </View>
+                )}
                 <View style={styles.chapterMaterialElements}>
                     {timePeriods !== undefined &&
                         chapter?.contentReferences?.map((contentReference) => {
@@ -119,29 +130,46 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                                     ) : (
                                         getQuizComponent(contentReference)
                                     )}
+
+                                    <View
+                                        style={{
+                                            flex: 1,
+                                            flexDirection: "row",
+                                            justifyContent: "space-between",
+                                            alignItems: "center",
+                                        }}>
+                                        <Text style={styles.chapterMaterialElementText}>
+                                            {contentReference.contentReferenceType == CONTENTREFERENCETYPE.VIDEO
+                                                ? contentReference?.video?.title
+                                                : ""}
+                                            {contentReference.contentReferenceType == CONTENTREFERENCETYPE.QUIZ
+                                                ? contentReference?.quiz?.name
+                                                : ""}
+                                        </Text>
+                                        <Text style={styles.chapterMaterialElementText}>
+                                            {
+                                                timePeriods.find(
+                                                    (timePeriod) => timePeriod.value === contentReference.timePeriodId
+                                                )?.label
+                                            }
+                                        </Text>
+                                        {/*props.editMode ? (
+                                                <DropDown
+                                                    options={timePeriods}
+                                                    defaultValue={timePeriods.find(
+                                                        (timePeriod) => timePeriod.value === contentReference.timePeriodId
+                                                    )}
+                                                    menuPortalTarget={document.body}
+                                                    menuPosition={"fixed"}></DropDown>
+                                            ) : (
+                                                
+                                            )*/}
+                                    </View>
                                 </View>
                             );
                         })}
                 </View>
             </View>
-            {props.editMode && AuthenticationService.getInstance().isLecturer() && (
-                <View style={styles.chapterEditRow}>
-                    {/**<TouchableOpacity
-                        onPress={() => {
-                            courseService.deleteChapter(chapter?.id);
-                        }}>
-                        <MaterialCommunityIcons name="trash-can" size={28} color="white" style={styles.icon} />
-                    </TouchableOpacity> */}
-                    <TouchableOpacity
-                        onPress={() => {
-                            navigation.navigate("CHAPTER", {
-                                chapterId: chapter?.id,
-                            });
-                        }}>
-                        <MaterialIcons name="edit" size={28} color="white" style={styles.icon} />
-                    </TouchableOpacity>
-                </View>
-            )}
         </View>
     );
 
@@ -156,6 +184,50 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                 });
             });
         }
+    }
+    /**
+     * Returns the lowest and the highest week of the contentReferences
+     * @returns Week String
+     */
+    function getWeeks(): string | undefined {
+        if (chapter?.contentReferences !== undefined) {
+            // Sort ContentReferences
+            const tmpContentReferences = [...chapter.contentReferences];
+
+            tmpContentReferences.sort((contentA, contentB) => {
+                const timePeriodA = course.timePeriods?.find((timePeriod) => timePeriod.id === contentA.timePeriodId);
+                const timePeriodB = course.timePeriods?.find((timePeriod) => timePeriod.id === contentB.timePeriodId);
+
+                if (timePeriodA?.startDate !== undefined && timePeriodB?.startDate !== undefined) {
+                    if (timePeriodA?.startDate < timePeriodB?.startDate) {
+                        return -1;
+                    }
+                    if (timePeriodA?.startDate > timePeriodB?.startDate) {
+                        return 1;
+                    }
+                    return 0;
+                }
+                return 0;
+            });
+            if (tmpContentReferences.length == 0) {
+                return "";
+            }
+
+            const lowestTimePeriod = course.timePeriods?.find(
+                (timePeriod) => timePeriod.id == tmpContentReferences[0].timePeriodId
+            );
+
+            const highestTimePeriod = course.timePeriods?.find(
+                (timePeriod) => timePeriod.id == tmpContentReferences[tmpContentReferences.length - 1].timePeriodId
+            );
+
+            if (lowestTimePeriod == highestTimePeriod) {
+                return lowestTimePeriod?.name;
+            }
+
+            return lowestTimePeriod?.name + " - " + highestTimePeriod?.name;
+        }
+        return "";
     }
 
     function getPublishedSate(isPublished: string | undefined) {
@@ -199,9 +271,8 @@ const styles = StyleSheet.create({
         paddingTop: "1%",
     },
     chapterEditRow: {
-        width: "100%",
-        flex: 2,
-        flexDirection: "row-reverse",
+        position: "absolute",
+        right: 0,
     },
     chapterHeader: {
         alignSelf: "flex-start",
@@ -214,6 +285,14 @@ const styles = StyleSheet.create({
         position: "absolute",
         color: "white",
         fontWeight: "bold",
+    },
+    showWeek: {
+        position: "absolute",
+        alignSelf: "center",
+        color: dark.theme.pink,
+        fontWeight: "bold",
+        fontStyle: "italic",
+        fontSize: 15,
     },
     chapterMaterialHeader: {
         marginTop: 10,
@@ -239,6 +318,7 @@ const styles = StyleSheet.create({
     chapterMaterialElementText: {
         color: "white",
         fontWeight: "bold",
+        margin: 5,
     },
     icon: {
         paddingLeft: 10,

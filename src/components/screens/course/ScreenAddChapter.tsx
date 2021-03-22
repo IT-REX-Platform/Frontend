@@ -62,7 +62,7 @@ export const ScreenAddChapter: React.FC = () => {
     // Loading icon state.
     const [isLoading, setLoading] = useState(true);
 
-    const course: ICourse = React.useContext(CourseContext);
+    const { course } = React.useContext(CourseContext);
 
     const initialCourseName = chapterId == undefined ? i18n.t("itrex.myNewChapter") : "";
     const chapterEndpoint = new EndpointsChapter();
@@ -83,14 +83,7 @@ export const ScreenAddChapter: React.FC = () => {
     const timePeriods = course.timePeriods?.map((timePeriod, idx) => {
         return {
             value: timePeriod.id,
-            label:
-                "Week " +
-                (idx + 1) +
-                " (" +
-                dateConverter(timePeriod.startDate) +
-                " - " +
-                dateConverter(timePeriod.endDate) +
-                ")",
+            label: timePeriod.fullName,
         };
     });
 

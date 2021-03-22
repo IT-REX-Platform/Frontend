@@ -32,7 +32,7 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = (props) => {
     const route = useRoute<ScreenCourseTabsRouteProp>();
 
     // Get course infos from context.
-    const course: ICourse = React.useContext(CourseContext);
+    const { course } = React.useContext(CourseContext);
     let quizWithQuestions = props.quiz;
 
     if (route.params !== undefined) {

@@ -40,7 +40,7 @@ export const ScreenCourseOverview: React.FC = () => {
     React.useContext(LocalizationContext);
     const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");
     const endpointsCourse: EndpointsCourse = new EndpointsCourse();
-    const course: ICourse = React.useContext(CourseContext);
+    const { course } = React.useContext(CourseContext);
 
     const [user, setUserInfo] = useState<IUser>({});
 
