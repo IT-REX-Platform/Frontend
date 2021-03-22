@@ -1,21 +1,7 @@
 import { DarkTheme, RouteProp, useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
 import { AVPlaybackStatus, Video } from "expo-av";
 import { useEffect, useState } from "react";
-import {
-    Button,
-    ActivityIndicator,
-    FlatList,
-    TouchableOpacity,
-    View,
-    StyleSheet,
-    Text,
-    Animated,
-    StyleProp,
-    ViewStyle,
-    SectionList,
-    ImageBackgroundBase,
-    ImageBackground,
-} from "react-native";
+import { ActivityIndicator, TouchableOpacity, View, StyleSheet, Text, Animated, SectionList } from "react-native";
 import { ListItem } from "react-native-elements";
 import React from "react";
 import { toast } from "react-toastify";
@@ -84,6 +70,7 @@ export const ScreenChapterStudent: React.FC = () => {
     const [playerShouldRestoreProgress, restorePlayerProgress] = useState<number>();
 
     let [currentVideo, setCurrentVideo] = useState<IContent>();
+    let [currentTitle, setCurrentTitle] = useState<string>();
 
     const [videos, setVideos] = useState<IVideoListSection[]>([]);
     //let video: IVideo
@@ -164,6 +151,7 @@ export const ScreenChapterStudent: React.FC = () => {
 
     useEffect(() => {
         setIndicatorForUpdate(restorePlayerProgress);
+        setCurrentTitle(currentVideo?.id);
     }, [currentVideo]);
 
     useEffect(() => {
@@ -173,6 +161,7 @@ export const ScreenChapterStudent: React.FC = () => {
     const myPlaylistItem = ({ item }: { item: IContent }) => {
         let brd: string = " ";
         let bck: string = " ";
+        let bckBase: string = " ";
         let progress: number = 0;
 
         console.log("RenderItemID");
@@ -233,6 +222,7 @@ export const ScreenChapterStudent: React.FC = () => {
                 }
 
                 bck = "rgba(181,239,138, 0.5)";
+                bckBase = dark.theme.darkBlue1;
             } else if (contentProgress.state == ContentProgressTrackerState.COMPLETED) {
                 //if (contentProgress.id === undefined) {
                 //    return " ";
@@ -256,6 +246,7 @@ export const ScreenChapterStudent: React.FC = () => {
 
                 brd = dark.Opacity.lightGreen;
                 bck = dark.Opacity.lightGreen;
+                bckBase = dark.Opacity.lightGreen;
             }
         }
 
@@ -263,7 +254,7 @@ export const ScreenChapterStudent: React.FC = () => {
             marginBottom: "2.5%",
             borderColor: brd,
             borderWidth: 3,
-            backgroundColor: dark.theme.darkBlue1,
+            backgroundColor: bckBase,
         };
 
         const progressStyle = {
@@ -354,7 +345,7 @@ export const ScreenChapterStudent: React.FC = () => {
                         // onLoad={changeVideoProgress()}
                     />
                     <View style={styles.iconContainer}>
-                        <Text style={[styles.videoTitle, { paddingTop: "1.5%" }]}>Ch1.: My Video</Text>
+                        <Text style={[styles.videoTitle, { paddingTop: "1.5%" }]}>{currentTitle}</Text>
                     </View>
                 </View>
 
@@ -403,9 +394,9 @@ export const ScreenChapterStudent: React.FC = () => {
     function getContentName(item: IContent) {
         switch (item.contentReferenceType) {
             case CONTENTREFERENCETYPE.VIDEO:
-                return <Text>{item.video?.title}</Text>;
+                return <Text>{item.id}</Text>;
             case CONTENTREFERENCETYPE.QUIZ:
-                return <Text>{item.quiz?.name}</Text>;
+                return <Text>{item.id}</Text>;
         }
     }
 
@@ -431,8 +422,13 @@ export const ScreenChapterStudent: React.FC = () => {
         let itemProgress: number;
         switch (item.contentReferenceType) {
             case CONTENTREFERENCETYPE.VIDEO:
-                itemProgress = item.video?.length / contentProgress.progress;
-                return itemProgress;
+                if (contentProgress.state == "COMPLETED") {
+                    itemProgress = 1;
+                } else {
+                    itemProgress = item.video?.length / contentProgress.progress;
+                    return itemProgress;
+                }
+
             case CONTENTREFERENCETYPE.QUIZ:
                 if (contentProgress.state == "COMPLETED") {
                     itemProgress = 1;
