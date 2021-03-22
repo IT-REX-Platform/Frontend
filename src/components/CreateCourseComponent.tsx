@@ -137,13 +137,16 @@ export const CreateCourseComponent: React.FC = () => {
         const postRequest: RequestInit = RequestFactory.createPostRequestWithBody(course);
         endpointsCourse
             .createCourse(postRequest, i18n.t("itrex.courseCreated") + courseName, i18n.t("itrex.createCourseError"))
-            .then((data) => {
-                console.log(data);
+            .then((course: ICourse) => {
+                if (course.id == undefined) {
+                    return;
+                }
+
                 _resetStates();
 
                 AuthenticationService.getInstance()
                     .refreshToken()
-                    .then(() => navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, { courseId: data.id }));
+                    .then(() => navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, { courseId: course.id }));
             });
     }
 
