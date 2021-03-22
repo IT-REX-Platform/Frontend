@@ -75,10 +75,6 @@ export const ScreenChapterStudent: React.FC = () => {
     const [videos, setVideos] = useState<IVideoListSection[]>([]);
     //let video: IVideo
 
-    //Vertical slide animation for FlatList.
-    let translateY = new Animated.Value(50);
-    Animated.timing(translateY, { toValue: 0, duration: 500, useNativeDriver: false }).start();
-
     React.useContext(LocalizationContext);
     const route = useRoute<ChapterContentRouteProp>();
     const chapterId = route.params.chapterId;
@@ -109,11 +105,8 @@ export const ScreenChapterStudent: React.FC = () => {
     // Render UI for video list according to un-/available video data.
     const renderVideoList = () => {
         if (isVideoListLoading) {
-            return (
-                <View style={styles.videoListDownloadingContainer}>
-                    <ActivityIndicator style={styles.loadingIcon} size="large" color="white" />
-                </View>
-            );
+            // TODO: Loading indicator/style.
+            return <></>;
         }
     };
 
@@ -369,7 +362,7 @@ export const ScreenChapterStudent: React.FC = () => {
 
                 <View style={styles.playlistContainer}>
                     {renderVideoList()}
-                    <Animated.View style={{ transform: [{ translateY }], flex: 1, maxWidth: "95%" }}>
+                    <Animated.View style={{ flex: 1, maxWidth: "95%" }}>
                         <SectionList
                             style={styles.playlist}
                             //data={videos}
