@@ -12,7 +12,7 @@ import { ScreenCourseTabs } from "./course/ScreenCourseTabs";
 import { CourseContext, LocalizationContext } from "../Context";
 import { DrawerNavigationProp, DrawerScreenProps } from "@react-navigation/drawer";
 import { CourseStackParamList, RootDrawerParamList } from "../../constants/navigators/NavigationRoutes";
-import { VideoPoolComponent } from "../ContentPoolComponents/VideoPoolComponent";
+import { VideoPoolComponent } from "../contentPoolComponentsTEST/VideoPoolComponent";
 import { VideoComponent } from "../VideoComponent";
 import AuthenticationService from "../../services/AuthenticationService";
 import i18n from "../../locales";
@@ -22,7 +22,7 @@ import { CourseRoles } from "../../constants/CourseRoles";
 import { IUser } from "../../types/IUser";
 import { ScreenChapterStudent } from "./ScreenChapterStudent";
 import { ScreenAddQuestion } from "./quizzes/questions/ScreenAddQuestion";
-import { QuizPoolComponent } from "../ContentPoolComponents/QuizPoolComponent";
+import { QuizPoolComponent } from "../contentPoolComponentsTEST/QuizPoolComponent";
 
 export type ScreenCourseNavigationProp = DrawerNavigationProp<RootDrawerParamList, "ROUTE_COURSE_DETAILS">;
 export type ScreenCourseRouteProp = RouteProp<RootDrawerParamList, "ROUTE_COURSE_DETAILS">;
