@@ -7,11 +7,11 @@ import { QuestionTypes } from "../QuestionTypes";
 //================= SINGLE CHOICE QUESTION =================
 const choicesSingleChoice: IChoices = {
     "0": "0",
-    "1": "1",
+    "1": "56",
     "2": "42",
     "3": "4",
 };
-const questionSingleChoice: IQuestionSingleChoice = {
+export const questionSingleChoice: IQuestionSingleChoice = {
     courseId: "",
     id: "uuid_1",
     type: QuestionTypes.SINGLE_CHOICE,
@@ -27,13 +27,13 @@ const choicesMultipleChoice: IChoices = {
     "2": "Mai",
     "3": "August",
 };
-const solutionMultipleChoice: ISolutionMultipleChoice = {
+export const solutionMultipleChoice: ISolutionMultipleChoice = {
     "0": true,
     "1": true,
     "2": false,
     "3": false,
 };
-const questionMultipleChoice: IQuestionMultipleChoice = {
+export const questionMultipleChoice: IQuestionMultipleChoice = {
     courseId: "",
     id: "uuid_2",
     type: QuestionTypes.MULTIPLE_CHOICE,
@@ -48,7 +48,7 @@ const question3: IQuestionSingleChoice = {
     type: QuestionTypes.SINGLE_CHOICE,
     question: "Was ist 21+21?",
     choices: choicesSingleChoice,
-    solution: "0",
+    solution: "2",
 };
 
 const question4: IQuestionSingleChoice = {
@@ -64,7 +64,8 @@ const question5: IQuestionSingleChoice = {
     courseId: "",
     id: "uuid6",
     type: QuestionTypes.SINGLE_CHOICE,
-    question: "Das ist eine gaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanz lange Fraaaaaaaage",
+    question:
+        "Das ist eine gaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanz lange Fraaaaaaaage (56 is richtig)",
     choices: choicesSingleChoice,
     solution: "1",
 };
@@ -74,7 +75,7 @@ const solutionNumeric: ISolutionNumeric = {
     result: 3.1412,
     epsilon: 0.1,
 };
-const questionNumeric: IQuestionNumeric = {
+export const questionNumeric: IQuestionNumeric = {
     courseId: "",
     id: "uuid_3",
     type: QuestionTypes.NUMERIC,

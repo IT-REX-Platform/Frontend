@@ -139,6 +139,17 @@ export const en = {
         invalidQuizName: "Please define a quiz name.",
         invalidQuestionsObject: "Please add at least one question  to the quiz.",
         noQuestions: "No questions have been added yet!",
+        startQuiz: "Start quiz",
+        quizConsists: "This quiz consists out of ",
+        quizQuestions: " questions.",
+        finishQuiz: "Finish Quiz",
+        quizNumericYourResult: "Your solution:",
+        youReached: "You have reached ",
+        percentageOf: "% of 100%.",
+
+        outOf: "out of",
+        solvedCorrectly: "questions were answered correctly.",
+        returnToTimeline: "Return to Timeline",
 
         questions: "Questions: ",
         deleteQuizSuccess: "The quiz was deleted successfully.",

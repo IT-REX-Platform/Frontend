@@ -26,7 +26,11 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
                 </View>
             );
         } else if (isPublished === CoursePublishState.PUBLISHED) {
-            return <InfoPublished />;
+            return (
+                <View style={styles.publishedState}>
+                    <InfoPublished />
+                </View>
+            );
         }
 
         return;
