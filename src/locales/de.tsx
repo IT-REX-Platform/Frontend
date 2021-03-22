@@ -80,7 +80,7 @@ export const de = {
         startDateInvalid: "Startdatum kann nicht dem Enddatum folgen.",
 
         courseProgressLastAccessed: "Zum zuletzt genutzten Inhalt",
-        contentProgressUntouched: "Nicht gestartet",
+        contentProgressUntouched: "Kein Fortschritt",
         contentProgressStarted: "Gestartet",
         contentProgressCompleted: "Beendet",
 
