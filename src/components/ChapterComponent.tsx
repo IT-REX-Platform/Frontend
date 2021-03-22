@@ -9,18 +9,13 @@ import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import AuthenticationService from "../services/AuthenticationService";
 import { InfoPublished } from "./uiElements/InfoPublished";
 import { InfoUnpublished } from "./uiElements/InfoUnpublished";
-import Select from "react-select";
 import { ICourse } from "../types/ICourse";
 import { IContent } from "../types/IContent";
 import { ICourseProgressTracker } from "../types/ICourseProgressTracker";
-import { IContentProgressTracker } from "../types/IContentProgressTracker";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import { TextButton } from "./uiElements/TextButton";
+import { useNavigation } from "@react-navigation/native";
 import { CoursePublishState } from "../constants/CoursePublishState";
-import { EndpointsQuiz } from "../api/endpoints/EndpointsQuiz";
-import { RequestFactory } from "../api/requests/RequestFactory";
-import { IQuiz } from "../types/IQuiz";
 import { dateConverter } from "../helperScripts/validateCourseDates";
+import { CONTENTREFERENCETYPE } from "../types/IContent";
 import { ContentProgressInfo } from "./uiElements/ContentProgressInfo";
 import ProgressService from "../services/ProgressService";
 import { ContentProgressTrackerState } from "../constants/ContentProgressTrackerState";
@@ -32,14 +27,12 @@ interface ChapterComponentProps {
     course: ICourse;
 }
 
-const endpointsQuiz: EndpointsQuiz = new EndpointsQuiz();
 export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
     React.useContext(LocalizationContext);
     const navigation = useNavigation();
 
     const chapter = props.chapter;
     const course = props.course;
-    const courseId = course.id;
 
     const timePeriods = course.timePeriods?.map((timePeriod, idx) => {
         return {
@@ -55,20 +48,6 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                 ")",
         };
     });
-    const [courseQuizzes, setCourseQuizzes] = useState<IQuiz[]>();
-    useFocusEffect(
-        React.useCallback(() => {
-            if (courseId == undefined) {
-                return;
-            }
-            const request: RequestInit = RequestFactory.createGetRequest();
-            const response = endpointsQuiz.getCourseQuizzes(request, courseId);
-            response.then(async () => {
-                setCourseQuizzes(await response);
-                console.log(courseQuizzes);
-            });
-        }, [])
-    );
 
     const [courseProgress, setCourseProgress] = useState<ICourseProgressTracker>({});
     useEffect(() => {
@@ -78,7 +57,9 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
     return (
         <View style={styles.chapterContainer}>
             <View style={styles.chapterTopRow}>
-                <Text style={styles.chapterHeader}>{chapter?.name}</Text>
+                <Text style={styles.chapterHeader}>
+                    {chapter?.chapterNumber}. {chapter?.name}
+                </Text>
                 {/* TODO: add real publish/unpublished state to the chapterss*/}
                 <View style={styles.chapterStatus}>{getPublishedSate(CoursePublishState.PUBLISHED)}</View>
             </View>
@@ -91,7 +72,16 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                                 <TouchableOpacity
                                     style={styles.chapterMaterialElement}
                                     onPress={() => markProgress(contentReference)}>
-                                    <MaterialIcons name="attach-file" size={28} color="white" style={styles.icon} />
+                                    {contentReference.contentReferenceType == CONTENTREFERENCETYPE.VIDEO ? (
+                                        <MaterialIcons name="attach-file" size={28} color="white" style={styles.icon} />
+                                    ) : (
+                                        <MaterialCommunityIcons
+                                            name="file-question-outline"
+                                            size={28}
+                                            color="white"
+                                            style={styles.icon}
+                                        />
+                                    )}
 
                                     <View
                                         style={{
@@ -112,58 +102,21 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                                         </Text>
                                         {getProgressInfo(contentReference)}
                                         {/*props.editMode ? (
-                                            <Select
-                                                options={timePeriods}
-                                                defaultValue={timePeriods.find(
-                                                    (timePeriod) => timePeriod.value === contentReference.timePeriodId
-                                                )}
-                                                theme={(theme) => ({
-                                                    ...theme,
-                                                    borderRadius: 5,
-                                                    colors: {
-                                                        ...theme.colors,
-                                                        primary25: dark.Opacity.darkBlue1,
-                                                        primary: dark.Opacity.pink,
-                                                        backgroundColor: dark.Opacity.darkBlue1,
-                                                    },
-                                                })}
-                                                menuPortalTarget={document.body}
-                                                menuPosition={"fixed"}
-                                                styles={{
-                                                    container: () => ({
-                                                        width: 300,
-                                                    }),
-                                                }}></Select>
-                                        ) : (
+                                                <DropDown
+                                                    options={timePeriods}
+                                                    defaultValue={timePeriods.find(
+                                                        (timePeriod) => timePeriod.value === contentReference.timePeriodId
+                                                    )}
+                                                    menuPortalTarget={document.body}
+                                                    menuPosition={"fixed"}></DropDown>
+                                            ) : (
 
-                                        )*/}
+                                            )*/}
                                     </View>
                                 </TouchableOpacity>
                             );
                         })}
                 </View>
-                <View style={styles.break} />
-                <Text style={styles.chapterMaterialHeader}>Chapter Quiz</Text>
-
-                {!props.editMode && AuthenticationService.getInstance().isLecturer() && (
-                    <View style={styles.chapterMaterialElements}>
-                        {courseQuizzes?.map((quiz) => {
-                            return (
-                                <View style={styles.chapterMaterialElement}>
-                                    <MaterialCommunityIcons
-                                        name="head-question-outline"
-                                        size={28}
-                                        color="white"
-                                        style={styles.icon}
-                                    />
-                                    <Text style={styles.chapterMaterialElementText}>{quiz.name}</Text>
-                                </View>
-                            );
-                        })}
-                    </View>
-                )}
-
-                {props.editMode && editChapterQuiz()}
             </View>
             {props.editMode && AuthenticationService.getInstance().isLecturer() && (
                 <View style={styles.chapterEditRow}>
@@ -175,7 +128,9 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                     </TouchableOpacity> */}
                     <TouchableOpacity
                         onPress={() => {
-                            navigation.navigate("CHAPTER", { chapterId: chapter?.id });
+                            navigation.navigate("CHAPTER", {
+                                chapterId: chapter?.id,
+                            });
                         }}>
                         <MaterialIcons name="edit" size={28} color="white" style={styles.icon} />
                     </TouchableOpacity>
@@ -183,44 +138,6 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
             )}
         </View>
     );
-
-    function editChapterQuiz() {
-        return (
-            <>
-                <View style={styles.chapterMaterialElements}>
-                    {courseQuizzes?.map((quiz) => {
-                        return (
-                            <TouchableOpacity
-                                style={styles.chapterMaterialElement}
-                                onPress={() =>
-                                    navigation.navigate("CREATE_QUIZ", {
-                                        quiz: quiz,
-                                        chapterId: chapter?.id,
-                                        courseId: courseId,
-                                    })
-                                }>
-                                <MaterialCommunityIcons
-                                    name="head-question-outline"
-                                    size={28}
-                                    color="white"
-                                    style={styles.icon}
-                                />
-                                <Text style={styles.chapterMaterialElementText}>{quiz.name}</Text>
-                            </TouchableOpacity>
-                        );
-                    })}
-                </View>
-                <View style={styles.chapterMaterialElements}>
-                    <TextButton
-                        title={i18n.t("itrex.createQuiz")}
-                        onPress={() => {
-                            navigation.navigate("CREATE_QUIZ", { chapterId: chapter?.id, courseId: courseId });
-                        }}
-                    />
-                </View>
-            </>
-        );
-    }
 
     function updateCourseProgress() {
         if (course.id === undefined) {
@@ -315,7 +232,7 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
 const styles = StyleSheet.create({
     chapterContainer: {
         backgroundColor: "rgba(0,0,0,0.3)",
-        width: "80%",
+        width: "100%",
         marginTop: "1%",
         padding: "1.5%",
         borderWidth: 3,
@@ -361,7 +278,7 @@ const styles = StyleSheet.create({
         marginBottom: 5,
         paddingTop: "20px",
         flex: 1,
-        flexDirection: "row",
+        flexDirection: "column",
         alignSelf: "center",
     },
     chapterMaterialElement: {
@@ -378,13 +295,5 @@ const styles = StyleSheet.create({
     icon: {
         paddingLeft: 10,
         paddingRight: 10,
-    },
-    break: {
-        borderBottomColor: dark.theme.lightGreen,
-        borderBottomWidth: 2,
-        width: "100%",
-        borderStyle: "dotted",
-        borderWidth: 2,
-        marginTop: 1,
     },
 });

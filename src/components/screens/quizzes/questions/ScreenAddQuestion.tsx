@@ -1,33 +1,25 @@
 /* eslint-disable complexity */
 import { RouteProp, useFocusEffect, useRoute } from "@react-navigation/native";
 import React, { useState } from "react";
-import { ImageBackground, StyleSheet, View, TextInput, Text } from "react-native";
+import { ImageBackground, View, TextInput, Text } from "react-native";
 import { dark } from "../../../../constants/themes/dark";
 import { LocalizationContext } from "../../../Context";
-import { IChapter } from "../../../../types/IChapter";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import i18n from "../../../../locales";
 import { QuestionTypes } from "../../../../constants/QuestionTypes";
 
-import Select from "react-select";
 import { ISolutionMultipleChoice, ISolutionNumeric } from "../../../../types/ISolution";
 import { NumericQuestion } from "./NumericQuestion";
 import { SingleChoiceQuestion } from "./SingleChoiceQuestion";
 import { MultipleChoiceQuestion } from "./MultipleChoiceQuestion";
 import { IQuiz } from "../../../../types/IQuiz";
 import { CourseStackParamList } from "../../../../constants/navigators/NavigationRoutes";
-
-interface ChapterComponentProps {
-    chapter?: IChapter;
-    chapterId?: string;
-    editMode?: boolean;
-    quiz: IQuiz;
-    courseId?: string;
-}
+import { quizStyles } from "../quizStyles";
+import { DropDown } from "../../../uiElements/Dropdown";
 
 type ScreenCourseTabsRouteProp = RouteProp<CourseStackParamList, "CREATE_QUESTION">;
 
-export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
+export const ScreenAddQuestion: React.FC = () => {
     React.useContext(LocalizationContext);
     const [questionText, setQuestionText] = useState<string>(i18n.t("itrex.addQuestionText"));
     const route = useRoute<ScreenCourseTabsRouteProp>();
@@ -36,6 +28,7 @@ export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
     const question = route.params.question;
     const [quiz] = useState<IQuiz | undefined>(quizTemp);
 
+    // Selection choices
     const kindOfQuestionOptions = [
         { value: QuestionTypes.MULTIPLE_CHOICE, label: "Multiple Choice" },
         { value: QuestionTypes.SINGLE_CHOICE, label: "Single Choice" },
@@ -46,9 +39,13 @@ export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
     const [solutionMultiChoice, setSolutionMutliChoice] = useState<ISolutionMultipleChoice>();
     const [solutionSingleChoice, setSolutionSingleChoice] = useState<string>();
 
-    // Make Single Choice default
-    const defaultKindOfQuestionValue = question !== undefined ? question?.type : kindOfQuestionOptions[1].value;
-    const [selectedKindOfQuestion, setKindOfQuestion] = useState<QuestionTypes | undefined>(defaultKindOfQuestionValue);
+    // Make Single Choice default or saved user selection.
+    const index = kindOfQuestionOptions.findIndex((x) => x.value == question?.type);
+    const defaultKindOfQuestionValue = index !== -1 ? kindOfQuestionOptions[index] : kindOfQuestionOptions[1];
+
+    const [selectedKindOfQuestion, setKindOfQuestion] = useState<QuestionTypes | undefined>(
+        defaultKindOfQuestionValue.value
+    );
 
     useFocusEffect(
         // eslint-disable-next-line complexity
@@ -73,18 +70,18 @@ export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
     );
 
     return (
-        <ImageBackground source={require("../../../../constants/images/Background1-1.png")} style={styles.image}>
-            <View style={[styles.headContainer]}>
-                <View style={styles.borderContainer}>
+        <ImageBackground source={require("../../../../constants/images/Background1-1.png")} style={quizStyles.image}>
+            <View style={[quizStyles.headContainer]}>
+                <View style={quizStyles.borderContainer}>
                     <TextInput
-                        style={styles.questionInput}
+                        style={quizStyles.questionInput}
                         value={questionText}
                         onChangeText={(text) => {
                             setQuestionText(text);
                         }}
                         multiline={true}
                     />
-                    <MaterialCommunityIcons name="pen" size={24} color={dark.theme.darkGreen} style={styles.icon} />
+                    <MaterialCommunityIcons name="pen" size={24} color={dark.theme.darkGreen} style={quizStyles.icon} />
                 </View>
             </View>
             {selectKindOfQuestion()}
@@ -92,26 +89,21 @@ export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
         </ImageBackground>
     );
 
+    /**
+     * Selection for the kind of question to add.
+     *
+     * @returns
+     */
     function selectKindOfQuestion() {
         return (
-            <View style={styles.card}>
-                <Text style={styles.cardHeader}>{i18n.t("itrex.kindOfQuestion")}</Text>
-                <View style={styles.filterContainer}>
+            <View style={quizStyles.card}>
+                <Text style={quizStyles.cardHeader}>{i18n.t("itrex.kindOfQuestion")}</Text>
+                <View style={quizStyles.filterContainer}>
                     <View style={{ padding: 8, flex: 1 }}>
-                        <Select
+                        <DropDown
                             options={kindOfQuestionOptions}
                             defaultValue={defaultKindOfQuestionValue}
                             onChange={(option) => setKindOfQuestion(option?.value)}
-                            theme={(theme) => ({
-                                ...theme,
-                                borderRadius: 5,
-                                colors: {
-                                    ...theme.colors,
-                                    primary25: dark.Opacity.darkBlue1,
-                                    primary: dark.Opacity.pink,
-                                    backgroundColor: dark.Opacity.darkBlue1,
-                                },
-                            })}
                         />
                     </View>
                 </View>
@@ -119,6 +111,11 @@ export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
         );
     }
 
+    /**
+     * Set the input fields for the selected kind of question.
+     * @returns
+     *
+     */
     function setInputFields() {
         switch (selectedKindOfQuestion) {
             case QuestionTypes.NUMERIC:
@@ -163,62 +160,3 @@ export const ScreenAddQuestion: React.FC<ChapterComponentProps> = () => {
         }
     }
 };
-
-const styles = StyleSheet.create({
-    headContainer: {
-        flexDirection: "row",
-        alignItems: "flex-start",
-        paddingTop: "3%",
-        paddingLeft: "3%",
-    },
-    borderContainer: {
-        height: 100,
-        flex: 3,
-        flexDirection: "row",
-        borderBottomColor: "rgba(70,74,91,0.5)",
-        borderBottomWidth: 3,
-    },
-    icon: {
-        position: "relative",
-        alignItems: "flex-start",
-    },
-    image: {
-        flex: 1,
-        resizeMode: "stretch",
-    },
-    questionInput: {
-        color: "white",
-        fontSize: 24,
-        fontWeight: "bold",
-        width: "100%",
-        height: "90%",
-        margin: 2,
-        padding: 5,
-        borderColor: "white",
-        borderStyle: "dotted",
-        textAlign: "center",
-        borderWidth: 1,
-        borderRadius: 5,
-    },
-    card: {
-        marginTop: 20,
-        maxWidth: "35%",
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "flex-start",
-        backgroundColor: dark.Opacity.grey,
-    },
-    cardHeader: {
-        padding: 16,
-        fontSize: 20,
-        fontWeight: "bold",
-        color: "white",
-        textAlign: "center",
-        flexGrow: 1,
-    },
-    filterContainer: {
-        flexGrow: 4,
-        flexDirection: "row",
-        flexWrap: "nowrap",
-    },
-});

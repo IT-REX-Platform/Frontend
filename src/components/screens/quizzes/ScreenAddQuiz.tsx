@@ -1,15 +1,13 @@
 /* eslint-disable complexity */
 import { RouteProp, useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
 import React, { useState } from "react";
-import { Text, ImageBackground, StyleSheet, View, TextInput, TouchableOpacity } from "react-native";
+import { Text, ImageBackground, View, TextInput, TouchableOpacity } from "react-native";
 import { dark } from "../../../constants/themes/dark";
-import { LocalizationContext } from "../../Context";
-import { IChapter } from "../../../types/IChapter";
+import { CourseContext, LocalizationContext } from "../../Context";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { TextButton } from "../../uiElements/TextButton";
 import i18n from "../../../locales";
 import { RequestFactory } from "../../../api/requests/RequestFactory";
-import { EndpointsChapter } from "../../../api/endpoints/EndpointsChapter";
 import { ScreenCourseOverviewNavigationProp } from "../course/ScreenCourseOverview";
 import { QuestionCard } from "../../cards/QuestionCard";
 import { ScrollView } from "react-native-gesture-handler";
@@ -18,35 +16,33 @@ import { validateQuiz } from "../../../helperScripts/validateQuiz";
 import { IQuiz } from "../../../types/IQuiz";
 import { CourseStackParamList } from "../../../constants/navigators/NavigationRoutes";
 import { EndpointsQuiz } from "../../../api/endpoints/EndpointsQuiz";
+import { ICourse } from "../../../types/ICourse";
+import { quizStyles } from "./quizStyles";
 
 interface ChapterComponentProps {
-    chapter?: IChapter;
-    chapterId?: string;
-    editMode?: boolean;
     quiz?: IQuiz;
 }
 
 const endpointsQuiz: EndpointsQuiz = new EndpointsQuiz();
 type ScreenCourseTabsRouteProp = RouteProp<CourseStackParamList, "CREATE_QUIZ">;
 
-export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
+export const ScreenAddQuiz: React.FC<ChapterComponentProps> = (props) => {
     React.useContext(LocalizationContext);
-    const route = useRoute<ScreenCourseTabsRouteProp>();
     const navigation = useNavigation<ScreenCourseOverviewNavigationProp>();
+    const route = useRoute<ScreenCourseTabsRouteProp>();
 
-    let chapterId = route.params.chapterId;
-    const quizWithQuestions = route.params.quiz;
+    // Get course infos from context.
+    const course: ICourse = React.useContext(CourseContext);
+    let quizWithQuestions = props.quiz;
 
-    const courseId = route.params.courseId;
-
-    if (chapterId == "undefined") {
-        chapterId = undefined;
+    if (route.params !== undefined) {
+        quizWithQuestions = route.params.quiz;
     }
 
+    const courseId = course.id;
     const initialQuizName = quizWithQuestions?.name == undefined ? "My new Quiz" : quizWithQuestions.name;
 
     const [quiz] = useState<IQuiz>({} as IQuiz);
-    const chapterEndpoint = new EndpointsChapter();
     const [quizName, setQuizName] = useState<string>(initialQuizName);
 
     const [questions, setQuestions] = useState<(IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric)[]>(
@@ -55,32 +51,28 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
 
     useFocusEffect(
         React.useCallback(() => {
-            if (route.params.quiz === undefined) {
-                if (chapterId != undefined) {
-                    const request: RequestInit = RequestFactory.createGetRequest();
-                    chapterEndpoint
-                        .getChapter(request, chapterId, undefined, i18n.t("itrex.getChapterError"))
-                        .then((chapter) => {
-                            setQuizName(chapter.name + " - Quiz");
-                        });
-                } else {
-                    quiz.name = "My new Quiz";
-                }
+            if (props.quiz !== undefined) {
+                return;
             } else {
                 if (quizWithQuestions === undefined) {
                     return;
                 }
                 setQuestions(quizWithQuestions.questions);
+                console.log(questions);
             }
         }, [])
     );
 
     return (
-        <ImageBackground source={require("../../../constants/images/Background1-1.png")} style={styles.image}>
-            <View style={[styles.headContainer]}>
-                <View style={styles.borderContainer}>
-                    <TextInput style={styles.quizHeader} value={quizName} onChangeText={(text) => setQuizName(text)} />
-                    <MaterialCommunityIcons name="pen" size={24} color={dark.theme.darkGreen} style={styles.icon} />
+        <ImageBackground source={require("../../../constants/images/Background1-1.png")} style={quizStyles.image}>
+            <View style={[quizStyles.headContainer]}>
+                <View style={quizStyles.borderContainer}>
+                    <TextInput
+                        style={quizStyles.quizHeader}
+                        value={quizName}
+                        onChangeText={(text) => setQuizName(text)}
+                    />
+                    <MaterialCommunityIcons name="pen" size={24} color={dark.theme.darkGreen} style={quizStyles.icon} />
                 </View>
                 <View>
                     {quizWithQuestions?.id !== undefined && (
@@ -93,17 +85,22 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
                 </View>
             </View>
 
-            <View style={styles.contentContainer}>
+            <View style={{ flex: 2, paddingLeft: "3%" }}>
                 {displayQuestions()}
-                <View style={[styles.addQuizContainer]}>
-                    <TouchableOpacity style={styles.btnAdd} onPress={() => navigateTo()}>
-                        <Text style={styles.txtAddQuestion}>{i18n.t("itrex.addQuestion")}</Text>
+                <View style={[quizStyles.addQuizContainer]}>
+                    <TouchableOpacity style={quizStyles.btnAdd} onPress={() => navigateTo()}>
+                        <Text style={quizStyles.txtAddQuestion}>{i18n.t("itrex.addQuestion")}</Text>
                     </TouchableOpacity>
                 </View>
             </View>
         </ImageBackground>
     );
 
+    /**
+     * Navigate to the Question creation page.
+     *
+     * @returns
+     */
     function navigateTo() {
         if (courseId === undefined) {
             return;
@@ -118,6 +115,11 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
         navigation.navigate("CREATE_QUESTION", { quiz: myNewQuiz, courseId: courseId });
     }
 
+    /**
+     * Display questions if existing.
+     *
+     * @returns
+     */
     function displayQuestions() {
         if (courseId === undefined) {
             return;
@@ -132,12 +134,12 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
         if (questions === undefined || questions.length === 0) {
             return (
                 <View style={{ minHeight: "85%", alignItems: "center" }}>
-                    <Text style={styles.txtAddQuestion}>{i18n.t("itrex.noQuestions")}</Text>
+                    <Text style={quizStyles.txtAddQuestion}>{i18n.t("itrex.noQuestions")}</Text>
                 </View>
             );
         } else {
             return (
-                <ScrollView style={styles.scrollContainer}>
+                <ScrollView style={quizStyles.scrollContainer}>
                     {questions.map((question: IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric) => {
                         return <QuestionCard question={question} quiz={myNewQuiz} courseId={courseId} />;
                     })}
@@ -146,6 +148,12 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
         }
     }
 
+    /**
+     * Save a quiz if not existing.
+     *
+     * @returns
+     *
+     */
     function saveQuiz() {
         if (quizWithQuestions?.id !== undefined) {
             updateQuiz();
@@ -164,13 +172,19 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
                 i18n.t("itrex.saveQuizSuccess"),
                 i18n.t("itrex.saveQuizError")
             );
+
             response.then((quiz) => {
                 console.log(quiz);
-                navigation.navigate("TIMELINE");
+                navigation.navigate("QUIZ_POOL");
             });
         }
     }
 
+    /**
+     * Update a existing quiz.
+     *
+     * @returns
+     */
     function updateQuiz() {
         if (validateQuiz(courseId, quizName, questions)) {
             const quizToUpdate = validateQuiz(courseId, quizName, questions);
@@ -187,11 +201,15 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
             );
             response.then((quiz) => {
                 console.log(quiz);
-                navigation.navigate("TIMELINE");
+                navigation.navigate("QUIZ_POOL");
             });
         }
     }
 
+    /**
+     * Delete a existing quiz.
+     * @returns
+     */
     function deleteQuiz() {
         if (quizWithQuestions?.id === undefined) {
             return;
@@ -206,70 +224,7 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = () => {
             i18n.t("itrex.deleteQuizError")
         );
         response.then((questions) => {
-            console.log(questions), navigation.navigate("TIMELINE");
+            console.log(questions), navigation.navigate("QUIZ_POOL");
         });
     }
 };
-
-const styles = StyleSheet.create({
-    headContainer: {
-        flexDirection: "row",
-        alignItems: "flex-start",
-        paddingTop: "3%",
-        paddingLeft: "3%",
-    },
-    scrollContainer: {
-        width: "screenWidth",
-        paddingBottom: 20,
-    },
-    borderContainer: {
-        flex: 3,
-        flexDirection: "row",
-        borderBottomColor: "rgba(70,74,91,0.5)",
-        borderBottomWidth: 3,
-    },
-    quizHeader: {
-        color: "white",
-        fontSize: 24,
-        fontWeight: "bold",
-        width: "100%",
-    },
-    icon: {
-        position: "relative",
-        alignItems: "flex-start",
-    },
-    image: {
-        flex: 1,
-        resizeMode: "stretch",
-    },
-    txtAddQuestion: {
-        alignSelf: "center",
-        color: "white",
-        fontSize: 18,
-        fontWeight: "bold",
-    },
-    addQuizContainer: {
-        flexDirection: "column",
-        backgroundColor: "rgba(0,0,0,0.3)",
-        height: "50px",
-        width: "90%",
-        padding: "0.5%",
-        margin: 20,
-        borderWidth: 3,
-        borderColor: dark.theme.lightBlue,
-    },
-    btnAdd: {
-        width: "100%",
-        height: "100%",
-        borderWidth: 2,
-        borderColor: "rgba(79,175,165,1.0)",
-        borderRadius: 25,
-        borderStyle: "dotted",
-        alignItems: "center",
-        justifyContent: "center",
-    },
-    contentContainer: {
-        flex: 2,
-        paddingLeft: "3%",
-    },
-});

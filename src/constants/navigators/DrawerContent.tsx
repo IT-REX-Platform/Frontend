@@ -31,10 +31,6 @@ export const DrawerContent: React.FC<DrawerContentComponentProps> = (props: Draw
     const initialCourseState: ICourse[] = [];
     const [courses, setCourses] = useState(initialCourseState);
 
-    // Theme state.
-    const [isDarkTheme, setIsDarkTheme] = React.useState(false);
-    const toggleIsDarkTheme = () => setIsDarkTheme((previousState) => !previousState);
-
     // Localisation.
     const { locale, setLocale } = React.useContext(LocalizationContext);
     const toggleIsGerman = () => {
@@ -93,10 +89,6 @@ export const DrawerContent: React.FC<DrawerContentComponentProps> = (props: Draw
             <Text style={styles.sectionHeader}>{i18n.t("itrex.quickSettings")}</Text>
             <View style={styles.settingsContainer}>
                 <View style={styles.horizontalContainer}>
-                    <Text style={{ color: "white" }}>{i18n.t("itrex.darkTheme")}</Text>
-                    <Switch value={isDarkTheme} onValueChange={toggleIsDarkTheme} />
-                </View>
-                <View style={styles.horizontalContainer}>
                     <Text style={{ color: "white" }}>{i18n.t("itrex.switchLang")}</Text>
                     <Switch value={locale == "de-DE"} onValueChange={toggleIsGerman} />
                 </View>
@@ -115,7 +107,7 @@ export const DrawerContent: React.FC<DrawerContentComponentProps> = (props: Draw
         loggerService.trace("Getting all courses.");
         const request: RequestInit = RequestFactory.createGetRequest();
         endpointsCourse
-            .getUserCourses(request, undefined, undefined, i18n.t("itrex.getCoursesError"))
+            .getUserCourses(request, undefined, undefined, undefined, i18n.t("itrex.getCoursesError"))
             .then((receivedCourses) => setCourses(receivedCourses));
     }
 

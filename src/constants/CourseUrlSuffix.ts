@@ -1,4 +1,4 @@
-export enum CourseURLSuffix {
+export enum CourseUrlSuffix {
     USER = "/user",
     LEAVE = "/leave",
     JOIN = "/join",

@@ -12,7 +12,7 @@ import { ScreenCourseTabs } from "./course/ScreenCourseTabs";
 import { CourseContext, LocalizationContext } from "../Context";
 import { DrawerNavigationProp, DrawerScreenProps } from "@react-navigation/drawer";
 import { CourseStackParamList, RootDrawerParamList } from "../../constants/navigators/NavigationRoutes";
-import { VideoPoolComponent } from "../videoPoolComponent/VideoPoolComponent";
+import { VideoPoolComponent } from "../ContentPoolComponents/VideoPoolComponent";
 import { VideoComponent } from "../VideoComponent";
 import AuthenticationService from "../../services/AuthenticationService";
 import i18n from "../../locales";
@@ -20,7 +20,9 @@ import { ScreenAddChapter } from "./course/ScreenAddChapter";
 import { ScreenAddQuiz } from "./quizzes/ScreenAddQuiz";
 import { CourseRoles } from "../../constants/CourseRoles";
 import { IUser } from "../../types/IUser";
+import { ScreenChapterStudent } from "./ScreenChapterStudent";
 import { ScreenAddQuestion } from "./quizzes/questions/ScreenAddQuestion";
+import { QuizPoolComponent } from "../ContentPoolComponents/QuizPoolComponent";
 import { ICourseProgressTracker } from "../../types/ICourseProgressTracker";
 import ProgressService from "../../services/ProgressService";
 
@@ -101,6 +103,8 @@ export const ScreenCourse: React.FC = () => {
                 <CourseStack.Screen name="INFO" component={ScreenCourseTabs}></CourseStack.Screen>
 
                 {getUploadVideoScreen()}
+                {getQuizPoolScreen()}
+                <CourseStack.Screen name="CHAPTER_CONTENT" component={ScreenChapterStudent}></CourseStack.Screen>
                 {getCreateChapterScreen()}
                 {getQuizCreation()}
             </CourseStack.Navigator>
@@ -120,6 +124,22 @@ export const ScreenCourse: React.FC = () => {
             );
         } else {
             return null;
+        }
+    }
+
+    function getQuizPoolScreen() {
+        if (user.courses === undefined || course.id === undefined) {
+            return <></>;
+        }
+
+        const courseRole: CourseRoles = user.courses[course.id];
+
+        if (courseRole === CourseRoles.OWNER || courseRole === undefined) {
+            return (
+                <>
+                    <CourseStack.Screen name="QUIZ_POOL" component={QuizPoolComponent}></CourseStack.Screen>
+                </>
+            );
         }
     }
 

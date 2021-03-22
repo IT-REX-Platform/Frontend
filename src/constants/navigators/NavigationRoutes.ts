@@ -4,6 +4,7 @@ import { IVideo } from "../../types/IVideo";
 import { IQuiz } from "../../types/IQuiz";
 import { ISolutionMultipleChoice } from "../../types/ISolution";
 import { IQuestionMultipleChoice, IQuestionNumeric, IQuestionSingleChoice } from "../../types/IQuestion";
+import { IChapter } from "../../types/IChapter";
 
 const prefix = Linking.makeUrl("it-rex://");
 
@@ -11,6 +12,7 @@ export const config = {
     screens: {
         ROUTE_HOME: "home",
         ROUTE_LOGIN: "login",
+        ROUTE_LOGOUT: "logout",
         ROUTE_CREATE_COURSE: "createCourse",
         ROUTE_JOIN_COURSE: "joinCourse",
         ROUTE_COURSE_DETAILS: {
@@ -30,10 +32,12 @@ export const config = {
                     path: "chapter/:chapterId",
                     screens: {},
                 },
-                CREATE_QUIZ: {
-                    path: "chapter/createQuiz/:chapterId/",
+                CHAPTER_CONTENT: {
+                    path: "chapter/:chapterId/content",
                     screens: {},
                 },
+                QUIZ_POOL: "QUIZ_POOL",
+                CREATE_QUIZ: "CREATE_QUIZ",
                 CREATE_QUESTION: {
                     path: "chapter/createQuiz/createQuestion/:chapterId",
                     screens: {},
@@ -48,6 +52,7 @@ export type RootDrawerParamList = {
     ROUTE_CREATE_COURSE: undefined;
     ROUTE_JOIN_COURSE: { courseId?: string };
     ROUTE_COURSE_DETAILS: { courseId: string; screen?: string };
+    ROUTE_CHAPTER_CONTENT: { chapterId: string };
 };
 
 export type CourseStackParamList = {
@@ -57,18 +62,24 @@ export type CourseStackParamList = {
         video: IVideo;
     };
     CHAPTER_CREATE: undefined;
+    QUIZ_POOL: undefined;
     CREATE_QUIZ: {
+        chapter?: IChapter;
         courseId?: string;
         chapterId?: string;
         questionId?: string;
         quiz?: IQuiz;
+        quizId?: string;
     };
     CREATE_QUESTION: {
         quiz?: IQuiz;
         courseId?: string;
         question?: IQuestionMultipleChoice | IQuestionNumeric | IQuestionSingleChoice;
     };
-    CHAPTER: { chapterId: string | undefined };
+    CHAPTER: {
+        chapterId: string | undefined;
+    };
+    CHAPTER_CONTENT: { chapterId: string };
 };
 
 export type CourseTabParamList = {
@@ -87,8 +98,10 @@ export class NavigationRoutes {
     static ROUTE_COURSE_DETAILS_TIMELINE = "ROUTE_COURSE_DETAILS_TIMELINE";
     static ROUTE_VIDEO_POOL = "ROUTE_VIDEO_POOL";
     static ROUTE_VIDEO = "ROUTE_VIDEO";
+    static ROUTE_QUIZ_POOL = "ROUTE_QUIZ_POOL";
     static ROUTE_CREATE_QUIZ = "ROUTE_CREATE_QUIZ";
     static ROUTE_CREATE_QUESTION = "ROUTE_CREATE_QUESTION";
+    static ROUTE_CHAPTER_CONTENT = "ROUTE_CHAPTER_CONTENT";
 
     static linking: LinkingOptions = {
         prefixes: [prefix],

@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { CourseList } from "../CourseList";
 import i18n from "../../locales";
-import Select from "react-select";
 import { ICourse } from "../../types/ICourse";
 import { Header } from "../../constants/navigators/Header";
 import { LocalizationContext } from "../Context";
@@ -17,6 +16,7 @@ import { NavigationRoutes } from "../../constants/navigators/NavigationRoutes";
 import { ITREXRoles } from "../../constants/ITREXRoles";
 import { createAlert } from "../../helperScripts/createAlert";
 import { ScrollView } from "react-native-gesture-handler";
+import { DropDown } from "../uiElements/Dropdown";
 
 interface ScreenHomeProps {
     userRole: ITREXRoles;
@@ -64,7 +64,7 @@ export const ScreenHome: React.FC<ScreenHomeProps> = (props) => {
         if (isFocused) {
             const request: RequestInit = RequestFactory.createGetRequest();
             endpointsCourse
-                .getUserCourses(request, undefined, undefined, i18n.t("itrex.getCoursesError"))
+                .getUserCourses(request, undefined, undefined, undefined, i18n.t("itrex.getCoursesError"))
                 .then((receivedCourses: ICourse[]) => setAllCourses(receivedCourses));
         }
     }, [isFocused]);
@@ -76,17 +76,15 @@ export const ScreenHome: React.FC<ScreenHomeProps> = (props) => {
         setSelectedActiveState: CourseActivityState | undefined
     ): void {
         const request: RequestInit = RequestFactory.createGetRequest();
-        const activeOnly = getEndDateBasedOnFilter(setSelectedActiveState);
+        const activeOnly: boolean | undefined = getEndDateBasedOnFilter(setSelectedActiveState);
 
         // Only show published courses to student
         if (userRole === ITREXRoles.ROLE_STUDENT) {
             publishState = CoursePublishState.PUBLISHED;
         }
 
-        const filterParams: ICourse = { publishState, activeOnly };
-
         endpointsCourse
-            .getUserCourses(request, filterParams, undefined, i18n.t("itrex.getCoursesError"))
+            .getUserCourses(request, publishState, activeOnly, undefined, i18n.t("itrex.getCoursesError"))
             .then((receivedCourses: ICourse[]) => setFilteredCourses(receivedCourses));
     }
 
@@ -100,40 +98,24 @@ export const ScreenHome: React.FC<ScreenHomeProps> = (props) => {
                 <View style={styles.filterContainer}>
                     {userRole !== ITREXRoles.ROLE_STUDENT && (
                         <View style={{ padding: 8, flex: 1 }}>
-                            <Text style={{ color: "white" }}>{i18n.t("itrex.filterPubUnpub")}</Text>
-                            <Select
+                            <Text style={{ color: "white", textAlign: "center" }}>
+                                {i18n.t("itrex.filterPubUnpub")}
+                            </Text>
+                            <DropDown
                                 options={publishStateFilterOptions}
                                 defaultValue={defaultPublishStateValue}
                                 onChange={(option) => setPublishStateFilter(option?.value)}
-                                theme={(theme) => ({
-                                    ...theme,
-                                    borderRadius: 5,
-                                    colors: {
-                                        ...theme.colors,
-                                        primary25: dark.Opacity.darkBlue1,
-                                        primary: dark.Opacity.pink,
-                                        backgroundColor: dark.Opacity.darkBlue1,
-                                    },
-                                })}
                             />
                         </View>
                     )}
                     <View style={{ padding: 8, flex: 1 }}>
-                        <Text style={{ color: "white" }}>{i18n.t("itrex.filterActiveInActive")}</Text>
-                        <Select
+                        <Text style={{ color: "white", textAlign: "center" }}>
+                            {i18n.t("itrex.filterActiveInActive")}
+                        </Text>
+                        <DropDown
                             options={activeStateFilterOptions}
                             defaultValue={defaultActiveStateValue}
                             onChange={(option) => setSelectedActiveState(option?.value)}
-                            theme={(theme) => ({
-                                ...theme,
-                                borderRadius: 5,
-                                background: dark.theme.grey,
-                                colors: {
-                                    ...theme.colors,
-                                    primary25: dark.Opacity.darkBlue1,
-                                    primary: dark.Opacity.pink,
-                                },
-                            })}
                         />
                     </View>
                 </View>
@@ -216,11 +198,13 @@ const styles = StyleSheet.create({
         justifyContent: "flex-start",
     },
     card: {
+        marginTop: 10,
         maxWidth: "50%",
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "flex-start",
-        backgroundColor: dark.Opacity.grey,
+        zIndex: 11,
+        // backgroundColor: dark.Opacity.grey,
     },
     cardHeader: {
         padding: 16,

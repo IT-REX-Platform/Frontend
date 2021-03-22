@@ -1,16 +1,19 @@
 import * as AuthSession from "expo-auth-session";
 import { loggerFactory } from "../../logger/LoggerConfig";
 import { EndpointsUserInfo } from "../api/endpoints/EndpointsUserInfo";
+import { RequestAuthorization } from "../api/requests/RequestAuthorization";
 import { RequestFactory } from "../api/requests/RequestFactory";
 import { itRexVars } from "../constants/Constants";
 import { ITREXRoles } from "../constants/ITREXRoles";
 import { IUser } from "../types/IUser";
 import { AsyncStorageService, StorageConstants } from "./StorageService";
+import * as WebBrowser from "expo-web-browser";
 import i18n from "../locales";
 
 export const discovery = {
     authorizationEndpoint: itRexVars().authEndpoint,
     tokenEndpoint: itRexVars().authTokenEndpoint,
+    authTokenRevoke: itRexVars().authTokenRevoke,
 };
 
 export default class AuthenticationService {
@@ -78,7 +81,7 @@ export default class AuthenticationService {
                     })
                     .catch((error) => {
                         // Refresh does not work
-                        this.loggerApi.error("Could not refresh oauth2 token.", error);
+                        this.loggerApi.error("Could not refresh oauth2 token: " + error.message);
                         new AsyncStorageService().deleteItem(StorageConstants.OAUTH_REFRESH_TOKEN);
                         reject(false);
                     });
@@ -103,8 +106,16 @@ export default class AuthenticationService {
         if (this.refreshTimeout !== undefined) {
             clearTimeout(this.refreshTimeout);
         }
+        if (this.tokenResponse !== undefined) {
+            this.logout();
+        }
+
         new AsyncStorageService().deleteItem(StorageConstants.OAUTH_REFRESH_TOKEN);
         this.setTokenResponse({} as AuthSession.TokenResponseConfig);
+    }
+
+    private logout() {
+        WebBrowser.openBrowserAsync(discovery.authTokenRevoke + "?redirect_uri=" + itRexVars().frontendUrl + "logout");
     }
 
     /**
