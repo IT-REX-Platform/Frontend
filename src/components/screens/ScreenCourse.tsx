@@ -154,18 +154,14 @@ export const ScreenCourse: React.FC = () => {
     }
 
     function getQuizPoolScreen() {
-        if (user.courses === undefined || course.id === undefined) {
+        if (user.courses == undefined || course.id == undefined) {
             return <></>;
         }
 
         const courseRole: CourseRoles = user.courses[course.id];
 
-        if (courseRole === CourseRoles.OWNER || courseRole === undefined) {
-            return (
-                <>
-                    <CourseStack.Screen name="QUIZ_POOL" component={QuizPoolComponent} />
-                </>
-            );
+        if (courseRole === CourseRoles.OWNER || courseRole == undefined) {
+            return <CourseStack.Screen name="QUIZ_POOL" component={QuizPoolComponent} />;
         }
     }
 
@@ -181,13 +177,13 @@ export const ScreenCourse: React.FC = () => {
     }
 
     function getQuizCreation() {
-        if (user.courses === undefined || course.id === undefined) {
+        if (user.courses == undefined || course.id == undefined) {
             return <></>;
         }
 
         const courseRole: CourseRoles = user.courses[course.id];
 
-        if (courseRole === CourseRoles.OWNER || courseRole === undefined) {
+        if (courseRole === CourseRoles.OWNER || courseRole == undefined) {
             return (
                 <>
                     <CourseStack.Screen name="CREATE_QUIZ" component={ScreenAddQuiz} />
