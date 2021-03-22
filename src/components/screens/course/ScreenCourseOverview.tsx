@@ -174,11 +174,7 @@ export const ScreenCourseOverview: React.FC = () => {
             return <></>;
         }
 
-        return (
-            <View style={styles.singleButtonContainer}>
-                <TextButton color="pink" title={i18n.t("itrex.leaveCourse")} onPress={() => _leaveCourse()} />
-            </View>
-        );
+        return <TextButton color="pink" title={i18n.t("itrex.leaveCourse")} onPress={() => _leaveCourse()} />;
     }
 
     function _leaveCourse() {
@@ -228,10 +224,6 @@ const styles = StyleSheet.create({
     dualButtonContainer: {
         flexDirection: "row",
         justifyContent: "center",
-    },
-    singleButtonContainer: {
-        width: "25%",
-        marginTop: 15,
     },
     verticalSeparator: {
         marginTop: 85,
