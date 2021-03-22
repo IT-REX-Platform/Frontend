@@ -35,7 +35,7 @@ import { CONTENTREFERENCETYPE, IContent } from "../../../types/IContent";
 import { EndpointsContentReference } from "../../../api/endpoints/EndpointsContentReference";
 import { IQuiz } from "../../../types/IQuiz";
 import { EndpointsQuiz } from "../../../api/endpoints/EndpointsQuiz";
-import { contentPoolStyles } from "../../contentPoolComponentsTEST/contentPoolStyles";
+import { contentPoolStyles } from "../../contentPoolComponents/contentPoolStyles";
 import { DropDown } from "../../uiElements/Dropdown";
 
 type ScreenCourseTabsNavigationProp = CompositeNavigationProp<
