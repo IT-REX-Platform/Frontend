@@ -51,6 +51,7 @@ import { emptyString } from "react-select/src/utils";
 import { ProgressBar } from "react-native-paper";
 import { black } from "react-native-paper/lib/typescript/styles/colors";
 import { BackgroundImage } from "react-native-elements/dist/config";
+import ProgressService from "../../services/ProgressService";
 
 const endpointsVideo = new EndpointsVideo();
 const endpointsChapter = new EndpointsChapter();
@@ -155,7 +156,7 @@ export const ScreenChapterStudent: React.FC = () => {
     }, [courseProgress, chapterId]);
 
     useEffect(() => {
-        if (chapterPlaylist.length > 0 && currentVideo == undefined) {
+        if (chapterPlaylist.length > 0 && (currentVideo == undefined || currentVideo.chapterId != chapterId)) {
             setCurrentVideo(chapterPlaylist[0]);
         }
     }, [playlistShouldUpdate]);
@@ -471,10 +472,22 @@ export const ScreenChapterStudent: React.FC = () => {
             if (timeSinceLastProgressUpdatePush >= 2500) {
                 timeSinceLastProgressUpdatePush = 0;
 
-                await createContentProgressIfNecessary(currentVideo).then(async () => {
+                let progress: number = Math.floor(status["positionMillis"] * 0.001);
+                ProgressService.getInstance().updateContentProgress(
+                    course.id,
+                    currentVideo,
+                    progress,
+                    (newContentProgress, hasCreated) => {
+                        if (hasCreated) updateCourseProgress();
+                    }
+                );
+
+                /*await createContentProgressIfNecessary(currentVideo).then(async () => {
                     changeVideoWatchProgress(currentVideo, Math.floor(status["positionMillis"] * 0.001));
                     setVideoCompletedIfNecessary(currentVideo, status);
-                });
+                });*/
+
+                setVideoCompletedIfNecessary(currentVideo, status);
             }
         }
     }
