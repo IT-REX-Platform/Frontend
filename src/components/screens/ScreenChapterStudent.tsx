@@ -104,6 +104,7 @@ export const ScreenChapterStudent: React.FC = () => {
         return {
             value: timePeriod.id,
             label: "Due on: " + dateConverter(timePeriod.endDate),
+            end: timePeriod.endDate,
 
             //dateConverter(timePeriod.startDate) +
             //" - " +
@@ -198,8 +199,13 @@ export const ScreenChapterStudent: React.FC = () => {
                 console.log(contentProgress == undefined);
 
                 //if (item.timePeriodId)
+                if (getContentDate(item.timePeriodId) == "OVERDUE") {
+                    brd = dark.Opacity.pink;
+                } else if (getContentDate(item.timePeriodId) == "SCHEDULED") {
+                    brd = dark.Opacity.blueGreen;
+                }
 
-                brd = dark.Opacity.blueGreen;
+                //brd = dark.Opacity.blueGreen;
             } else if (contentProgress.state == ContentProgressTrackerState.STARTED) {
                 //if (contentProgress.id === undefined) {
                 //   return " ";
@@ -220,7 +226,12 @@ export const ScreenChapterStudent: React.FC = () => {
                 console.log("Progress:");
                 console.log(progress);
 
-                brd = dark.Opacity.lightGreen;
+                if (getContentDate(item.timePeriodId) == "OVERDUE") {
+                    brd = dark.Opacity.pink;
+                } else if (getContentDate(item.timePeriodId) == "SCHEDULED") {
+                    brd = dark.Opacity.lightGreen;
+                }
+
                 bck = "rgba(181,239,138, 0.5)";
             } else if (contentProgress.state == ContentProgressTrackerState.COMPLETED) {
                 //if (contentProgress.id === undefined) {
@@ -420,7 +431,7 @@ export const ScreenChapterStudent: React.FC = () => {
         let itemProgress: number;
         switch (item.contentReferenceType) {
             case CONTENTREFERENCETYPE.VIDEO:
-                itemProgress = contentProgress.progress / item.video?.length;
+                itemProgress = item.video?.length / contentProgress.progress;
                 return itemProgress;
             case CONTENTREFERENCETYPE.QUIZ:
                 if (contentProgress.state == "COMPLETED") {
@@ -433,23 +444,17 @@ export const ScreenChapterStudent: React.FC = () => {
         }
     }
 
-    function _getProgressPercent(content: IContentProgressTracker) {
-        if (content.id === undefined || content === undefined) {
-            return;
+    function getContentDate(contentID: string) {
+        const contentDate = timePeriods?.find((element) => element.value == contentID);
+        const currentDate = new Date();
+
+        if (contentDate?.end == undefined) {
+            return " ";
+        } else if (contentDate?.end < currentDate) {
+            return "OVERDUE";
+        } else if (contentDate?.end >= currentDate) {
+            return "SCHEDULED";
         }
-
-        const contentID = content.id;
-
-        const progressRequest: RequestInit = RequestFactory.createGetRequest();
-        endpointsProgress
-            .getContentProgress(progressRequest, contentID, undefined, "getContentProgressError")
-            .then((progress) => {
-                return progress?.progress?.toString + "%";
-            });
-
-        //const progressRequest: RequestInit = RequestFactory.createGetRequest();
-        //endpointsProgress.getContentProgress(progressRequest, content.id, undefined, i18n.t("itrex.getCourseProgressError") )
-        //.then( (progress) => {return progress?.toString + "%"})
     }
 
     function _splitPlaylist(pl: IContent[]) {
@@ -695,7 +700,7 @@ export const ScreenChapterStudent: React.FC = () => {
     }
 
     function _gotoNextChapter() {
-        let chapterIndex = chapterList.findIndex((i) => i.id);
+        let chapterIndex = chapterList.findIndex((i) => i.id == chapterId);
         //const chaindex = chapter.findIndex((x) => x.value == question?.type);
 
         console.log("ChapterIndex:");
@@ -704,6 +709,14 @@ export const ScreenChapterStudent: React.FC = () => {
         if (chapterList !== undefined) {
             (chapterIndex = chapterIndex + 1), console.log("IF Chapter List Not undefined:");
             console.log(chapterIndex);
+            if (chapterList[chapterIndex] == undefined) {
+                navigation.navigate("ROUTE_COURSE_DETAILS", {
+                    screen: "INFO",
+                    params: { courseId: course.id, screen: "OVERVIEW" },
+                });
+                return;
+            }
+
             navigation.navigate("CHAPTER_CONTENT", {
                 chapterId: chapterList[chapterIndex].id,
             });
@@ -711,7 +724,7 @@ export const ScreenChapterStudent: React.FC = () => {
     }
 
     function _gotoLastChapter() {
-        let chapterIndex = chapterList.findIndex((i) => i.id);
+        let chapterIndex = chapterList.findIndex((i) => i.id == chapterId);
         //const chaindex = chapter.findIndex((x) => x.value == question?.type);
 
         console.log("ChapterIndex:");
@@ -720,6 +733,14 @@ export const ScreenChapterStudent: React.FC = () => {
         if (chapterList !== undefined) {
             (chapterIndex = chapterIndex - 1), console.log("IF Chapter List Not undefined:");
             console.log(chapterIndex);
+
+            if (chapterList[chapterIndex] == undefined) {
+                navigation.navigate("ROUTE_COURSE_DETAILS", {
+                    screen: "INFO",
+                    params: { courseId: course.id, screen: "OVERVIEW" },
+                });
+                return;
+            }
             navigation.navigate("CHAPTER_CONTENT", {
                 chapterId: chapterList[chapterIndex].id,
             });
