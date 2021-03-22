@@ -55,6 +55,7 @@ export const en = {
         myCoursesDivider: "My Courses",
         quickSettings: "Quick settings",
         lastAccessedCourse: "Last accessed course",
+        noCourseAccessed: "No course has been accessed yet.",
         noCoursesLecturer: "No courses have been created yet!",
         noCoursesStudent: "No courses have been joined so far!",
 
@@ -101,7 +102,6 @@ export const en = {
         chapterMaterial: "Chapter Material",
         myNewChapter: "My new chapter",
         save: "Save",
-
         saveAndReturn: "Save & Return",
 
         chapterCreatedSuccess: "The chapter was created successfully.",
@@ -146,7 +146,6 @@ export const en = {
         quizNumericYourResult: "Your solution:",
         youReached: "You have reached ",
         percentageOf: "% of 100%.",
-
         outOf: "out of",
         solvedCorrectly: "questions were answered correctly.",
         returnToTimeline: "Return to Timeline",

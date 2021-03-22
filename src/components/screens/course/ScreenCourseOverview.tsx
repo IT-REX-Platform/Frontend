@@ -2,7 +2,6 @@
 import { CompositeNavigationProp, useFocusEffect, useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
 import { Text, ImageBackground, StyleSheet, View } from "react-native";
-import { dark } from "../../../constants/themes/dark";
 import { ICourse } from "../../../types/ICourse";
 import {
     CourseStackParamList,
@@ -51,117 +50,33 @@ export const ScreenCourseOverview: React.FC = () => {
     );
 
     return (
-        <View style={styles.rootContainer}>
-            <ImageBackground source={require("../../../constants/images/Background2.png")} style={styles.image}>
-                <View style={styles.container}>
-                    <View style={styles.content}>
-                        {getPublishedSate(course.publishState)}
-                        {checkForLeaveCourse()}
-                        <Text style={styles.textWhite}>{course.courseDescription}</Text>
-                        {createContentAsOwner()}
-                    </View>
-                </View>
-            </ImageBackground>
-        </View>
+        <ImageBackground source={require("../../../constants/images/Background2.png")} style={styles.imageContainer}>
+            <View style={styles.verticalSeparator}></View>
+            {_getPublishSate()}
+            {_checkForLeaveCourse()}
+            <Text style={styles.textWhite}>{course.courseDescription}</Text>
+            {_createContentAsOwner()}
+        </ImageBackground>
     );
 
-    function getDate(showDate: Date | undefined, title: string) {
-        return (
-            <Text style={{ color: "white" }}>
-                <Text style={{ fontWeight: "bold", marginEnd: 10 }}>{title}</Text>
-                {dateConverter(showDate)}
-            </Text>
-        );
-    }
-
-    function checkForLeaveCourse() {
-        if (user.courses === undefined || course.id === undefined) {
-            return <></>;
-        }
-
-        const courseRole: CourseRoles = user.courses[course.id];
-        return checkForUserRole(courseRole);
-    }
-
-    function checkForUserRole(courseRole: CourseRoles) {
-        if (courseRole === CourseRoles.OWNER || courseRole === undefined) {
-            // TODO: Undefined should never happen, buuuut currently does when creating a course.
-            // Apparently updating the token and then navigating isn't waiting long enough.
-            return <></>;
-        }
-
-        return (
-            <View style={[{ width: "25%", marginTop: 15 }]}>
-                <TextButton color="pink" title={i18n.t("itrex.leaveCourse")} onPress={() => leaveCourse()} />
-            </View>
-        );
-    }
-
-    function createContentAsOwner() {
-        if (user.courses === undefined || course.id === undefined) {
-            return <></>;
-        }
-
-        const courseRole = user.courses[course.id];
-        if (courseRole === CourseRoles.OWNER) {
-            return (
-                <View style={{ flexDirection: "row", width: "25%" }}>
-                    <TextButton title={i18n.t("itrex.videoPool")} onPress={() => goToVideoPool()} />
-                    <TextButton title={i18n.t("itrex.quizPool")} onPress={() => goToQuizPool()} />
-                </View>
-            );
-        }
-    }
-
-    function checkOwnerSettings() {
-        if (user.courses === undefined || course.id === undefined) {
-            return <></>;
-        }
-
-        const courseRole = user.courses[course.id];
-        if (courseRole === CourseRoles.OWNER || courseRole === CourseRoles.MANAGER) {
-            return (
-                <View style={{ flexDirection: "row", width: "25%" }}>
-                    <TextButton title={i18n.t("itrex.publishCourse")} onPress={() => confirmPublishCourse(course)} />
-                    <TextButton
-                        title={i18n.t("itrex.deleteCourse")}
-                        color="pink"
-                        onPress={() => confirmDeletion(course)}
-                    />
-                </View>
-            );
-        }
-    }
-
-    function confirmPublishCourse(course: ICourse) {
-        const publishCourse = confirm(i18n.t("itrex.confirmPublishCourse"));
-        if (publishCourse === true) {
-            patchCourse(course);
-        }
-    }
-
-    function confirmDeletion(course: ICourse) {
-        const confirmation = confirm(i18n.t("itrex.confirmDeleteCourse"));
-        if (confirmation === true) {
-            deleteCourse(course);
-        }
-    }
-    function getPublishedSate(isPublished: string | undefined) {
-        if (isPublished === CoursePublishState.UNPUBLISHED) {
+    function _getPublishSate() {
+        if (course.publishState === CoursePublishState.UNPUBLISHED) {
             return (
                 <>
                     <InfoUnpublished />
-                    <Text>{getDate(course.startDate, i18n.t("itrex.startDate"))}</Text>
-                    <Text>{getDate(course.endDate, i18n.t("itrex.endDate"))}</Text>
-                    {checkOwnerSettings()}
+                    {_getDate(i18n.t("itrex.startDate"), course.startDate)}
+                    {_getDate(i18n.t("itrex.endDate"), course.endDate)}
+                    {_checkOwnerSettings()}
                 </>
             );
-        } else if (isPublished === CoursePublishState.PUBLISHED) {
+        }
+
+        if (course.publishState === CoursePublishState.PUBLISHED) {
             return (
                 <>
                     <InfoPublished />
-                    <Text>{getDate(course.startDate, i18n.t("itrex.startDate") + ": ")}</Text>
-                    <Text>{getDate(course.endDate, i18n.t("itrex.endDate") + ": ")}</Text>
+                    {_getDate(i18n.t("itrex.startDate"), course.startDate)}
+                    {_getDate(i18n.t("itrex.endDate"), course.endDate)}
                 </>
             );
         }
@@ -169,53 +84,101 @@ export const ScreenCourseOverview: React.FC = () => {
         return;
     }
 
-    function patchCourse(courses: ICourse) {
-        loggerService.trace("Parsing ID string to ID number");
-
-        const course: ICourse = {
-            id: courses.id,
-            publishState: CoursePublishState.PUBLISHED,
-            startDate: courses.startDate,
-            endDate: courses.endDate,
-        };
-
-        loggerService.trace(`Updating course: name=${courses.name}, publishedState=${CoursePublishState.PUBLISHED}.`);
-        const putRequest: RequestInit = RequestFactory.createPatchRequest(course);
-        endpointsCourse
-            .patchCourse(putRequest, i18n.t("itrex.publishCourseSuccess"), i18n.t("itrex.publishCourseError"))
-            .then((data) => console.log(data));
+    function _getDate(title: string, date?: Date) {
+        return (
+            <View style={styles.dateContainer}>
+                <Text style={[styles.textWhiteBold, styles.horizontalSeparator]}>{title}:</Text>
+                <Text style={styles.textWhite}>{dateConverter(date)}</Text>
+            </View>
+        );
     }
 
-    function deleteCourse(courses: ICourse): void {
-        if (courses.id === undefined) {
+    function _checkOwnerSettings() {
+        if (user.courses == undefined || course.id == undefined) {
+            return <></>;
+        }
+
+        const courseRole = user.courses[course.id];
+        if (courseRole === CourseRoles.OWNER || courseRole === CourseRoles.MANAGER) {
+            return (
+                <View style={styles.dualButtonContainer}>
+                    <TextButton title={i18n.t("itrex.publishCourse")} onPress={() => _confirmPublishCourse()} />
+                    <TextButton title={i18n.t("itrex.deleteCourse")} color="pink" onPress={() => _confirmDeletion()} />
+                </View>
+            );
+        }
+    }
+
+    function _confirmPublishCourse() {
+        const publishCourse = confirm(i18n.t("itrex.confirmPublishCourse"));
+        if (publishCourse === true) {
+            _patchCourse();
+        }
+    }
+
+    function _patchCourse() {
+        loggerService.trace("Parsing ID string to ID number.");
+
+        const coursePatch: ICourse = {
+            id: course.id,
+            publishState: CoursePublishState.PUBLISHED,
+            startDate: course.startDate,
+            endDate: course.endDate,
+        };
+
+        loggerService.trace(`Updating course: name=${course.name}, publishedState=${CoursePublishState.PUBLISHED}.`);
+        const patchRequest: RequestInit = RequestFactory.createPatchRequest(coursePatch);
+        endpointsCourse.patchCourse(
+            patchRequest,
+            i18n.t("itrex.publishCourseSuccess"),
+            i18n.t("itrex.publishCourseError")
+        );
+    }
+
+    function _confirmDeletion() {
+        const confirmation: boolean = confirm(i18n.t("itrex.confirmDeleteCourse"));
+        if (confirmation === true) {
+            _deleteCourse();
+        }
+    }
+
+    function _deleteCourse(): void {
+        if (course.id == undefined) {
             return;
         }
 
-        const request: RequestInit = RequestFactory.createDeleteRequest();
+        const deleteRequest: RequestInit = RequestFactory.createDeleteRequest();
         endpointsCourse
             .deleteCourse(
-                request,
-                courses.id,
+                deleteRequest,
+                course.id,
                 i18n.t("itrex.courseDeletedSuccessfully"),
                 i18n.t("itrex.deleteCourseError")
             )
             .then(() => navigation.navigate("ROUTE_HOME"));
     }
 
-    function goToVideoPool() {
-        if (course.id !== undefined) {
-            navigation.navigate("VIDEO_POOL");
+    function _checkForLeaveCourse() {
+        if (user.courses == undefined || course.id == undefined) {
+            return <></>;
         }
+
+        const courseRole: CourseRoles = user.courses[course.id];
+        return _checkForUserRole(courseRole);
     }
 
-    function goToQuizPool() {
-        if (course.id !== undefined) {
-            navigation.navigate("QUIZ_POOL");
+    function _checkForUserRole(courseRole: CourseRoles) {
+        if (courseRole === CourseRoles.OWNER || courseRole == undefined) {
+            // TODO: Undefined should never happen, buuuut currently does when creating a course.
+            // Apparently updating the token and then navigating isn't waiting long enough.
+            return <></>;
         }
+
+        return <TextButton color="pink" title={i18n.t("itrex.leaveCourse")} onPress={() => _leaveCourse()} />;
     }
 
-    function leaveCourse() {
-        if (course.id !== undefined) {
+    function _leaveCourse() {
+        if (course.id != undefined) {
             const request: RequestInit = RequestFactory.createPostRequestWithoutBody();
             endpointsCourse.leaveCourse(request, course.id, undefined, i18n.t("itrex.leaveCourseError")).then(() => {
                 AuthenticationService.getInstance()
@@ -224,34 +187,48 @@ export const ScreenCourseOverview: React.FC = () => {
             });
         }
     }
+
+    function _createContentAsOwner() {
+        if (user.courses == undefined || course.id == undefined) {
+            return <></>;
+        }
+
+        const courseRole = user.courses[course.id];
+        if (courseRole === CourseRoles.OWNER) {
+            return (
+                <View style={styles.dualButtonContainer}>
+                    <TextButton title={i18n.t("itrex.videoPool")} onPress={() => navigation.navigate("VIDEO_POOL")} />
+                    <TextButton title={i18n.t("itrex.quizPool")} onPress={() => navigation.navigate("QUIZ_POOL")} />
+                </View>
+            );
+        }
+    }
 };
+
 const styles = StyleSheet.create({
-    container: {
-        marginTop: 70,
-        textDecorationColor: dark.theme.pink,
-        fontSize: 50,
-        color: "white",
-        fontWeight: "bold",
-        justifyContent: "center",
-        textAlign: "center",
-    },
-    rootContainer: {
-        paddingTop: "3%",
-        flex: 4,
-        flexDirection: "column",
-        backgroundColor: dark.theme.darkBlue1,
-    },
-    image: {
+    imageContainer: {
         flex: 1,
         resizeMode: "stretch",
-    },
-    content: {
-        flex: 1,
-        margin: 15,
-        color: "white",
         alignItems: "center",
+    },
+    dateContainer: {
+        flexDirection: "row",
+    },
+    textWhiteBold: {
+        color: "white",
+        fontWeight: "bold",
     },
     textWhite: {
         color: "white",
+    },
+    dualButtonContainer: {
+        flexDirection: "row",
+        justifyContent: "center",
+    },
+    verticalSeparator: {
+        marginTop: 85,
+    },
+    horizontalSeparator: {
+        marginEnd: 10,
     },
 });

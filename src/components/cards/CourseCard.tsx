@@ -49,9 +49,7 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
     }
 
     function navigateToCourse(course: ICourse) {
-        navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, {
-            courseId: course.id,
-        });
+        navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, { courseId: course.id });
     }
 
     return (
