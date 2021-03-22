@@ -55,10 +55,6 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                         alignItems: "center",
                     }}>
                     <Text style={styles.chapterMaterialElementText}>{contentReference.contentId}</Text>
-                    <Text style={styles.chapterMaterialElementText}>
-                        {timePeriods !== undefined &&
-                            timePeriods.find((timePeriod) => timePeriod.value === contentReference.timePeriodId)?.label}
-                    </Text>
                 </View>
             </TouchableOpacity>
         );
