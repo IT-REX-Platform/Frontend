@@ -1,4 +1,5 @@
 /* eslint-disable complexity */
+import { EndpointsCourse } from "../api/endpoints/EndpointsCourse";
 import { EndpointsProgress } from "../api/endpoints/EndpointsProgress";
 import { RequestFactory } from "../api/requests/RequestFactory";
 import { ContentProgressTrackerState } from "../constants/ContentProgressTrackerState";
@@ -31,6 +32,9 @@ export default class ProgressService {
     /** The endpoints instance used for updates. */
     private endpointsProgress: EndpointsProgress = new EndpointsProgress();
 
+    /** The endpoints instance for course requests. */
+    private endpointsCourse: EndpointsCourse = new EndpointsCourse();
+
     /** The saved course progresses for reference. */
     private courseProgresses: Record<string, ICourseProgressTracker> = {};
 
@@ -52,37 +56,56 @@ export default class ProgressService {
 
     /**
      * Gets the course progress info for a given course id and provides a consumer to react to it.
-     * The consumer, in addition to the course progress also provided by getCourseProgressFor(), also
+     * The consumer, in addition to the course progress also provided by updateCourseProgressFor(), also
      * gets a numeric information about started progress items and the total.
      *
      * @param courseId the course id to get the course progress from.
-     * @param consumer the consumer to reac to the course progress.
+     * @param consumer the consumer to react to the course progress.
      */
     public getCourseProgressInfo(
         courseId: string,
-        consumer: (
-            courseProgress: ICourseProgressTracker,
-            progress: { total: number; totalMax: number; all: number[] }
-        ) => void
+        consumer: (courseProgress: ICourseProgressTracker, progress: { total: number; totalMax: number }) => void
     ): void {
-        this.getCourseProgressFor(courseId, (courseProgress) => {
-            const progress: { total: number; totalMax: number; all: number[] } = { total: 0, totalMax: 0, all: [] };
+        this.updateCourseProgressFor(courseId, (courseProgress) => {
+            const progress: { total: number; totalMax: number } = { total: 0, totalMax: 0 };
 
             if (courseProgress.contentProgressTrackers === undefined) {
                 consumer(courseProgress, progress);
                 return;
             }
 
-            // TODO: Get all possible progress candidates, currently only checks existing trackers.
-            for (const curContentRefId in courseProgress.contentProgressTrackers) {
-                const curContentTracker = courseProgress.contentProgressTrackers[curContentRefId];
+            this.endpointsCourse
+                .getCourse(RequestFactory.createGetRequest(), courseId, undefined, i18n.t("itrex.getCourseError"))
+                .then((receivedCourse) => {
+                    if (receivedCourse.chapters === undefined) {
+                        consumer(courseProgress, progress);
+                        return;
+                    }
 
-                progress.totalMax += 1;
-                progress.total += curContentTracker.progress ?? 0;
-                progress.all.push(curContentTracker.progress ?? 0);
-            }
+                    for (const curChapter of receivedCourse.chapters) {
+                        if (curChapter.contentReferences === undefined) {
+                            consumer(courseProgress, progress);
+                            return;
+                        }
 
-            consumer(courseProgress, progress);
+                        for (const curContentRef of curChapter.contentReferences) {
+                            if (curContentRef.id === undefined) {
+                                continue;
+                            }
+                            progress.totalMax += 1;
+
+                            // Add 1 to the total if the state is complete, 0 otherwise.
+                            const curContentTracker = courseProgress.contentProgressTrackers[curContentRef.id];
+                            if (curContentTracker !== undefined) {
+                                progress.total += Number(
+                                    curContentTracker.state === ContentProgressTrackerState.COMPLETED
+                                );
+                            }
+                        }
+                    }
+
+                    consumer(courseProgress, progress);
+                });
         });
     }
 
