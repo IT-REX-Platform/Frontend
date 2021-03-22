@@ -143,6 +143,7 @@ export const en = {
         quizConsists: "This quiz consists out of ",
         quizQuestions: " questions.",
         finishQuiz: "Finish Quiz",
+        quizNumericYourResult: "Your solution:",
         youReached: "You have reached ",
         percentageOf: "% of 100%.",
 

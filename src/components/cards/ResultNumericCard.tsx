@@ -45,7 +45,7 @@ export const ResultNumericCard: React.FC<QuestionCardProps> = (props) => {
                             <Text style={cardStyles.textChoice}>{i18n.t("itrex.value")}</Text>
                         </DataTable.Title>
                         <DataTable.Title numeric>
-                            <Text style={cardStyles.textChoice}>Your solution:</Text>
+                            <Text style={cardStyles.textChoice}>{i18n.t("itrex.quizNumericYourResult")}</Text>
                         </DataTable.Title>
                     </DataTable.Header>
 

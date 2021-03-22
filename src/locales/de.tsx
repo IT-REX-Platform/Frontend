@@ -146,6 +146,7 @@ export const de = {
         youReached: "Du hast ",
         percentageOf: "% von 100% erreicht.",
         outOf: "von",
+        quizNumericYourResult: "Ihre Lösung:",
         solvedCorrectly: "Fragen wurden korrekt beantwortet.",
         returnToTimeline: "Zurück zum Zeitplan",
 
