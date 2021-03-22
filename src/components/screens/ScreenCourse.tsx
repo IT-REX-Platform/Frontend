@@ -1,6 +1,5 @@
-/* eslint-disable complexity */
 import React, { useEffect, useState } from "react";
-import { Text, StyleSheet, ScaledSize, useWindowDimensions } from "react-native";
+import { Text, StyleSheet, ScaledSize, useWindowDimensions, View, ImageBackground } from "react-native";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { dark } from "../../constants/themes/dark";
 import { RequestFactory } from "../../api/requests/RequestFactory";
@@ -38,6 +37,13 @@ export const ScreenCourse: React.FC = () => {
     const route: ScreenCourseRouteProp = useRoute<ScreenCourseRouteProp>();
     const dimensions: ScaledSize = useWindowDimensions();
 
+    if (route.params == undefined) {
+        return _renderEmptyCourse();
+    }
+    if (route.params.courseId == undefined || route.params.courseId == "undefined") {
+        return _renderEmptyCourse();
+    }
+
     const courseId = route.params.courseId;
 
     React.useContext(LocalizationContext);
@@ -71,10 +77,8 @@ export const ScreenCourse: React.FC = () => {
             <CourseStack.Navigator
                 initialRouteName="INFO"
                 screenOptions={{
-                    // Hamburder button.
-                    // headerLeft: () => (
-                    //    showHamburger(dimensions)
-                    // ),
+                    // Hamburger button.
+                    // headerLeft: () => showHamburger(dimensions),
 
                     // Back button.
                     headerTintColor: "white",
@@ -100,22 +104,32 @@ export const ScreenCourse: React.FC = () => {
                     //    />
                     //),
 
-                    // Hamburder button.
+                    // Hamburger button.
                     headerRight: () => showHamburger(dimensions),
                 }}>
-                <CourseStack.Screen name="INFO" component={ScreenCourseTabs}></CourseStack.Screen>
+                <CourseStack.Screen name="INFO" component={ScreenCourseTabs} />
 
                 {getUploadVideoScreen()}
                 {getQuizPoolScreen()}
-                <CourseStack.Screen name="CHAPTER_CONTENT" component={ScreenChapterStudent}></CourseStack.Screen>
+                <CourseStack.Screen name="CHAPTER_CONTENT" component={ScreenChapterStudent} />
                 {getCreateChapterScreen()}
                 {getQuizCreation()}
-                <CourseStack.Screen name="QUIZ_OVERVIEW" component={ScreenQuizOverview}></CourseStack.Screen>
-                <CourseStack.Screen name="QUIZ_SOLVE" component={ScreenQuizSolve}></CourseStack.Screen>
-                <CourseStack.Screen name="QUIZ_RESULT" component={ScreenQuizResult}></CourseStack.Screen>
+                <CourseStack.Screen name="QUIZ_OVERVIEW" component={ScreenQuizOverview} />
+                <CourseStack.Screen name="QUIZ_SOLVE" component={ScreenQuizSolve} />
+                <CourseStack.Screen name="QUIZ_RESULT" component={ScreenQuizResult} />
             </CourseStack.Navigator>
         </CourseContext.Provider>
     );
+
+    function _renderEmptyCourse() {
+        return (
+            <ImageBackground source={require("../../constants/images/Background2.png")} style={styles.imageContainer}>
+                <View style={styles.infoTextBox}>
+                    <Text style={styles.infoText}>{i18n.t("itrex.noCourseAccessed")}</Text>
+                </View>
+            </ImageBackground>
+        );
+    }
 
     function showHamburger(dimensions: ScaledSize) {
         if (dimensions.width < 1280) {
@@ -143,7 +157,7 @@ export const ScreenCourse: React.FC = () => {
         if (courseRole === CourseRoles.OWNER || courseRole === undefined) {
             return (
                 <>
-                    <CourseStack.Screen name="QUIZ_POOL" component={QuizPoolComponent}></CourseStack.Screen>
+                    <CourseStack.Screen name="QUIZ_POOL" component={QuizPoolComponent} />
                 </>
             );
         }
@@ -153,8 +167,8 @@ export const ScreenCourse: React.FC = () => {
         if (AuthenticationService.getInstance().isLecturerOrAdmin()) {
             return (
                 <>
-                    <CourseStack.Screen name="VIDEO_POOL" component={VideoPoolComponent}></CourseStack.Screen>
-                    <CourseStack.Screen name="VIDEO" component={VideoComponent}></CourseStack.Screen>
+                    <CourseStack.Screen name="VIDEO_POOL" component={VideoPoolComponent} />
+                    <CourseStack.Screen name="VIDEO" component={VideoComponent} />
                 </>
             );
         }
@@ -170,8 +184,8 @@ export const ScreenCourse: React.FC = () => {
         if (courseRole === CourseRoles.OWNER || courseRole === undefined) {
             return (
                 <>
-                    <CourseStack.Screen name="CREATE_QUIZ" component={ScreenAddQuiz}></CourseStack.Screen>
-                    <CourseStack.Screen name="CREATE_QUESTION" component={ScreenAddQuestion}></CourseStack.Screen>
+                    <CourseStack.Screen name="CREATE_QUIZ" component={ScreenAddQuiz} />
+                    <CourseStack.Screen name="CREATE_QUESTION" component={ScreenAddQuestion} />
                 </>
             );
         }
@@ -202,5 +216,23 @@ const styles = StyleSheet.create({
         textShadowColor: "white",
         textShadowOffset: { width: -1, height: 1 },
         textShadowRadius: 2,
+    },
+    imageContainer: {
+        flex: 1,
+        resizeMode: "stretch",
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    infoTextBox: {
+        padding: 50,
+        backgroundColor: dark.theme.darkBlue2,
+        borderColor: dark.theme.darkBlue4,
+        borderWidth: 2,
+        borderRadius: 5,
+    },
+    infoText: {
+        textAlign: "center",
+        margin: 5,
+        color: "white",
     },
 });

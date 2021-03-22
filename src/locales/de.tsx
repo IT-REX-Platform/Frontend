@@ -55,6 +55,7 @@ export const de = {
         myCoursesDivider: "Meine Kurse",
         quickSettings: "Kurzeinstellung",
         lastAccessedCourse: "Zuletzt besuchter Kurs",
+        noCourseAccessed: "Kein Kurs wurde noch besucht.",
         noCoursesLecturer: "Bisher wurden keine Kurse erstellt!",
         noCoursesStudent: "Bisher wurde keinem Kursen beigetreten!",
 
@@ -132,7 +133,6 @@ export const de = {
         getUserInfoError: "Ein Fehler ist beim Zugriff auf Benutzerinformationen aufgetreten.",
 
         quizPool: "Quiz Pool",
-
         noQuizzesAvailable: "Dem Quiz-Pool dieses Kurses wurden bislang noch keine Quizzes hinzugefügt.",
         quizProperties: "Erstellen sie ein neues Quiz um dieses zum Quiz Pool hinzufügen. ",
         createQuiz: "Quiz erstellen",
