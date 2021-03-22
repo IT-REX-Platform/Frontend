@@ -67,7 +67,7 @@ export const JoinCourseComponent: React.FC = () => {
     function getPublishedCourses(): void {
         const request: RequestInit = RequestFactory.createGetRequest();
         endpointsCourse
-            .getAllCourses(request, CoursePublishState.PUBLISHED, undefined, i18n.t("itrex.getCoursesError"))
+            .getAllCourses(request, CoursePublishState.PUBLISHED, undefined, undefined, i18n.t("itrex.getCoursesError"))
             .then((receivedCoursesPublished) => setCoursesPublished(receivedCoursesPublished));
     }
 
