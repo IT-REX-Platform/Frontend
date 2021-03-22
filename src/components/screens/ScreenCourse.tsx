@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import React, { useEffect, useState } from "react";
 import { Text, StyleSheet, ScaledSize, useWindowDimensions, View, ImageBackground } from "react-native";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
@@ -33,25 +34,30 @@ export type ScreenCourseProps = DrawerScreenProps<RootDrawerParamList, "ROUTE_CO
 const CourseStack = createStackNavigator<CourseStackParamList>();
 
 export const ScreenCourse: React.FC = () => {
-    const navigation: ScreenCourseNavigationProp = useNavigation<ScreenCourseNavigationProp>();
+    /**
+     * !!! ATTENTION !!!
+     * Checking route.params and courseId must be the first thing this component does (after calling useRoute(), duh).
+     * This prevents: "Error: Rendered more hooks than during the previous render."
+     */
     const route: ScreenCourseRouteProp = useRoute<ScreenCourseRouteProp>();
-    const dimensions: ScaledSize = useWindowDimensions();
-
     if (route.params == undefined) {
         return _renderEmptyCourse();
     }
     if (route.params.courseId == undefined || route.params.courseId == "undefined") {
         return _renderEmptyCourse();
     }
-
     const courseId = route.params.courseId;
 
+    // Hooks.
     React.useContext(LocalizationContext);
+    const navigation: ScreenCourseNavigationProp = useNavigation<ScreenCourseNavigationProp>();
+    const dimensions: ScaledSize = useWindowDimensions();
 
+    // Course data.
     const courseInitial: ICourse = {};
     const [course, setCourse] = useState(courseInitial);
 
-    // Current Course Context
+    // Current course context.
     const courseContext = React.useMemo(
         () => ({
             course,
@@ -60,10 +66,10 @@ export const ScreenCourse: React.FC = () => {
         [course]
     );
 
+    // User info.
     const [user, setUserInfo] = useState<IUser>({});
 
     const endpointsCourse: EndpointsCourse = new EndpointsCourse();
-
     useEffect(() => {
         AuthenticationService.getInstance().getUserInfo(setUserInfo);
         const request: RequestInit = RequestFactory.createGetRequest();
