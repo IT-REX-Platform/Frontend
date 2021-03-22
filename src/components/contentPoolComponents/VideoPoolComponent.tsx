@@ -16,7 +16,6 @@ import { EndpointsVideo } from "../../api/endpoints/EndpointsVideo";
 import { RequestFactory } from "../../api/requests/RequestFactory";
 import { IVideo } from "../../types/IVideo";
 import { useFocusEffect } from "@react-navigation/native";
-import { ICourse } from "../../types/ICourse";
 import { CourseContext, LocalizationContext } from "../Context";
 import { dark } from "../../constants/themes/dark";
 import { ListItem } from "react-native-elements";
@@ -199,6 +198,10 @@ export const VideoPoolComponent: React.FC = () => {
             await _uploadVideo(selectedVideo);
         }
 
+        // Give MediaService 2 seconds to save uploaded videos before getting all videos for list.
+        await sleep(2000);
+        _resetAnimBeforeGetAllVideos();
+
         setVideoUploading(false);
         toast.info(i18n.t("itrex.uploadDone"), false);
     }
@@ -220,8 +223,14 @@ export const VideoPoolComponent: React.FC = () => {
             )
             .then((video) => {
                 loggerService.trace("Upload sucessful: " + video.title);
-            })
-            .finally(() => _getAllVideos());
+                setVideoListLoading(true);
+
+                if (video.id != undefined) {
+                    videos.push(video);
+                }
+
+                setVideoListLoading(false);
+            });
     }
 
     function _resetAnimBeforeGetAllVideos() {
@@ -245,8 +254,7 @@ export const VideoPoolComponent: React.FC = () => {
             .findAllVideosOfACourse(request, course.id, undefined, i18n.t("itrex.getVideosError"))
             .then((videosReceived: IVideo[]) => {
                 setVideos(videosReceived);
-                loggerService.trace("Received videos in next line:");
-                console.log(videosReceived);
+                loggerService.trace("Videos received.");
             })
             .finally(async () => setVideoListLoading(false));
     }
