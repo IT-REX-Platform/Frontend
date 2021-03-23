@@ -2,7 +2,14 @@
 /* eslint-disable complexity */
 import React, { useEffect, useState } from "react";
 import { Text, ImageBackground, StyleSheet, View, TouchableOpacity, Switch, unstable_enableLogBox } from "react-native";
-import { CompositeNavigationProp, useFocusEffect, useIsFocused, useNavigation } from "@react-navigation/native";
+import {
+    CompositeNavigationProp,
+    RouteProp,
+    useFocusEffect,
+    useIsFocused,
+    useNavigation,
+    useRoute,
+} from "@react-navigation/native";
 import { dark } from "../../../constants/themes/dark";
 import {
     CourseStackParamList,
@@ -51,8 +58,10 @@ export const ScreenCourseTimeline: React.FC = () => {
 
     useFocusEffect(
         React.useCallback(() => {
+            let isActive = true;
             AuthenticationService.getInstance().getUserInfo(setUserInfo);
-            if (isFocused && course.id !== undefined) {
+
+            if (isFocused && course.id !== undefined && isActive == true) {
                 const request: RequestInit = RequestFactory.createGetRequest();
                 courseEndpoint
                     .getCourse(request, course.id, undefined, i18n.t("itrex.getCourseError"))
@@ -175,20 +184,23 @@ export const ScreenCourseTimeline: React.FC = () => {
                             });
 
                             Promise.all([videoPromise, quizPromise]).then((values) => {
-                                setCourse(receivedCourse);
-                                if (receivedCourse.chapters !== undefined) {
-                                    setChapters(receivedCourse.chapters);
+                                if (isActive) {
+                                    setCourse(receivedCourse);
+                                    if (receivedCourse.chapters !== undefined) {
+                                        setChapters(receivedCourse.chapters);
+                                    }
                                 }
                             });
                         }
                     });
             }
+
+            // Ignore State-Changes if compontent lost focus
+            return () => {
+                isActive = false;
+            };
         }, [isFocused, course.id])
     );
-
-    useEffect(() => {
-        //
-    }, [isFocused]);
 
     return (
         <ImageBackground
