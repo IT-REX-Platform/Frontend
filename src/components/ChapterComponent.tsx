@@ -256,6 +256,7 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: "column",
         alignSelf: "center",
+        width: "100%",
     },
     chapterMaterialElement: {
         flex: 1,
