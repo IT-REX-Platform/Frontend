@@ -2,7 +2,7 @@
 /* eslint-disable complexity */
 import React, { useEffect, useState } from "react";
 import { Text, ImageBackground, StyleSheet, View, TouchableOpacity, Switch, unstable_enableLogBox } from "react-native";
-import { CompositeNavigationProp, useIsFocused, useNavigation } from "@react-navigation/native";
+import { CompositeNavigationProp, useFocusEffect, useIsFocused, useNavigation } from "@react-navigation/native";
 import { dark } from "../../../constants/themes/dark";
 import {
     CourseStackParamList,
@@ -36,148 +36,158 @@ export type ScreenCourseTimelineNavigationProp = CompositeNavigationProp<
 
 export const ScreenCourseTimeline: React.FC = () => {
     const navigation = useNavigation<ScreenCourseTimelineNavigationProp>();
+
+    const { course, setCourse } = React.useContext(CourseContext);
+    React.useContext(LocalizationContext);
+
     const [user, setUserInfo] = useState<IUser>({});
+    const [edit, setEdit] = useState(false);
+    const [chapters, setChapters] = useState<IChapter[]>([]);
 
     const courseEndpoint = new EndpointsCourse();
     const endpointsVideos: EndpointsVideo = new EndpointsVideo();
 
-    const [edit, setEdit] = useState(false);
-
-    React.useContext(LocalizationContext);
-
-    const { course, setCourse } = React.useContext(CourseContext);
-
-    const [chapters, setChapters] = useState<IChapter[]>([]);
-
     const isFocused = useIsFocused();
-    useEffect(() => {
-        AuthenticationService.getInstance().getUserInfo(setUserInfo);
-        if (isFocused && course.id !== undefined) {
-            const request: RequestInit = RequestFactory.createGetRequest();
-            courseEndpoint
-                .getCourse(request, course.id, undefined, i18n.t("itrex.getCourseError"))
-                .then((receivedCourse) => {
-                    if (receivedCourse.chapters !== undefined) {
-                        for (const chapter of receivedCourse.chapters) {
-                            if (chapter.contentReferences !== undefined) {
-                                for (const contentRef of chapter.contentReferences) {
-                                    const timePeriod = receivedCourse.timePeriods?.find(
-                                        (period) => period.id === contentRef.timePeriodId
-                                    );
-                                    if (timePeriod !== undefined) {
-                                        if (timePeriod?.chapters === undefined) {
-                                            timePeriod.chapters = [];
-                                        }
 
-                                        // Search for chapter in timePeriod
-                                        let foundChapter = timePeriod.chapters.find(
-                                            (tmpChapter) => tmpChapter.id === chapter.id
+    useFocusEffect(
+        React.useCallback(() => {
+            AuthenticationService.getInstance().getUserInfo(setUserInfo);
+            if (isFocused && course.id !== undefined) {
+                const request: RequestInit = RequestFactory.createGetRequest();
+                courseEndpoint
+                    .getCourse(request, course.id, undefined, i18n.t("itrex.getCourseError"))
+                    .then((receivedCourse) => {
+                        if (receivedCourse.chapters !== undefined) {
+                            for (const chapter of receivedCourse.chapters) {
+                                if (chapter.contentReferences !== undefined) {
+                                    for (const contentRef of chapter.contentReferences) {
+                                        const timePeriod = receivedCourse.timePeriods?.find(
+                                            (period) => period.id === contentRef.timePeriodId
                                         );
+                                        if (timePeriod !== undefined) {
+                                            contentRef.timePeriod = timePeriod;
 
-                                        if (foundChapter === undefined) {
-                                            foundChapter = {
-                                                courseId: chapter.courseId,
-                                                id: chapter.id,
-                                                name: chapter.name,
-                                                chapterNumber: chapter.chapterNumber,
-                                            };
-                                            foundChapter.contentReferences = [];
-                                            timePeriod.chapters.push(foundChapter);
-                                        }
-
-                                        foundChapter?.contentReferences?.push(contentRef);
-                                    }
-                                }
-                            }
-                        }
-
-                        // Set TimePeriodNames
-                        receivedCourse.timePeriods?.forEach((timePeriod, idx) => {
-                            timePeriod.name = i18n.t("itrex.week") + " " + (idx + 1);
-                            timePeriod.fullName =
-                                timePeriod.name +
-                                " ( " +
-                                dateConverter(timePeriod?.startDate) +
-                                " - " +
-                                dateConverter(timePeriod?.endDate) +
-                                " )";
-                        });
-
-                        const contents: { [key: string]: IContent[] } = {};
-
-                        // Map Contents to different dictionaries, later we can pass the contentIds to the correct service
-                        for (const chapter of receivedCourse.chapters) {
-                            if (chapter.contentReferences !== undefined) {
-                                for (const content of chapter.contentReferences) {
-                                    if (content.contentReferenceType !== undefined && content.contentId !== undefined) {
-                                        if (contents[content.contentReferenceType] === undefined) {
-                                            contents[content.contentReferenceType] = [];
-                                        }
-                                        contents[content.contentReferenceType].push(content);
-                                    }
-                                }
-                            }
-                        }
-                        // Get Videos by ContentIds
-                        const getVideoRequest = RequestFactory.createGetRequest();
-
-                        // Array of contentId's from die video List
-                        const videoIds: string[] =
-                            contents[CONTENTREFERENCETYPE.VIDEO] !== undefined
-                                ? contents[CONTENTREFERENCETYPE.VIDEO].map((content) => {
-                                      if (content.contentId !== undefined) {
-                                          return content.contentId;
-                                      }
-                                      return "";
-                                  })
-                                : [];
-
-                        // Array of contentId's from die quiz List
-                        const quizIds: string[] =
-                            contents[CONTENTREFERENCETYPE.QUIZ] !== undefined
-                                ? contents[CONTENTREFERENCETYPE.QUIZ].map((content) => {
-                                      if (content.contentId !== undefined) {
-                                          return content.contentId;
-                                      }
-                                      return "";
-                                  })
-                                : [];
-
-                        // Ask the MediaService for the video metadata
-                        const videoPromise = new Promise((resolve, reject) => {
-                            if (videoIds !== undefined) {
-                                endpointsVideos.findAllWithIds(getVideoRequest, videoIds).then((videos) => {
-                                    videos.forEach((video) => {
-                                        const contentVideo = contents[CONTENTREFERENCETYPE.VIDEO].filter(
-                                            (item) => item.contentId === video.id
-                                        );
-                                        if (contentVideo !== undefined) {
-                                            for (const currContent of contentVideo) {
-                                                currContent.video = video;
+                                            if (timePeriod?.chapters === undefined) {
+                                                timePeriod.chapters = [];
                                             }
+
+                                            // Search for chapter in timePeriod
+                                            let foundChapter = timePeriod.chapters.find(
+                                                (tmpChapter) => tmpChapter.id === chapter.id
+                                            );
+
+                                            if (foundChapter === undefined) {
+                                                foundChapter = {
+                                                    courseId: chapter.courseId,
+                                                    id: chapter.id,
+                                                    name: chapter.name,
+                                                    chapterNumber: chapter.chapterNumber,
+                                                };
+                                                foundChapter.contentReferences = [];
+                                                timePeriod.chapters.push(foundChapter);
+                                            }
+
+                                            foundChapter?.contentReferences?.push(contentRef);
                                         }
+                                    }
+                                }
+                            }
+
+                            // Set TimePeriodNames
+                            receivedCourse.timePeriods?.forEach((timePeriod, idx) => {
+                                timePeriod.name = i18n.t("itrex.week") + " " + (idx + 1);
+                                timePeriod.fullName =
+                                    timePeriod.name +
+                                    " ( " +
+                                    dateConverter(timePeriod?.startDate) +
+                                    " - " +
+                                    dateConverter(timePeriod?.endDate) +
+                                    " )";
+                            });
+
+                            const contents: { [key: string]: IContent[] } = {};
+
+                            // Map Contents to different dictionaries, later we can pass the contentIds to the correct service
+                            for (const chapter of receivedCourse.chapters) {
+                                if (chapter.contentReferences !== undefined) {
+                                    for (const content of chapter.contentReferences) {
+                                        if (
+                                            content.contentReferenceType !== undefined &&
+                                            content.contentId !== undefined
+                                        ) {
+                                            if (contents[content.contentReferenceType] === undefined) {
+                                                contents[content.contentReferenceType] = [];
+                                            }
+                                            contents[content.contentReferenceType].push(content);
+                                        }
+                                    }
+                                }
+                            }
+                            // Get Videos by ContentIds
+                            const getVideoRequest = RequestFactory.createGetRequest();
+
+                            // Array of contentId's from die video List
+                            const videoIds: string[] =
+                                contents[CONTENTREFERENCETYPE.VIDEO] !== undefined
+                                    ? contents[CONTENTREFERENCETYPE.VIDEO].map((content) => {
+                                          if (content.contentId !== undefined) {
+                                              return content.contentId;
+                                          }
+                                          return "";
+                                      })
+                                    : [];
+
+                            // Array of contentId's from die quiz List
+                            const quizIds: string[] =
+                                contents[CONTENTREFERENCETYPE.QUIZ] !== undefined
+                                    ? contents[CONTENTREFERENCETYPE.QUIZ].map((content) => {
+                                          if (content.contentId !== undefined) {
+                                              return content.contentId;
+                                          }
+                                          return "";
+                                      })
+                                    : [];
+
+                            // Ask the MediaService for the video metadata
+                            const videoPromise = new Promise((resolve, reject) => {
+                                if (videoIds !== undefined) {
+                                    endpointsVideos.findAllWithIds(getVideoRequest, videoIds).then((videos) => {
+                                        videos.forEach((video) => {
+                                            const contentVideo = contents[CONTENTREFERENCETYPE.VIDEO].filter(
+                                                (item) => item.contentId === video.id
+                                            );
+                                            if (contentVideo !== undefined) {
+                                                for (const currContent of contentVideo) {
+                                                    currContent.video = video;
+                                                }
+                                            }
+                                        });
+                                        resolve(true);
                                     });
-                                    resolve(true);
-                                });
-                            } else {
-                                reject();
-                            }
-                        });
+                                } else {
+                                    reject();
+                                }
+                            });
 
-                        //TODO: to be implemented
-                        const quizPromise = new Promise((resolve, reject) => {
-                            resolve(true);
-                        });
+                            //TODO: to be implemented
+                            const quizPromise = new Promise((resolve, reject) => {
+                                resolve(true);
+                            });
 
-                        Promise.all([videoPromise, quizPromise]).then((values) => {
-                            setCourse(receivedCourse);
-                            if (receivedCourse.chapters !== undefined) {
-                                setChapters(receivedCourse.chapters);
-                            }
-                        });
-                    }
-                });
-        }
+                            Promise.all([videoPromise, quizPromise]).then((values) => {
+                                setCourse(receivedCourse);
+                                if (receivedCourse.chapters !== undefined) {
+                                    setChapters(receivedCourse.chapters);
+                                }
+                            });
+                        }
+                    });
+            }
+        }, [isFocused, user])
+    );
+
+    useEffect(() => {
+        //
     }, [isFocused]);
 
     return (
