@@ -183,7 +183,7 @@ export const ScreenCourseTimeline: React.FC = () => {
                         }
                     });
             }
-        }, [isFocused, user])
+        }, [isFocused, course.id])
     );
 
     useEffect(() => {
