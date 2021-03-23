@@ -31,13 +31,6 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
     const chapter = props.chapter;
     const course = props.course;
 
-    const timePeriods = course.timePeriods?.map((timePeriod, idx) => {
-        return {
-            value: timePeriod.id,
-            label: timePeriod.fullName,
-        };
-    });
-
     function getQuizComponent(contentReference: IContent) {
         return (
             <TouchableOpacity
@@ -91,79 +84,39 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                     </View>
                 )}
                 <View style={styles.chapterMaterialElements}>
-                    {timePeriods !== undefined &&
-                        chapter?.contentReferences?.map((contentReference) => {
-                            return (
-                                <View style={styles.chapterMaterialElement}>
-                                    {contentReference.contentReferenceType == CONTENTREFERENCETYPE.VIDEO ? (
-                                        <>
-                                            <MaterialIcons
-                                                name="attach-file"
-                                                size={28}
-                                                color="white"
-                                                style={styles.icon}
-                                            />
-                                            <View
-                                                style={{
-                                                    flex: 1,
-                                                    flexDirection: "row",
-                                                    justifyContent: "space-between",
-                                                    alignItems: "center",
-                                                }}>
-                                                <Text style={styles.chapterMaterialElementText}>
-                                                    {contentReference.contentId}
-                                                </Text>
-                                                <Text style={styles.chapterMaterialElementText}>
-                                                    {
-                                                        timePeriods.find(
-                                                            (timePeriod) =>
-                                                                timePeriod.value === contentReference.timePeriodId
-                                                        )?.label
-                                                    }
-                                                </Text>
-                                            </View>
-                                        </>
-                                    ) : (
-                                        getQuizComponent(contentReference)
-                                    )}
+                    {chapter?.contentReferences?.map((contentReference) => {
+                        return (
+                            <View style={styles.chapterMaterialElement}>
+                                {contentReference.contentReferenceType == CONTENTREFERENCETYPE.VIDEO ? (
+                                    <>
+                                        <MaterialIcons name="attach-file" size={28} color="white" style={styles.icon} />
+                                    </>
+                                ) : (
+                                    getQuizComponent(contentReference)
+                                )}
 
-                                    <View
-                                        style={{
-                                            flex: 1,
-                                            flexDirection: "row",
-                                            justifyContent: "space-between",
-                                            alignItems: "center",
-                                        }}>
-                                        <Text style={styles.chapterMaterialElementText}>
-                                            {contentReference.contentReferenceType == CONTENTREFERENCETYPE.VIDEO
-                                                ? contentReference?.video?.title
-                                                : ""}
-                                            {contentReference.contentReferenceType == CONTENTREFERENCETYPE.QUIZ
-                                                ? contentReference?.quiz?.name
-                                                : ""}
-                                        </Text>
-                                        <Text style={styles.chapterMaterialElementText}>
-                                            {
-                                                timePeriods.find(
-                                                    (timePeriod) => timePeriod.value === contentReference.timePeriodId
-                                                )?.label
-                                            }
-                                        </Text>
-                                        {/*props.editMode ? (
-                                                <DropDown
-                                                    options={timePeriods}
-                                                    defaultValue={timePeriods.find(
-                                                        (timePeriod) => timePeriod.value === contentReference.timePeriodId
-                                                    )}
-                                                    menuPortalTarget={document.body}
-                                                    menuPosition={"fixed"}></DropDown>
-                                            ) : (
-                                                
-                                            )*/}
-                                    </View>
+                                <View
+                                    style={{
+                                        flex: 1,
+                                        flexDirection: "row",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                    }}>
+                                    <Text style={styles.chapterMaterialElementText}>
+                                        {contentReference.contentReferenceType == CONTENTREFERENCETYPE.VIDEO
+                                            ? contentReference?.video?.title
+                                            : ""}
+                                        {contentReference.contentReferenceType == CONTENTREFERENCETYPE.QUIZ
+                                            ? contentReference?.quiz?.name
+                                            : ""}
+                                    </Text>
+                                    <Text style={styles.chapterMaterialElementText}>
+                                        {contentReference.timePeriod?.fullName}
+                                    </Text>
                                 </View>
-                            );
-                        })}
+                            </View>
+                        );
+                    })}
                 </View>
             </View>
         </View>
