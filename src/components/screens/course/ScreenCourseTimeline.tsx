@@ -48,7 +48,7 @@ export const ScreenCourseTimeline: React.FC = () => {
     React.useContext(LocalizationContext);
 
     const [user, setUserInfo] = useState<IUser>({});
-    const [edit, setEdit] = useState(false);
+    const [edit, setEdit] = useState(true);
     const [chapters, setChapters] = useState<IChapter[]>([]);
 
     const courseEndpoint = new EndpointsCourse();
