@@ -22,8 +22,6 @@ import AuthenticationService from "../../../services/AuthenticationService";
 import { TextButton } from "../../uiElements/TextButton";
 import { CourseRoles } from "../../../constants/CourseRoles";
 import { IUser } from "../../../types/IUser";
-import { InfoPublished } from "../../uiElements/InfoPublished";
-import { InfoUnpublished } from "../../uiElements/InfoUnpublished";
 
 export type ScreenCourseOverviewNavigationProp = CompositeNavigationProp<
     MaterialTopTabNavigationProp<CourseTabParamList, "OVERVIEW">,
@@ -63,7 +61,7 @@ export const ScreenCourseInformation: React.FC = () => {
         if (course.publishState === CoursePublishState.UNPUBLISHED) {
             return (
                 <>
-                    <InfoUnpublished />
+                    {" "}
                     {_getDate(i18n.t("itrex.startDate"), course.startDate)}
                     {_getDate(i18n.t("itrex.endDate"), course.endDate)}
                     {_checkOwnerSettings()}
@@ -74,7 +72,6 @@ export const ScreenCourseInformation: React.FC = () => {
         if (course.publishState === CoursePublishState.PUBLISHED) {
             return (
                 <>
-                    <InfoPublished />
                     {_getDate(i18n.t("itrex.startDate"), course.startDate)}
                     {_getDate(i18n.t("itrex.endDate"), course.endDate)}
                 </>
