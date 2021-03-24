@@ -54,7 +54,13 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
     }
 
     return (
-        <View style={styles.chapterContainer}>
+        <TouchableOpacity
+            style={styles.chapterContainer}
+            onPress={() =>
+                navigation.navigate("CHAPTER", {
+                    chapterId: chapter?.id,
+                })
+            }>
             <View style={styles.chapterTopRow}>
                 <Text style={styles.chapterHeader}>
                     {chapter?.chapterNumber}. {chapter?.name}
@@ -119,7 +125,7 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                     })}
                 </View>
             </View>
-        </View>
+        </TouchableOpacity>
     );
 
     function navigateToQuiz(contentId: string | undefined) {
