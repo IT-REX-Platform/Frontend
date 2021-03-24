@@ -1,4 +1,5 @@
 import { CoursePublishState } from "../constants/CoursePublishState";
+import { CourseRoles } from "../constants/CourseRoles";
 import { IChapter } from "./IChapter";
 import { ITimePeriod } from "./ITimePeriod";
 
@@ -14,4 +15,5 @@ export type ICourse = {
     chapters?: IChapter[];
     timePeriods?: ITimePeriod[];
     remainActiveOffset?: number;
+    courseRole?: CourseRoles;
 };
