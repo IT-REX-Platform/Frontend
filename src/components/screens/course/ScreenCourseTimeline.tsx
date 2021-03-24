@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 /* eslint-disable complexity */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Text, ImageBackground, StyleSheet, View, TouchableOpacity, Switch } from "react-native";
 import { CompositeNavigationProp, useFocusEffect, useIsFocused, useNavigation } from "@react-navigation/native";
 import { dark } from "../../../constants/themes/dark";
@@ -44,14 +44,13 @@ export const ScreenCourseTimeline: React.FC = () => {
     const [user, setUserInfo] = useState<IUser>({});
     const [edit, setEdit] = useState<boolean>();
     const [chapters, setChapters] = useState<IChapter[]>([]);
-    const [courseRole, setCourseRole] = useState<CourseRoles>();
 
     const courseEndpoint = new EndpointsCourse();
     const endpointsVideos: EndpointsVideo = new EndpointsVideo();
 
     const isFocused = useIsFocused();
 
-    useFocusEffect(
+    useEffect(
         React.useCallback(() => {
             let isActive = true;
             AuthenticationService.getInstance().getUserInfo(setUserInfo);
@@ -429,13 +428,12 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     editMode: {
-        height: 60,
+        height: 70,
         justifyContent: "space-between",
         alignItems: "center",
         flexDirection: "row-reverse",
         paddingRight: "20px",
         paddingLeft: "20px",
-        paddingTop: "20px",
     },
     editModeText: {
         color: "white",

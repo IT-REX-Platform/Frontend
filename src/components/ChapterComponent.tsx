@@ -12,7 +12,6 @@ import { InfoUnpublished } from "./uiElements/InfoUnpublished";
 import { ICourse } from "../types/ICourse";
 import { useNavigation } from "@react-navigation/native";
 import { CoursePublishState } from "../constants/CoursePublishState";
-import { dateConverter } from "../helperScripts/validateCourseDates";
 import { CONTENTREFERENCETYPE, IContent } from "../types/IContent";
 import { EndpointsQuiz } from "../api/endpoints/EndpointsQuiz";
 import { RequestFactory } from "../api/requests/RequestFactory";

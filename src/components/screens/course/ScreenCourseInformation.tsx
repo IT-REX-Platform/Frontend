@@ -22,6 +22,8 @@ import AuthenticationService from "../../../services/AuthenticationService";
 import { TextButton } from "../../uiElements/TextButton";
 import { CourseRoles } from "../../../constants/CourseRoles";
 import { IUser } from "../../../types/IUser";
+import { dark } from "../../../constants/themes/dark";
+import { CourseInformationTable } from "../../CourseInformationTable";
 
 export type ScreenCourseOverviewNavigationProp = CompositeNavigationProp<
     MaterialTopTabNavigationProp<CourseTabParamList, "OVERVIEW">,
@@ -49,59 +51,34 @@ export const ScreenCourseInformation: React.FC = () => {
 
     return (
         <ImageBackground source={require("../../../constants/images/Background2.png")} style={styles.imageContainer}>
-            <View style={styles.verticalSeparator}></View>
-            {_checkForLeaveCourse()}
-            {_getPublishSate()}
-            <Text style={styles.textWhite}>{course.courseDescription}</Text>
+            <View style={styles.dualButtonContainer}>{_checkUserSettings()}</View>
+            <View style={styles.informationContent}>
+                <CourseInformationTable />
+            </View>
         </ImageBackground>
     );
 
-    function _getPublishSate() {
-        if (course.publishState === CoursePublishState.UNPUBLISHED) {
-            return (
-                <>
-                    {" "}
-                    {_getDate(i18n.t("itrex.startDate"), course.startDate)}
-                    {_getDate(i18n.t("itrex.endDate"), course.endDate)}
-                    {_checkOwnerSettings()}
-                </>
-            );
-        }
-
-        if (course.publishState === CoursePublishState.PUBLISHED) {
-            return (
-                <>
-                    {_getDate(i18n.t("itrex.startDate"), course.startDate)}
-                    {_getDate(i18n.t("itrex.endDate"), course.endDate)}
-                </>
-            );
-        }
-
-        return;
-    }
-
-    function _getDate(title: string, date?: Date) {
-        return (
-            <View style={styles.dateContainer}>
-                <Text style={[styles.textWhiteBold, styles.horizontalSeparator]}>{title}:</Text>
-                <Text style={styles.textWhite}>{dateConverter(date)}</Text>
-            </View>
-        );
-    }
-
-    function _checkOwnerSettings() {
+    function _checkUserSettings() {
         if (user.courses == undefined || course.id == undefined) {
             return <></>;
         }
 
         const courseRole = user.courses[course.id];
         if (courseRole === CourseRoles.OWNER || courseRole === CourseRoles.MANAGER) {
-            return (
-                <View style={styles.dualButtonContainer}>
-                    <TextButton title={i18n.t("itrex.publishCourse")} onPress={() => _confirmPublishCourse()} />
-                    <TextButton title={i18n.t("itrex.deleteCourse")} color="pink" onPress={() => _confirmDeletion()} />
-                </View>
-            );
+            if (course.publishState === CoursePublishState.UNPUBLISHED) {
+                return (
+                    <>
+                        <TextButton title={i18n.t("itrex.publishCourse")} onPress={() => _confirmPublishCourse()} />
+                        <TextButton
+                            title={i18n.t("itrex.deleteCourse")}
+                            color="pink"
+                            onPress={() => _confirmDeletion()}
+                        />
+                    </>
+                );
+            }
+        } else {
+            return _checkForLeaveCourse();
         }
     }
 
@@ -164,14 +141,14 @@ export const ScreenCourseInformation: React.FC = () => {
     }
 
     function _checkForUserRole(courseRole: CourseRoles) {
+        console.log(courseRole);
         if (courseRole === CourseRoles.OWNER || courseRole == undefined) {
             // TODO: Undefined should never happen, buuuut currently does when creating a course.
             // Apparently updating the token and then navigating isn't waiting long enough.
             return <></>;
         }
-
         return (
-            <View style={{ flexDirection: "row", justifyContent: "flex-end", width: "95%" }}>
+            <View>
                 <TextButton color="pink" title={i18n.t("itrex.leaveCourse")} onPress={() => _leaveCourse()} />
             </View>
         );
@@ -193,26 +170,22 @@ const styles = StyleSheet.create({
     imageContainer: {
         flex: 1,
         resizeMode: "stretch",
+        paddingTop: "3%",
+        backgroundColor: dark.theme.darkBlue1,
+    },
+    informationContent: {
         alignItems: "center",
-    },
-    dateContainer: {
-        flexDirection: "row",
-    },
-    textWhiteBold: {
-        color: "white",
-        fontWeight: "bold",
+        justifyContent: "center",
     },
     textWhite: {
         color: "white",
     },
     dualButtonContainer: {
+        height: 70,
+        justifyContent: "flex-end",
+        alignItems: "flex-end",
         flexDirection: "row",
-        justifyContent: "center",
-    },
-    verticalSeparator: {
-        marginTop: 60,
-    },
-    horizontalSeparator: {
-        marginEnd: 10,
+        paddingRight: "20px",
+        paddingLeft: "20px",
     },
 });
