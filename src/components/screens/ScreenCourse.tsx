@@ -80,7 +80,7 @@ export const ScreenCourse: React.FC = () => {
         endpointsCourse
             .getCourse(request, courseId, undefined, i18n.t("itrex.getCourseError"))
             .then((receivedCourse) => setCourse(receivedCourse));
-    }, [courseId]);
+    }, [courseId, course]);
 
     return (
         <CourseContext.Provider value={courseContext}>
