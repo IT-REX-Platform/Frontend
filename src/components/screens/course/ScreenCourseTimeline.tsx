@@ -42,8 +42,9 @@ export const ScreenCourseTimeline: React.FC = () => {
     React.useContext(LocalizationContext);
 
     const [user, setUserInfo] = useState<IUser>({});
-    const [edit, setEdit] = useState(true);
+    const [edit, setEdit] = useState<boolean>();
     const [chapters, setChapters] = useState<IChapter[]>([]);
+    const [courseRole, setCourseRole] = useState<CourseRoles>();
 
     const courseEndpoint = new EndpointsCourse();
     const endpointsVideos: EndpointsVideo = new EndpointsVideo();
@@ -187,6 +188,15 @@ export const ScreenCourseTimeline: React.FC = () => {
                             });
                         }
                     });
+            }
+
+            // Set default edit Mode for Course owner/manager and participant
+            if (user.courses !== undefined && course.id !== undefined) {
+                if (user.courses[course.id] === CourseRoles.OWNER || user.courses[course.id] === CourseRoles.MANAGER) {
+                    setEdit(true);
+                } else {
+                    setEdit(false);
+                }
             }
 
             // Ignore State-Changes if compontent lost focus
@@ -370,6 +380,7 @@ export const ScreenCourseTimeline: React.FC = () => {
                             <Switch
                                 value={edit}
                                 onValueChange={() => {
+                                    console.log(!edit);
                                     setEdit(!edit);
                                 }}></Switch>
                         </View>
