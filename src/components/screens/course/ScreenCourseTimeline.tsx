@@ -44,13 +44,14 @@ export const ScreenCourseTimeline: React.FC = () => {
     const [user, setUserInfo] = useState<IUser>({});
     const [edit, setEdit] = useState<boolean>();
     const [chapters, setChapters] = useState<IChapter[]>([]);
+    const [courseRole, setCourseRole] = useState<CourseRoles>();
 
     const courseEndpoint = new EndpointsCourse();
     const endpointsVideos: EndpointsVideo = new EndpointsVideo();
 
     const isFocused = useIsFocused();
 
-    useEffect(
+    useFocusEffect(
         React.useCallback(() => {
             let isActive = true;
             AuthenticationService.getInstance().getUserInfo(setUserInfo);
