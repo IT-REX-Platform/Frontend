@@ -5,6 +5,7 @@ export const en = {
         itrex: "IT-REX",
         home: "Home",
         timeline: "Timeline",
+        courseInformation: "Course information",
         overview: "Overview",
         login: "Login",
         logout: "Logout",
@@ -148,7 +149,7 @@ export const en = {
         percentageOf: "% of 100%.",
         outOf: "out of",
         solvedCorrectly: "questions were answered correctly.",
-        returnToTimeline: "Return to Timeline",
+        returnToOverview: "Return to overview",
 
         questions: "Questions: ",
         deleteQuizSuccess: "The quiz was deleted successfully.",

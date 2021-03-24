@@ -20,7 +20,7 @@ export const config = {
                 initialRouteName: "INFO",
                 INFO: {
                     screens: {
-                        TIMELINE: "TIMELINE",
+                        COURSE_INFROMATION: "COURSE_INFROMATION",
                         OVERVIEW: "OVERVIEW",
                     },
                 },
@@ -95,7 +95,7 @@ export type CourseStackParamList = {
 
 export type CourseTabParamList = {
     OVERVIEW: undefined;
-    TIMELINE: undefined;
+    COURSE_INFROMATION: undefined;
 };
 
 export class NavigationRoutes {
@@ -106,7 +106,7 @@ export class NavigationRoutes {
     static ROUTE_COURSE_DETAILS = "ROUTE_COURSE_DETAILS";
     static ROUTE_COURSE_DETAILS_TABS = "ROUTE_COURSE_DETAILS_TABS";
     static ROUTE_COURSE_DETAILS_OVERVIEW = "ROUTE_COURSE_DETAILS_OVERVIEW";
-    static ROUTE_COURSE_DETAILS_TIMELINE = "ROUTE_COURSE_DETAILS_TIMELINE";
+    static ROUTE_COURSE_DETAILS_COURSE_INFROMATION = "ROUTE_COURSE_DETAILS_COURSE_INFROMATION";
     static ROUTE_VIDEO_POOL = "ROUTE_VIDEO_POOL";
     static ROUTE_VIDEO = "ROUTE_VIDEO";
     static ROUTE_QUIZ_POOL = "ROUTE_QUIZ_POOL";
