@@ -37,8 +37,8 @@ export const ScreenQuizSolve: React.FC = () => {
                 source={require("../../../../constants/images/Background1-1.png")}
                 style={quizStyles.image}>
                 <Text style={quizStyles.quizTitle}>{quiz.name}</Text>
-                <ScrollView>
-                    <View>
+                <ScrollView showsVerticalScrollIndicator={false}>
+                    <View style={quizStyles.questionContents}>
                         {quiz.questions.map((question) => {
                             switch (question.type) {
                                 case QuestionTypes.SINGLE_CHOICE:
@@ -61,8 +61,7 @@ export const ScreenQuizSolve: React.FC = () => {
                                     );
                             }
                         })}
-                    </View>
-                    <View style={quizStyles.buttonQuizzes}>
+
                         <TextButton
                             title={i18n.t("itrex.finishQuiz")}
                             onPress={() => {

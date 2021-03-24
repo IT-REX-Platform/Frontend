@@ -37,7 +37,7 @@ import { EndpointsVideo } from "../../../api/endpoints/EndpointsVideo";
 import { dateConverter } from "../../../helperScripts/validateCourseDates";
 
 export type ScreenCourseTimelineNavigationProp = CompositeNavigationProp<
-    MaterialTopTabNavigationProp<CourseTabParamList, "TIMELINE">,
+    MaterialTopTabNavigationProp<CourseTabParamList, "COURSE_INFROMATION">,
     CompositeNavigationProp<StackNavigationProp<CourseStackParamList>, DrawerNavigationProp<RootDrawerParamList>>
 >;
 
@@ -394,6 +394,7 @@ const styles = StyleSheet.create({
         width: "screenWidth",
         alignItems: "center",
         paddingBottom: 20,
+        paddingTop: 20,
     },
     chapterContainer: {
         width: "80%",

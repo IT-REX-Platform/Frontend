@@ -25,7 +25,7 @@ export const ScreenQuizResult: React.FC = () => {
     return (
         <ImageBackground source={require("../../../../constants/images/Background1-1.png")} style={quizStyles.image}>
             <Text style={quizStyles.quizTitle}>{quiz.name}</Text>
-            <ScrollView>
+            <ScrollView showsVerticalScrollIndicator={false}>
                 <Text style={quizStyles.solutionContent}>
                     {i18n.t("itrex.youReached")}
                     {correctnessPercentage(quiz)}
@@ -35,24 +35,25 @@ export const ScreenQuizResult: React.FC = () => {
                     {correctlySolved(quiz)} {i18n.t("itrex.outOf")} {quiz.questions.length}{" "}
                     {i18n.t("itrex.solvedCorrectly")}
                 </Text>
-                {quiz.questions.map((question) => {
-                    switch (question.type) {
-                        case QuestionTypes.SINGLE_CHOICE:
-                            return <ResultSingleChoiceCard question={question} />;
-                        case QuestionTypes.MULTIPLE_CHOICE:
-                            return <ResultMultipleChoiceCard question={question} />;
-                        case QuestionTypes.NUMERIC:
-                            return <ResultNumericCard question={question} />;
-                    }
-                })}
-                <View style={quizStyles.buttonQuizzes}>
+
+                <View style={quizStyles.questionContents}>
+                    {quiz.questions.map((question) => {
+                        switch (question.type) {
+                            case QuestionTypes.SINGLE_CHOICE:
+                                return <ResultSingleChoiceCard question={question} />;
+                            case QuestionTypes.MULTIPLE_CHOICE:
+                                return <ResultMultipleChoiceCard question={question} />;
+                            case QuestionTypes.NUMERIC:
+                                return <ResultNumericCard question={question} />;
+                        }
+                    })}
                     <TextButton
-                        title={i18n.t("itrex.returnToTimeline")}
+                        title={i18n.t("itrex.returnToOverview")}
                         onPress={() => {
                             clearQuizEntries(quiz);
 
-                            // Navigate back to Timeline
-                            navigation.navigate("INFO", { screen: "TIMELINE" });
+                            // Navigate back to the Overview
+                            navigation.navigate("INFO", { screen: "OVERVIEW" });
                         }}></TextButton>
                 </View>
             </ScrollView>

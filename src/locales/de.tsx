@@ -5,6 +5,7 @@ export const de = {
         itrex: "IT-REX",
         home: "Startseite",
         timeline: "Zeitplan",
+        courseInformation: "Kursinformationen",
         overview: "Übersicht",
         login: "Einloggen",
         logout: "Ausloggen",
@@ -148,7 +149,7 @@ export const de = {
         outOf: "von",
         quizNumericYourResult: "Ihre Lösung:",
         solvedCorrectly: "Fragen wurden korrekt beantwortet.",
-        returnToTimeline: "Zurück zum Zeitplan",
+        returnToOverview: "Zurück zur Übersicht",
 
         questions: "Fragen: ",
         deleteQuizSuccess: "Das Quiz wurde erfolgreich gelöscht.",

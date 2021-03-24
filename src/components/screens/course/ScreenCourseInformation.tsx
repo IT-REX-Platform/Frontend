@@ -33,7 +33,7 @@ export type ScreenCourseOverviewNavigationProp = CompositeNavigationProp<
 //export type ScreenCourseTabsRouteProp = RouteProp<CourseStackParamList, "INFO">;
 //export type ScreenCourseTabsProps = StackScreenProps<CourseStackParamList, "INFO">;
 
-export const ScreenCourseOverview: React.FC = () => {
+export const ScreenCourseInformation: React.FC = () => {
     const navigation = useNavigation<ScreenCourseOverviewNavigationProp>();
 
     React.useContext(LocalizationContext);
@@ -52,8 +52,8 @@ export const ScreenCourseOverview: React.FC = () => {
     return (
         <ImageBackground source={require("../../../constants/images/Background2.png")} style={styles.imageContainer}>
             <View style={styles.verticalSeparator}></View>
-            {_getPublishSate()}
             {_checkForLeaveCourse()}
+            {_getPublishSate()}
             <Text style={styles.textWhite}>{course.courseDescription}</Text>
             {_createContentAsOwner()}
         </ImageBackground>
@@ -174,7 +174,11 @@ export const ScreenCourseOverview: React.FC = () => {
             return <></>;
         }
 
-        return <TextButton color="pink" title={i18n.t("itrex.leaveCourse")} onPress={() => _leaveCourse()} />;
+        return (
+            <View style={{ flexDirection: "row", justifyContent: "flex-end", width: "95%" }}>
+                <TextButton color="pink" title={i18n.t("itrex.leaveCourse")} onPress={() => _leaveCourse()} />
+            </View>
+        );
     }
 
     function _leaveCourse() {
@@ -226,7 +230,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
     },
     verticalSeparator: {
-        marginTop: 85,
+        marginTop: 60,
     },
     horizontalSeparator: {
         marginEnd: 10,

@@ -503,7 +503,7 @@ export const ScreenAddChapter: React.FC = () => {
         </View>
     );
 
-    function saveChapter(returnToTimeline: boolean) {
+    function saveChapter(returnToOverview: boolean) {
         // Validate start/end Date
         // Check if start and Enddate are set
 
@@ -542,9 +542,9 @@ export const ScreenAddChapter: React.FC = () => {
                         });
                     })
                 ).then(() => {
-                    if (returnToTimeline) {
+                    if (returnToOverview) {
                         // Navigate back to Timeline
-                        navigation.navigate("INFO", { screen: "TIMELINE" });
+                        navigation.navigate("INFO", { screen: "OVERVIEW" });
                     } else {
                         // Navigate to the new Chapter
                         navigation.navigate("CHAPTER", { chapterId: chapter.id });
@@ -594,9 +594,9 @@ export const ScreenAddChapter: React.FC = () => {
                     i18n.t("itrex.updateChapterError")
                 );
 
-                if (returnToTimeline) {
+                if (returnToOverview) {
                     // Navigate back to Timeline
-                    navigation.navigate("INFO", { screen: "TIMELINE" });
+                    navigation.navigate("INFO", { screen: "OVERVIEW" });
                 } else {
                     // Navigate to the new Chapter
                     navigation.navigate("CHAPTER", { chapterId: chapter.id });

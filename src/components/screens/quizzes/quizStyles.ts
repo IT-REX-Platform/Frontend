@@ -196,13 +196,14 @@ export const quizStyles = StyleSheet.create({
         fontSize: 16,
         color: "white",
     },
-    buttonQuizzes: {
-        alignItems: "center",
-        marginBottom: 8,
-    },
     solutionContent: {
         paddingLeft: 16,
         fontSize: 16,
         color: "white",
+    },
+    questionContents: {
+        justifyContent: "center",
+        alignItems: "center",
+        width: "100%",
     },
 });

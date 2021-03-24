@@ -8,7 +8,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { TextButton } from "../../uiElements/TextButton";
 import i18n from "../../../locales";
 import { RequestFactory } from "../../../api/requests/RequestFactory";
-import { ScreenCourseOverviewNavigationProp } from "../course/ScreenCourseOverview";
+import { ScreenCourseOverviewNavigationProp } from "../course/ScreenCourseInformation";
 import { QuestionCard } from "../../cards/QuestionCard";
 import { ScrollView } from "react-native-gesture-handler";
 import { IQuestionMultipleChoice, IQuestionNumeric, IQuestionSingleChoice } from "../../../types/IQuestion";
@@ -138,7 +138,7 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = (props) => {
             );
         } else {
             return (
-                <ScrollView style={quizStyles.scrollContainer}>
+                <ScrollView style={quizStyles.scrollContainer} showsVerticalScrollIndicator={false}>
                     {questions.map((question: IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric) => {
                         return <QuestionCard question={question} quiz={myNewQuiz} courseId={courseId} />;
                     })}
