@@ -72,7 +72,8 @@ export const ScreenCourse: React.FC = () => {
 
     const endpointsCourse: EndpointsCourse = new EndpointsCourse();
     useEffect(() => {
-        AuthenticationService.getInstance().getUserInfo(setUserInfo);
+        setUserInfo(AuthenticationService.getInstance().getUserInfoCached());
+        // AuthenticationService.getInstance().getUserInfo(setUserInfo);
         const request: RequestInit = RequestFactory.createGetRequest();
         endpointsCourse
             .getCourse(request, courseId, undefined, i18n.t("itrex.getCourseError"))

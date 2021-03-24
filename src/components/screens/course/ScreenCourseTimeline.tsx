@@ -59,7 +59,7 @@ export const ScreenCourseTimeline: React.FC = () => {
     useFocusEffect(
         React.useCallback(() => {
             let isActive = true;
-            AuthenticationService.getInstance().getUserInfo(setUserInfo);
+            setUserInfo(AuthenticationService.getInstance().getUserInfoCached());
 
             if (isFocused && course.id !== undefined && isActive == true) {
                 const request: RequestInit = RequestFactory.createGetRequest();

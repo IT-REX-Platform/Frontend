@@ -30,7 +30,7 @@ export const JoinCourseComponent: React.FC = () => {
 
     const [user, setUserInfo] = useState<IUser>({});
     useEffect(() => {
-        AuthenticationService.getInstance().getUserInfo(setUserInfo);
+        setUserInfo(AuthenticationService.getInstance().getUserInfoCached());
     }, []);
 
     const isFocused = useIsFocused();
@@ -39,7 +39,7 @@ export const JoinCourseComponent: React.FC = () => {
             AuthenticationService.getInstance()
                 .refreshToken()
                 .then(() => {
-                    AuthenticationService.getInstance().getUserInfo(setUserInfo);
+                    setUserInfo(AuthenticationService.getInstance().getUserInfoCached());
                 });
         }
     }, [isFocused]);

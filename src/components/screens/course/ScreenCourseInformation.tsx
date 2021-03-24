@@ -45,7 +45,7 @@ export const ScreenCourseInformation: React.FC = () => {
 
     useFocusEffect(
         React.useCallback(() => {
-            AuthenticationService.getInstance().getUserInfo(setUserInfo);
+            setUserInfo(AuthenticationService.getInstance().getUserInfoCached());
         }, [])
     );
 
@@ -155,7 +155,11 @@ export const ScreenCourseInformation: React.FC = () => {
                 i18n.t("itrex.courseDeletedSuccessfully"),
                 i18n.t("itrex.deleteCourseError")
             )
-            .then(() => navigation.navigate("ROUTE_HOME"));
+            .then(() => {
+                AuthenticationService.getInstance()
+                    .refreshToken()
+                    .then(() => navigation.navigate("ROUTE_HOME"));
+            });
     }
 
     function _checkForLeaveCourse() {
