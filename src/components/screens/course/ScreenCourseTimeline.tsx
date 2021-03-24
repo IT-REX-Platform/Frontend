@@ -1,15 +1,8 @@
 /* eslint-disable max-lines */
 /* eslint-disable complexity */
-import React, { useEffect, useState } from "react";
-import { Text, ImageBackground, StyleSheet, View, TouchableOpacity, Switch, unstable_enableLogBox } from "react-native";
-import {
-    CompositeNavigationProp,
-    RouteProp,
-    useFocusEffect,
-    useIsFocused,
-    useNavigation,
-    useRoute,
-} from "@react-navigation/native";
+import React, { useState } from "react";
+import { Text, ImageBackground, StyleSheet, View, TouchableOpacity, Switch } from "react-native";
+import { CompositeNavigationProp, useFocusEffect, useIsFocused, useNavigation } from "@react-navigation/native";
 import { dark } from "../../../constants/themes/dark";
 import {
     CourseStackParamList,
@@ -35,6 +28,7 @@ import { IChapter } from "../../../types/IChapter";
 import { CONTENTREFERENCETYPE, IContent } from "../../../types/IContent";
 import { EndpointsVideo } from "../../../api/endpoints/EndpointsVideo";
 import { dateConverter } from "../../../helperScripts/validateCourseDates";
+import { TextButton } from "../../uiElements/TextButton";
 
 export type ScreenCourseTimelineNavigationProp = CompositeNavigationProp<
     MaterialTopTabNavigationProp<CourseTabParamList, "COURSE_INFROMATION">,
@@ -371,12 +365,28 @@ export const ScreenCourseTimeline: React.FC = () => {
             return (
                 <>
                     <View style={styles.editMode}>
-                        <Text style={styles.editModeText}>{i18n.t("itrex.editMode")}</Text>
-                        <Switch
-                            value={edit}
-                            onValueChange={() => {
-                                setEdit(!edit);
-                            }}></Switch>
+                        <View style={{ flexDirection: "row" }}>
+                            <Text style={styles.editModeText}>{i18n.t("itrex.editMode")}</Text>
+                            <Switch
+                                value={edit}
+                                onValueChange={() => {
+                                    setEdit(!edit);
+                                }}></Switch>
+                        </View>
+                        {edit ? (
+                            <>
+                                <TextButton
+                                    title={i18n.t("itrex.videoPool")}
+                                    onPress={() => navigation.navigate("VIDEO_POOL")}
+                                />
+                                <TextButton
+                                    title={i18n.t("itrex.quizPool")}
+                                    onPress={() => navigation.navigate("QUIZ_POOL")}
+                                />
+                            </>
+                        ) : (
+                            <View></View>
+                        )}
                     </View>
                 </>
             );
@@ -408,9 +418,12 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     editMode: {
-        alignSelf: "flex-end",
-        flexDirection: "row",
+        height: 60,
+        justifyContent: "space-between",
+        alignItems: "center",
+        flexDirection: "row-reverse",
         paddingRight: "20px",
+        paddingLeft: "20px",
         paddingTop: "20px",
     },
     editModeText: {

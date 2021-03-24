@@ -53,7 +53,6 @@ export const ScreenCourseInformation: React.FC = () => {
             {_checkForLeaveCourse()}
             {_getPublishSate()}
             <Text style={styles.textWhite}>{course.courseDescription}</Text>
-            {_createContentAsOwner()}
         </ImageBackground>
     );
 
@@ -186,22 +185,6 @@ export const ScreenCourseInformation: React.FC = () => {
                     .refreshToken()
                     .then(() => navigation.navigate("ROUTE_HOME"));
             });
-        }
-    }
-
-    function _createContentAsOwner() {
-        if (user.courses == undefined || course.id == undefined) {
-            return <></>;
-        }
-
-        const courseRole = user.courses[course.id];
-        if (courseRole === CourseRoles.OWNER) {
-            return (
-                <View style={styles.dualButtonContainer}>
-                    <TextButton title={i18n.t("itrex.videoPool")} onPress={() => navigation.navigate("VIDEO_POOL")} />
-                    <TextButton title={i18n.t("itrex.quizPool")} onPress={() => navigation.navigate("QUIZ_POOL")} />
-                </View>
-            );
         }
     }
 };
