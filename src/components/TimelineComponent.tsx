@@ -3,7 +3,7 @@
 import React from "react";
 import i18n from "../locales";
 import { LocalizationContext } from "./Context";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { LayoutChangeEvent, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { dark } from "../constants/themes/dark";
 import { useNavigation } from "@react-navigation/native";
 import { ITimePeriod, TimePeriodPublishState } from "../types/ITimePeriod";
@@ -22,6 +22,10 @@ export const TimelineComponent: React.FC<TimelineComponentProps> = (props) => {
     React.useContext(LocalizationContext);
     const navigation = useNavigation();
 
+    const startDate = props.timePeriod?.startDate ? props.timePeriod?.startDate : new Date();
+    const endDate = props.timePeriod?.endDate ? props.timePeriod?.endDate : new Date();
+    const currentDate = new Date();
+
     return (
         <>
             <View style={styles.circleContainer}>
@@ -29,30 +33,19 @@ export const TimelineComponent: React.FC<TimelineComponentProps> = (props) => {
                 <View
                     style={[
                         styles.mainCircle,
-                        props.timePeriod?.publishState === TimePeriodPublishState.PUBLISHED
-                            ? styles.mainCirclePublished
-                            : {},
-                        props.timePeriod?.publishState === TimePeriodPublishState.UNPUBLISHED
-                            ? styles.mainCircleNotPublished
-                            : {},
-                        props.timePeriod?.publishState === TimePeriodPublishState.NOTSTARTED
-                            ? styles.mainCircleNotStarted
-                            : {},
-                        props.timePeriod?.publishState === undefined ? styles.mainCircleNotStarted : {},
+                        // Due TimePeriod
+                        currentDate > endDate ? styles.mainCircleDue : {},
+                        // Current TimePeriod
+                        currentDate > startDate && currentDate < endDate ? styles.mainCircleCurrent : {},
+                        // Upcomming TimePeriod
+                        currentDate < startDate ? styles.mainCircleUpcomming : {},
                     ]}>
                     <View
                         style={[
                             styles.innerCircle,
-                            props.timePeriod?.publishState === TimePeriodPublishState.PUBLISHED
-                                ? styles.innerCirclePublished
-                                : {},
-                            props.timePeriod?.publishState === TimePeriodPublishState.UNPUBLISHED
-                                ? styles.innerCircleNotPublished
-                                : {},
-                            props.timePeriod?.publishState === TimePeriodPublishState.NOTSTARTED
-                                ? styles.innerCircleNotStarted
-                                : {},
-                            props.timePeriod?.publishState === undefined ? styles.innerCircleNotStarted : {},
+                            currentDate > endDate ? styles.innerCircleDue : {},
+                            currentDate > startDate && currentDate < endDate ? styles.innerCircleCurrent : {},
+                            currentDate < startDate ? styles.innerCircleUpcomming : {},
                         ]}></View>
                 </View>
             </View>
@@ -94,24 +87,24 @@ const styles = StyleSheet.create({
         alignSelf: "center",
     },
     // Published-Styles
-    mainCirclePublished: {
+    mainCircleDue: {
         backgroundColor: "#769575",
     },
-    innerCirclePublished: {
+    innerCircleDue: {
         backgroundColor: "#B6EF93",
     },
     // Not published
-    mainCircleNotPublished: {
+    mainCircleCurrent: {
         backgroundColor: "#769575",
     },
-    innerCircleNotPublished: {
+    innerCircleCurrent: {
         backgroundColor: "#707070",
     },
     // Not started yet
-    mainCircleNotStarted: {
+    mainCircleUpcomming: {
         backgroundColor: "#3C495B",
     },
-    innerCircleNotStarted: {
+    innerCircleUpcomming: {
         backgroundColor: "#707070",
     },
 
