@@ -41,7 +41,9 @@ export function getDateIsoString(dateToTest: Date | undefined): string {
 }
 export function dateConverter(dateToConvert: Date | undefined): string {
     if (isValidDate(dateToConvert) && dateToConvert) {
-        const date = dateToConvert.getDate() + "." + dateToConvert.getMonth() + "." + dateToConvert.getFullYear();
+        // e.g. 02.03.2021
+        // https://github.com/fnando/i18n-js
+        const date = i18n.strftime(dateToConvert, "%d.%m.%Y");
         return date;
     }
     return "";
