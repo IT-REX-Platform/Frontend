@@ -18,7 +18,9 @@ export const en = {
         homeAdminText: "hello admin",
         homeErrorText: "missing configuration",
 
+        courseDescription: "Course Description",
         enterCourseName: "Enter course name",
+        noCourseDescription: "No course description available.",
         enterCourseDescription: "Enter course description",
         createCourse: "Create new course",
         joinCourse: "Join course",
@@ -99,7 +101,8 @@ export const en = {
 
         noChapters: "No chapters have been created for this course yet.",
         addChapter: "+ Add Chapter",
-        editMode: "Toggle Edit-mode",
+        switchToStudentView: "Switch to the student view",
+        switchToOwnerView: "Switch to the editing view",
         chapterMaterial: "Chapter Material",
         myNewChapter: "My new chapter",
         save: "Save",
@@ -108,6 +111,8 @@ export const en = {
         chapterCreatedSuccess: "The chapter was created successfully.",
         chapterUpdateSuccess: "The chapter was updated successfully.",
         publishCourseSuccess: "The course was published successfully.",
+        updateCourseSuccess: "The course description was updated successfully.",
+        updateCourseError: "An error occured while updating the course description.",
         courseDeletedSuccessfully: "The course was deleted successfully.",
         confirmPublishCourse:
             "Publishing the course will make it possible for students to join the course. Start- and end-date will also be fixed when publishing the course.",

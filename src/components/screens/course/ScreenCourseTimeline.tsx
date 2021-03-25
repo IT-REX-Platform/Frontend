@@ -1,15 +1,8 @@
 /* eslint-disable max-lines */
 /* eslint-disable complexity */
-import React, { useEffect, useState } from "react";
-import { Text, ImageBackground, StyleSheet, View, TouchableOpacity, Switch, unstable_enableLogBox } from "react-native";
-import {
-    CompositeNavigationProp,
-    RouteProp,
-    useFocusEffect,
-    useIsFocused,
-    useNavigation,
-    useRoute,
-} from "@react-navigation/native";
+import React, { useState } from "react";
+import { Text, ImageBackground, StyleSheet, View, TouchableOpacity, Switch } from "react-native";
+import { CompositeNavigationProp, useFocusEffect, useIsFocused, useNavigation } from "@react-navigation/native";
 import { dark } from "../../../constants/themes/dark";
 import {
     CourseStackParamList,
@@ -35,6 +28,7 @@ import { IChapter } from "../../../types/IChapter";
 import { CONTENTREFERENCETYPE, IContent } from "../../../types/IContent";
 import { EndpointsVideo } from "../../../api/endpoints/EndpointsVideo";
 import { dateConverter } from "../../../helperScripts/validateCourseDates";
+import { TextButton } from "../../uiElements/TextButton";
 
 export type ScreenCourseTimelineNavigationProp = CompositeNavigationProp<
     MaterialTopTabNavigationProp<CourseTabParamList, "COURSE_INFROMATION">,
@@ -42,19 +36,26 @@ export type ScreenCourseTimelineNavigationProp = CompositeNavigationProp<
 >;
 
 export const ScreenCourseTimeline: React.FC = () => {
+    React.useContext(LocalizationContext);
     const navigation = useNavigation<ScreenCourseTimelineNavigationProp>();
 
     const { course, setCourse } = React.useContext(CourseContext);
-    React.useContext(LocalizationContext);
-
     const [user, setUserInfo] = useState<IUser>({});
-    const [edit, setEdit] = useState(false);
+    const [edit, setEdit] = useState<boolean>();
     const [chapters, setChapters] = useState<IChapter[]>([]);
 
+    // Endpoints
     const courseEndpoint = new EndpointsCourse();
     const endpointsVideos: EndpointsVideo = new EndpointsVideo();
 
     const isFocused = useIsFocused();
+
+    useFocusEffect(
+        React.useCallback(() => {
+            AuthenticationService.getInstance().getUserInfo(setUserInfo);
+            setEditMode();
+        }, [AuthenticationService.getInstance().tokenResponse, course])
+    );
 
     useFocusEffect(
         React.useCallback(() => {
@@ -210,105 +211,52 @@ export const ScreenCourseTimeline: React.FC = () => {
             {lecturerEditMode()}
 
             <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
-                {edit === false ? (
-                    course.timePeriods !== undefined &&
-                    course.timePeriods?.length > 0 && (
-                        <View style={{ width: "80%" }}>
-                            {course.timePeriods?.map((timePeriod) => (
-                                <TimelineComponent
-                                    key={timePeriod.id}
-                                    edit={edit}
-                                    timePeriod={timePeriod}
-                                    course={course}></TimelineComponent>
-                            ))}
-                        </View>
-                    )
-                ) : chapters.length === 0 ? (
-                    <View>{!edit && <Text style={styles.textStyle}>{i18n.t("itrex.noChapters")}</Text>}</View>
-                ) : (
-                    chapters.map((chapter, idx) => (
-                        <View style={styles.chapterContainer}>
-                            <ChapterComponent
-                                key={chapter.id}
-                                editMode={edit}
-                                chapter={chapter}
-                                course={course}></ChapterComponent>
-                            {edit && (
-                                <View style={styles.chapterArrows}>
-                                    {idx !== 0 && (
-                                        <TouchableOpacity onPress={() => reorderChapters(idx - 1, idx)}>
-                                            <MaterialIcons
-                                                name="keyboard-arrow-up"
-                                                size={28}
-                                                color="white"
-                                                style={{}}
-                                            />
-                                        </TouchableOpacity>
-                                    )}
-                                    {idx !== chapters.length - 1 && (
-                                        <TouchableOpacity onPress={() => reorderChapters(idx + 1, idx)}>
-                                            <MaterialIcons
-                                                name="keyboard-arrow-down"
-                                                size={28}
-                                                color="white"
-                                                style={{}}
-                                            />
-                                        </TouchableOpacity>
-                                    )}
-                                </View>
-                            )}
-                        </View>
-                    ))
-                )}
-                {/*chapters.length === 0 ? (
-                        <View>{!edit && <Text style={styles.textStyle}>{i18n.t("itrex.noChapters")}</Text>}</View>
-                    ) : (
-                        chapters.map((chapter, idx) => (
-                            <View style={styles.chapterContainer}>
-                                <ChapterComponent
-                                    key={chapter.id}
-                                    editMode={edit}
-                                    chapter={chapter}
-                                    course={course}></ChapterComponent>
-                                {edit && (
-                                    <View style={styles.chapterArrows}>
-                                        {idx !== 0 && (
-                                            <TouchableOpacity onPress={() => reorderChapters(idx - 1, idx)}>
-                                                <MaterialIcons
-                                                    name="keyboard-arrow-up"
-                                                    size={28}
-                                                    color="white"
-                                                    style={{}}
-                                                />
-                                            </TouchableOpacity>
-                                        )}
-                                        {idx !== chapters.length - 1 && (
-                                            <TouchableOpacity onPress={() => reorderChapters(idx + 1, idx)}>
-                                                <MaterialIcons
-                                                    name="keyboard-arrow-down"
-                                                    size={28}
-                                                    color="white"
-                                                    style={{}}
-                                                />
-                                            </TouchableOpacity>
-                                        )}
-                                    </View>
-                                )}
-                            </View>
-                        ))
-                                        )*/}
-
-                {/*course.timePeriods?.length === 0 ? (
-                    <View>{!edit && <Text style={styles.textStyle}>{i18n.t("itrex.noChapters")}</Text>}</View>
-                ) : (
-                    course.timePeriods?.map((timePeriod) => (
-                        <TimelineComponent
-                            key={timePeriod.id}
-                            edit={edit}
-                            timePeriod={timePeriod}
-                            course={course}></TimelineComponent>
-                    ))
-                    )*/}
+                {edit === false
+                    ? course.timePeriods !== undefined &&
+                      course.timePeriods?.length > 0 && (
+                          <View style={{ width: "80%" }}>
+                              {course.timePeriods?.map((timePeriod) => (
+                                  <TimelineComponent
+                                      key={timePeriod.id}
+                                      edit={edit}
+                                      timePeriod={timePeriod}
+                                      course={course}></TimelineComponent>
+                              ))}
+                          </View>
+                      )
+                    : chapters.map((chapter, idx) => (
+                          <View style={styles.chapterContainer}>
+                              <ChapterComponent
+                                  key={chapter.id}
+                                  editMode={edit}
+                                  chapter={chapter}
+                                  course={course}></ChapterComponent>
+                              {edit && (
+                                  <View style={styles.chapterArrows}>
+                                      {idx !== 0 && (
+                                          <TouchableOpacity onPress={() => reorderChapters(idx - 1, idx)}>
+                                              <MaterialIcons
+                                                  name="keyboard-arrow-up"
+                                                  size={28}
+                                                  color="white"
+                                                  style={{}}
+                                              />
+                                          </TouchableOpacity>
+                                      )}
+                                      {idx !== chapters.length - 1 && (
+                                          <TouchableOpacity onPress={() => reorderChapters(idx + 1, idx)}>
+                                              <MaterialIcons
+                                                  name="keyboard-arrow-down"
+                                                  size={28}
+                                                  color="white"
+                                                  style={{}}
+                                              />
+                                          </TouchableOpacity>
+                                      )}
+                                  </View>
+                              )}
+                          </View>
+                      ))}
                 {edit && (
                     <View style={styles.addChapterContainer}>
                         <TouchableOpacity
@@ -325,6 +273,19 @@ export const ScreenCourseTimeline: React.FC = () => {
             </ScrollView>
         </ImageBackground>
     );
+
+    /**
+     * Set default edit Mode for Course owner/manager and participant
+     */
+    function setEditMode() {
+        if (user.courses !== undefined && course.id !== undefined) {
+            if (user.courses[course.id] === CourseRoles.OWNER || user.courses[course.id] === CourseRoles.MANAGER) {
+                setEdit(true);
+            } else {
+                setEdit(false);
+            }
+        }
+    }
 
     /**
      * Reorder the Chapter objects in the chapter list, to save them in the correct order
@@ -371,12 +332,37 @@ export const ScreenCourseTimeline: React.FC = () => {
             return (
                 <>
                     <View style={styles.editMode}>
-                        <Text style={styles.editModeText}>{i18n.t("itrex.editMode")}</Text>
-                        <Switch
-                            value={edit}
-                            onValueChange={() => {
-                                setEdit(!edit);
-                            }}></Switch>
+                        <View style={{ flexDirection: "row" }}>
+                            {edit ? (
+                                <Text style={styles.editModeText}>{i18n.t("itrex.switchToStudentView")}</Text>
+                            ) : (
+                                <Text style={styles.editModeText}>{i18n.t("itrex.switchToOwnerView")}</Text>
+                            )}
+                            <Switch
+                                value={edit}
+                                onValueChange={() => {
+                                    console.log(!edit);
+                                    setEdit(!edit);
+                                }}></Switch>
+                        </View>
+                        {edit ? (
+                            <>
+                                <View style={{ position: "absolute", flexDirection: "row" }}>
+                                    <TextButton
+                                        color="dark"
+                                        title={i18n.t("itrex.videoPool")}
+                                        onPress={() => navigation.navigate("VIDEO_POOL")}
+                                    />
+                                    <TextButton
+                                        color="dark"
+                                        title={i18n.t("itrex.quizPool")}
+                                        onPress={() => navigation.navigate("QUIZ_POOL")}
+                                    />
+                                </View>
+                            </>
+                        ) : (
+                            <View></View>
+                        )}
                     </View>
                 </>
             );
@@ -408,10 +394,12 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     editMode: {
-        alignSelf: "flex-end",
-        flexDirection: "row",
+        height: 70,
+        justifyContent: "space-between",
+        alignItems: "center",
+        flexDirection: "row-reverse",
         paddingRight: "20px",
-        paddingTop: "20px",
+        paddingLeft: "20px",
     },
     editModeText: {
         color: "white",
@@ -443,10 +431,5 @@ const styles = StyleSheet.create({
         borderStyle: "dotted",
         alignItems: "center",
         justifyContent: "center",
-    },
-    textStyle: {
-        margin: 10,
-        color: "white",
-        fontWeight: "bold",
     },
 });
