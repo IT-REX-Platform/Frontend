@@ -22,7 +22,6 @@ import { CourseStackParamList, RootDrawerParamList } from "../../../constants/na
 import { IChapter } from "../../../types/IChapter";
 import { RequestFactory } from "../../../api/requests/RequestFactory";
 import { EndpointsChapter } from "../../../api/endpoints/EndpointsChapter";
-import { ICourse } from "../../../types/ICourse";
 import { ListItem } from "react-native-elements";
 import { IVideo } from "../../../types/IVideo";
 import { EndpointsVideo } from "../../../api/endpoints/EndpointsVideo";
@@ -30,7 +29,6 @@ import { loggerFactory } from "../../../../logger/LoggerConfig";
 import { calculateVideoSize } from "../../../services/calculateVideoSize";
 import DraggableFlatList from "react-native-draggable-flatlist";
 import { TextButton } from "../../uiElements/TextButton";
-import { dateConverter } from "../../../helperScripts/validateCourseDates";
 import { CONTENTREFERENCETYPE, IContent } from "../../../types/IContent";
 import { EndpointsContentReference } from "../../../api/endpoints/EndpointsContentReference";
 import { IQuiz } from "../../../types/IQuiz";
