@@ -44,7 +44,6 @@ export const ScreenCourseTimeline: React.FC = () => {
     const [user, setUserInfo] = useState<IUser>({});
     const [edit, setEdit] = useState<boolean>();
     const [chapters, setChapters] = useState<IChapter[]>([]);
-    const [courseRole, setCourseRole] = useState<CourseRoles>();
 
     const courseEndpoint = new EndpointsCourse();
     const endpointsVideos: EndpointsVideo = new EndpointsVideo();
@@ -264,55 +263,6 @@ export const ScreenCourseTimeline: React.FC = () => {
                         </View>
                     ))
                 )}
-                {/*chapters.length === 0 ? (
-                        <View>{!edit && <Text style={styles.textStyle}>{i18n.t("itrex.noChapters")}</Text>}</View>
-                    ) : (
-                        chapters.map((chapter, idx) => (
-                            <View style={styles.chapterContainer}>
-                                <ChapterComponent
-                                    key={chapter.id}
-                                    editMode={edit}
-                                    chapter={chapter}
-                                    course={course}></ChapterComponent>
-                                {edit && (
-                                    <View style={styles.chapterArrows}>
-                                        {idx !== 0 && (
-                                            <TouchableOpacity onPress={() => reorderChapters(idx - 1, idx)}>
-                                                <MaterialIcons
-                                                    name="keyboard-arrow-up"
-                                                    size={28}
-                                                    color="white"
-                                                    style={{}}
-                                                />
-                                            </TouchableOpacity>
-                                        )}
-                                        {idx !== chapters.length - 1 && (
-                                            <TouchableOpacity onPress={() => reorderChapters(idx + 1, idx)}>
-                                                <MaterialIcons
-                                                    name="keyboard-arrow-down"
-                                                    size={28}
-                                                    color="white"
-                                                    style={{}}
-                                                />
-                                            </TouchableOpacity>
-                                        )}
-                                    </View>
-                                )}
-                            </View>
-                        ))
-                                        )*/}
-
-                {/*course.timePeriods?.length === 0 ? (
-                    <View>{!edit && <Text style={styles.textStyle}>{i18n.t("itrex.noChapters")}</Text>}</View>
-                ) : (
-                    course.timePeriods?.map((timePeriod) => (
-                        <TimelineComponent
-                            key={timePeriod.id}
-                            edit={edit}
-                            timePeriod={timePeriod}
-                            course={course}></TimelineComponent>
-                    ))
-                    )*/}
                 {edit && (
                     <View style={styles.addChapterContainer}>
                         <TouchableOpacity
@@ -376,7 +326,11 @@ export const ScreenCourseTimeline: React.FC = () => {
                 <>
                     <View style={styles.editMode}>
                         <View style={{ flexDirection: "row" }}>
-                            <Text style={styles.editModeText}>{i18n.t("itrex.editMode")}</Text>
+                            {edit ? (
+                                <Text style={styles.editModeText}>{i18n.t("itrex.switchToStudentView")}</Text>
+                            ) : (
+                                <Text style={styles.editModeText}>{i18n.t("itrex.switchToOwnerView")}</Text>
+                            )}
                             <Switch
                                 value={edit}
                                 onValueChange={() => {
@@ -387,10 +341,12 @@ export const ScreenCourseTimeline: React.FC = () => {
                         {edit ? (
                             <>
                                 <TextButton
+                                    color="dark"
                                     title={i18n.t("itrex.videoPool")}
                                     onPress={() => navigation.navigate("VIDEO_POOL")}
                                 />
                                 <TextButton
+                                    color="dark"
                                     title={i18n.t("itrex.quizPool")}
                                     onPress={() => navigation.navigate("QUIZ_POOL")}
                                 />

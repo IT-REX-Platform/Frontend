@@ -99,7 +99,8 @@ export const en = {
 
         noChapters: "No chapters have been created for this course yet.",
         addChapter: "+ Add Chapter",
-        editMode: "Toggle Edit-mode",
+        switchToStudentView: "Switch to the student view",
+        switchToOwnerView: "Switch to the editing view",
         chapterMaterial: "Chapter Material",
         myNewChapter: "My new chapter",
         save: "Save",

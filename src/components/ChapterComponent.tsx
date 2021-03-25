@@ -69,7 +69,6 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                 <View style={styles.chapterStatus}>{getPublishedSate(CoursePublishState.PUBLISHED)}</View>
             </View>
             <View style={styles.chapterBottomRow}>
-                <Text style={styles.chapterMaterialHeader}>{i18n.t("itrex.chapterMaterial")}</Text>
                 {props.editMode && AuthenticationService.getInstance().isLecturer() && (
                     <View style={styles.chapterEditRow}>
                         {/**<TouchableOpacity

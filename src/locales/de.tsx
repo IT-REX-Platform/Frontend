@@ -99,7 +99,8 @@ export const de = {
 
         noChapters: "Es wurden noch keine Kapitel für diesen Kurs angelgt.",
         addChapter: "+ Kapitel hinzugügen",
-        editMode: "Toggle Bearbeitungs-Modus",
+        switchToStudentView: "Zur Studentenansicht wechseln",
+        switchToOwnerView: "Zur Bearbeitungsansicht wechseln",
         chapterMaterial: "Kapitel Materialien",
         myNewChapter: "Mein neues Kapitel",
         save: "Speichern",
