@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 /* eslint-disable complexity */
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Text, ImageBackground, StyleSheet, View, TouchableOpacity, Switch } from "react-native";
 import { CompositeNavigationProp, useFocusEffect, useIsFocused, useNavigation } from "@react-navigation/native";
 import { dark } from "../../../constants/themes/dark";
@@ -36,19 +36,26 @@ export type ScreenCourseTimelineNavigationProp = CompositeNavigationProp<
 >;
 
 export const ScreenCourseTimeline: React.FC = () => {
+    React.useContext(LocalizationContext);
     const navigation = useNavigation<ScreenCourseTimelineNavigationProp>();
 
     const { course, setCourse } = React.useContext(CourseContext);
-    React.useContext(LocalizationContext);
-
     const [user, setUserInfo] = useState<IUser>({});
     const [edit, setEdit] = useState<boolean>();
     const [chapters, setChapters] = useState<IChapter[]>([]);
 
+    // Endpoints
     const courseEndpoint = new EndpointsCourse();
     const endpointsVideos: EndpointsVideo = new EndpointsVideo();
 
     const isFocused = useIsFocused();
+
+    useFocusEffect(
+        React.useCallback(() => {
+            AuthenticationService.getInstance().getUserInfo(setUserInfo);
+            setEditMode();
+        }, [AuthenticationService.getInstance().tokenResponse, course])
+    );
 
     useFocusEffect(
         React.useCallback(() => {
@@ -189,15 +196,6 @@ export const ScreenCourseTimeline: React.FC = () => {
                     });
             }
 
-            // Set default edit Mode for Course owner/manager and participant
-            if (user.courses !== undefined && course.id !== undefined) {
-                if (user.courses[course.id] === CourseRoles.OWNER || user.courses[course.id] === CourseRoles.MANAGER) {
-                    setEdit(true);
-                } else {
-                    setEdit(false);
-                }
-            }
-
             // Ignore State-Changes if compontent lost focus
             return () => {
                 isActive = false;
@@ -213,56 +211,52 @@ export const ScreenCourseTimeline: React.FC = () => {
             {lecturerEditMode()}
 
             <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
-                {edit === false ? (
-                    course.timePeriods !== undefined &&
-                    course.timePeriods?.length > 0 && (
-                        <View style={{ width: "80%" }}>
-                            {course.timePeriods?.map((timePeriod) => (
-                                <TimelineComponent
-                                    key={timePeriod.id}
-                                    edit={edit}
-                                    timePeriod={timePeriod}
-                                    course={course}></TimelineComponent>
-                            ))}
-                        </View>
-                    )
-                ) : chapters.length === 0 ? (
-                    <View>{!edit && <Text style={styles.textStyle}>{i18n.t("itrex.noChapters")}</Text>}</View>
-                ) : (
-                    chapters.map((chapter, idx) => (
-                        <View style={styles.chapterContainer}>
-                            <ChapterComponent
-                                key={chapter.id}
-                                editMode={edit}
-                                chapter={chapter}
-                                course={course}></ChapterComponent>
-                            {edit && (
-                                <View style={styles.chapterArrows}>
-                                    {idx !== 0 && (
-                                        <TouchableOpacity onPress={() => reorderChapters(idx - 1, idx)}>
-                                            <MaterialIcons
-                                                name="keyboard-arrow-up"
-                                                size={28}
-                                                color="white"
-                                                style={{}}
-                                            />
-                                        </TouchableOpacity>
-                                    )}
-                                    {idx !== chapters.length - 1 && (
-                                        <TouchableOpacity onPress={() => reorderChapters(idx + 1, idx)}>
-                                            <MaterialIcons
-                                                name="keyboard-arrow-down"
-                                                size={28}
-                                                color="white"
-                                                style={{}}
-                                            />
-                                        </TouchableOpacity>
-                                    )}
-                                </View>
-                            )}
-                        </View>
-                    ))
-                )}
+                {edit === false
+                    ? course.timePeriods !== undefined &&
+                      course.timePeriods?.length > 0 && (
+                          <View style={{ width: "80%" }}>
+                              {course.timePeriods?.map((timePeriod) => (
+                                  <TimelineComponent
+                                      key={timePeriod.id}
+                                      edit={edit}
+                                      timePeriod={timePeriod}
+                                      course={course}></TimelineComponent>
+                              ))}
+                          </View>
+                      )
+                    : chapters.map((chapter, idx) => (
+                          <View style={styles.chapterContainer}>
+                              <ChapterComponent
+                                  key={chapter.id}
+                                  editMode={edit}
+                                  chapter={chapter}
+                                  course={course}></ChapterComponent>
+                              {edit && (
+                                  <View style={styles.chapterArrows}>
+                                      {idx !== 0 && (
+                                          <TouchableOpacity onPress={() => reorderChapters(idx - 1, idx)}>
+                                              <MaterialIcons
+                                                  name="keyboard-arrow-up"
+                                                  size={28}
+                                                  color="white"
+                                                  style={{}}
+                                              />
+                                          </TouchableOpacity>
+                                      )}
+                                      {idx !== chapters.length - 1 && (
+                                          <TouchableOpacity onPress={() => reorderChapters(idx + 1, idx)}>
+                                              <MaterialIcons
+                                                  name="keyboard-arrow-down"
+                                                  size={28}
+                                                  color="white"
+                                                  style={{}}
+                                              />
+                                          </TouchableOpacity>
+                                      )}
+                                  </View>
+                              )}
+                          </View>
+                      ))}
                 {edit && (
                     <View style={styles.addChapterContainer}>
                         <TouchableOpacity
@@ -279,6 +273,19 @@ export const ScreenCourseTimeline: React.FC = () => {
             </ScrollView>
         </ImageBackground>
     );
+
+    /**
+     * Set default edit Mode for Course owner/manager and participant
+     */
+    function setEditMode() {
+        if (user.courses !== undefined && course.id !== undefined) {
+            if (user.courses[course.id] === CourseRoles.OWNER || user.courses[course.id] === CourseRoles.MANAGER) {
+                setEdit(true);
+            } else {
+                setEdit(false);
+            }
+        }
+    }
 
     /**
      * Reorder the Chapter objects in the chapter list, to save them in the correct order
@@ -424,10 +431,5 @@ const styles = StyleSheet.create({
         borderStyle: "dotted",
         alignItems: "center",
         justifyContent: "center",
-    },
-    textStyle: {
-        margin: 10,
-        color: "white",
-        fontWeight: "bold",
     },
 });
