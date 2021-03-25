@@ -20,6 +20,7 @@ export const en = {
 
         courseDescription: "Course Description",
         enterCourseName: "Enter course name",
+        noCourseDescription: "No course description available.",
         enterCourseDescription: "Enter course description",
         createCourse: "Create new course",
         joinCourse: "Join course",

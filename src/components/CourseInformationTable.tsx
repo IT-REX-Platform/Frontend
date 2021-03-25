@@ -54,7 +54,7 @@ export const CourseInformationTable: React.FC<DataTableProps> = (props) => {
                 <TextInput
                     style={[styles.valueStyle, { minHeight: 200 }]}
                     defaultValue={
-                        course.courseDescription ? course.courseDescription : "The Course description right here"
+                        course.courseDescription ? course.courseDescription : i18n.t("itrex.enterCourseDescription")
                     }
                     onChangeText={(text) => {
                         onDescriptionChanged(text);
@@ -65,7 +65,7 @@ export const CourseInformationTable: React.FC<DataTableProps> = (props) => {
         } else {
             return (
                 <Text style={styles.valueStyle}>
-                    {course.courseDescription !== null ? course.courseDescription : "No description available"}
+                    {course.courseDescription !== null ? course.courseDescription : i18n.t("itrex.noCourseDescription")}
                 </Text>
             );
         }

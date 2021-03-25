@@ -19,6 +19,7 @@ export const de = {
         homeErrorText: "Fehlende Konfiguration",
 
         courseDescription: "Kursbeschreibung",
+        noCourseDescription: "Es ist keine Kursbeschreibung verfügbar.",
         enterCourseName: "Kursnamen eingeben",
         enterCourseDescription: "Kursbeschreibung eingeben",
         createCourse: "Neuen Kurs erstellen",
