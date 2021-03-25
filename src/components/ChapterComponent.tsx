@@ -247,13 +247,6 @@ const styles = StyleSheet.create({
         fontStyle: "italic",
         fontSize: 15,
     },
-    chapterMaterialHeader: {
-        marginTop: 10,
-        alignSelf: "center",
-        color: "white",
-        fontWeight: "bold",
-        fontSize: 20,
-    },
     chapterMaterialElements: {
         marginBottom: 5,
         paddingTop: "20px",

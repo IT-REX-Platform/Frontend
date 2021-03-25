@@ -18,6 +18,7 @@ export const de = {
         homeAdminText: "Aloha Admin",
         homeErrorText: "Fehlende Konfiguration",
 
+        courseDescription: "Kursbeschreibung",
         enterCourseName: "Kursnamen eingeben",
         enterCourseDescription: "Kursbeschreibung eingeben",
         createCourse: "Neuen Kurs erstellen",

@@ -18,6 +18,7 @@ export const en = {
         homeAdminText: "hello admin",
         homeErrorText: "missing configuration",
 
+        courseDescription: "Course Description",
         enterCourseName: "Enter course name",
         enterCourseDescription: "Enter course description",
         createCourse: "Create new course",
