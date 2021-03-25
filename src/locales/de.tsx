@@ -5,6 +5,7 @@ export const de = {
         itrex: "IT-REX",
         home: "Startseite",
         timeline: "Zeitplan",
+        courseInformation: "Kursinformationen",
         overview: "Übersicht",
         login: "Einloggen",
         logout: "Ausloggen",
@@ -17,6 +18,8 @@ export const de = {
         homeAdminText: "Aloha Admin",
         homeErrorText: "Fehlende Konfiguration",
 
+        courseDescription: "Kursbeschreibung",
+        noCourseDescription: "Es ist keine Kursbeschreibung verfügbar.",
         enterCourseName: "Kursnamen eingeben",
         enterCourseDescription: "Kursbeschreibung eingeben",
         createCourse: "Neuen Kurs erstellen",
@@ -55,6 +58,7 @@ export const de = {
         myCoursesDivider: "Meine Kurse",
         quickSettings: "Kurzeinstellung",
         lastAccessedCourse: "Zuletzt besuchter Kurs",
+        noCourseAccessed: "Kein Kurs wurde noch besucht.",
         noCoursesLecturer: "Bisher wurden keine Kurse erstellt!",
         noCoursesStudent: "Bisher wurde keinem Kursen beigetreten!",
 
@@ -104,7 +108,8 @@ export const de = {
 
         noChapters: "Es wurden noch keine Kapitel für diesen Kurs angelgt.",
         addChapter: "+ Kapitel hinzugügen",
-        editMode: "Toggle Bearbeitungs-Modus",
+        switchToStudentView: "Zur Studentenansicht wechseln",
+        switchToOwnerView: "Zur Bearbeitungsansicht wechseln",
         chapterMaterial: "Kapitel Materialien",
         myNewChapter: "Mein neues Kapitel",
         save: "Speichern",
@@ -116,6 +121,8 @@ export const de = {
         chapterCreatedSuccess: "Das Kapitel wurde erfolgreich angelegt.",
         chapterUpdateSuccess: "Das Kapitel wurde erfolgreich aktualisiert.",
         publishCourseSuccess: "Der Kurs wurde erfolgreich veröffentlicht.",
+        updateCourseSuccess: "Die Kursbeschreibung wurde erfolgreich aktualisiert.",
+        updateCourseError: "Ein Fehler ist beim aktualisieren der Kursbeschreibung aufgetreten.",
         courseDeletedSuccessfully: "Der Kurs wurde erfolgreich gelöscht.",
         confirmPublishCourse:
             "Durch das Veröffentlichen des Kurses wird es möglich, dass Teilnehmer dem Kurs beitreten können. Start- und Enddatum werden beim Veröffentlichen des Kurses ebenfalls festgelegt.",
@@ -143,13 +150,22 @@ export const de = {
         getUserInfoError: "Ein Fehler ist beim Zugriff auf Benutzerinformationen aufgetreten.",
 
         quizPool: "Quiz Pool",
-
         noQuizzesAvailable: "Dem Quiz-Pool dieses Kurses wurden bislang noch keine Quizzes hinzugefügt.",
         quizProperties: "Erstellen sie ein neues Quiz um dieses zum Quiz Pool hinzufügen. ",
         createQuiz: "Quiz erstellen",
         invalidQuizName: "Bitte definieren sie einen Quiz-Name.",
         invalidQuestionsObject: "Bitte füge mindestens eine Frage zum Quiz hinzu.",
         noQuestions: "Bisher wurden keine Fragen hinzugefügt!",
+        startQuiz: "Quiz starten",
+        quizConsists: "Dieses Quiz besteht aus ",
+        quizQuestions: " Fragen.",
+        finishQuiz: "Quiz Beenden",
+        youReached: "Du hast ",
+        percentageOf: "% von 100% erreicht.",
+        outOf: "von",
+        quizNumericYourResult: "Ihre Lösung:",
+        solvedCorrectly: "Fragen wurden korrekt beantwortet.",
+        returnToOverview: "Zurück zur Übersicht",
 
         questions: "Fragen: ",
         deleteQuizSuccess: "Das Quiz wurde erfolgreich gelöscht.",

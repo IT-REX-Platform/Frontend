@@ -1,8 +1,8 @@
 /* eslint-disable max-lines */
 /* eslint-disable complexity */
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Text, ImageBackground, StyleSheet, View, TouchableOpacity, Switch } from "react-native";
-import { CompositeNavigationProp, useIsFocused, useNavigation } from "@react-navigation/native";
+import { CompositeNavigationProp, useFocusEffect, useIsFocused, useNavigation } from "@react-navigation/native";
 import { dark } from "../../../constants/themes/dark";
 import {
     CourseStackParamList,
@@ -14,85 +14,194 @@ import { MaterialTopTabNavigationProp } from "@react-navigation/material-top-tab
 import { StackNavigationProp } from "@react-navigation/stack";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { ChapterComponent } from "../../ChapterComponent";
+import { TimelineComponent } from "../../TimelineComponent";
 import { ICourse } from "../../../types/ICourse";
 import AuthenticationService from "../../../services/AuthenticationService";
 import i18n from "../../../locales";
-import { CoursePublishState } from "../../../constants/CoursePublishState";
-import { TimePeriodPublishState } from "../../../types/ITimePeriod";
 import { ScrollView } from "react-native-gesture-handler";
 import { EndpointsCourse } from "../../../api/endpoints/EndpointsCourse";
 import { RequestFactory } from "../../../api/requests/RequestFactory";
 import { CourseRoles } from "../../../constants/CourseRoles";
 import { IUser } from "../../../types/IUser";
-import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 import { IChapter } from "../../../types/IChapter";
+import { CONTENTREFERENCETYPE, IContent } from "../../../types/IContent";
+import { EndpointsVideo } from "../../../api/endpoints/EndpointsVideo";
+import { dateConverter } from "../../../helperScripts/validateCourseDates";
+import { TextButton } from "../../uiElements/TextButton";
 
 export type ScreenCourseTimelineNavigationProp = CompositeNavigationProp<
-    MaterialTopTabNavigationProp<CourseTabParamList, "TIMELINE">,
+    MaterialTopTabNavigationProp<CourseTabParamList, "COURSE_INFROMATION">,
     CompositeNavigationProp<StackNavigationProp<CourseStackParamList>, DrawerNavigationProp<RootDrawerParamList>>
 >;
 
 export const ScreenCourseTimeline: React.FC = () => {
-    const navigation = useNavigation<ScreenCourseTimelineNavigationProp>();
-    const [user, setUserInfo] = useState<IUser>({});
-
-    const courseEndpoint = new EndpointsCourse();
-
-    const [edit, setEdit] = useState(false);
-
     React.useContext(LocalizationContext);
+    const navigation = useNavigation<ScreenCourseTimelineNavigationProp>();
 
-    const course: ICourse = React.useContext(CourseContext);
-
-    const [myCourse, setMyCourse] = useState<ICourse>({});
+    const { course, setCourse } = React.useContext(CourseContext);
+    const [user, setUserInfo] = useState<IUser>({});
+    const [edit, setEdit] = useState<boolean>();
     const [chapters, setChapters] = useState<IChapter[]>([]);
 
+    // Endpoints
+    const courseEndpoint = new EndpointsCourse();
+    const endpointsVideos: EndpointsVideo = new EndpointsVideo();
+
     const isFocused = useIsFocused();
-    useEffect(() => {
-        AuthenticationService.getInstance().getUserInfo(setUserInfo);
-        if (isFocused && course.id !== undefined) {
-            const request: RequestInit = RequestFactory.createGetRequest();
-            courseEndpoint
-                .getCourse(request, course.id, undefined, i18n.t("itrex.getCourseError"))
-                .then((receivedCourse) => {
-                    if (receivedCourse.chapters !== undefined) {
-                        for (const chapter of receivedCourse.chapters) {
-                            if (chapter.contentReferences !== undefined) {
-                                for (const contentRef of chapter.contentReferences) {
-                                    const timePeriod = receivedCourse.timePeriods?.find(
-                                        (period) => period.id === contentRef.timePeriodId
-                                    );
-                                    if (timePeriod !== undefined) {
-                                        if (timePeriod?.chapters === undefined) {
-                                            timePeriod.chapters = [];
-                                        }
 
-                                        // Search for chapter in timePeriod
-                                        let foundChapter = timePeriod.chapters.find(
-                                            (tmpChapter) => tmpChapter === chapter.id
+    useFocusEffect(
+        React.useCallback(() => {
+            AuthenticationService.getInstance().getUserInfo(setUserInfo);
+            setEditMode();
+        }, [AuthenticationService.getInstance().tokenResponse, course])
+    );
+
+    useFocusEffect(
+        React.useCallback(() => {
+            let isActive = true;
+            AuthenticationService.getInstance().getUserInfo(setUserInfo);
+
+            if (isFocused && course.id !== undefined && isActive == true) {
+                const request: RequestInit = RequestFactory.createGetRequest();
+                courseEndpoint
+                    .getCourse(request, course.id, undefined, i18n.t("itrex.getCourseError"))
+                    .then((receivedCourse) => {
+                        if (receivedCourse.chapters !== undefined) {
+                            for (const chapter of receivedCourse.chapters) {
+                                if (chapter.contentReferences !== undefined) {
+                                    for (const contentRef of chapter.contentReferences) {
+                                        const timePeriod = receivedCourse.timePeriods?.find(
+                                            (period) => period.id === contentRef.timePeriodId
                                         );
+                                        if (timePeriod !== undefined) {
+                                            contentRef.timePeriod = timePeriod;
 
-                                        if (foundChapter === undefined) {
-                                            foundChapter = {
-                                                courseId: chapter.courseId,
-                                                id: chapter.id,
-                                                name: chapter.name,
-                                            };
-                                            foundChapter.contentReferences = [];
-                                            timePeriod.chapters.push(foundChapter);
+                                            if (timePeriod?.chapters === undefined) {
+                                                timePeriod.chapters = [];
+                                            }
+
+                                            // Search for chapter in timePeriod
+                                            let foundChapter = timePeriod.chapters.find(
+                                                (tmpChapter) => tmpChapter.id === chapter.id
+                                            );
+
+                                            if (foundChapter === undefined) {
+                                                foundChapter = {
+                                                    courseId: chapter.courseId,
+                                                    id: chapter.id,
+                                                    name: chapter.name,
+                                                    chapterNumber: chapter.chapterNumber,
+                                                };
+                                                foundChapter.contentReferences = [];
+                                                timePeriod.chapters.push(foundChapter);
+                                            }
+
+                                            foundChapter?.contentReferences?.push(contentRef);
                                         }
-
-                                        foundChapter?.contentReferences?.push(contentRef);
                                     }
                                 }
                             }
+
+                            // Set TimePeriodNames
+                            receivedCourse.timePeriods?.forEach((timePeriod, idx) => {
+                                timePeriod.name = i18n.t("itrex.week") + " " + (idx + 1);
+                                timePeriod.fullName =
+                                    timePeriod.name +
+                                    " ( " +
+                                    dateConverter(timePeriod?.startDate) +
+                                    " - " +
+                                    dateConverter(timePeriod?.endDate) +
+                                    " )";
+                            });
+
+                            const contents: { [key: string]: IContent[] } = {};
+
+                            // Map Contents to different dictionaries, later we can pass the contentIds to the correct service
+                            for (const chapter of receivedCourse.chapters) {
+                                if (chapter.contentReferences !== undefined) {
+                                    for (const content of chapter.contentReferences) {
+                                        if (
+                                            content.contentReferenceType !== undefined &&
+                                            content.contentId !== undefined
+                                        ) {
+                                            if (contents[content.contentReferenceType] === undefined) {
+                                                contents[content.contentReferenceType] = [];
+                                            }
+                                            contents[content.contentReferenceType].push(content);
+                                        }
+                                    }
+                                }
+                            }
+                            // Get Videos by ContentIds
+                            const getVideoRequest = RequestFactory.createGetRequest();
+
+                            // Array of contentId's from die video List
+                            const videoIds: string[] =
+                                contents[CONTENTREFERENCETYPE.VIDEO] !== undefined
+                                    ? contents[CONTENTREFERENCETYPE.VIDEO].map((content) => {
+                                          if (content.contentId !== undefined) {
+                                              return content.contentId;
+                                          }
+                                          return "";
+                                      })
+                                    : [];
+
+                            // Array of contentId's from die quiz List
+                            const quizIds: string[] =
+                                contents[CONTENTREFERENCETYPE.QUIZ] !== undefined
+                                    ? contents[CONTENTREFERENCETYPE.QUIZ].map((content) => {
+                                          if (content.contentId !== undefined) {
+                                              return content.contentId;
+                                          }
+                                          return "";
+                                      })
+                                    : [];
+
+                            // Ask the MediaService for the video metadata
+                            const videoPromise = new Promise((resolve, reject) => {
+                                if (videoIds !== undefined) {
+                                    endpointsVideos.findAllWithIds(getVideoRequest, videoIds).then((videos) => {
+                                        videos.forEach((video) => {
+                                            const contentVideo = contents[CONTENTREFERENCETYPE.VIDEO].filter(
+                                                (item) => item.contentId === video.id
+                                            );
+                                            if (contentVideo !== undefined) {
+                                                for (const currContent of contentVideo) {
+                                                    currContent.video = video;
+                                                }
+                                            }
+                                        });
+                                        resolve(true);
+                                    });
+                                } else {
+                                    reject();
+                                }
+                            });
+
+                            //TODO: to be implemented
+                            const quizPromise = new Promise((resolve, reject) => {
+                                resolve(true);
+                            });
+
+                            Promise.all([videoPromise, quizPromise]).then((values) => {
+                                if (isActive) {
+                                    setCourse(receivedCourse);
+                                    if (receivedCourse.chapters !== undefined) {
+                                        setChapters(receivedCourse.chapters);
+                                    }
+                                }
+                            });
                         }
-                        setMyCourse(receivedCourse);
-                        setChapters(receivedCourse.chapters);
-                    }
-                });
-        }
-    }, [isFocused]);
+                    });
+            }
+
+            // Ignore State-Changes if compontent lost focus
+            return () => {
+                isActive = false;
+            };
+        }, [isFocused, course.id])
+    );
 
     return (
         <ImageBackground
@@ -101,56 +210,53 @@ export const ScreenCourseTimeline: React.FC = () => {
             imageStyle={{ opacity: 0.5, position: "absolute", resizeMode: "contain" }}>
             {lecturerEditMode()}
 
-            <ScrollView contentContainerStyle={styles.scrollContainer}>
-                {chapters.length === 0 ? (
-                    <View>{!edit && <Text style={styles.textStyle}>{i18n.t("itrex.noChapters")}</Text>}</View>
-                ) : (
-                    chapters.map((chapter, idx) => (
-                        <View style={styles.chapterContainer}>
-                            <ChapterComponent
-                                key={chapter.id}
-                                editMode={edit}
-                                chapter={chapter}
-                                course={course}></ChapterComponent>
-                            {edit && (
-                                <View>
-                                    {idx !== 0 && (
-                                        <TouchableOpacity onPress={() => reorderChapters(idx - 1, idx)}>
-                                            <MaterialIcons
-                                                name="keyboard-arrow-up"
-                                                size={28}
-                                                color="white"
-                                                style={{}}
-                                            />
-                                        </TouchableOpacity>
-                                    )}
-
-                                    {idx !== chapters.length - 1 && (
-                                        <TouchableOpacity onPress={() => reorderChapters(idx + 1, idx)}>
-                                            <MaterialIcons
-                                                name="keyboard-arrow-down"
-                                                size={28}
-                                                color="white"
-                                                style={{}}
-                                            />
-                                        </TouchableOpacity>
-                                    )}
-                                </View>
-                            )}
-                        </View>
-                    ))
-                )}
-                {/*myCourse.timePeriods?.length === 0 ? (
-                    <View>{!edit && <Text style={styles.textStyle}>{i18n.t("itrex.noChapters")}</Text>}</View>
-                ) : (
-                    myCourse.timePeriods?.map((timePeriod) => (
-                        <TimelineComponent
-                            key={timePeriod.id}
-                            edit={edit}
-                            timePeriod={timePeriod}
-                            course={myCourse}></TimelineComponent>
-                    ))
-                    )*/}
+            <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+                {edit === false
+                    ? course.timePeriods !== undefined &&
+                      course.timePeriods?.length > 0 && (
+                          <View style={{ width: "80%" }}>
+                              {course.timePeriods?.map((timePeriod) => (
+                                  <TimelineComponent
+                                      key={timePeriod.id}
+                                      edit={edit}
+                                      timePeriod={timePeriod}
+                                      course={course}></TimelineComponent>
+                              ))}
+                          </View>
+                      )
+                    : chapters.map((chapter, idx) => (
+                          <View style={styles.chapterContainer}>
+                              <ChapterComponent
+                                  key={chapter.id}
+                                  editMode={edit}
+                                  chapter={chapter}
+                                  course={course}></ChapterComponent>
+                              {edit && (
+                                  <View style={styles.chapterArrows}>
+                                      {idx !== 0 && (
+                                          <TouchableOpacity onPress={() => reorderChapters(idx - 1, idx)}>
+                                              <MaterialIcons
+                                                  name="keyboard-arrow-up"
+                                                  size={28}
+                                                  color="white"
+                                                  style={{}}
+                                              />
+                                          </TouchableOpacity>
+                                      )}
+                                      {idx !== chapters.length - 1 && (
+                                          <TouchableOpacity onPress={() => reorderChapters(idx + 1, idx)}>
+                                              <MaterialIcons
+                                                  name="keyboard-arrow-down"
+                                                  size={28}
+                                                  color="white"
+                                                  style={{}}
+                                              />
+                                          </TouchableOpacity>
+                                      )}
+                                  </View>
+                              )}
+                          </View>
+                      ))}
                 {edit && (
                     <View style={styles.addChapterContainer}>
                         <TouchableOpacity
@@ -169,6 +275,19 @@ export const ScreenCourseTimeline: React.FC = () => {
     );
 
     /**
+     * Set default edit Mode for Course owner/manager and participant
+     */
+    function setEditMode() {
+        if (user.courses !== undefined && course.id !== undefined) {
+            if (user.courses[course.id] === CourseRoles.OWNER || user.courses[course.id] === CourseRoles.MANAGER) {
+                setEdit(true);
+            } else {
+                setEdit(false);
+            }
+        }
+    }
+
+    /**
      * Reorder the Chapter objects in the chapter list, to save them in the correct order
      *
      * @param from
@@ -185,7 +304,7 @@ export const ScreenCourseTimeline: React.FC = () => {
         });
 
         const tmpCourse: ICourse = {
-            id: myCourse.id,
+            id: course.id,
             chapters: tmpChapterList,
         };
         const patchRequest: RequestInit = RequestFactory.createPatchRequest(tmpCourse);
@@ -213,109 +332,42 @@ export const ScreenCourseTimeline: React.FC = () => {
             return (
                 <>
                     <View style={styles.editMode}>
-                        <Text style={styles.editModeText}>{i18n.t("itrex.editMode")}</Text>
-                        <Switch
-                            value={edit}
-                            onValueChange={() => {
-                                setEdit(!edit);
-                            }}></Switch>
+                        <View style={{ flexDirection: "row" }}>
+                            {edit ? (
+                                <Text style={styles.editModeText}>{i18n.t("itrex.switchToStudentView")}</Text>
+                            ) : (
+                                <Text style={styles.editModeText}>{i18n.t("itrex.switchToOwnerView")}</Text>
+                            )}
+                            <Switch
+                                value={edit}
+                                onValueChange={() => {
+                                    console.log(!edit);
+                                    setEdit(!edit);
+                                }}></Switch>
+                        </View>
+                        {edit ? (
+                            <>
+                                <View style={{ position: "absolute", flexDirection: "row" }}>
+                                    <TextButton
+                                        color="dark"
+                                        title={i18n.t("itrex.videoPool")}
+                                        onPress={() => navigation.navigate("VIDEO_POOL")}
+                                    />
+                                    <TextButton
+                                        color="dark"
+                                        title={i18n.t("itrex.quizPool")}
+                                        onPress={() => navigation.navigate("QUIZ_POOL")}
+                                    />
+                                </View>
+                            </>
+                        ) : (
+                            <View></View>
+                        )}
                     </View>
                 </>
             );
         }
     }
-};
-
-const fakeData: ICourse = {
-    id: "ca8955ca-a849-497a-8583-2e3bcaf45ba1",
-    name: "Forschungsprojekt",
-    startDate: new Date("2021-02-23T00:00:00.000Z"),
-    endDate: new Date("2021-08-23T00:00:00.000Z"),
-    maxFoodSum: 1000,
-    courseDescription: "",
-    publishState: CoursePublishState.PUBLISHED,
-    chapters: ["31a763c9-f765-41be-b16d-51b2118be5be", "1b00bd0e-e43c-4cf2-be03-950e7ffa0c85"],
-    timePeriodObjects: [
-        {
-            id: "0001",
-            title: "Woche 1",
-            chapterObjects: [
-                {
-                    id: "31a763c9-f765-41be-b16d-51b2118be5be",
-                    title: "01: Einführung",
-                    courseId: "ca8955ca-a849-497a-8583-2e3bcaf45ba1",
-                    startDate: new Date("2021-03-08T00:00:00.000Z"),
-                    endDate: new Date("2021-03-14T00:00:00.000Z"),
-                    contents: [],
-                },
-                {
-                    id: "1b00bd0e-e43c-4cf2-be03-950e7ffa0c85",
-                    title: "02: Einführung Part 2",
-                    courseId: "ca8955ca-a849-497a-8583-2e3bcaf45ba1",
-                    startDate: new Date("2021-03-15T00:00:00.000Z"),
-                    endDate: new Date("2021-03-21T00:00:00.000Z"),
-                    contents: ["27c06535-4491-4312-b0ed-c22381fb04fb", "bb725bf5-514f-4eda-8f04-65e95ab03dab"],
-                },
-            ],
-            publishState: TimePeriodPublishState.PUBLISHED,
-        },
-        {
-            id: "0002",
-            title: "Woche 2",
-            chapterObjects: [
-                {
-                    id: "31a763c9-f765-41be-b16d-51b2118be5be",
-                    title: "03: Weiterführung von letzter Woche",
-                    courseId: "ca8955ca-a849-497a-8583-2e3bcaf45ba1",
-                    startDate: new Date("2021-03-08T00:00:00.000Z"),
-                    endDate: new Date("2021-03-14T00:00:00.000Z"),
-                    contents: [],
-                },
-                {
-                    id: "1b00bd0e-e43c-4cf2-be03-950e7ffa0c85",
-                    title: "04: Noch eine Ergänzung",
-                    courseId: "ca8955ca-a849-497a-8583-2e3bcaf45ba1",
-                    startDate: new Date("2021-03-15T00:00:00.000Z"),
-                    endDate: new Date("2021-03-21T00:00:00.000Z"),
-                    contents: ["27c06535-4491-4312-b0ed-c22381fb04fb", "bb725bf5-514f-4eda-8f04-65e95ab03dab"],
-                },
-            ],
-            publishState: TimePeriodPublishState.UNPUBLISHED,
-        },
-        {
-            id: "0003",
-            title: "Woche 3",
-            publishState: TimePeriodPublishState.NOTSTARTED,
-        },
-        {
-            id: "0004",
-            title: "Woche 4",
-            publishState: TimePeriodPublishState.NOTSTARTED,
-        },
-        {
-            id: "0005",
-            title: "Woche 5",
-            publishState: TimePeriodPublishState.NOTSTARTED,
-        },
-    ],
-    chapterObjects: [
-        {
-            id: "31a763c9-f765-41be-b16d-51b2118be5be",
-            title: "01: Einführung",
-            courseId: "ca8955ca-a849-497a-8583-2e3bcaf45ba1",
-            startDate: new Date("2021-03-08T00:00:00.000Z"),
-            endDate: new Date("2021-03-14T00:00:00.000Z"),
-            contents: [],
-        },
-        {
-            id: "1b00bd0e-e43c-4cf2-be03-950e7ffa0c85",
-            title: "02: Bla Bla Blaa",
-            courseId: "ca8955ca-a849-497a-8583-2e3bcaf45ba1",
-            startDate: new Date("2021-03-15T00:00:00.000Z"),
-            endDate: new Date("2021-03-21T00:00:00.000Z"),
-            contents: ["27c06535-4491-4312-b0ed-c22381fb04fb", "bb725bf5-514f-4eda-8f04-65e95ab03dab"],
-        },
-    ],
 };
 
 const styles = StyleSheet.create({
@@ -328,20 +380,26 @@ const styles = StyleSheet.create({
         width: "screenWidth",
         alignItems: "center",
         paddingBottom: 20,
+        paddingTop: 20,
     },
     chapterContainer: {
         width: "80%",
-        flex: 1,
         flexDirection: "row",
         justifyContent: "center",
         alignItems: "center",
-        marginTop: "10px",
+        minHeight: "unset",
+        marginTop: 5,
+    },
+    chapterArrows: {
+        flex: 1,
     },
     editMode: {
-        alignSelf: "flex-end",
-        flexDirection: "row",
+        height: 70,
+        justifyContent: "space-between",
+        alignItems: "center",
+        flexDirection: "row-reverse",
         paddingRight: "20px",
-        paddingTop: "20px",
+        paddingLeft: "20px",
     },
     editModeText: {
         color: "white",
@@ -373,10 +431,5 @@ const styles = StyleSheet.create({
         borderStyle: "dotted",
         alignItems: "center",
         justifyContent: "center",
-    },
-    textStyle: {
-        margin: 10,
-        color: "white",
-        fontWeight: "bold",
     },
 });

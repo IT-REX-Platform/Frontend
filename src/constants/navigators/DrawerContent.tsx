@@ -59,16 +59,12 @@ export const DrawerContent: React.FC<DrawerContentComponentProps> = (props: Draw
                 label={"" + course.name}
                 key={course.id}
                 onPress={() => {
-                    console.log("Course Details");
                     navigation.dispatch({
                         ...CommonActions.reset({
                             index: 0,
                             routes: [{ name: NavigationRoutes.ROUTE_COURSE_DETAILS, params: { courseId: course.id } }],
                         }),
                     });
-                    // navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, {
-                    //     courseId: course.id,
-                    // });
                 }}
             />
         );

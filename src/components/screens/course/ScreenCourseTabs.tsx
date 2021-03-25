@@ -1,6 +1,6 @@
 import React from "react";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import { ScreenCourseOverview } from "./ScreenCourseOverview";
+import { ScreenCourseInformation } from "./ScreenCourseInformation";
 import { ScreenCourseTimeline } from "./ScreenCourseTimeline";
 import { LocalizationContext } from "../../Context";
 import {
@@ -55,13 +55,13 @@ export const ScreenCourseTabs: React.FC = () => {
             }}>
             <CourseTab.Screen
                 name="OVERVIEW"
-                component={ScreenCourseOverview}
+                component={ScreenCourseTimeline}
                 options={{ tabBarLabel: i18n.t("itrex.overview") }}
             />
             <CourseTab.Screen
-                name="TIMELINE"
-                component={ScreenCourseTimeline}
-                options={{ tabBarLabel: i18n.t("itrex.timeline") }}
+                name="COURSE_INFROMATION"
+                component={ScreenCourseInformation}
+                options={{ tabBarLabel: i18n.t("itrex.courseInformation") }}
             />
         </CourseTab.Navigator>
     );

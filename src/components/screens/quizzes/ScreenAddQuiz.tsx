@@ -8,7 +8,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { TextButton } from "../../uiElements/TextButton";
 import i18n from "../../../locales";
 import { RequestFactory } from "../../../api/requests/RequestFactory";
-import { ScreenCourseOverviewNavigationProp } from "../course/ScreenCourseOverview";
+import { ScreenCourseOverviewNavigationProp } from "../course/ScreenCourseInformation";
 import { QuestionCard } from "../../cards/QuestionCard";
 import { ScrollView } from "react-native-gesture-handler";
 import { IQuestionMultipleChoice, IQuestionNumeric, IQuestionSingleChoice } from "../../../types/IQuestion";
@@ -16,7 +16,6 @@ import { validateQuiz } from "../../../helperScripts/validateQuiz";
 import { IQuiz } from "../../../types/IQuiz";
 import { CourseStackParamList } from "../../../constants/navigators/NavigationRoutes";
 import { EndpointsQuiz } from "../../../api/endpoints/EndpointsQuiz";
-import { ICourse } from "../../../types/ICourse";
 import { quizStyles } from "./quizStyles";
 
 interface ChapterComponentProps {
@@ -32,7 +31,7 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = (props) => {
     const route = useRoute<ScreenCourseTabsRouteProp>();
 
     // Get course infos from context.
-    const course: ICourse = React.useContext(CourseContext);
+    const { course } = React.useContext(CourseContext);
     let quizWithQuestions = props.quiz;
 
     if (route.params !== undefined) {
@@ -58,7 +57,6 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = (props) => {
                     return;
                 }
                 setQuestions(quizWithQuestions.questions);
-                console.log(questions);
             }
         }, [])
     );
@@ -139,7 +137,7 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = (props) => {
             );
         } else {
             return (
-                <ScrollView style={quizStyles.scrollContainer}>
+                <ScrollView style={quizStyles.scrollContainer} showsVerticalScrollIndicator={false}>
                     {questions.map((question: IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric) => {
                         return <QuestionCard question={question} quiz={myNewQuiz} courseId={courseId} />;
                     })}

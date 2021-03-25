@@ -29,7 +29,7 @@ pipeline {
                 sh 'npm run test'
             }
         }
-        stage('quality analysis'){
+        stage('quality analysis') {
             when {
                 branch 'dev'
             }
@@ -37,9 +37,9 @@ pipeline {
                 scannerHome = tool 'SonarQubeScanner'
             }
             steps {
-                sh "npm run lint || true"
+                sh 'npm run lint || true'
                 withSonarQubeEnv('sonarqube') {
-                    sh "sonar-scanner"
+                    sh 'sonar-scanner'
                 }
                 timeout(time: 10, unit: 'MINUTES') {
                     // Needs to be changed to true in the real project.
@@ -53,8 +53,8 @@ pipeline {
             }
             steps {
                 echo 'Deploying....'
-                sh 'rm -r /srv/Frontend/*'
-                sh 'mv ./web-build/* /srv/Frontend/'
+                sh 'docker-compose rm -svf it-rex-frontend'
+                sh 'docker-compose up -d --build --remove-orphans'
             }
         }
         stage('Release') {

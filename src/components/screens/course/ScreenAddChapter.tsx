@@ -22,7 +22,6 @@ import { CourseStackParamList, RootDrawerParamList } from "../../../constants/na
 import { IChapter } from "../../../types/IChapter";
 import { RequestFactory } from "../../../api/requests/RequestFactory";
 import { EndpointsChapter } from "../../../api/endpoints/EndpointsChapter";
-import { ICourse } from "../../../types/ICourse";
 import { ListItem } from "react-native-elements";
 import { IVideo } from "../../../types/IVideo";
 import { EndpointsVideo } from "../../../api/endpoints/EndpointsVideo";
@@ -30,12 +29,11 @@ import { loggerFactory } from "../../../../logger/LoggerConfig";
 import { calculateVideoSize } from "../../../services/calculateVideoSize";
 import DraggableFlatList from "react-native-draggable-flatlist";
 import { TextButton } from "../../uiElements/TextButton";
-import { dateConverter } from "../../../helperScripts/validateCourseDates";
 import { CONTENTREFERENCETYPE, IContent } from "../../../types/IContent";
 import { EndpointsContentReference } from "../../../api/endpoints/EndpointsContentReference";
 import { IQuiz } from "../../../types/IQuiz";
 import { EndpointsQuiz } from "../../../api/endpoints/EndpointsQuiz";
-import { contentPoolStyles } from "../../ContentPoolComponents/contentPoolStyles";
+import { contentPoolStyles } from "../../contentPoolComponents/contentPoolStyles";
 import { DropDown } from "../../uiElements/Dropdown";
 
 type ScreenCourseTabsNavigationProp = CompositeNavigationProp<
@@ -62,7 +60,7 @@ export const ScreenAddChapter: React.FC = () => {
     // Loading icon state.
     const [isLoading, setLoading] = useState(true);
 
-    const course: ICourse = React.useContext(CourseContext);
+    const { course } = React.useContext(CourseContext);
 
     const initialCourseName = chapterId == undefined ? i18n.t("itrex.myNewChapter") : "";
     const chapterEndpoint = new EndpointsChapter();
@@ -83,14 +81,7 @@ export const ScreenAddChapter: React.FC = () => {
     const timePeriods = course.timePeriods?.map((timePeriod, idx) => {
         return {
             value: timePeriod.id,
-            label:
-                "Week " +
-                (idx + 1) +
-                " (" +
-                dateConverter(timePeriod.startDate) +
-                " - " +
-                dateConverter(timePeriod.endDate) +
-                ")",
+            label: timePeriod.fullName,
         };
     });
 
@@ -510,7 +501,7 @@ export const ScreenAddChapter: React.FC = () => {
         </View>
     );
 
-    function saveChapter(returnToTimeline: boolean) {
+    function saveChapter(returnToOverview: boolean) {
         // Validate start/end Date
         // Check if start and Enddate are set
 
@@ -549,9 +540,9 @@ export const ScreenAddChapter: React.FC = () => {
                         });
                     })
                 ).then(() => {
-                    if (returnToTimeline) {
+                    if (returnToOverview) {
                         // Navigate back to Timeline
-                        navigation.navigate("INFO", { screen: "TIMELINE" });
+                        navigation.navigate("INFO", { screen: "OVERVIEW" });
                     } else {
                         // Navigate to the new Chapter
                         navigation.navigate("CHAPTER", { chapterId: chapter.id });
@@ -601,9 +592,9 @@ export const ScreenAddChapter: React.FC = () => {
                     i18n.t("itrex.updateChapterError")
                 );
 
-                if (returnToTimeline) {
+                if (returnToOverview) {
                     // Navigate back to Timeline
-                    navigation.navigate("INFO", { screen: "TIMELINE" });
+                    navigation.navigate("INFO", { screen: "OVERVIEW" });
                 } else {
                     // Navigate to the new Chapter
                     navigation.navigate("CHAPTER", { chapterId: chapter.id });

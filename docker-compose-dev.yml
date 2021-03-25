@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+    it-rex-frontend:
+        build:
+            context: .
+            dockerfile: Dockerfile
+            args:
+                - ITREX_CHANNEL=dev
+        ports:
+            - "8085:80"
+        networks:
+            - it-rex
+
+networks:
+    it-rex:
+        external: true

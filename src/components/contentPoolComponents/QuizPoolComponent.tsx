@@ -28,8 +28,7 @@ export const QuizPoolComponent: React.FC = () => {
     Animated.timing(translateY, { toValue: 0, duration: 500, useNativeDriver: false }).start();
 
     // Get course infos from context.
-    const course: ICourse = React.useContext(CourseContext);
-    console.log(course);
+    const { course } = React.useContext(CourseContext);
 
     // Call following function/s only once when this screen is shown.
     useFocusEffect(

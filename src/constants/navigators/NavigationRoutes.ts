@@ -2,7 +2,6 @@ import * as Linking from "expo-linking";
 import { LinkingOptions, NavigatorScreenParams } from "@react-navigation/native";
 import { IVideo } from "../../types/IVideo";
 import { IQuiz } from "../../types/IQuiz";
-import { ISolutionMultipleChoice } from "../../types/ISolution";
 import { IQuestionMultipleChoice, IQuestionNumeric, IQuestionSingleChoice } from "../../types/IQuestion";
 import { IChapter } from "../../types/IChapter";
 
@@ -21,7 +20,7 @@ export const config = {
                 initialRouteName: "INFO",
                 INFO: {
                     screens: {
-                        TIMELINE: "TIMELINE",
+                        COURSE_INFROMATION: "COURSE_INFROMATION",
                         OVERVIEW: "OVERVIEW",
                     },
                 },
@@ -42,6 +41,9 @@ export const config = {
                     path: "chapter/createQuiz/createQuestion/:chapterId",
                     screens: {},
                 },
+                QUIZ_OVERVIEW: "QUIZ_OVERVIEW",
+                QUIZ_RESULT: "QUIZ_RESULT",
+                QUIZ_SOLVE: "QUIZ_SOLVE",
             },
         },
     },
@@ -77,6 +79,15 @@ export type CourseStackParamList = {
         courseId?: string;
         question?: IQuestionMultipleChoice | IQuestionNumeric | IQuestionSingleChoice;
     };
+    QUIZ_OVERVIEW: {
+        quiz: IQuiz;
+    };
+    QUIZ_RESULT: {
+        quiz: IQuiz;
+    };
+    QUIZ_SOLVE: {
+        quiz: IQuiz;
+    };
     CHAPTER: {
         chapterId: string | undefined;
     };
@@ -85,7 +96,7 @@ export type CourseStackParamList = {
 
 export type CourseTabParamList = {
     OVERVIEW: undefined;
-    TIMELINE: undefined;
+    COURSE_INFROMATION: undefined;
 };
 
 export class NavigationRoutes {
@@ -96,13 +107,16 @@ export class NavigationRoutes {
     static ROUTE_COURSE_DETAILS = "ROUTE_COURSE_DETAILS";
     static ROUTE_COURSE_DETAILS_TABS = "ROUTE_COURSE_DETAILS_TABS";
     static ROUTE_COURSE_DETAILS_OVERVIEW = "ROUTE_COURSE_DETAILS_OVERVIEW";
-    static ROUTE_COURSE_DETAILS_TIMELINE = "ROUTE_COURSE_DETAILS_TIMELINE";
+    static ROUTE_COURSE_DETAILS_COURSE_INFROMATION = "ROUTE_COURSE_DETAILS_COURSE_INFROMATION";
     static ROUTE_VIDEO_POOL = "ROUTE_VIDEO_POOL";
     static ROUTE_VIDEO = "ROUTE_VIDEO";
     static ROUTE_QUIZ_POOL = "ROUTE_QUIZ_POOL";
     static ROUTE_CREATE_QUIZ = "ROUTE_CREATE_QUIZ";
     static ROUTE_CREATE_QUESTION = "ROUTE_CREATE_QUESTION";
     static ROUTE_CHAPTER_CONTENT = "ROUTE_CHAPTER_CONTENT";
+    static ROUTE_QUIZ_OVERVIEW = "ROUTE_QUIZ_OVERVIEW";
+    static ROUTE_QUIZ_SOLVE = "ROUTE_QUIZ_SOLVE";
+    static ROUTE_QUIZ_RESULT = "ROUTE_QUIZ_RESULT";
 
     static linking: LinkingOptions = {
         prefixes: [prefix],

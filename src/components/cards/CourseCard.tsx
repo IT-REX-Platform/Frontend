@@ -4,7 +4,7 @@ import { ICourse } from "../../types/ICourse";
 import { dark } from "../../constants/themes/dark";
 import { dateConverter } from "../../helperScripts/validateCourseDates";
 import { NavigationRoutes } from "../../constants/navigators/NavigationRoutes";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useFocusEffect, CommonActions, useNavigation } from "@react-navigation/native";
 import i18n from "../../locales";
 import { CoursePublishState } from "../../constants/CoursePublishState";
 import { InfoUnpublished } from "../uiElements/InfoUnpublished";
@@ -49,7 +49,11 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
                 </View>
             );
         } else if (isPublished === CoursePublishState.PUBLISHED) {
-            return <InfoPublished />;
+            return (
+                <View style={styles.publishedState}>
+                    <InfoPublished />
+                </View>
+            );
         }
 
         return;
@@ -108,9 +112,13 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
     }
 
     function navigateToCourse(course: ICourse) {
-        navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, {
-            courseId: course.id,
+        navigation.dispatch({
+            ...CommonActions.reset({
+                index: 0,
+                routes: [{ name: NavigationRoutes.ROUTE_COURSE_DETAILS, params: { courseId: course.id } }],
+            }),
         });
+        //navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, { courseId: course.id });
     }
 
     return (

@@ -1,13 +1,9 @@
 /* eslint-disable complexity */
 
 import React from "react";
-import i18n from "../locales";
 import { LocalizationContext } from "./Context";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { dark } from "../constants/themes/dark";
-import { IChapter } from "../types/IChapter";
-import { MaterialIcons } from "@expo/vector-icons";
-import AuthenticationService from "../services/AuthenticationService";
 import { useNavigation } from "@react-navigation/native";
 import { ITimePeriod, TimePeriodPublishState } from "../types/ITimePeriod";
 import { ChapterComponent } from "./ChapterComponent";
@@ -22,14 +18,11 @@ interface TimelineComponentProps {
 
 export const TimelineComponent: React.FC<TimelineComponentProps> = (props) => {
     React.useContext(LocalizationContext);
-    const navigation = useNavigation();
 
     return (
         <>
             <View style={styles.circleContainer}>
-                <Text style={styles.periodText}>
-                    {props.timePeriod?.startDate}-{props.timePeriod?.endDate}
-                </Text>
+                <Text style={styles.periodText}>{props.timePeriod?.fullName}</Text>
                 <View
                     style={[
                         styles.mainCircle,
@@ -68,17 +61,6 @@ export const TimelineComponent: React.FC<TimelineComponentProps> = (props) => {
                         editMode={props.edit}
                         course={props.course}></ChapterComponent>
                 ))}
-            {props.edit && (
-                <View style={styles.addChapterContainer}>
-                    <TouchableOpacity
-                        style={styles.btnAdd}
-                        onPress={() => {
-                            navigation.navigate("CHAPTER", { chapterId: undefined });
-                        }}>
-                        <Text style={styles.txtAddChapter}>{i18n.t("itrex.addChapter")}</Text>
-                    </TouchableOpacity>
-                </View>
-            )}
             <View style={styles.verticalLine}></View>
         </>
     );
@@ -106,6 +88,7 @@ const styles = StyleSheet.create({
         height: 50,
         backgroundColor: "#465371",
         width: 5,
+        alignSelf: "center",
     },
     // Published-Styles
     mainCirclePublished: {
