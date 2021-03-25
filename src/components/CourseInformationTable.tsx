@@ -20,11 +20,10 @@ export const CourseInformationTable: React.FC<DataTableProps> = (props) => {
     const { course } = React.useContext(CourseContext);
     // User info.
     const [user, setUserInfo] = useState<IUser>({});
-    const [description, setDescription] = useState<string | undefined>(course.courseDescription);
 
     useEffect(() => {
         AuthenticationService.getInstance().getUserInfo(setUserInfo);
-    }, [description]);
+    }, []);
 
     return (
         <>
