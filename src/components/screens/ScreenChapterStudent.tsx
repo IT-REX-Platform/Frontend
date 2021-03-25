@@ -39,7 +39,8 @@ export type ChapterContentRouteProp = RouteProp<RootDrawerParamList, "ROUTE_CHAP
 
 export const ScreenChapterStudent: React.FC = () => {
     // Get the course of the current context and prepare the progress.
-    const course: ICourse = React.useContext(CourseContext);
+    const courseContext = React.useContext(CourseContext);
+    const course = courseContext.course;
     const [courseProgress, setCourseProgress] = useState<ICourseProgressTracker>({});
 
     // Setup the current chapter and the lists used.
