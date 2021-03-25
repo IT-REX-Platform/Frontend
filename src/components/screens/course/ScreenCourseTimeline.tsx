@@ -340,16 +340,18 @@ export const ScreenCourseTimeline: React.FC = () => {
                         </View>
                         {edit ? (
                             <>
-                                <TextButton
-                                    color="dark"
-                                    title={i18n.t("itrex.videoPool")}
-                                    onPress={() => navigation.navigate("VIDEO_POOL")}
-                                />
-                                <TextButton
-                                    color="dark"
-                                    title={i18n.t("itrex.quizPool")}
-                                    onPress={() => navigation.navigate("QUIZ_POOL")}
-                                />
+                                <View style={{ position: "absolute", flexDirection: "row" }}>
+                                    <TextButton
+                                        color="dark"
+                                        title={i18n.t("itrex.videoPool")}
+                                        onPress={() => navigation.navigate("VIDEO_POOL")}
+                                    />
+                                    <TextButton
+                                        color="dark"
+                                        title={i18n.t("itrex.quizPool")}
+                                        onPress={() => navigation.navigate("QUIZ_POOL")}
+                                    />
+                                </View>
                             </>
                         ) : (
                             <View></View>
