@@ -1,26 +1,22 @@
-import { DarkTheme, RouteProp, useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
+/* eslint-disable max-lines */
+/* eslint-disable complexity */
+import { RouteProp, useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
 import { AVPlaybackStatus, Video } from "expo-av";
 import { useEffect, useState } from "react";
-import { ActivityIndicator, TouchableOpacity, View, StyleSheet, Text, Animated, SectionList } from "react-native";
+import { TouchableOpacity, View, StyleSheet, Text, Animated, SectionList } from "react-native";
 import { ListItem } from "react-native-elements";
 import React from "react";
 import { toast } from "react-toastify";
-import { EndpointsVideo } from "../../api/endpoints/EndpointsVideo";
 import { RootDrawerParamList } from "../../constants/navigators/NavigationRoutes";
 import { dark } from "../../constants/themes/dark";
 import i18n from "../../locales";
 import { IChapter } from "../../types/IChapter";
 import { ICourse } from "../../types/ICourse";
-import { IVideo } from "../../types/IVideo";
 import { CourseContext, LocalizationContext } from "../Context";
-import { MaterialCommunityIcons, MaterialIcons, Foundation } from "@expo/vector-icons";
+import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { createVideoUrl } from "../../services/createVideoUrl";
-//import { ScreenCourseTabsNavigationProp, ScreenCourseTabsRouteProp } from "../../course/ScreenCourseTabs";
 import { RequestFactory } from "../../api/requests/RequestFactory";
 import { EndpointsChapter } from "../../api/endpoints/EndpointsChapter";
-import { Icon } from "react-native-vector-icons/Icon";
-import { EndpointsCourse } from "../../api/endpoints/EndpointsCourse";
-import useStateWithCallback from "use-state-with-callback";
 import { EndpointsProgress } from "../../api/endpoints/EndpointsProgress";
 import { ICourseProgressTracker } from "../../types/ICourseProgressTracker";
 import { ContentProgressTrackerState } from "../../constants/ContentProgressTrackerState";
@@ -28,21 +24,11 @@ import { IContentProgressTracker } from "../../types/IContentProgressTracker";
 import { CONTENTREFERENCETYPE, IContent } from "../../types/IContent";
 import { calculateVideoSize } from "../../services/calculateVideoSize";
 import { LinearGradient } from "expo-linear-gradient";
-import { render } from "react-dom";
-import { borderRadius } from "react-select/src/theme";
-import { waitFor } from "@testing-library/react-native";
-import { TextButton } from "../uiElements/TextButton";
 import { dateConverter } from "../../helperScripts/validateCourseDates";
-import { emptyString } from "react-select/src/utils";
-import { ProgressBar } from "react-native-paper";
-import { black } from "react-native-paper/lib/typescript/styles/colors";
-import { BackgroundImage } from "react-native-elements/dist/config";
 import ProgressService from "../../services/ProgressService";
 
-const endpointsVideo = new EndpointsVideo();
 const endpointsChapter = new EndpointsChapter();
 const endpointsProgress = new EndpointsProgress();
-const endpointsCourse = new EndpointsCourse();
 
 interface IVideoListSection {
     title: string;
@@ -52,53 +38,45 @@ interface IVideoListSection {
 export type ChapterContentRouteProp = RouteProp<RootDrawerParamList, "ROUTE_CHAPTER_CONTENT">;
 
 export const ScreenChapterStudent: React.FC = () => {
+    // Get the course of the current context and prepare the progress.
     const course: ICourse = React.useContext(CourseContext);
-    console.log("KursID:");
-    console.log(course.id);
     const [courseProgress, setCourseProgress] = useState<ICourseProgressTracker>({});
 
+    // Setup the current chapter and the lists used.
     const [chapter, setChapter] = useState<IChapter>({});
     const [chapterList, setChapterList] = useState<IChapter[]>([]);
     const [chapterPlaylist, setChapterPlaylist] = useState<IContent[]>([]);
 
-    const initialVideoState: IVideo[] = [];
+    // Setup an indicator whether the video list is currently loading.
     const [isVideoListLoading, setVideoListLoading] = useState(true);
-    //Store URL of Current Video here:
 
-    // update indicators
+    // Update indicators for the playlist and the player's progress.
     const [playlistShouldUpdate, updatePlaylist] = useState<number>();
     const [playerShouldRestoreProgress, restorePlayerProgress] = useState<number>();
 
-    let [currentVideo, setCurrentVideo] = useState<IContent>();
-    let [currentTitle, setCurrentTitle] = useState<string>();
+    // The current video/content item and it's title.
+    const [currentVideo, setCurrentVideo] = useState<IContent>();
+    const [currentTitle, setCurrentTitle] = useState<string>();
 
-    const [videos, setVideos] = useState<IVideoListSection[]>([]);
-    //let video: IVideo
+    // Setup the video section list split by due date.
+    const [videoSections, setVideoSections] = useState<IVideoListSection[]>([]);
 
+    // Setup the other contexts to use, i18n and navigation.
     React.useContext(LocalizationContext);
     const route = useRoute<ChapterContentRouteProp>();
     const chapterId = route.params.chapterId;
     const navigation = useNavigation();
 
+    // Setup video player related variables.
     const videoPlayer = React.useRef<Video>(null);
-    let timeSinceLastProgressUpdatePush: number = 0;
+    let timeSinceLastProgressUpdatePush = 0;
 
-    const timePeriods = course.timePeriods?.map((timePeriod, idx) => {
+    // Map the timeperiods to intermediate objects used later.
+    const timePeriods = course.timePeriods?.map((timePeriod) => {
         return {
             value: timePeriod.id,
             label: "Due on: " + dateConverter(timePeriod.endDate),
             end: timePeriod.endDate,
-
-            //dateConverter(timePeriod.startDate) +
-            //" - " +
-            //dateConverter(timePeriod.endDate),
-
-            //i18n.t("itrex.week") + " " + (idx + 1),
-            //+ " (" +
-            //dateConverter(timePeriod.startDate) +
-            //" - " +
-            //dateConverter(timePeriod.endDate) +
-            //")",
         };
     });
 
@@ -110,37 +88,29 @@ export const ScreenChapterStudent: React.FC = () => {
         }
     };
 
-    // Call following function/s only once when this screen is shown.
+    // On focus, refresh the chapter(s) and progress.
     useFocusEffect(
         React.useCallback(() => {
             console.log("%cON FOCUS CALLBACK", "color:red;");
-
-            console.log("In Callback");
             _getAllChapters();
 
             updateCourseProgress();
-
-            /*const progressRequest: RequestInit = RequestFactory.createGetRequest();
-            endpointsProgress
-                .getCourseProgress(progressRequest, course.id, undefined, i18n.t("itrex.getCourseProgressError"))
-                .then((receivedProgress) => {
-                    console.log("Progress of course Init:");
-                    console.log(receivedProgress);
-                    setCourseProgress(receivedProgress);
-                });*/
         }, [course])
     );
 
+    // This effect updates whenever the progress or chapter id changes.
     useEffect(() => {
         console.log("%cCOURSE PROGRESS/CHAPTERID CALLBACK", "color:red;");
         console.log("%cnew chapter id: %s", "color:red;", chapterId);
+
+        // Delay updating until the chapter has been received via a consumer.
         _getChapter((chapter) => {
             // Indicate an update of the playlist.
             setIndicatorForUpdate(updatePlaylist);
         });
-        //_getAllVideos();
     }, [courseProgress, chapterId]);
 
+    // This effect updates whenever the playlist should be updated.
     useEffect(() => {
         console.log("%cPLAYLIST UPDATE CALLBACK", "color:red;");
 
@@ -156,134 +126,88 @@ export const ScreenChapterStudent: React.FC = () => {
         }
     }, [playlistShouldUpdate]);
 
+    // This effect updates when the current video changes.
     useEffect(() => {
-        console.log("%cCURRENT VIDEO CALLBACK", "color:red; font-size:4rem;");
+        console.log("%cCURRENT VIDEO CALLBACK", "color:red;");
 
+        // Check for the progress and update the title.
         setIndicatorForUpdate(restorePlayerProgress);
+        // TODO: Real title.
         setCurrentTitle(currentVideo?.id);
     }, [currentVideo]);
 
+    // This efffect updates whenever the progress of a video has to be restored.
     useEffect(() => {
-        console.log("%cRESTORE PROGRESS CALLBACK", "color:red; font-size:4rem;");
+        console.log("%cRESTORE PROGRESS CALLBACK", "color:red;");
 
         if (currentVideo != undefined) restoreWatchProgress();
     }, [playerShouldRestoreProgress]);
 
+    // Define how the playlist item renders for a content item.
     const myPlaylistItem = ({ item }: { item: IContent }) => {
-        let brd: string = " ";
-        let bck: string = " ";
-        let bckBase: string = " ";
-        let progress: number = 0;
+        let borderColor = " ";
+        let backgroundColor = " ";
+        let backgroundBaseColor = " ";
+        let progress = 0;
 
-        console.log("RenderItemID");
-        console.log(item.id);
-
-        console.log("Entered thisPlaylistItem");
-
+        // Set colors according to progress.
         if (
             courseProgress.id !== undefined &&
             courseProgress.contentProgressTrackers !== undefined &&
             item.id !== undefined
         ) {
-            console.log("PlaylistItem first If");
-            console.log(
-                courseProgress.id !== undefined &&
-                    courseProgress.contentProgressTrackers !== undefined &&
-                    item.id !== undefined
-            );
             const contentProgress: IContentProgressTracker = courseProgress.contentProgressTrackers[item.id];
-            //const progressRequest: RequestInit = RequestFactory.createGetRequest();
 
-            if (contentProgress == undefined) {
-                console.log("If contentProgress undefined:");
-                console.log(contentProgress == undefined);
+            if (contentProgress === undefined) {
+                console.log("No content progress.");
 
-                //if (item.timePeriodId)
                 if (getContentDate(item.timePeriodId) == "OVERDUE") {
-                    brd = dark.Opacity.pink;
+                    borderColor = dark.Opacity.pink;
                 } else if (getContentDate(item.timePeriodId) == "SCHEDULED") {
-                    brd = dark.Opacity.blueGreen;
+                    borderColor = dark.Opacity.blueGreen;
                 }
-
-                //brd = dark.Opacity.blueGreen;
             } else if (contentProgress.state == ContentProgressTrackerState.STARTED) {
-                //if (contentProgress.id === undefined) {
-                //   return " ";
-                //}
-                //endpointsProgress
-                //   .getContentProgress(progressRequest, contentProgress.id, undefined, "getContentProgressError")
-                //   .then((receivedProgress) => {
-                //        console.log("New Progress");
-                //        console.log(receivedProgress);
-                //    });
-
-                console.log("Else If contentProgress Started:");
-                console.log(contentProgress.state == ContentProgressTrackerState.STARTED);
-                //progress = contentProgress.progress?.toString+"%";
+                console.log("Content progress started.");
                 progress = getContentProgress(item, contentProgress);
-                //progress = contentProgress.progress / item.video?.length
-                console.log("Progress:");
-                console.log("Progress:");
-                console.log(progress);
 
                 if (getContentDate(item.timePeriodId) == "OVERDUE") {
-                    brd = dark.Opacity.pink;
+                    borderColor = dark.Opacity.pink;
                 } else if (getContentDate(item.timePeriodId) == "SCHEDULED") {
-                    brd = dark.Opacity.lightGreen;
+                    borderColor = dark.Opacity.lightGreen;
                 }
 
-                bck = "rgba(181,239,138, 0.5)";
-                bckBase = dark.theme.darkBlue1;
+                backgroundColor = "rgba(181,239,138, 0.5)";
+                backgroundBaseColor = dark.theme.darkBlue1;
             } else if (contentProgress.state == ContentProgressTrackerState.COMPLETED) {
-                //if (contentProgress.id === undefined) {
-                //    return " ";
-                //}
-                //endpointsProgress
-                //  .getContentProgress(progressRequest, contentProgress.id, undefined, "getContentProgressError")
-                //  .then((receivedProgress) => {
-                //      console.log("New Progress");
-                //      console.log(receivedProgress);
-                //  });
-
-                console.log("Else If contentProgress Completed:");
-                console.log(contentProgress.state == ContentProgressTrackerState.COMPLETED);
-
-                console.log("Video length");
-                console.log(item.video?.length);
+                console.log("Content progress completed.");
                 progress = getContentProgress(item, contentProgress);
 
-                console.log("Progress:");
-                console.log(progress);
-
-                brd = dark.Opacity.lightGreen;
-                bck = dark.Opacity.lightGreen;
-                bckBase = dark.Opacity.lightGreen;
+                borderColor = dark.Opacity.lightGreen;
+                backgroundColor = dark.Opacity.lightGreen;
+                backgroundBaseColor = dark.Opacity.lightGreen;
             }
         }
 
         const mystyle = {
             marginBottom: "2.5%",
-            borderColor: brd,
+            borderColor: borderColor,
             borderWidth: 3,
-            backgroundColor: bckBase,
+            backgroundColor: backgroundBaseColor,
         };
 
         const progressStyle = {
-            // backgroundColor: bck,
-
             position: "absolute",
             left: 0,
             right: 0,
             top: 0,
             height: "100%",
-            //transform: [{ rotateY: "90deg"}],
         };
 
         return (
             <ListItem containerStyle={mystyle}>
                 <LinearGradient
                     // Background Linear Gradient
-                    colors={[bck, "transparent"]}
+                    colors={[backgroundColor, "transparent"]}
                     locations={[progress, progress]}
                     style={progressStyle}
                     end={{ x: 1.0, y: 0 }}
@@ -292,7 +216,6 @@ export const ScreenChapterStudent: React.FC = () => {
                 <TouchableOpacity
                     onPress={() => {
                         changeCurrentVideo(item);
-                        item;
                     }}>
                     {getContentIcon(item)}
                     <ListItem.Content>
@@ -353,7 +276,6 @@ export const ScreenChapterStudent: React.FC = () => {
                         resizeMode="cover"
                         shouldPlay={false}
                         useNativeControls={true}
-                        // onLoad={changeVideoProgress()}
                     />
                     <View style={styles.iconContainer}>
                         <Text style={[styles.videoTitle, { paddingTop: "1.5%" }]}>{currentTitle}</Text>
@@ -365,22 +287,16 @@ export const ScreenChapterStudent: React.FC = () => {
                     <Animated.View style={{ flex: 1, maxWidth: "95%" }}>
                         <SectionList
                             style={styles.playlist}
-                            //data={videos}
-                            sections={videos}
+                            sections={videoSections}
                             showsVerticalScrollIndicator={true}
                             renderItem={myPlaylistItem}
-                            //ListHeaderComponent={<Text style={styles.videoTitle}>Playlist</Text>}
-                            //renderItem={thisPlaylistItem}
                             extraData={playlistShouldUpdate}
                             keyExtractor={(item) => item.id ?? ""}
                             ListEmptyComponent={<Text>Videos here</Text>}
-                            renderSectionHeader={
-                                ({ section }) =>
-                                    section.data.length > 0 ? (
-                                        <Text style={[styles.listItemSubtitle, { marginTop: 5 }]}>{section.title}</Text>
-                                    ) : null
-                                //renderSectionHeader={({ section: { title } }) => (
-                                //  <Text style={styles.chapterHeading}>{title}</Text>
+                            renderSectionHeader={({ section }) =>
+                                section.data.length > 0 ? (
+                                    <Text style={[styles.listItemSubtitle, { marginTop: 5 }]}>{section.title}</Text>
+                                ) : null
                             }
                         />
                     </Animated.View>
@@ -389,28 +305,38 @@ export const ScreenChapterStudent: React.FC = () => {
         </View>
     );
 
+    /** Sets the given update indictor to a new number to trigger an update. */
     function setIndicatorForUpdate(indicatorSetter: React.Dispatch<React.SetStateAction<number | undefined>>) {
         indicatorSetter(Date.now);
     }
 
+    /** Get the corresponding icon for a content item. */
     function getContentIcon(item: IContent) {
         switch (item.contentReferenceType) {
             case CONTENTREFERENCETYPE.VIDEO:
                 return <MaterialCommunityIcons name="video-vintage" size={28} color="white" />;
+
             case CONTENTREFERENCETYPE.QUIZ:
                 return <MaterialCommunityIcons name="file-question-outline" size={28} color="white" />;
+
+            default:
+                return <></>;
         }
     }
 
+    /** Gets the name of a content item. */
     function getContentName(item: IContent) {
         switch (item.contentReferenceType) {
             case CONTENTREFERENCETYPE.VIDEO:
                 return <Text>{item.id}</Text>;
             case CONTENTREFERENCETYPE.QUIZ:
                 return <Text>{item.id}</Text>;
+            default:
+                return <></>; // TODO: Add an error maybe?
         }
     }
 
+    /** Returns a fitting subtitle for the given content item per type. */
     function getContentSubtitle(item: IContent) {
         switch (item.contentReferenceType) {
             case CONTENTREFERENCETYPE.VIDEO:
@@ -426,19 +352,23 @@ export const ScreenChapterStudent: React.FC = () => {
                         {i18n.t("itrex.questions")} {item.quiz?.questions.length}
                     </Text>
                 );
+            default:
+                return <></>;
         }
     }
 
+    /** Returns the content progress as a percent value for a item and its content progress tracker. */
     function getContentProgress(item: IContent, contentProgress: IContentProgressTracker) {
-        let itemProgress: number;
+        let itemProgress = 0;
+
         switch (item.contentReferenceType) {
             case CONTENTREFERENCETYPE.VIDEO:
                 if (contentProgress.state == "COMPLETED") {
                     itemProgress = 1;
                 } else {
                     itemProgress = item.video?.length / contentProgress.progress;
-                    return itemProgress;
                 }
+                break;
 
             case CONTENTREFERENCETYPE.QUIZ:
                 if (contentProgress.state == "COMPLETED") {
@@ -446,16 +376,17 @@ export const ScreenChapterStudent: React.FC = () => {
                 } else {
                     itemProgress = 0;
                 }
-
-                return itemProgress;
         }
+
+        return itemProgress;
     }
 
+    /** Returns a string with info about the date of the given content item (by id). */
     function getContentDate(contentID: string) {
         const contentDate = timePeriods?.find((element) => element.value == contentID);
         const currentDate = new Date();
 
-        if (contentDate?.end == undefined) {
+        if (contentDate?.end === undefined) {
             return " ";
         } else if (contentDate?.end < currentDate) {
             return "OVERDUE";
@@ -464,36 +395,32 @@ export const ScreenChapterStudent: React.FC = () => {
         }
     }
 
-    function _splitPlaylist(pl: IContent[]) {
-        let weeks: IVideoListSection[] = [];
+    /** Splits the playlist according to the defined weeks in the time periods. */
+    function _splitPlaylist(contentList: IContent[]) {
+        const videoWeekSections: IVideoListSection[] = [];
 
         if (timePeriods == undefined) {
-            console.log("Time Periods undefined");
-            console.log(timePeriods);
             return;
         }
 
+        // Prepare each section to add videos to.
         for (const time of timePeriods) {
-            weeks.push({ title: time.label, data: [] });
-
-            // let time = pl[cont].timePeriodId;
+            videoWeekSections.push({ title: time.label, data: [] });
         }
 
-        for (const cont of pl) {
-            // Get time period  and title of content from time periods
-            const week = timePeriods?.find((timePeriod) => timePeriod.value === cont.timePeriodId)?.label;
-            weeks.find((date) => date.title == week)?.data.push(cont);
-            // Write Content in right week
-
-            // Sectiontitle: Week
-            // Sectiondata: data[]
+        // Split the content list accordingly.
+        for (const curContent of contentList) {
+            // Get timeperiod's title for the current content.
+            const weekTitle = timePeriods.find((timePeriod) => timePeriod.value === curContent.timePeriodId)?.label;
+            // Add the content to its data array.
+            videoWeekSections.find((date) => date.title == weekTitle)?.data.push(curContent);
         }
 
-        setVideos(weeks);
-        //setVideos(weeks.filter(((abc: IVideoListSection)=>
-        //   {if (abc.data !== undefined) {return abc}})));
+        // And set it.
+        setVideoSections(videoWeekSections);
     }
 
+    /** Performs the heartbeat with the video player. */
     async function heartbeat(status: AVPlaybackStatus) {
         if (currentVideo == undefined) {
             return;
@@ -505,33 +432,26 @@ export const ScreenChapterStudent: React.FC = () => {
             if (timeSinceLastProgressUpdatePush >= 2500) {
                 timeSinceLastProgressUpdatePush = 0;
 
-                let progress: number = Math.floor(status["positionMillis"] * 0.001);
+                const progress: number = Math.floor(status["positionMillis"] * 0.001);
                 ProgressService.getInstance().updateContentProgress(
                     course.id,
                     currentVideo,
                     progress,
                     (newContentProgress, hasCreated) => {
-                        if (hasCreated) updateCourseProgress();
+                        // TODO: This should only update on hasCreated, but if we do
+                        //       not update otherwise, we lose the last written progress
+                        //       in our local instance.
+                        /*if (hasCreated)*/
+                        updateCourseProgress();
                     }
                 );
-
-                /*await createContentProgressIfNecessary(currentVideo).then(async () => {
-                    changeVideoWatchProgress(currentVideo, Math.floor(status["positionMillis"] * 0.001));
-                    setVideoCompletedIfNecessary(currentVideo, status);
-                });*/
 
                 setVideoCompletedIfNecessary(currentVideo, status);
             }
         }
     }
 
-    async function createContentProgressIfNecessary(contentRef: IContent) {
-        const contentProgress = courseProgress.contentProgressTrackers[contentRef.id];
-        if (contentProgress === undefined || contentProgress.id === undefined) {
-            await changeVideoProgress(contentRef);
-        }
-    }
-
+    /** Sets the video progress as completed if it matches the criteria. */
     async function setVideoCompletedIfNecessary(contentRef: IContent, status: AVPlaybackStatus) {
         const contentProgress: IContentProgressTracker = courseProgress.contentProgressTrackers[contentRef.id];
         if (contentProgress != undefined && contentProgress.state != ContentProgressTrackerState.COMPLETED) {
@@ -543,6 +463,7 @@ export const ScreenChapterStudent: React.FC = () => {
         }
     }
 
+    /** Restores the watch progress of the current video. */
     function restoreWatchProgress() {
         if (
             courseProgress == undefined ||
@@ -557,6 +478,7 @@ export const ScreenChapterStudent: React.FC = () => {
         videoPlayer.current?.setPositionAsync(progress * 1000);
     }
 
+    /** Update the course progress and re-set it to the state. */
     function updateCourseProgress() {
         if (course.id === undefined) {
             return;
@@ -568,137 +490,38 @@ export const ScreenChapterStudent: React.FC = () => {
             .then((receivedProgress) => setCourseProgress(receivedProgress));
     }
 
-    async function changeVideoProgress(contentRef: IContent) {
-        // TODO: Adjust and/or reuse this for actual progress.
-        // For now it just touches the content once or completes it when touched.
-
-        // No course progress, no content refs or the given one is invalid.
-        if (
-            courseProgress.id === undefined ||
-            courseProgress.contentProgressTrackers === undefined ||
-            contentRef.id === undefined
-        ) {
-            console.log("ContentRef: ");
-            console.log(contentRef);
-            return;
-        }
-
-        const contentProgress = courseProgress.contentProgressTrackers[contentRef.id];
-        if (contentProgress === undefined || contentProgress.id === undefined) {
-            // Touch the content ref once.
-            const postReq = RequestFactory.createPostRequestWithBody(contentRef);
-            console.log("Content Ref in changeProgress:");
-            console.log(contentRef);
-            await endpointsProgress
-                .createContentProgress(postReq, courseProgress.id)
-                .then((receivedContentProgress) => {
-                    console.log("Created content progress:");
-                    console.log(receivedContentProgress);
-
-                    updateLastAccessedContent(contentRef);
-                    updateCourseProgress();
-                });
-        }
-    }
-
-    async function changeVideoWatchProgress(contentRef: IContent, newProgress: number) {
-        // TODO: Adjust and/or reuse this for actual progress.
-        // For now it just touches the content once or completes it when touched.
-
-        // No course progress, no content refs or the given one is invalid.
-        if (
-            courseProgress.id === undefined ||
-            courseProgress.contentProgressTrackers === undefined ||
-            contentRef.id === undefined
-        ) {
-            console.log("ContentRef: ");
-            console.log(contentRef);
-            return;
-        }
-
-        const contentProgress = courseProgress.contentProgressTrackers[contentRef.id];
-        if (contentProgress === undefined || contentProgress.id === undefined) {
-            return;
-        }
-
-        const putReq = RequestFactory.createPutRequest({});
-        await endpointsProgress
-            .updateContentProgress(putReq, contentProgress.id, newProgress)
-            .then((receivedContentProgress) => {
-                console.log("Set content progress to:");
-                console.log(receivedContentProgress);
-
-                // may result in a race condition i think, but this is unlikely and not dangerous in case it happens
-                updateLastAccessedContent(contentRef);
-                courseProgress.contentProgressTrackers[contentRef.id] = receivedContentProgress;
-            });
-    }
-
+    /** Updates a video to the complete status. */
     async function completeVideo(contentRef: IContent) {
-        // Update the status to complete.
-        if (
-            courseProgress.id === undefined ||
-            courseProgress.contentProgressTrackers === undefined ||
-            contentRef.id === undefined
-        ) {
-            console.log("ContentRef: ");
-            console.log(contentRef);
-            return;
-        }
-        const contentProgress = courseProgress.contentProgressTrackers[contentRef.id];
-        const putReq = RequestFactory.createPutRequest({});
-        await endpointsProgress.setContentStateComplete(putReq, contentProgress.id).then((receivedContentProgress) => {
-            console.log("Set content progress to complete:");
-            console.log(receivedContentProgress);
-
-            updateLastAccessedContent(contentRef);
+        ProgressService.getInstance().completeContentProgress(course.id, contentRef, (receivedProgress) => {
             updateCourseProgress();
         });
     }
 
-    async function updateLastAccessedContent(contentRef: IContent): void {
-        if (courseProgress.id === undefined) {
-            return;
-        }
-
-        const putReq = RequestFactory.createPutRequest(contentRef);
-        await endpointsProgress
-            .updateLastAccessedContentProgress(putReq, courseProgress.id)
-            .then((receivedCourseProgress) => {
-                console.log("Updated last accessed content:");
-                console.log(receivedCourseProgress);
-            });
-    }
-
+    /** Gets all the chapters of the current course. */
     function _getAllChapters() {
         const request: RequestInit = RequestFactory.createGetRequest();
-        endpointsChapter.getAllChapters(request).then((chaptersReceived: IChapter[]) => {
+        endpointsChapter.getAllChapters(request).then((chaptersReceived) => {
             setChapterList(
-                chaptersReceived.filter((chap: IChapter) => {
+                chaptersReceived.filter((chap) => {
                     if (chap.courseId == course.id) {
                         return chap;
                     }
                 })
             );
-
-            console.log("Chapter List of Course:");
-            console.log(chapterList);
-
-            //videoReceived.filter(((vid: IVideo) => {
-            //          if (vid.id !== undefined && chapterPlaylist.includes(vid.id)) {return vid} })));
         });
     }
 
+    /** Gets the chapter with the current id. Provides a consumer to execute once it has been received. */
     function _getChapter(consumer: (chapter: IChapter) => void) {
         const request: RequestInit = RequestFactory.createGetRequest();
+
         setVideoListLoading(true);
+
         endpointsChapter
             .getChapter(request, chapterId, undefined, i18n.t("itrex.getChapterError"))
-            .then((chapterReceived: IChapter) => {
+            .then((chapterReceived) => {
                 setChapter(chapterReceived);
-                console.log(chapterReceived);
                 if (chapterReceived.contentReferences !== undefined) {
-                    console.log(chapterReceived.contentReferences);
                     setChapterPlaylist(chapterReceived.contentReferences);
 
                     // Call a delayed consumer once everything has been finished.
@@ -708,6 +531,7 @@ export const ScreenChapterStudent: React.FC = () => {
             .finally(async () => setVideoListLoading(false));
     }
 
+    /** Changes the current chapter to the next chapter in line. */
     function _gotoNextChapter() {
         let chapterIndex = chapterList.findIndex((i) => i.id == chapterId);
         //const chaindex = chapter.findIndex((x) => x.value == question?.type);
@@ -732,6 +556,7 @@ export const ScreenChapterStudent: React.FC = () => {
         }
     }
 
+    /** Changes the current chapter to the previous chapter in line. */
     function _gotoLastChapter() {
         let chapterIndex = chapterList.findIndex((i) => i.id == chapterId);
         //const chaindex = chapter.findIndex((x) => x.value == question?.type);
@@ -756,20 +581,19 @@ export const ScreenChapterStudent: React.FC = () => {
         }
     }
 
+    /** Creates a video url for the current video. */
     function _getVideoUrl(): string {
-        let vidId: string = " ";
-        //vidId = chapterPlaylist[1]
-        vidId = currentVideo?.contentId;
-        console.log("Vid Id:");
-        console.log(vidId);
+        const vidId = currentVideo?.contentId;
 
-        if (videos == undefined || videos == undefined || null) {
+        if (videoSections == undefined || videoSections == undefined || null) {
             toast.error(i18n.t("itrex.videoNotFound"));
             return "";
         }
+
         return createVideoUrl(vidId);
     }
 
+    /** Changes the current video to the given new content. */
     function changeCurrentVideo(vid?: IContent) {
         if (vid !== undefined) {
             setCurrentVideo(vid);
