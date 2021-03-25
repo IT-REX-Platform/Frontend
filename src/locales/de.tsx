@@ -110,6 +110,8 @@ export const de = {
         chapterCreatedSuccess: "Das Kapitel wurde erfolgreich angelegt.",
         chapterUpdateSuccess: "Das Kapitel wurde erfolgreich aktualisiert.",
         publishCourseSuccess: "Der Kurs wurde erfolgreich veröffentlicht.",
+        updateCourseSuccess: "Die Kursbeschreibung wurde erfolgreich aktualisiert.",
+        updateCourseError: "Ein Fehler ist beim aktualisieren der Kursbeschreibung aufgetreten.",
         courseDeletedSuccessfully: "Der Kurs wurde erfolgreich gelöscht.",
         confirmPublishCourse:
             "Durch das Veröffentlichen des Kurses wird es möglich, dass Teilnehmer dem Kurs beitreten können. Start- und Enddatum werden beim Veröffentlichen des Kurses ebenfalls festgelegt.",

@@ -110,6 +110,8 @@ export const en = {
         chapterCreatedSuccess: "The chapter was created successfully.",
         chapterUpdateSuccess: "The chapter was updated successfully.",
         publishCourseSuccess: "The course was published successfully.",
+        updateCourseSuccess: "The course description was updated successfully.",
+        updateCourseError: "An error occured while updating the course description.",
         courseDeletedSuccessfully: "The course was deleted successfully.",
         confirmPublishCourse:
             "Publishing the course will make it possible for students to join the course. Start- and end-date will also be fixed when publishing the course.",

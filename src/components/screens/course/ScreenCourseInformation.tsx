@@ -1,7 +1,7 @@
 /* eslint-disable complexity */
 import { CompositeNavigationProp, useFocusEffect, useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
-import { Text, ImageBackground, StyleSheet, View } from "react-native";
+import { ImageBackground, StyleSheet, View } from "react-native";
 import { ICourse } from "../../../types/ICourse";
 import {
     CourseStackParamList,
@@ -13,7 +13,6 @@ import { CourseContext, LocalizationContext } from "../../Context";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import i18n from "../../../locales";
-import { dateConverter } from "../../../helperScripts/validateCourseDates";
 import { CoursePublishState } from "../../../constants/CoursePublishState";
 import { RequestFactory } from "../../../api/requests/RequestFactory";
 import { EndpointsCourse } from "../../../api/endpoints/EndpointsCourse";
@@ -30,9 +29,6 @@ export type ScreenCourseOverviewNavigationProp = CompositeNavigationProp<
     CompositeNavigationProp<StackNavigationProp<CourseStackParamList>, DrawerNavigationProp<RootDrawerParamList>>
 >;
 
-//export type ScreenCourseTabsRouteProp = RouteProp<CourseStackParamList, "INFO">;
-//export type ScreenCourseTabsProps = StackScreenProps<CourseStackParamList, "INFO">;
-
 export const ScreenCourseInformation: React.FC = () => {
     const navigation = useNavigation<ScreenCourseOverviewNavigationProp>();
 
@@ -40,6 +36,9 @@ export const ScreenCourseInformation: React.FC = () => {
     const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");
     const endpointsCourse: EndpointsCourse = new EndpointsCourse();
     const { course } = React.useContext(CourseContext);
+    const descriptionCallback = (description: string | undefined) => {
+        course.courseDescription = description;
+    };
 
     const [user, setUserInfo] = useState<IUser>({});
 
@@ -53,11 +52,14 @@ export const ScreenCourseInformation: React.FC = () => {
         <ImageBackground source={require("../../../constants/images/Background2.png")} style={styles.imageContainer}>
             <View style={styles.dualButtonContainer}>{_checkUserSettings()}</View>
             <View style={styles.informationContent}>
-                <CourseInformationTable />
+                <CourseInformationTable onDescriptionChanged={descriptionCallback} />
             </View>
         </ImageBackground>
     );
 
+    /**
+     * Give the different roles of users different settings for the specific course.
+     */
     function _checkUserSettings() {
         if (user.courses == undefined || course.id == undefined) {
             return <></>;
@@ -68,13 +70,25 @@ export const ScreenCourseInformation: React.FC = () => {
             if (course.publishState === CoursePublishState.UNPUBLISHED) {
                 return (
                     <>
+                        <View>
+                            <TextButton
+                                title={i18n.t("itrex.deleteCourse")}
+                                color="pink"
+                                onPress={() => _confirmDeletion()}
+                            />
+                        </View>
                         <TextButton title={i18n.t("itrex.publishCourse")} onPress={() => _confirmPublishCourse()} />
-                        <TextButton
-                            title={i18n.t("itrex.deleteCourse")}
-                            color="pink"
-                            onPress={() => _confirmDeletion()}
-                        />
+
+                        <View>
+                            <TextButton title={i18n.t("itrex.save")} onPress={() => _updateCourse()} />
+                        </View>
                     </>
+                );
+            } else {
+                return (
+                    <View>
+                        <TextButton title={i18n.t("itrex.save")} onPress={() => _updateCourse()} />
+                    </View>
                 );
             }
         } else {
@@ -82,13 +96,22 @@ export const ScreenCourseInformation: React.FC = () => {
         }
     }
 
-    function _confirmPublishCourse() {
-        const publishCourse = confirm(i18n.t("itrex.confirmPublishCourse"));
-        if (publishCourse === true) {
-            _patchCourse();
-        }
+    /**
+     * Creates a server request in order to update the course description.
+     */
+    function _updateCourse() {
+        console.log(course);
+        const updateRequest: RequestInit = RequestFactory.createPatchRequest(course);
+        endpointsCourse.patchCourse(
+            updateRequest,
+            i18n.t("itrex.updateCourseSuccess"),
+            i18n.t("itrex.updateCourseError")
+        );
     }
 
+    /**
+     * Creates a server request in order to update the published state of the course.
+     */
     function _patchCourse() {
         loggerService.trace("Parsing ID string to ID number.");
 
@@ -108,6 +131,19 @@ export const ScreenCourseInformation: React.FC = () => {
         );
     }
 
+    /**
+     *Confirmation before publishing a course.
+     */
+    function _confirmPublishCourse() {
+        const publishCourse = confirm(i18n.t("itrex.confirmPublishCourse"));
+        if (publishCourse === true) {
+            _patchCourse();
+        }
+    }
+
+    /**
+     * Confirmation before deleting a course.
+     */
     function _confirmDeletion() {
         const confirmation: boolean = confirm(i18n.t("itrex.confirmDeleteCourse"));
         if (confirmation === true) {
@@ -115,6 +151,9 @@ export const ScreenCourseInformation: React.FC = () => {
         }
     }
 
+    /**
+     * Creates a server request to delete a specific course
+     */
     function _deleteCourse(): void {
         if (course.id == undefined) {
             return;
@@ -131,20 +170,16 @@ export const ScreenCourseInformation: React.FC = () => {
             .then(() => navigation.navigate("ROUTE_HOME"));
     }
 
+    /**
+     *  Give a student the possibility to leave the course.
+     */
     function _checkForLeaveCourse() {
         if (user.courses == undefined || course.id == undefined) {
             return <></>;
         }
 
         const courseRole: CourseRoles = user.courses[course.id];
-        return _checkForUserRole(courseRole);
-    }
-
-    function _checkForUserRole(courseRole: CourseRoles) {
-        console.log(courseRole);
         if (courseRole === CourseRoles.OWNER || courseRole == undefined) {
-            // TODO: Undefined should never happen, buuuut currently does when creating a course.
-            // Apparently updating the token and then navigating isn't waiting long enough.
             return <></>;
         }
         return (
@@ -154,6 +189,9 @@ export const ScreenCourseInformation: React.FC = () => {
         );
     }
 
+    /**
+     * Creates a server request to leave the specific course.
+     */
     function _leaveCourse() {
         if (course.id != undefined) {
             const request: RequestInit = RequestFactory.createPostRequestWithoutBody();
@@ -176,9 +214,6 @@ const styles = StyleSheet.create({
     informationContent: {
         alignItems: "center",
         justifyContent: "center",
-    },
-    textWhite: {
-        color: "white",
     },
     dualButtonContainer: {
         height: 70,

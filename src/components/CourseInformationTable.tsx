@@ -1,12 +1,30 @@
-import React from "react";
-import { Text, StyleSheet, View } from "react-native";
+/* eslint-disable complexity */
+import React, { useEffect } from "react";
+import { useState } from "react";
+import { Text, StyleSheet, View, TextInput } from "react-native";
+import { CourseRoles } from "../constants/CourseRoles";
 import { dateConverter } from "../helperScripts/validateCourseDates";
 import i18n from "../locales";
+import AuthenticationService from "../services/AuthenticationService";
+import { IUser } from "../types/IUser";
 import { LocalizationContext, CourseContext } from "./Context";
 
-export const CourseInformationTable: React.FC = () => {
+interface DataTableProps {
+    onDescriptionChanged: (description: string | undefined) => void;
+}
+
+export const CourseInformationTable: React.FC<DataTableProps> = (props) => {
     React.useContext(LocalizationContext);
+    const { onDescriptionChanged } = props;
+
     const { course } = React.useContext(CourseContext);
+    // User info.
+    const [user, setUserInfo] = useState<IUser>({});
+    const [description, setDescription] = useState<string | undefined>(course.courseDescription);
+
+    useEffect(() => {
+        AuthenticationService.getInstance().getUserInfo(setUserInfo);
+    }, [description]);
 
     return (
         <>
@@ -20,10 +38,38 @@ export const CourseInformationTable: React.FC = () => {
             </View>
             <View style={styles.rowStyle}>
                 <Text style={styles.titleStyle}>{i18n.t("itrex.courseDescription")} </Text>
-                <Text style={styles.valueStyle}>{course.courseDescription}</Text>
+                <Text style={styles.valueStyle}>{userViewDescription()}</Text>
             </View>
         </>
     );
+
+    function userViewDescription() {
+        if (user.courses == undefined || course.id == undefined) {
+            return <></>;
+        }
+        const courseRole: CourseRoles = user.courses[course.id];
+
+        if (courseRole === CourseRoles.OWNER || courseRole == CourseRoles.MANAGER) {
+            return (
+                <TextInput
+                    style={[styles.valueStyle, { minHeight: 200 }]}
+                    defaultValue={
+                        course.courseDescription ? course.courseDescription : "The Course description right here"
+                    }
+                    onChangeText={(text) => {
+                        onDescriptionChanged(text);
+                    }}
+                    multiline={true}
+                />
+            );
+        } else {
+            return (
+                <Text style={styles.valueStyle}>
+                    {course.courseDescription !== null ? course.courseDescription : "No description available"}
+                </Text>
+            );
+        }
+    }
 };
 
 const styles = StyleSheet.create({
@@ -34,8 +80,9 @@ const styles = StyleSheet.create({
         color: "white",
     },
     valueStyle: {
-        width: "70%",
+        width: "100%",
         color: "white",
+        flexGrow: 5,
     },
     rowStyle: {
         flexDirection: "row",
