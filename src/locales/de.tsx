@@ -18,6 +18,8 @@ export const de = {
         homeAdminText: "Aloha Admin",
         homeErrorText: "Fehlende Konfiguration",
 
+        courseDescription: "Kursbeschreibung",
+        noCourseDescription: "Es ist keine Kursbeschreibung verfügbar.",
         enterCourseName: "Kursnamen eingeben",
         enterCourseDescription: "Kursbeschreibung eingeben",
         createCourse: "Neuen Kurs erstellen",
@@ -99,7 +101,8 @@ export const de = {
 
         noChapters: "Es wurden noch keine Kapitel für diesen Kurs angelgt.",
         addChapter: "+ Kapitel hinzugügen",
-        editMode: "Toggle Bearbeitungs-Modus",
+        switchToStudentView: "Zur Studentenansicht wechseln",
+        switchToOwnerView: "Zur Bearbeitungsansicht wechseln",
         chapterMaterial: "Kapitel Materialien",
         myNewChapter: "Mein neues Kapitel",
         save: "Speichern",
@@ -108,6 +111,8 @@ export const de = {
         chapterCreatedSuccess: "Das Kapitel wurde erfolgreich angelegt.",
         chapterUpdateSuccess: "Das Kapitel wurde erfolgreich aktualisiert.",
         publishCourseSuccess: "Der Kurs wurde erfolgreich veröffentlicht.",
+        updateCourseSuccess: "Die Kursbeschreibung wurde erfolgreich aktualisiert.",
+        updateCourseError: "Ein Fehler ist beim aktualisieren der Kursbeschreibung aufgetreten.",
         courseDeletedSuccessfully: "Der Kurs wurde erfolgreich gelöscht.",
         confirmPublishCourse:
             "Durch das Veröffentlichen des Kurses wird es möglich, dass Teilnehmer dem Kurs beitreten können. Start- und Enddatum werden beim Veröffentlichen des Kurses ebenfalls festgelegt.",

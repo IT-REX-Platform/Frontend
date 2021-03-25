@@ -94,7 +94,12 @@ export const JoinCourseComponent: React.FC = () => {
         endpointsCourse.joinCourse(request, courseId, undefined, i18n.t("itrex.joinCourseError")).then(() => {
             AuthenticationService.getInstance()
                 .refreshToken()
-                .then(() => navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, { courseId: courseId }));
+                .then(() =>
+                    navigation.navigate("INFO", {
+                        courseId: courseId,
+                        screen: "OVERVIEW",
+                    })
+                );
         });
     }
 };

@@ -1,15 +1,13 @@
 /* eslint-disable complexity */
 
 import React from "react";
-import i18n from "../locales";
 import { LocalizationContext } from "./Context";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { dark } from "../constants/themes/dark";
 import { useNavigation } from "@react-navigation/native";
 import { ITimePeriod, TimePeriodPublishState } from "../types/ITimePeriod";
 import { ChapterComponent } from "./ChapterComponent";
 import { ICourse } from "../types/ICourse";
-import { dateConverter } from "../helperScripts/validateCourseDates";
 
 interface TimelineComponentProps {
     isLast?: boolean;
@@ -20,7 +18,6 @@ interface TimelineComponentProps {
 
 export const TimelineComponent: React.FC<TimelineComponentProps> = (props) => {
     React.useContext(LocalizationContext);
-    const navigation = useNavigation();
 
     return (
         <>
