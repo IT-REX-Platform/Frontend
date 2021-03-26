@@ -148,7 +148,7 @@ export const ScreenAddChapter: React.FC = () => {
                     borderColor: dark.theme.darkBlue4,
                     borderWidth: 2,
                     borderRadius: 5,
-                    maxWidth: 470,
+                    maxWidth: 870,
                 }}>
                 <TouchableOpacity onPress={() => removeContent(item)}>
                     <MaterialIcons name="remove" size={28} color="white" style={styles.icon} />
@@ -455,27 +455,28 @@ export const ScreenAddChapter: React.FC = () => {
 
     return (
         <View style={styles.container}>
-            <ImageBackground source={require("../../../constants/images/Background2.png")} style={styles.image}>
-                <View style={[styles.headContainer]}>
-                    <View style={styles.borderContainer}>
-                        {/*<TextInput label="name" value={courseName} onChangeText={(text) => setCourseName(text)} />*/}
-                        <TextInput
-                            style={styles.courseHeader}
-                            value={chapterName}
-                            onChangeText={(text) => setChapterName(text)}
-                        />
-                        <MaterialCommunityIcons name="pen" size={24} color={dark.theme.darkGreen} style={styles.icon} />
-                    </View>
-                    <View style={{ flexDirection: "row" }}>
-                        <TextButton title={i18n.t("itrex.saveAndReturn")} onPress={() => saveChapter(true)} />
-                        <TextButton title={i18n.t("itrex.save")} onPress={() => saveChapter(false)} />
-                    </View>
+            <View style={[styles.headContainer]}>
+                <View style={styles.borderContainer}>
+                    {/*<TextInput label="name" value={courseName} onChangeText={(text) => setCourseName(text)} />*/}
+                    <TextInput
+                        style={styles.courseHeader}
+                        value={chapterName}
+                        onChangeText={(text) => setChapterName(text)}
+                    />
+                    <MaterialCommunityIcons name="pen" size={24} color={dark.theme.darkGreen} style={styles.icon} />
                 </View>
+                <View style={styles.buttonContainer}>
+                    <TextButton title={i18n.t("itrex.saveAndReturn")} onPress={() => saveChapter(true)} />
+                    <TextButton title={i18n.t("itrex.save")} onPress={() => saveChapter(false)} />
+                </View>
+            </View>
 
-                <View style={styles.headContainer}></View>
-
-                <View style={styles.contentContainer}>
-                    <View style={styles.sequenceArea}>
+            <View style={styles.contentContainer}>
+                <View style={styles.sequenceArea}>
+                    <ImageBackground
+                        source={require("../../../constants/images/Background1-4.png")}
+                        style={styles.image}
+                        imageStyle={{ opacity: 0.3, position: "absolute", resizeMode: "cover" }}>
                         <View style={styles.containerTop}>
                             <Text style={{ marginBottom: 10, fontSize: 20, color: "white" }}>
                                 {i18n.t("itrex.chapterContentList")}
@@ -489,15 +490,15 @@ export const ScreenAddChapter: React.FC = () => {
                                 onDragEnd={({ to, from }) => reorderContent(to, from)}
                             />
                         </View>
-                    </View>
-                    <View style={styles.contentContainerAdd}>
-                        <View style={styles.containerTop}>{renderUi()}</View>
-                    </View>
-                    <View style={styles.contentContainerAdd}>
-                        <View style={styles.containerTop}>{renderQuizList()}</View>
-                    </View>
+                    </ImageBackground>
                 </View>
-            </ImageBackground>
+                <View style={[styles.contentContainerAdd, { marginRight: "3%" }]}>
+                    <View style={styles.containerTop}>{renderUi()}</View>
+                </View>
+                <View style={styles.contentContainerAdd}>
+                    <View style={styles.containerTop}>{renderQuizList()}</View>
+                </View>
+            </View>
         </View>
     );
 
@@ -664,43 +665,60 @@ const styles = StyleSheet.create({
     },
     headContainer: {
         flexDirection: "row",
-        alignItems: "flex-start",
-        paddingTop: "3%",
-        paddingLeft: "3%",
+        //alignItems: "flex-start",
+        padding: "3%",
+        paddingLeft: "4%",
     },
     borderContainer: {
-        flex: 3,
+        flex: 1,
         flexDirection: "row",
-        borderBottomColor: "rgba(70,74,91,0.5)",
-        borderBottomWidth: 3,
+        alignItems: "flex-end",
+        //justifyContent: "flex-start",
+        borderColor: dark.theme.grey,
+        borderBottomWidth: 1.5,
+        //padding: "0.5%",
+        //alignContent: "center"
     },
+
+    buttonContainer: {
+        flexDirection: "row",
+        paddingLeft: "1%",
+    },
+
     contentContainer: {
         flex: 2,
         flexDirection: "row",
-        padding: "2%",
+        paddingLeft: "2%",
+        paddingRight: "2%",
+        paddingBottom: "1%",
+        paddingTop: "1%",
     },
     contentContainerAdd: {
         flex: 1,
-        backgroundColor: "rgba(1,43,86,0.5)",
+        padding: 5,
+        paddingTop: "1%",
+        //backgroundColor: "rgba(1,43,86,0.5)",
         borderWidth: 3,
         borderColor: dark.theme.darkBlue3,
-        marginRight: "3%",
         alignItems: "center",
         maxWidth: 280,
     },
     sequenceArea: {
         flex: 1,
-        backgroundColor: "rgba(1,43,86,0.5)",
+        //backgroundColor: "rgba(1,43,86,0.5)",
         borderWidth: 3,
         borderColor: dark.theme.darkBlue3,
         marginRight: "3%",
-        alignItems: "center",
+        //padding: 5,
+        paddingTop: "1%",
+        alignItems: "stretch",
     },
     courseHeader: {
+        //alignSelf:"flex-end",
         color: "white",
         fontSize: 24,
         fontWeight: "bold",
-        width: "100%",
+        flex: 1,
     },
     image: {
         flex: 1,
@@ -708,7 +726,7 @@ const styles = StyleSheet.create({
     },
     icon: {
         position: "relative",
-        alignItems: "flex-start",
+        //alignItems: "flex-start",
     },
     containerCentered: {
         flex: 1,
