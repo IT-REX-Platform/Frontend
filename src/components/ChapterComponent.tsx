@@ -77,14 +77,6 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                             }}>
                             <MaterialCommunityIcons name="trash-can" size={28} color="white" style={styles.icon} />
                         </TouchableOpacity> */}
-                        <TouchableOpacity
-                            onPress={() => {
-                                navigation.navigate("CHAPTER", {
-                                    chapterId: chapter?.id,
-                                });
-                            }}>
-                            <MaterialIcons name="edit" size={28} color="white" style={styles.icon} />
-                        </TouchableOpacity>
                     </View>
                 )}
                 <View style={styles.chapterMaterialElements}>
