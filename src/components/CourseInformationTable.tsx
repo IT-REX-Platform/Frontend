@@ -18,6 +18,7 @@ export const CourseInformationTable: React.FC<DataTableProps> = (props) => {
     const { onDescriptionChanged } = props;
 
     const { course } = React.useContext(CourseContext);
+
     // User info.
     const [user, setUserInfo] = useState<IUser>({});
 
