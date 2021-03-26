@@ -134,61 +134,6 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
             </View>
         </TouchableOpacity>
     );
-    /*
-                    {timePeriods !== undefined &&
-                        chapter?.contentReferences?.map((contentReference) => {
-                            return (
-                                <TouchableOpacity
-                                    style={styles.chapterMaterialElement}
-                                    onPress={() => markProgress(contentReference)}>
-                                    {contentReference.contentReferenceType == CONTENTREFERENCETYPE.VIDEO ? (
-                                        <MaterialIcons name="attach-file" size={28} color="white" style={styles.icon} />
-                                    ) : (
-                                        <MaterialCommunityIcons
-                                            name="file-question-outline"
-                                            size={28}
-                                            color="white"
-                                            style={styles.icon}
-                                        />
-                                    )}
-
-                                    <View
-                                        style={{
-                                            flex: 1,
-                                            flexDirection: "row",
-                                            justifyContent: "space-between",
-                                            alignItems: "center",
-                                        }}>
-                                        <Text style={styles.chapterMaterialElementText}>
-                                            {contentReference.contentId}
-                                        </Text>
-                                        <Text style={styles.chapterMaterialElementText}>
-                                            {
-                                                timePeriods.find(
-                                                    (timePeriod) => timePeriod.value === contentReference.timePeriodId
-                                                )?.label
-                                            }
-                                        </Text>
-                                        {getProgressInfo(contentReference)}
-                                        {/*props.editMode ? (
-                                                <DropDown
-                                                    options={timePeriods}
-                                                    defaultValue={timePeriods.find(
-                                                        (timePeriod) => timePeriod.value === contentReference.timePeriodId
-                                                    )}
-                                                    menuPortalTarget={document.body}
-                                                    menuPosition={"fixed"}></DropDown>
-                                            ) : (
-
-                                            )/}
-                                    </View>
-                                </TouchableOpacity>
-                            );
-                        })}
-                </View>
-            </View>
-        </TouchableOpacity>
-    );*/
 
     function updateCourseProgress() {
         if (course.id === undefined) {
