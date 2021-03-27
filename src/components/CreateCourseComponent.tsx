@@ -15,7 +15,6 @@ import { LocalizationContext } from "./Context";
 import { Event } from "@react-native-community/datetimepicker";
 import { TextButton } from "./uiElements/TextButton";
 import AuthenticationService from "../services/AuthenticationService";
-import { NavigationRoutes } from "../constants/navigators/NavigationRoutes";
 import { useNavigation } from "@react-navigation/native";
 
 const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");

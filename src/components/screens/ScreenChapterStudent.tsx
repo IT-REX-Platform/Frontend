@@ -1,4 +1,4 @@
-import { DarkTheme, RouteProp, useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
+import { RouteProp, useFocusEffect, useRoute } from "@react-navigation/native";
 import { Video } from "expo-av";
 import { useState } from "react";
 import { ActivityIndicator, FlatList, TouchableOpacity, View, StyleSheet, Text, Animated } from "react-native";
@@ -13,16 +13,12 @@ import { IChapter } from "../../types/IChapter";
 import { ICourse } from "../../types/ICourse";
 import { IVideo } from "../../types/IVideo";
 import { CourseContext, LocalizationContext } from "../Context";
-import { MaterialCommunityIcons, MaterialIcons, Foundation } from "@expo/vector-icons";
+import { MaterialIcons, Foundation } from "@expo/vector-icons";
 import { createVideoUrl } from "../../services/createVideoUrl";
 //import { ScreenCourseTabsNavigationProp, ScreenCourseTabsRouteProp } from "../../course/ScreenCourseTabs";
 import { RequestFactory } from "../../api/requests/RequestFactory";
-import { ImageBackground } from "react-native";
-import { IContent } from "../../types/IContent";
 import { EndpointsChapter } from "../../api/endpoints/EndpointsChapter";
-import { Icon } from "react-native-vector-icons/Icon";
 import { EndpointsCourse } from "../../api/endpoints/EndpointsCourse";
-import useStateWithCallback from "use-state-with-callback";
 
 const endpointsVideo = new EndpointsVideo();
 const endpointsChapter = new EndpointsChapter();
@@ -292,22 +288,6 @@ const styles = StyleSheet.create({
     playlist: {
         marginTop: 20,
     },
-    scrollContainer: {
-        width: "screenWidth",
-        alignItems: "center",
-        paddingBottom: 20,
-    },
-
-    btnAdd: {
-        width: "100%",
-        height: "100%",
-        borderWidth: 2,
-        borderColor: "rgba(79,175,165,1.0)",
-        borderRadius: 25,
-        borderStyle: "dotted",
-        alignItems: "center",
-        justifyContent: "center",
-    },
 
     chapterHeading: {
         alignSelf: "flex-start",
@@ -324,17 +304,13 @@ const styles = StyleSheet.create({
         margin: 5,
     },
 
-    textStyle: {
-        margin: 10,
-        color: "white",
-        fontWeight: "bold",
-    },
     listItemTitle: {
         color: "white",
         textAlign: "left",
         marginBottom: 5,
         marginRight: 5,
     },
+
     listItemSubtitle: {
         color: "rgba(255,255,255,0.66)",
         textAlign: "left",

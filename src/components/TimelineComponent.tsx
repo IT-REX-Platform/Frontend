@@ -4,8 +4,7 @@ import React from "react";
 import { LocalizationContext } from "./Context";
 import { StyleSheet, Text, View } from "react-native";
 import { dark } from "../constants/themes/dark";
-import { useNavigation } from "@react-navigation/native";
-import { ITimePeriod, TimePeriodPublishState } from "../types/ITimePeriod";
+import { ITimePeriod } from "../types/ITimePeriod";
 import { ChapterComponent } from "./ChapterComponent";
 import { ICourse } from "../types/ICourse";
 

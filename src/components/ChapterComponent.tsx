@@ -1,6 +1,5 @@
 /* eslint-disable complexity */
 import React from "react";
-import i18n from "../locales";
 import { LocalizationContext } from "./Context";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { dark } from "../constants/themes/dark";
