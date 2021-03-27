@@ -60,7 +60,7 @@ export const ScreenCourseTimeline: React.FC = () => {
     useFocusEffect(
         React.useCallback(() => {
             let isActive = true;
-            AuthenticationService.getInstance().getUserInfo(setUserInfo);
+            setUserInfo(AuthenticationService.getInstance().getUserInfoCached());
 
             if (isFocused && course.id !== undefined && isActive == true) {
                 const request: RequestInit = RequestFactory.createGetRequest();
@@ -346,20 +346,18 @@ export const ScreenCourseTimeline: React.FC = () => {
                                 }}></Switch>
                         </View>
                         {edit ? (
-                            <>
-                                <View style={{ position: "absolute", flexDirection: "row" }}>
-                                    <TextButton
-                                        color="dark"
-                                        title={i18n.t("itrex.videoPool")}
-                                        onPress={() => navigation.navigate("VIDEO_POOL")}
-                                    />
-                                    <TextButton
-                                        color="dark"
-                                        title={i18n.t("itrex.quizPool")}
-                                        onPress={() => navigation.navigate("QUIZ_POOL")}
-                                    />
-                                </View>
-                            </>
+                            <View style={{ position: "relative", flexDirection: "row" }}>
+                                <TextButton
+                                    color="dark"
+                                    title={i18n.t("itrex.videoPool")}
+                                    onPress={() => navigation.navigate("VIDEO_POOL")}
+                                />
+                                <TextButton
+                                    color="dark"
+                                    title={i18n.t("itrex.quizPool")}
+                                    onPress={() => navigation.navigate("QUIZ_POOL")}
+                                />
+                            </View>
                         ) : (
                             <View></View>
                         )}
@@ -400,6 +398,7 @@ const styles = StyleSheet.create({
         flexDirection: "row-reverse",
         paddingRight: "20px",
         paddingLeft: "20px",
+        position: "relative",
     },
     editModeText: {
         color: "white",

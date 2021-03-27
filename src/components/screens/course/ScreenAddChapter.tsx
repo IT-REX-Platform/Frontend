@@ -466,9 +466,12 @@ export const ScreenAddChapter: React.FC = () => {
                         />
                         <MaterialCommunityIcons name="pen" size={24} color={dark.theme.darkGreen} style={styles.icon} />
                     </View>
-                    <View style={{ flexDirection: "row" }}>
+                    <View style={{ flexDirection: "row", paddingRight: "20px" }}>
                         <TextButton title={i18n.t("itrex.saveAndReturn")} onPress={() => saveChapter(true)} />
-                        <TextButton title={i18n.t("itrex.save")} onPress={() => saveChapter(false)} />
+
+                        <View>
+                            <TextButton title={i18n.t("itrex.save")} onPress={() => saveChapter(false)} />
+                        </View>
                     </View>
                 </View>
 
@@ -673,6 +676,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         borderBottomColor: "rgba(70,74,91,0.5)",
         borderBottomWidth: 3,
+        width: "80%",
     },
     contentContainer: {
         flex: 2,
