@@ -464,6 +464,7 @@ export const ScreenAddChapter: React.FC = () => {
                         onChangeText={(text) => setChapterName(text)}
                     />
                     <MaterialCommunityIcons name="pen" size={24} color={dark.theme.darkGreen} style={styles.icon} />
+            
                 </View>
                 <View style={styles.buttonContainer}>
                     <TextButton title={i18n.t("itrex.saveAndReturn")} onPress={() => saveChapter(true)} />
@@ -678,6 +679,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1.5,
         //padding: "0.5%",
         //alignContent: "center"
+
     },
 
     buttonContainer: {
