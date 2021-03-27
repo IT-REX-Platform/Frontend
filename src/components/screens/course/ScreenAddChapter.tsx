@@ -22,7 +22,6 @@ import { CourseStackParamList, RootDrawerParamList } from "../../../constants/na
 import { IChapter } from "../../../types/IChapter";
 import { RequestFactory } from "../../../api/requests/RequestFactory";
 import { EndpointsChapter } from "../../../api/endpoints/EndpointsChapter";
-import { ICourse } from "../../../types/ICourse";
 import { ListItem } from "react-native-elements";
 import { IVideo } from "../../../types/IVideo";
 import { EndpointsVideo } from "../../../api/endpoints/EndpointsVideo";
@@ -30,7 +29,6 @@ import { loggerFactory } from "../../../../logger/LoggerConfig";
 import { calculateVideoSize } from "../../../services/calculateVideoSize";
 import DraggableFlatList from "react-native-draggable-flatlist";
 import { TextButton } from "../../uiElements/TextButton";
-import { dateConverter } from "../../../helperScripts/validateCourseDates";
 import { CONTENTREFERENCETYPE, IContent } from "../../../types/IContent";
 import { EndpointsContentReference } from "../../../api/endpoints/EndpointsContentReference";
 import { IQuiz } from "../../../types/IQuiz";
@@ -468,9 +466,12 @@ export const ScreenAddChapter: React.FC = () => {
                         />
                         <MaterialCommunityIcons name="pen" size={24} color={dark.theme.darkGreen} style={styles.icon} />
                     </View>
-                    <View style={{ flexDirection: "row" }}>
+                    <View style={{ flexDirection: "row", paddingRight: "20px" }}>
                         <TextButton title={i18n.t("itrex.saveAndReturn")} onPress={() => saveChapter(true)} />
-                        <TextButton title={i18n.t("itrex.save")} onPress={() => saveChapter(false)} />
+
+                        <View>
+                            <TextButton title={i18n.t("itrex.save")} onPress={() => saveChapter(false)} />
+                        </View>
                     </View>
                 </View>
 
@@ -675,6 +676,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         borderBottomColor: "rgba(70,74,91,0.5)",
         borderBottomWidth: 3,
+        width: "80%",
     },
     contentContainer: {
         flex: 2,

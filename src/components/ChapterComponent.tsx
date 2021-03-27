@@ -12,7 +12,6 @@ import { InfoUnpublished } from "./uiElements/InfoUnpublished";
 import { ICourse } from "../types/ICourse";
 import { useNavigation } from "@react-navigation/native";
 import { CoursePublishState } from "../constants/CoursePublishState";
-import { dateConverter } from "../helperScripts/validateCourseDates";
 import { CONTENTREFERENCETYPE, IContent } from "../types/IContent";
 import { EndpointsQuiz } from "../api/endpoints/EndpointsQuiz";
 import { RequestFactory } from "../api/requests/RequestFactory";
@@ -54,7 +53,13 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
     }
 
     return (
-        <View style={styles.chapterContainer}>
+        <TouchableOpacity
+            style={styles.chapterContainer}
+            onPress={() =>
+                navigation.navigate("CHAPTER", {
+                    chapterId: chapter?.id,
+                })
+            }>
             <View style={styles.chapterTopRow}>
                 <Text style={styles.chapterHeader}>
                     {chapter?.chapterNumber}. {chapter?.name}
@@ -64,7 +69,6 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                 <View style={styles.chapterStatus}>{getPublishedSate(CoursePublishState.PUBLISHED)}</View>
             </View>
             <View style={styles.chapterBottomRow}>
-                <Text style={styles.chapterMaterialHeader}>{i18n.t("itrex.chapterMaterial")}</Text>
                 {props.editMode && AuthenticationService.getInstance().isLecturer() && (
                     <View style={styles.chapterEditRow}>
                         {/**<TouchableOpacity
@@ -73,14 +77,6 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                             }}>
                             <MaterialCommunityIcons name="trash-can" size={28} color="white" style={styles.icon} />
                         </TouchableOpacity> */}
-                        <TouchableOpacity
-                            onPress={() => {
-                                navigation.navigate("CHAPTER", {
-                                    chapterId: chapter?.id,
-                                });
-                            }}>
-                            <MaterialIcons name="edit" size={28} color="white" style={styles.icon} />
-                        </TouchableOpacity>
                     </View>
                 )}
                 <View style={styles.chapterMaterialElements}>
@@ -119,7 +115,7 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                     })}
                 </View>
             </View>
-        </View>
+        </TouchableOpacity>
     );
 
     function navigateToQuiz(contentId: string | undefined) {
@@ -242,13 +238,6 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         fontStyle: "italic",
         fontSize: 15,
-    },
-    chapterMaterialHeader: {
-        marginTop: 10,
-        alignSelf: "center",
-        color: "white",
-        fontWeight: "bold",
-        fontSize: 20,
     },
     chapterMaterialElements: {
         marginBottom: 5,

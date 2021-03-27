@@ -27,6 +27,9 @@ import { ScreenQuizOverview } from "./quizzes/solveQuiz/ScreenQuizOverview";
 import { ScreenQuizSolve } from "./quizzes/solveQuiz/ScreenQuizSolve";
 import { ScreenQuizResult } from "./quizzes/solveQuiz/ScreenQuizResult";
 import { Header } from "../../constants/navigators/Header";
+import { CoursePublishState } from "../../constants/CoursePublishState";
+import { InfoUnpublished } from "../uiElements/InfoUnpublished";
+import { InfoPublished } from "../uiElements/InfoPublished";
 
 export type ScreenCourseNavigationProp = DrawerNavigationProp<RootDrawerParamList, "ROUTE_COURSE_DETAILS">;
 export type ScreenCourseRouteProp = RouteProp<RootDrawerParamList, "ROUTE_COURSE_DETAILS">;
@@ -72,7 +75,8 @@ export const ScreenCourse: React.FC = () => {
 
     const endpointsCourse: EndpointsCourse = new EndpointsCourse();
     useEffect(() => {
-        AuthenticationService.getInstance().getUserInfo(setUserInfo);
+        setUserInfo(AuthenticationService.getInstance().getUserInfoCached());
+        // AuthenticationService.getInstance().getUserInfo(setUserInfo);
         const request: RequestInit = RequestFactory.createGetRequest();
         endpointsCourse
             .getCourse(request, courseId, undefined, i18n.t("itrex.getCourseError"))
@@ -92,7 +96,12 @@ export const ScreenCourse: React.FC = () => {
                     headerBackTitle: "Back",
 
                     // Title in center.
-                    headerTitle: () => <Text style={styles.headerTitle}>{course.name}</Text>,
+                    headerTitle: () => (
+                        <Text style={styles.headerTitle}>
+                            {course.name}
+                            {publishSate(course.publishState)}
+                        </Text>
+                    ),
                     headerTitleAlign: "center",
                     headerStyle: {
                         backgroundColor: dark.theme.darkBlue1,
@@ -141,6 +150,38 @@ export const ScreenCourse: React.FC = () => {
                 </ImageBackground>
             </>
         );
+    }
+
+    /**
+     * Show the published state in the Title header, so that the lecturer can see the published state from every page of the course.
+     *
+     * @param isPublished information if the course is published or not
+     *
+     */
+    function publishSate(isPublished: CoursePublishState | undefined) {
+        if (user.courses == undefined || course.id == undefined) {
+            return <></>;
+        }
+
+        const courseRole: CourseRoles = user.courses[course.id];
+
+        if (courseRole === CourseRoles.OWNER || courseRole == undefined) {
+            if (isPublished === CoursePublishState.UNPUBLISHED) {
+                return (
+                    <View style={styles.publishedState}>
+                        <InfoUnpublished />
+                    </View>
+                );
+            } else if (isPublished === CoursePublishState.PUBLISHED) {
+                return (
+                    <View style={styles.publishedState}>
+                        <InfoPublished />
+                    </View>
+                );
+            }
+        }
+
+        return;
     }
 
     function showHamburger(dimensions: ScaledSize) {
@@ -243,4 +284,5 @@ const styles = StyleSheet.create({
         margin: 5,
         color: "white",
     },
+    publishedState: { position: "absolute", margin: 8, marginLeft: 16 },
 });
