@@ -14,8 +14,6 @@ interface TimelineComponentProps {
     course: ICourse;
 }
 
-let k = 0;
-
 export const TimelineComponent: React.FC<TimelineComponentProps> = (props) => {
     React.useContext(LocalizationContext);
 
@@ -23,19 +21,9 @@ export const TimelineComponent: React.FC<TimelineComponentProps> = (props) => {
     const endDate = props.timePeriod?.endDate ? props.timePeriod?.endDate : new Date();
     const currentDate = new Date();
 
-    function firstVertical() {
-        console.log(k);
-        if (k < 51) {
-            k++;
-            return null;
-        } else {
-            return <View style={styles.verticalLine}></View>;
-        }
-    }
-
     return (
         <>
-            {firstVertical()}
+            <View style={styles.verticalLine}></View>
             <View style={styles.circleContainer}>
                 <Text style={styles.periodText}>{props.timePeriod?.fullName}</Text>
                 <View
@@ -90,7 +78,7 @@ const styles = StyleSheet.create({
         borderRadius: 25 / 2,
     },
     verticalLine: {
-        height: "2%",
+        height: 30,
         backgroundColor: "#465371",
         width: 5,
         alignSelf: "center",
