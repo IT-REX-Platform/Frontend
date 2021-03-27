@@ -3,7 +3,6 @@
 import React from "react";
 import { LocalizationContext } from "./Context";
 import { StyleSheet, Text, View } from "react-native";
-import { dark } from "../constants/themes/dark";
 import { ITimePeriod } from "../types/ITimePeriod";
 import { ChapterComponent } from "./ChapterComponent";
 import { ICourse } from "../types/ICourse";
@@ -15,6 +14,8 @@ interface TimelineComponentProps {
     course: ICourse;
 }
 
+let k = 0;
+
 export const TimelineComponent: React.FC<TimelineComponentProps> = (props) => {
     React.useContext(LocalizationContext);
 
@@ -22,8 +23,19 @@ export const TimelineComponent: React.FC<TimelineComponentProps> = (props) => {
     const endDate = props.timePeriod?.endDate ? props.timePeriod?.endDate : new Date();
     const currentDate = new Date();
 
+    function firstVertical() {
+        console.log(k);
+        if (k < 51) {
+            k++;
+            return null;
+        } else {
+            return <View style={styles.verticalLine}></View>;
+        }
+    }
+
     return (
         <>
+            {firstVertical()}
             <View style={styles.circleContainer}>
                 <Text style={styles.periodText}>{props.timePeriod?.fullName}</Text>
                 <View
@@ -53,7 +65,6 @@ export const TimelineComponent: React.FC<TimelineComponentProps> = (props) => {
                         editMode={props.edit}
                         course={props.course}></ChapterComponent>
                 ))}
-            <View style={styles.verticalLine}></View>
         </>
     );
 };
@@ -64,6 +75,8 @@ const styles = StyleSheet.create({
     },
     periodText: {
         color: "white",
+        marginBottom: 10,
+        fontWeight: "bold",
     },
     mainCircle: {
         width: 50,
@@ -77,10 +90,12 @@ const styles = StyleSheet.create({
         borderRadius: 25 / 2,
     },
     verticalLine: {
-        height: 50,
+        height: "2%",
         backgroundColor: "#465371",
         width: 5,
         alignSelf: "center",
+        marginTop: 10,
+        marginBottom: 10,
     },
     // Published-Styles
     mainCircleDue: {
@@ -102,31 +117,5 @@ const styles = StyleSheet.create({
     },
     innerCircleUpcomming: {
         backgroundColor: "#707070",
-    },
-
-    addChapterContainer: {
-        backgroundColor: "rgba(0,0,0,0.3)",
-        height: "100px",
-        width: "80%",
-        marginTop: "1%",
-        padding: "0.5%",
-        borderWidth: 3,
-        borderColor: dark.theme.lightBlue,
-    },
-    btnAdd: {
-        width: "100%",
-        height: "100%",
-        borderWidth: 2,
-        borderColor: "rgba(79,175,165,1.0)",
-        borderRadius: 25,
-        borderStyle: "dotted",
-        alignItems: "center",
-        justifyContent: "center",
-    },
-    txtAddChapter: {
-        alignSelf: "center",
-        color: "white",
-        fontSize: 18,
-        fontWeight: "bold",
     },
 });
