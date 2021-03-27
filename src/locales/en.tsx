@@ -75,12 +75,19 @@ export const en = {
         videoUpdated: "Video updated!",
         delete: "Delete",
         videoDeleted: "Video deleted!",
+        videoDuration: "Duration: ",
 
         startDate: "Start Date",
         endDate: "End Date",
         noStartDate: "No start date entered.",
         noEndDate: "No end date entered.",
         startDateInvalid: "Start date can't come after end date.",
+
+        courseProgressTitle: "Progress for this course",
+        courseProgressLastAccessed: "To last accessed content",
+        contentProgressUntouched: "No Progress",
+        contentProgressStarted: "Started",
+        contentProgressCompleted: "Completed",
 
         unpublished: "Unpublished",
         published: "Published",
@@ -106,6 +113,9 @@ export const en = {
         chapterMaterial: "Chapter Material",
         myNewChapter: "My new chapter",
         save: "Save",
+        nextChapter: "Next Chapter",
+        lastChapter: "Last Chapter",
+
         saveAndReturn: "Save & Return",
 
         chapterCreatedSuccess: "The chapter was created successfully.",
@@ -121,6 +131,7 @@ export const en = {
 
         getCoursesError: "An error occurred while getting courses.",
         getCourseError: "An error occurred while getting the course.",
+        getCourseProgressError: "An error occurred while getting the course progress.",
         createCourseError: "An error occurred while creating the course.",
         publishCourseError: "An error occurred while publishing the course.",
         joinCourseError: "An error occurred while joining the course.",

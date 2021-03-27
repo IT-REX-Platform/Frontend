@@ -75,12 +75,19 @@ export const de = {
         videoUpdated: "Video aktualisiert!",
         delete: "Löschen",
         videoDeleted: "Video gelöscht!",
+        videoDuration: "Dauer: ",
 
         startDate: "Startdatum",
         endDate: "Enddatum",
         noStartDate: "Kein Startdatum eingegeben.",
         noEndDate: "Kein Enddatum eingegeben.",
         startDateInvalid: "Startdatum kann nicht dem Enddatum folgen.",
+
+        courseProgressTitle: "Fortschritt für diesen Kurs",
+        courseProgressLastAccessed: "Zum zuletzt genutzten Inhalt",
+        contentProgressUntouched: "Kein Fortschritt",
+        contentProgressStarted: "Gestartet",
+        contentProgressCompleted: "Beendet",
 
         unpublished: "Unveröffentlicht",
         published: "Veröffentlicht",
@@ -106,6 +113,9 @@ export const de = {
         chapterMaterial: "Kapitel Materialien",
         myNewChapter: "Mein neues Kapitel",
         save: "Speichern",
+        nextChapter: "Nächstes Kapitel",
+        lastChapter: "Letzes Kapitel",
+
         saveAndReturn: "Speichern & Zurück",
 
         chapterCreatedSuccess: "Das Kapitel wurde erfolgreich angelegt.",
@@ -121,6 +131,7 @@ export const de = {
 
         getCoursesError: "Ein Fehler ist beim Zugriff auf die Kurse aufgetreten.",
         getCourseError: "Ein Fehler ist beim Zugriff auf einen Kurs aufgetreten.",
+        getCourseProgressError: "Ein Fehler ist beim Zugriff auf den Fortschritt eines Kurses aufgetreten.",
         createCourseError: "Ein Fehler ist beim Erstellen eines Kurses aufgetreten.",
         publishCourseError: "Ein Fehler ist eim Veröffentlichen des Kurses aufgetreten.",
         joinCourseError: "Ein Fehler ist beim Beitrete zum Kurs aufgetreten.",

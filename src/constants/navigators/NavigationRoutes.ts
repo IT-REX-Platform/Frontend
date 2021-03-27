@@ -65,6 +65,7 @@ export type CourseStackParamList = {
     };
     CHAPTER_CREATE: undefined;
     QUIZ_POOL: undefined;
+
     CREATE_QUIZ: {
         chapter?: IChapter;
         courseId?: string;

@@ -1,5 +1,5 @@
 /* eslint-disable complexity */
-import React from "react";
+import React, { useEffect, useState } from "react";
 import i18n from "../locales";
 import { LocalizationContext } from "./Context";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -10,11 +10,15 @@ import AuthenticationService from "../services/AuthenticationService";
 import { InfoPublished } from "./uiElements/InfoPublished";
 import { InfoUnpublished } from "./uiElements/InfoUnpublished";
 import { ICourse } from "../types/ICourse";
+import { ICourseProgressTracker } from "../types/ICourseProgressTracker";
 import { useNavigation } from "@react-navigation/native";
 import { CoursePublishState } from "../constants/CoursePublishState";
 import { CONTENTREFERENCETYPE, IContent } from "../types/IContent";
 import { EndpointsQuiz } from "../api/endpoints/EndpointsQuiz";
 import { RequestFactory } from "../api/requests/RequestFactory";
+import { ContentProgressInfo } from "./uiElements/ContentProgressInfo";
+import ProgressService from "../services/ProgressService";
+import { ContentProgressTrackerState } from "../constants/ContentProgressTrackerState";
 
 interface ChapterComponentProps {
     chapter?: IChapter;
@@ -52,14 +56,17 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
         );
     }
 
+    const [courseProgress, setCourseProgress] = useState<ICourseProgressTracker>({});
+    useEffect(() => {
+        updateCourseProgress();
+    }, []);
+
     return (
         <TouchableOpacity
             style={styles.chapterContainer}
-            onPress={() =>
-                navigation.navigate("CHAPTER", {
-                    chapterId: chapter?.id,
-                })
-            }>
+            onPress={() => {
+                navigation.navigate("CHAPTER_CONTENT", { chapterId: chapter?.id });
+            }}>
             <View style={styles.chapterTopRow}>
                 <Text style={styles.chapterHeader}>
                     {chapter?.chapterNumber}. {chapter?.name}
@@ -109,6 +116,8 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                                     <Text style={styles.chapterMaterialElementText}>
                                         {contentReference.timePeriod?.fullName}
                                     </Text>
+
+                                    {getProgressInfo(contentReference)}
                                 </View>
                             </View>
                         );
@@ -117,6 +126,77 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
             </View>
         </TouchableOpacity>
     );
+
+    function updateCourseProgress() {
+        if (course.id === undefined) {
+            return;
+        }
+
+        ProgressService.getInstance().updateCourseProgressFor(course.id, (receivedProgress) => {
+            setCourseProgress(receivedProgress);
+        });
+    }
+
+    function markProgress(contentRef: IContent) {
+        // TODO: Adjust and/or reuse this for actual progress.
+        // For now it just touches the content once or completes it when touched.
+
+        if (course.id === undefined) {
+            return;
+        }
+
+        const progressService = ProgressService.getInstance();
+
+        progressService.getContentProgressInfo(course.id, contentRef, (status, progress) => {
+            // New progress if needed.
+            const newProgress = progress + 0.1;
+
+            switch (status) {
+                case ContentProgressTrackerState.STARTED:
+                    progressService.updateContentProgress(course.id, contentRef, newProgress, (createdProgress) => {
+                        console.log("Updated progress: ");
+                        console.log(createdProgress);
+
+                        if (newProgress >= 1) {
+                            progressService.completeContentProgress(course.id, contentRef, (completedProgress) => {
+                                console.log("Completed progress: ");
+                                console.log(completedProgress);
+
+                                updateCourseProgress();
+                            });
+                        } else {
+                            updateCourseProgress();
+                        }
+                    });
+                    break;
+
+                case undefined:
+                    progressService.createContentProgress(course.id, contentRef, (createdProgress) => {
+                        console.log("Created progress: ");
+                        console.log(createdProgress);
+
+                        updateCourseProgress();
+                    });
+                    break;
+
+                case ContentProgressTrackerState.COMPLETED:
+                default:
+                    // Do nothing.
+                    break;
+            }
+        });
+    }
+
+    function getProgressInfo(contentRef: IContent) {
+        if (courseProgress.contentProgressTrackers === undefined) {
+            return;
+        }
+        if (contentRef.id === undefined) {
+            return;
+        }
+
+        return <ContentProgressInfo contentTracker={courseProgress.contentProgressTrackers[contentRef.id]} />;
+    }
 
     function navigateToQuiz(contentId: string | undefined) {
         if (contentId !== undefined) {

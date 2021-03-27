@@ -44,7 +44,15 @@ export class RequestFactory {
     }
 
     public static createPutRequest(
-        object: ICourse | IVideo | IChapter | IQuiz | IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric
+        object:
+            | ICourse
+            | IVideo
+            | IChapter
+            | IContent
+            | IQuiz
+            | IQuestionSingleChoice
+            | IQuestionMultipleChoice
+            | IQuestionNumeric
     ): RequestInit {
         return RequestFactory.createRequestWithJson("PUT", object);
     }
