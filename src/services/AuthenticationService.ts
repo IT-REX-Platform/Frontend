@@ -44,6 +44,8 @@ export default class AuthenticationService {
     private roles: string[] = [];
     private refreshTimeout: NodeJS.Timeout | undefined;
 
+    private currentUser!: IUser;
+
     public setTokenResponse(token: AuthSession.TokenResponseConfig): void {
         this.tokenResponse = token;
 
@@ -77,7 +79,13 @@ export default class AuthenticationService {
                             StorageConstants.OAUTH_REFRESH_TOKEN,
                             JSON.stringify(tResponse)
                         );
-                        resolve(tResponse);
+
+                        // Refetch User-Info
+                        this.getUserInfo((user) => {
+                            this.currentUser = user;
+                            console.log(this.currentUser);
+                            resolve(tResponse);
+                        });
                     })
                     .catch((error) => {
                         // Refresh does not work
@@ -126,6 +134,10 @@ export default class AuthenticationService {
     public getUserInfo(consumer: (userInfo: IUser) => void): void {
         const request: RequestInit = RequestFactory.createGetRequest();
         this.endpointsUserInfo.getUserInfo(request, undefined, i18n.t("itrex.getUserInfoError")).then(consumer);
+    }
+
+    public getUserInfoCached(): IUser {
+        return this.currentUser;
     }
 
     public getRoles(): string[] {

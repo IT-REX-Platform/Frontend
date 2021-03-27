@@ -16,7 +16,6 @@ import { validateQuiz } from "../../../helperScripts/validateQuiz";
 import { IQuiz } from "../../../types/IQuiz";
 import { CourseStackParamList } from "../../../constants/navigators/NavigationRoutes";
 import { EndpointsQuiz } from "../../../api/endpoints/EndpointsQuiz";
-import { ICourse } from "../../../types/ICourse";
 import { quizStyles } from "./quizStyles";
 
 interface ChapterComponentProps {

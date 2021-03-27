@@ -30,7 +30,7 @@ export const JoinCourseComponent: React.FC = () => {
 
     const [user, setUserInfo] = useState<IUser>({});
     useEffect(() => {
-        AuthenticationService.getInstance().getUserInfo(setUserInfo);
+        setUserInfo(AuthenticationService.getInstance().getUserInfoCached());
     }, []);
 
     const isFocused = useIsFocused();
@@ -39,7 +39,7 @@ export const JoinCourseComponent: React.FC = () => {
             AuthenticationService.getInstance()
                 .refreshToken()
                 .then(() => {
-                    AuthenticationService.getInstance().getUserInfo(setUserInfo);
+                    setUserInfo(AuthenticationService.getInstance().getUserInfoCached());
                 });
         }
     }, [isFocused]);
@@ -94,7 +94,12 @@ export const JoinCourseComponent: React.FC = () => {
         endpointsCourse.joinCourse(request, courseId, undefined, i18n.t("itrex.joinCourseError")).then(() => {
             AuthenticationService.getInstance()
                 .refreshToken()
-                .then(() => navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, { courseId: courseId }));
+                .then(() =>
+                    navigation.navigate("INFO", {
+                        courseId: courseId,
+                        screen: "OVERVIEW",
+                    })
+                );
         });
     }
 };
