@@ -329,7 +329,7 @@ export const ScreenChapterStudent: React.FC = () => {
     function getContentName(item: IContent) {
         switch (item.contentReferenceType) {
             case CONTENTREFERENCETYPE.VIDEO:
-                return <Text>{item.id}</Text>;
+                return <Text>{item.video?.title}</Text>;
             case CONTENTREFERENCETYPE.QUIZ:
                 return <Text>{item.id}</Text>;
             default:
@@ -500,36 +500,61 @@ export const ScreenChapterStudent: React.FC = () => {
 
     /** Gets all the chapters of the current course. */
     function _getAllChapters() {
-        const request: RequestInit = RequestFactory.createGetRequest();
-        endpointsChapter.getAllChapters(request).then((chaptersReceived) => {
-            setChapterList(
-                chaptersReceived.filter((chap) => {
-                    if (chap.courseId == course.id) {
-                        return chap;
-                    }
-                })
-            );
-        });
+        if (course.chapters !== undefined) {
+            setChapterList(course.chapters);
+        }
+
+        //const request: RequestInit = RequestFactory.createGetRequest();
+        //endpointsChapter.getAllChapters(request).then((chaptersReceived) => {
+        //    setChapterList(
+        //        chaptersReceived.filter((chap) => {
+        //            if (chap.courseId == course.id) {
+        //                return chap;
+        //            }
+        //        })
+        //    );
+        //});
     }
 
     /** Gets the chapter with the current id. Provides a consumer to execute once it has been received. */
     function _getChapter(consumer: (chapter: IChapter) => void) {
         const request: RequestInit = RequestFactory.createGetRequest();
+        console.log("%cChapters:", "color:red");
+        console.log(course.chapters);
+        console.log(chapterId);
+
+        let currChapter = course.chapters?.find((chpt: IChapter) => {
+            return chpt !== undefined && chpt.id == chapterId;
+        });
+        console.log("%cCurrChapter:", "color:red");
+        console.log(currChapter);
+
+        if (currChapter == undefined) {
+            return;
+        }
+
+        setChapter(currChapter);
+        if (currChapter.contentReferences !== undefined) {
+            setChapterPlaylist(currChapter.contentReferences);
+
+            // Call a delayed consumer once everything has been finished.
+            consumer(currChapter);
+        }
 
         setVideoListLoading(true);
 
-        endpointsChapter
-            .getChapter(request, chapterId, undefined, i18n.t("itrex.getChapterError"))
-            .then((chapterReceived) => {
-                setChapter(chapterReceived);
-                if (chapterReceived.contentReferences !== undefined) {
-                    setChapterPlaylist(chapterReceived.contentReferences);
+        //endpointsChapter
+        //    .getChapter(request, chapterId, undefined, i18n.t("itrex.getChapterError"))
+        //    .then((chapterReceived) => {
+        //        setChapter(chapterReceived);
+        //        if (chapterReceived.contentReferences !== undefined) {
+        //            setChapterPlaylist(chapterReceived.contentReferences);
 
-                    // Call a delayed consumer once everything has been finished.
-                    consumer(chapterReceived);
-                }
-            })
-            .finally(async () => setVideoListLoading(false));
+        // Call a delayed consumer once everything has been finished.
+        //            consumer(chapterReceived);
+        //        }
+        //    })
+        //    .finally(async () => setVideoListLoading(false));
     }
 
     /** Changes the current chapter to the next chapter in line. */
