@@ -17,7 +17,6 @@ import { TextButton } from "./uiElements/TextButton";
 import AuthenticationService from "../services/AuthenticationService";
 import { NavigationRoutes } from "../constants/navigators/NavigationRoutes";
 import { useNavigation } from "@react-navigation/native";
-import { ToastService } from "../services/toasts/ToastService";
 
 const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");
 const endpointsCourse: EndpointsCourse = new EndpointsCourse();
