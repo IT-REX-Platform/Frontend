@@ -148,13 +148,9 @@ export const CreateCourseComponent: React.FC = () => {
                 AuthenticationService.getInstance()
                     .refreshToken()
                     .then(() =>
-                        navigation.dispatch({
-                            ...CommonActions.reset({
-                                index: 0,
-                                routes: [
-                                    { name: NavigationRoutes.ROUTE_COURSE_DETAILS, params: { courseId: course.id } },
-                                ],
-                            }),
+                        navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, {
+                            courseId: course.id,
+                            screen: "OVERVIEW",
                         })
                     );
             });

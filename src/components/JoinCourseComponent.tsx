@@ -95,11 +95,9 @@ export const JoinCourseComponent: React.FC = () => {
             AuthenticationService.getInstance()
                 .refreshToken()
                 .then(() =>
-                    navigation.dispatch({
-                        ...CommonActions.reset({
-                            index: 0,
-                            routes: [{ name: NavigationRoutes.ROUTE_COURSE_DETAILS, params: { courseId: courseId } }],
-                        }),
+                    navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, {
+                        courseId: courseId,
+                        screen: "OVERVIEW",
                     })
                 );
         });

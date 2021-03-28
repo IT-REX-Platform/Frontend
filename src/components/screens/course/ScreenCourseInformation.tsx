@@ -139,12 +139,6 @@ export const ScreenCourseInformation: React.FC = () => {
         const publishCourse = confirm(i18n.t("itrex.confirmPublishCourse"));
         if (publishCourse === true) {
             _patchCourse();
-            navigation.dispatch({
-                ...CommonActions.reset({
-                    index: 0,
-                    routes: [{ name: NavigationRoutes.ROUTE_COURSE_DETAILS, params: { courseId: course.id } }],
-                }),
-            });
         }
     }
 
