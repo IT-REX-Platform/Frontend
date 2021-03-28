@@ -90,12 +90,21 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                     {chapter?.contentReferences?.map((contentReference) => {
                         return (
                             <View style={styles.chapterMaterialElement}>
-                                {contentReference.contentReferenceType == CONTENTREFERENCETYPE.VIDEO ? (
+                                {contentReference.contentReferenceType == CONTENTREFERENCETYPE.VIDEO && (
                                     <>
                                         <MaterialIcons name="attach-file" size={28} color="white" style={styles.icon} />
                                     </>
-                                ) : (
-                                    getQuizComponent(contentReference)
+                                )}
+
+                                {contentReference.contentReferenceType == CONTENTREFERENCETYPE.QUIZ && (
+                                    <>
+                                        <MaterialCommunityIcons
+                                            name="file-question-outline"
+                                            size={28}
+                                            color="white"
+                                            style={styles.icon}
+                                        />
+                                    </>
                                 )}
 
                                 <View
