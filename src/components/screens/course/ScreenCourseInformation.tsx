@@ -1,11 +1,12 @@
 /* eslint-disable complexity */
-import { CompositeNavigationProp, useFocusEffect, useNavigation } from "@react-navigation/native";
+import { CommonActions, CompositeNavigationProp, useFocusEffect, useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
 import { ImageBackground, StyleSheet, View } from "react-native";
 import { ICourse } from "../../../types/ICourse";
 import {
     CourseStackParamList,
     CourseTabParamList,
+    NavigationRoutes,
     RootDrawerParamList,
 } from "../../../constants/navigators/NavigationRoutes";
 import { MaterialTopTabNavigationProp } from "@react-navigation/material-top-tabs";
@@ -138,6 +139,12 @@ export const ScreenCourseInformation: React.FC = () => {
         const publishCourse = confirm(i18n.t("itrex.confirmPublishCourse"));
         if (publishCourse === true) {
             _patchCourse();
+            navigation.dispatch({
+                ...CommonActions.reset({
+                    index: 0,
+                    routes: [{ name: NavigationRoutes.ROUTE_COURSE_DETAILS, params: { courseId: course.id } }],
+                }),
+            });
         }
     }
 

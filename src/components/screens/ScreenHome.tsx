@@ -140,7 +140,8 @@ export const ScreenHome: React.FC<ScreenHomeProps> = (props) => {
                     <View style={[{ marginTop: 15 }]}>
                         <TextButton
                             color="dark"
-                            title="Join a course"
+                            size="medium"
+                            title={i18n.t("itrex.joinACourse")}
                             onPress={() => navigation.navigate(NavigationRoutes.ROUTE_JOIN_COURSE)}
                         />
                     </View>
