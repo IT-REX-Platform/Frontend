@@ -23,6 +23,7 @@ export const de = {
         enterCourseName: "Kursnamen eingeben",
         enterCourseDescription: "Kursbeschreibung eingeben",
         createCourse: "Neuen Kurs erstellen",
+        joinACourse: "Einem Kurs beitreten",
         joinCourse: "Kurs beitreten",
         joinCourseNoCourseError: "Kurs beitreten fehlgeschlagen! Kein veröffentlichter Kurs mit dieser ID gefunden.",
         joinCourseAlreadyMember: "Du bist bereits ein Mitglied dieses Kurses. Du wirst weitergeleitet...",

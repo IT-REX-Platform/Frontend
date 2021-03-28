@@ -1,11 +1,12 @@
 /* eslint-disable complexity */
-import { CompositeNavigationProp, useFocusEffect, useNavigation } from "@react-navigation/native";
+import { CommonActions, CompositeNavigationProp, useFocusEffect, useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
 import { ImageBackground, StyleSheet, View } from "react-native";
 import { ICourse } from "../../../types/ICourse";
 import {
     CourseStackParamList,
     CourseTabParamList,
+    NavigationRoutes,
     RootDrawerParamList,
 } from "../../../constants/navigators/NavigationRoutes";
 import { MaterialTopTabNavigationProp } from "@react-navigation/material-top-tabs";
