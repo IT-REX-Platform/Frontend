@@ -323,10 +323,31 @@ export const ScreenCourseTimeline: React.FC = () => {
             chapter.chapterNumber = idx + 1;
         });
 
+        // Create copy of the course
         const tmpCourse: ICourse = {
             id: course.id,
-            chapters: tmpChapterList,
+            chapters: tmpChapterList.map((chap) => {
+                return { ...chap };
+            }),
         };
+
+        // Delete unnecassary stuff for transmission
+        tmpCourse.chapters?.forEach((chapter) => {
+            if (chapter.contentReferences !== undefined) {
+                chapter.contentReferences = [...chapter.contentReferences];
+            }
+
+            chapter.contentReferences = chapter.contentReferences?.map((ref) => {
+                return { ...ref };
+            });
+
+            chapter.contentReferences?.forEach((contentReference) => {
+                contentReference.quiz = undefined;
+                contentReference.video = undefined;
+                contentReference.timePeriod = undefined;
+            });
+        });
+
         const patchRequest: RequestInit = RequestFactory.createPatchRequest(tmpCourse);
         const courseEndpoint = new EndpointsCourse();
         courseEndpoint
