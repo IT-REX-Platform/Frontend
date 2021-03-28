@@ -1,22 +1,45 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { ICourse } from "../../types/ICourse";
 import { dark } from "../../constants/themes/dark";
 import { dateConverter } from "../../helperScripts/validateCourseDates";
 import { NavigationRoutes } from "../../constants/navigators/NavigationRoutes";
-import { CommonActions, useNavigation } from "@react-navigation/native";
+import { useFocusEffect, CommonActions, useNavigation } from "@react-navigation/native";
 import i18n from "../../locales";
 import { CoursePublishState } from "../../constants/CoursePublishState";
 import { InfoUnpublished } from "../uiElements/InfoUnpublished";
 import { InfoPublished } from "../uiElements/InfoPublished";
+import { ICourseProgressTracker } from "../../types/ICourseProgressTracker";
+import { TextButton } from "../uiElements/TextButton";
+import ProgressService from "../../services/ProgressService";
 
 interface CourseCardProps {
     course: ICourse;
 }
 
+interface CourseProgressInfo {
+    total: number;
+    totalMax: number;
+}
+
 export const CourseCard: React.FC<CourseCardProps> = (props) => {
     const { course } = props;
     const navigation = useNavigation();
+
+    const [courseProgress, setCourseProgress] = useState<ICourseProgressTracker>({});
+    const [courseProgressInfo, setCourseProgressInfo] = useState<CourseProgressInfo>({ total: 0, totalMax: 0 });
+    useFocusEffect(
+        React.useCallback(() => {
+            if (course.id === undefined) {
+                return;
+            }
+
+            ProgressService.getInstance().getCourseProgressInfo(course.id, (receivedProgress, numberProgress) => {
+                setCourseProgress(receivedProgress);
+                setCourseProgressInfo(numberProgress);
+            });
+        }, [])
+    );
 
     function getPublishedSate(isPublished: CoursePublishState | undefined) {
         if (isPublished === CoursePublishState.UNPUBLISHED) {
@@ -48,6 +71,46 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
         );
     }
 
+    function getNavToLastContent() {
+        if (courseProgress.lastContentReference == null) {
+            return <></>;
+        }
+
+        return (
+            <View style={styles.cardContent}>
+                <TextButton
+                    title={i18n.t("itrex.courseProgressLastAccessed")}
+                    onPress={() => {
+                        // TODO: Navigate to the content page.
+                        navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, {
+                            screen: "CHAPTER_CONTENT",
+                            params: {
+                                courseId: course.id,
+                                chapterId: courseProgress.lastContentReference?.chapterId,
+                            },
+                        });
+                    }}
+                />
+            </View>
+        );
+    }
+
+    function getProgressInfo() {
+        const progressPercent = Math.floor((courseProgressInfo.total / courseProgressInfo.totalMax) * 100);
+        if (isNaN(progressPercent)) {
+            return <></>;
+        }
+
+        return (
+            <Text style={styles.cardContent}>
+                <Text style={{ fontWeight: "bold", marginEnd: 10 }}>{i18n.t("itrex.courseProgressTitle")}</Text>
+                <Text>
+                    {progressPercent}% ({courseProgressInfo.total} / {courseProgressInfo.totalMax})
+                </Text>
+            </Text>
+        );
+    }
+
     function navigateToCourse(course: ICourse) {
         navigation.dispatch({
             ...CommonActions.reset({
@@ -67,6 +130,8 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
 
             {getDate(course.startDate, i18n.t("itrex.startDate"))}
             {getDate(course.endDate, i18n.t("itrex.endDate"))}
+            {getNavToLastContent()}
+            {getProgressInfo()}
         </TouchableOpacity>
     );
 };
