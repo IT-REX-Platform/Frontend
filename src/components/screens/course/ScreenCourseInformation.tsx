@@ -1,7 +1,7 @@
 /* eslint-disable complexity */
-import { CompositeNavigationProp, useFocusEffect, useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
 import { ImageBackground, StyleSheet, View } from "react-native";
+import { CompositeNavigationProp, useFocusEffect, useNavigation } from "@react-navigation/native";
 import { ICourse } from "../../../types/ICourse";
 import {
     CourseStackParamList,
@@ -33,7 +33,7 @@ export const ScreenCourseInformation: React.FC = () => {
     const navigation = useNavigation<ScreenCourseOverviewNavigationProp>();
 
     React.useContext(LocalizationContext);
-    const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");
+    const loggerService = loggerFactory.getLogger("service.ScreenCourseInformation");
     const endpointsCourse: EndpointsCourse = new EndpointsCourse();
     const { course } = React.useContext(CourseContext);
     const descriptionCallback = (description: string | undefined) => {
@@ -124,11 +124,9 @@ export const ScreenCourseInformation: React.FC = () => {
 
         loggerService.trace(`Updating course: name=${course.name}, publishedState=${CoursePublishState.PUBLISHED}.`);
         const patchRequest: RequestInit = RequestFactory.createPatchRequest(coursePatch);
-        endpointsCourse.patchCourse(
-            patchRequest,
-            i18n.t("itrex.publishCourseSuccess"),
-            i18n.t("itrex.publishCourseError")
-        );
+        endpointsCourse
+            .patchCourse(patchRequest, i18n.t("itrex.publishCourseSuccess"), i18n.t("itrex.publishCourseError"))
+            .then(() => navigation.navigate("INFO", { screen: "OVERVIEW" }));
     }
 
     /**
