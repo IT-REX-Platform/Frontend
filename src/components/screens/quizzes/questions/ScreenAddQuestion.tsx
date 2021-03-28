@@ -91,8 +91,6 @@ export const ScreenAddQuestion: React.FC = () => {
 
     /**
      * Selection for the kind of question to add.
-     *
-     * @returns
      */
     function selectKindOfQuestion() {
         return (
@@ -113,8 +111,6 @@ export const ScreenAddQuestion: React.FC = () => {
 
     /**
      * Set the input fields for the selected kind of question.
-     * @returns
-     *
      */
     function setInputFields() {
         switch (selectedKindOfQuestion) {

@@ -6,13 +6,13 @@ import { useNavigation } from "@react-navigation/core";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { CourseStackParamList } from "../../../../constants/navigators/NavigationRoutes";
 import { QuestionTypes } from "../../../../constants/QuestionTypes";
-import { ResultSingleChoiceCard } from "../../../cards/ResultSingleChoiceCard";
 import { quizStyles } from "../quizStyles";
-import { ResultMultipleChoiceCard } from "../../../cards/ResultMultipleChoiceCard";
+import { ResultMultipleChoiceCard } from "../../../cards/questionResultCards/ResultMultipleChoiceCard";
 import i18n from "../../../../locales";
 import { LocalizationContext } from "../../../Context";
-import { ResultNumericCard } from "../../../cards/ResultNumericCard";
 import { clearQuizEntries, correctlySolved, correctnessPercentage } from "../../../../helperScripts/solveQuizHelpers";
+import { ResultSingleChoiceCard } from "../../../cards/questionResultCards/ResultSingleChoiceCard";
+import { ResultNumericCard } from "../../../cards/questionResultCards/ResultNumericCard";
 
 type ScreenQuizResultProps = RouteProp<CourseStackParamList, "QUIZ_RESULT">;
 
