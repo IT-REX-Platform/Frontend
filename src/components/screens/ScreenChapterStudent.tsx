@@ -17,6 +17,7 @@ import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { createVideoUrl } from "../../services/createVideoUrl";
 import { RequestFactory } from "../../api/requests/RequestFactory";
 import { EndpointsChapter } from "../../api/endpoints/EndpointsChapter";
+import { EndpointsCourse } from "../../api/endpoints/EndpointsCourse";
 import { EndpointsProgress } from "../../api/endpoints/EndpointsProgress";
 import { ICourseProgressTracker } from "../../types/ICourseProgressTracker";
 import { ContentProgressTrackerState } from "../../constants/ContentProgressTrackerState";
@@ -694,22 +695,6 @@ const styles = StyleSheet.create({
     playlist: {
         marginTop: 20,
     },
-    scrollContainer: {
-        width: "screenWidth",
-        alignItems: "center",
-        paddingBottom: 20,
-    },
-
-    btnAdd: {
-        width: "100%",
-        height: "100%",
-        borderWidth: 2,
-        borderColor: "rgba(79,175,165,1.0)",
-        borderRadius: 25,
-        borderStyle: "dotted",
-        alignItems: "center",
-        justifyContent: "center",
-    },
 
     chapterHeading: {
         alignSelf: "flex-start",
@@ -726,17 +711,13 @@ const styles = StyleSheet.create({
         margin: 5,
     },
 
-    textStyle: {
-        margin: 10,
-        color: "white",
-        fontWeight: "bold",
-    },
     listItemTitle: {
         color: "white",
         textAlign: "left",
         marginBottom: 5,
         marginRight: 5,
     },
+
     listItemSubtitle: {
         color: "rgba(255,255,255,0.66)",
         textAlign: "left",

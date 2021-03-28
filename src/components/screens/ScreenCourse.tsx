@@ -294,5 +294,10 @@ const styles = StyleSheet.create({
         margin: 5,
         color: "white",
     },
-    publishedState: { position: "absolute", margin: 8, marginLeft: 16 },
+    publishedState: {
+        position: "absolute",
+        margin: 8,
+        marginTop: 4,
+        marginLeft: 16,
+    },
 });
