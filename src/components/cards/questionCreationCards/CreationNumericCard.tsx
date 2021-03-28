@@ -30,21 +30,16 @@ export const CreationNumericCard: React.FC<QuestionCardProps> = (props) => {
             onPress={() =>
                 navigation.navigate("CREATE_QUESTION", { courseId: courseId, quiz: quiz, question: question })
             }>
-            <MaterialCommunityIcons
-                name="numeric"
-                color="white"
-                size={26}
-                style={{ position: "absolute", margin: 8 }}
-            />
+            <MaterialCommunityIcons name="numeric" color="white" size={26} style={cardStyles.questionKind} />
             <Text style={cardStyles.cardHeader}>{question.question}</Text>
             <View style={cardStyles.break} />
-            <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "center" }}>{renderChoices()}</View>
+            <View style={cardStyles.renderChoices}>{renderChoices()}</View>
         </TouchableOpacity>
     );
 
     function renderChoices() {
         return (
-            <View style={{ borderColor: "white", width: "50%" }}>
+            <View style={cardStyles.tableStyle}>
                 <DataTable>
                     <DataTable.Header>
                         <DataTable.Title>

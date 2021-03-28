@@ -28,7 +28,7 @@ export const CreationSingleChoiceCard: React.FC<QuestionCardProps> = (props) => 
             onPress={() =>
                 navigation.navigate("CREATE_QUESTION", { courseId: courseId, quiz: quiz, question: question })
             }>
-            <MaterialCommunityIcons name="check" color="white" size={26} style={{ position: "absolute", margin: 8 }} />
+            <MaterialCommunityIcons name="check" color="white" size={26} style={cardStyles.questionKind} />
             <Text style={cardStyles.cardHeader}>{question.question}</Text>
             <View style={cardStyles.break} />
             <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "center" }}>{renderChoices()}</View>
