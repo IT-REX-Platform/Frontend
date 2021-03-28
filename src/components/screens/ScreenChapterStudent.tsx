@@ -57,7 +57,7 @@ export const ScreenChapterStudent: React.FC = () => {
 
     // The current video/content item and it's title.
     const [currentVideo, setCurrentVideo] = useState<IContent>();
-    const [currentTitle, setCurrentTitle] = useState<string>();
+    const [currentTitle, setCurrentTitle] = useState<String>();
 
     // Setup the video section list split by due date.
     const [videoSections, setVideoSections] = useState<IVideoListSection[]>([]);
@@ -134,6 +134,7 @@ export const ScreenChapterStudent: React.FC = () => {
         // Check for the progress and update the title.
         setIndicatorForUpdate(restorePlayerProgress);
         // TODO: Real title.
+
         setCurrentTitle(currentVideo?.id);
     }, [currentVideo]);
 
@@ -170,6 +171,8 @@ export const ScreenChapterStudent: React.FC = () => {
             } else if (contentProgress.state == ContentProgressTrackerState.STARTED) {
                 console.log("Content progress started.");
                 progress = getContentProgress(item, contentProgress);
+                console.log("%cProgress in IF:", "color:red");
+                console.log(progress);
 
                 if (getContentDate(item.timePeriodId) == "OVERDUE") {
                     borderColor = dark.Opacity.pink;
@@ -367,7 +370,7 @@ export const ScreenChapterStudent: React.FC = () => {
                 if (contentProgress.state == "COMPLETED") {
                     itemProgress = 1;
                 } else {
-                    itemProgress = item.video?.length / contentProgress.progress;
+                    itemProgress = (contentProgress.progress / item.video?.length) * 100000;
                 }
                 break;
 
@@ -503,17 +506,6 @@ export const ScreenChapterStudent: React.FC = () => {
         if (course.chapters !== undefined) {
             setChapterList(course.chapters);
         }
-
-        //const request: RequestInit = RequestFactory.createGetRequest();
-        //endpointsChapter.getAllChapters(request).then((chaptersReceived) => {
-        //    setChapterList(
-        //        chaptersReceived.filter((chap) => {
-        //            if (chap.courseId == course.id) {
-        //                return chap;
-        //            }
-        //        })
-        //    );
-        //});
     }
 
     /** Gets the chapter with the current id. Provides a consumer to execute once it has been received. */
@@ -532,8 +524,8 @@ export const ScreenChapterStudent: React.FC = () => {
         if (currChapter == undefined) {
             return;
         }
-
         setChapter(currChapter);
+
         if (currChapter.contentReferences !== undefined) {
             setChapterPlaylist(currChapter.contentReferences);
 
@@ -542,19 +534,6 @@ export const ScreenChapterStudent: React.FC = () => {
         }
 
         setVideoListLoading(true);
-
-        //endpointsChapter
-        //    .getChapter(request, chapterId, undefined, i18n.t("itrex.getChapterError"))
-        //    .then((chapterReceived) => {
-        //        setChapter(chapterReceived);
-        //        if (chapterReceived.contentReferences !== undefined) {
-        //            setChapterPlaylist(chapterReceived.contentReferences);
-
-        // Call a delayed consumer once everything has been finished.
-        //            consumer(chapterReceived);
-        //        }
-        //    })
-        //    .finally(async () => setVideoListLoading(false));
     }
 
     /** Changes the current chapter to the next chapter in line. */
