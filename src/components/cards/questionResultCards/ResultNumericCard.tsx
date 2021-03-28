@@ -1,12 +1,12 @@
 import React from "react";
 import { View, Text } from "react-native";
-import { IQuestionNumeric } from "../../types/IQuestion";
 import { DataTable } from "react-native-paper";
-import i18n from "../../locales";
-import { LocalizationContext } from "../Context";
-import { cardStyles } from "./cardStyles";
-import { isNumericResultCorrect } from "../../helperScripts/solveQuizHelpers";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { isNumericResultCorrect } from "../../../helperScripts/solveQuizHelpers";
+import i18n from "../../../locales";
+import { IQuestionNumeric } from "../../../types/IQuestion";
+import { LocalizationContext } from "../../Context";
+import { cardStyles } from "../cardStyles";
 
 interface QuestionCardProps {
     question: IQuestionNumeric;

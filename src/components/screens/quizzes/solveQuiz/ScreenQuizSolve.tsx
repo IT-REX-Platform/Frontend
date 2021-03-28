@@ -6,14 +6,15 @@ import { RouteProp, useRoute } from "@react-navigation/native";
 import { CourseStackParamList } from "../../../../constants/navigators/NavigationRoutes";
 import { TextButton } from "../../../uiElements/TextButton";
 import { ScrollView } from "react-native-gesture-handler";
-import { SolveSingleChoiceCard } from "../../../cards/SolveSingleChoiceCard";
 import { QuestionTypes } from "../../../../constants/QuestionTypes";
-import { SolveMultipleChoiceCard } from "../../../cards/SolveMultipleChoiceCard";
+import { SolveMultipleChoiceCard } from "../../../cards/questionSolveCards/SolveMultipleChoiceCard";
 import { IQuestionMultipleChoice, IQuestionNumeric, IQuestionSingleChoice } from "../../../../types/IQuestion";
-import { SolveNumericCard } from "../../../cards/SolveNumericCard";
+
 import { quizStyles } from "../quizStyles";
 import i18n from "../../../../locales";
 import { LocalizationContext } from "../../../Context";
+import { SolveSingleChoiceCard } from "../../../cards/questionSolveCards/SolveSingleChoiceCard";
+import { SolveNumericCard } from "../../../cards/questionSolveCards/SolveNumericCard";
 
 type ScreenQuizSolveProps = RouteProp<CourseStackParamList, "QUIZ_SOLVE">;
 

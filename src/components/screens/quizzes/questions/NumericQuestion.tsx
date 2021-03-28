@@ -99,8 +99,6 @@ export const NumericQuestion: React.FC<QuizProps> = (props) => {
     /**
      * Save user input as espsilon value.
      * @param solutionEpsilon number of the user input
-     *
-     * @returns
      */
     function setNumberOfEpsilon(solutionEpsilon: number | null) {
         if (solutionEpsilon === null) {
@@ -113,7 +111,6 @@ export const NumericQuestion: React.FC<QuizProps> = (props) => {
      * Save user number input as solution number.
      *
      * @param solutionNumber number of the user input
-     * @returns
      */
     function setNumberOfSolution(solutionNumber: number | null) {
         if (solutionNumber === null) {
@@ -123,8 +120,7 @@ export const NumericQuestion: React.FC<QuizProps> = (props) => {
     }
 
     /**
-     * Save a numeric question.
-     * @returns
+     * Creates a server request to save the defined numeric question.
      */
     function saveNumericQuestion() {
         if (validateNumericQuestion(courseId, questionText, epsilonSolution, numberSolution)) {
@@ -153,8 +149,7 @@ export const NumericQuestion: React.FC<QuizProps> = (props) => {
     }
 
     /**
-     * Update an existing question.
-     * @returns
+     * Creates a server request to update an existing question.
      */
     function updateQuestion() {
         if (quiz === undefined) {
@@ -184,8 +179,7 @@ export const NumericQuestion: React.FC<QuizProps> = (props) => {
     }
 
     /**
-     * Delete existion question.
-     * @returns
+     * Creates a server request to delete existion question.
      */
     function deleteQuestion() {
         if (quiz == undefined || questionId == undefined) {

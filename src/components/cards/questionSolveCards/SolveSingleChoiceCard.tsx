@@ -2,9 +2,9 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { IQuestionSingleChoice } from "../../types/IQuestion";
-import { LocalizationContext } from "../Context";
-import { cardStyles } from "./cardStyles";
+import { IQuestionSingleChoice } from "../../../types/IQuestion";
+import { LocalizationContext } from "../../Context";
+import { cardStyles } from "../cardStyles";
 
 interface QuestionCardProps {
     question: IQuestionSingleChoice;
@@ -25,7 +25,6 @@ export const SolveSingleChoiceCard: React.FC<QuestionCardProps> = (props) => {
         <View style={cardStyles.card}>
             <MaterialCommunityIcons name="check" color="white" size={26} style={{ position: "absolute", margin: 8 }} />
             <Text style={cardStyles.cardHeader}>{question.question}</Text>
-
             <View style={cardStyles.break} />
             <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "center" }}>{renderQuestion()}</View>
         </View>
