@@ -30,6 +30,8 @@ import { Header } from "../../constants/navigators/Header";
 import { CoursePublishState } from "../../constants/CoursePublishState";
 import { InfoUnpublished } from "../uiElements/InfoUnpublished";
 import { InfoPublished } from "../uiElements/InfoPublished";
+import { ICourseProgressTracker } from "../../types/ICourseProgressTracker";
+import ProgressService from "../../services/ProgressService";
 
 export type ScreenCourseNavigationProp = DrawerNavigationProp<RootDrawerParamList, "ROUTE_COURSE_DETAILS">;
 export type ScreenCourseRouteProp = RouteProp<RootDrawerParamList, "ROUTE_COURSE_DETAILS">;
@@ -72,6 +74,7 @@ export const ScreenCourse: React.FC = () => {
 
     // User info.
     const [user, setUserInfo] = useState<IUser>({});
+    const [courseProgress, setCourseProgress] = useState<ICourseProgressTracker>({});
 
     const endpointsCourse: EndpointsCourse = new EndpointsCourse();
     useEffect(() => {
@@ -81,6 +84,13 @@ export const ScreenCourse: React.FC = () => {
         endpointsCourse
             .getCourse(request, courseId, undefined, i18n.t("itrex.getCourseError"))
             .then((receivedCourse) => setCourse(receivedCourse));
+
+        // Update the progress.
+        ProgressService.getInstance().updateCourseProgressFor(courseId, (receivedProgress) => {
+            console.log("Progress of course:");
+            console.log(receivedProgress);
+            setCourseProgress(receivedProgress);
+        });
     }, [courseId]);
 
     return (
