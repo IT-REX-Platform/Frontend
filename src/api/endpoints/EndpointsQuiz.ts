@@ -136,4 +136,19 @@ export class EndpointsQuiz implements IEndpointsQuiz {
         const response: Promise<Response> = sendRequest(urlUpdated, deleteRequest);
         return this.responseParser.checkEmptyResponse(response, successMsg, errorMsg);
     }
+
+    public findAllWithIds(
+        getRequest: RequestInit,
+        videoIds: string[],
+        successMsg?: string,
+        errorMsg?: string
+    ): Promise<Map<string, IQuiz>> {
+        // http://localhost:8080/services/quizservice/api/quizzes/?quiz_ids=e4997cee-cfc1-45d1-ab4e-7b2bc0c60e75,2f91abb3-a2fa-4050-96df-b2aa2a7e6d0b
+        const quizIdsString: string = videoIds.join(",");
+        const urlUpdated: string = this.url + "/?" + QuizParams.QUIZ_IDS + "=" + quizIdsString;
+
+        this.loggerApi.trace("Sending GET request to URL: " + urlUpdated);
+        const response: Promise<Response> = sendRequest(urlUpdated, getRequest);
+        return this.responseParser.parseQuizMap(response, successMsg, errorMsg);
+    }
 }

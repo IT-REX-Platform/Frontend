@@ -213,6 +213,30 @@ export class ResponseParser {
         });
     }
 
+    public parseQuizMap(
+        response: Promise<Response>,
+        successMsg?: string,
+        errorMsg?: string
+    ): Promise<Map<string, IQuiz>> {
+        return new Promise((resolve) => {
+            response
+                .then((response) => {
+                    return this._parseAsJson(response);
+                })
+                .then((quizMap: Map<string, IQuiz>) => {
+                    quizMap = new Map(Object.entries(quizMap));
+
+                    this._toastSuccess(successMsg);
+                    resolve(quizMap);
+                })
+                .catch((error) => {
+                    this.loggerApi.error("An error occurred while parsing videos: " + error.message);
+                    this._toastError(errorMsg);
+                    resolve(new Map<string, IQuiz>());
+                });
+        });
+    }
+
     public parseVideo(
         response: Promise<Response>,
         successMsg?: string,

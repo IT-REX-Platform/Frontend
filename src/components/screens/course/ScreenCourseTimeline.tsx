@@ -30,6 +30,7 @@ import { CONTENTREFERENCETYPE, IContent } from "../../../types/IContent";
 import { EndpointsVideo } from "../../../api/endpoints/EndpointsVideo";
 import { dateConverter } from "../../../helperScripts/validateCourseDates";
 import { TextButton } from "../../uiElements/TextButton";
+import { EndpointsQuiz } from "../../../api/endpoints/EndpointsQuiz";
 
 export type ScreenCourseTimelineNavigationProp = CompositeNavigationProp<
     MaterialTopTabNavigationProp<CourseTabParamList, "COURSE_INFROMATION">,
@@ -48,6 +49,7 @@ export const ScreenCourseTimeline: React.FC = () => {
     // Endpoints
     const courseEndpoint = new EndpointsCourse();
     const endpointsVideos: EndpointsVideo = new EndpointsVideo();
+    const endpointsQuiz = new EndpointsQuiz();
 
     const isFocused = useIsFocused();
 
@@ -180,9 +182,26 @@ export const ScreenCourseTimeline: React.FC = () => {
                                 }
                             });
 
-                            //TODO: to be implemented
+                            // Load Quiz-Informations
+                            const getQuizRequest = RequestFactory.createGetRequest();
                             const quizPromise = new Promise((resolve, reject) => {
-                                resolve(true);
+                                if (quizIds !== undefined) {
+                                    endpointsQuiz.findAllWithIds(getQuizRequest, quizIds).then((quizzes) => {
+                                        quizzes.forEach((quiz) => {
+                                            const contentQuiz = contents[CONTENTREFERENCETYPE.QUIZ].filter(
+                                                (item) => item.contentId === quiz.id
+                                            );
+                                            if (contentQuiz !== undefined) {
+                                                for (const currContent of contentQuiz) {
+                                                    currContent.quiz = quiz;
+                                                }
+                                            }
+                                        });
+                                        resolve(true);
+                                    });
+                                } else {
+                                    reject();
+                                }
                             });
 
                             Promise.all([videoPromise, quizPromise]).then((values) => {
