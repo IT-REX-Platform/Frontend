@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { ICourse } from "../../types/ICourse";
 import { dark } from "../../constants/themes/dark";

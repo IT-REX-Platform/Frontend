@@ -1,7 +1,6 @@
 import * as AuthSession from "expo-auth-session";
 import { loggerFactory } from "../../logger/LoggerConfig";
 import { EndpointsUserInfo } from "../api/endpoints/EndpointsUserInfo";
-import { RequestAuthorization } from "../api/requests/RequestAuthorization";
 import { RequestFactory } from "../api/requests/RequestFactory";
 import { itRexVars } from "../constants/Constants";
 import { ITREXRoles } from "../constants/ITREXRoles";

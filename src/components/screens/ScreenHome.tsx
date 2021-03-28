@@ -134,7 +134,7 @@ export const ScreenHome: React.FC<ScreenHomeProps> = (props) => {
             return (
                 <View style={styles.centeredView}>
                     <TextButton
-                        title={i18n.t("itrex.joinCourse")}
+                        title={i18n.t("itrex.joinACourse")}
                         size="medium"
                         onPress={() => navigation.navigate(NavigationRoutes.ROUTE_JOIN_COURSE)}
                     />

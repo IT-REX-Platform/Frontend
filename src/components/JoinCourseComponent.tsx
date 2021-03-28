@@ -5,7 +5,7 @@ import { ICourse } from "../types/ICourse";
 import i18n from "../locales";
 import { RequestFactory } from "../api/requests/RequestFactory";
 import { EndpointsCourse } from "../api/endpoints/EndpointsCourse";
-import { RouteProp, useIsFocused, useNavigation } from "@react-navigation/native";
+import { CommonActions, RouteProp, useIsFocused, useNavigation } from "@react-navigation/native";
 import { Header } from "../constants/navigators/Header";
 import { LocalizationContext } from "./Context";
 import { NavigationRoutes, RootDrawerParamList } from "../constants/navigators/NavigationRoutes";
