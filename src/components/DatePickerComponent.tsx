@@ -89,11 +89,13 @@ const styles = StyleSheet.create({
     },
     styledText: {
         fontSize: 12,
-        marginTop: -8,
+        marginTop: -12,
         marginLeft: 8,
         paddingLeft: 8,
         paddingRight: 8,
-        backgroundColor: dark.theme.darkBlue2,
+        backgroundColor: dark.theme.darkBlue4,
         color: "white",
+        borderWidth: 0.5,
+        borderColor: "white",
     },
 });
