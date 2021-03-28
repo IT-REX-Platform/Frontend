@@ -95,7 +95,7 @@ export const JoinCourseComponent: React.FC = () => {
             AuthenticationService.getInstance()
                 .refreshToken()
                 .then(() =>
-                    navigation.navigate("INFO", {
+                    navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, {
                         courseId: courseId,
                         screen: "OVERVIEW",
                     })

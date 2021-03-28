@@ -17,6 +17,7 @@ import { TextButton } from "./uiElements/TextButton";
 import AuthenticationService from "../services/AuthenticationService";
 import { NavigationRoutes } from "../constants/navigators/NavigationRoutes";
 import { useNavigation } from "@react-navigation/native";
+import { ToastService } from "../services/toasts/ToastService";
 
 const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");
 const endpointsCourse: EndpointsCourse = new EndpointsCourse();
@@ -148,7 +149,7 @@ export const CreateCourseComponent: React.FC = () => {
                 AuthenticationService.getInstance()
                     .refreshToken()
                     .then(() =>
-                        navigation.navigate("INFO", {
+                        navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, {
                             courseId: course.id,
                             screen: "OVERVIEW",
                         })

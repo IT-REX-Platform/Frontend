@@ -43,12 +43,13 @@ export const ScreenCourse: React.FC = () => {
     /**
      * !!! ATTENTION !!!
      * Checking route.params and courseId must be the first thing this component does (after calling useRoute(), duh).
-     * This prevents: "Error: Rendered more hooks than during the previous render."
+     * This prevents crash: "Error: Rendered more hooks than during the previous render."
      */
     const route: ScreenCourseRouteProp = useRoute<ScreenCourseRouteProp>();
     if (route.params == undefined) {
         return _renderEmptyCourse();
     }
+    // Yes, both checks are required.
     if (route.params.courseId == undefined || route.params.courseId == "undefined") {
         return _renderEmptyCourse();
     }
@@ -64,13 +65,7 @@ export const ScreenCourse: React.FC = () => {
     const [course, setCourse] = useState(courseInitial);
 
     // Current course context.
-    const courseContext = React.useMemo(
-        () => ({
-            course,
-            setCourse,
-        }),
-        [course]
-    );
+    const courseContext = React.useMemo(() => ({ course, setCourse }), [course]);
 
     // User info.
     const [user, setUserInfo] = useState<IUser>({});
