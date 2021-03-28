@@ -3,11 +3,11 @@ import { View, Text } from "react-native";
 import { DataTable } from "react-native-paper";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import NumericInput from "react-numeric-input";
-import { dark } from "../../constants/themes/dark";
-import i18n from "../../locales";
-import { IQuestionNumeric } from "../../types/IQuestion";
-import { LocalizationContext } from "../Context";
-import { cardStyles } from "./cardStyles";
+import { dark } from "../../../constants/themes/dark";
+import i18n from "../../../locales";
+import { IQuestionNumeric } from "../../../types/IQuestion";
+import { LocalizationContext } from "../../Context";
+import { cardStyles } from "../cardStyles";
 
 interface QuestionCardProps {
     question: IQuestionNumeric;

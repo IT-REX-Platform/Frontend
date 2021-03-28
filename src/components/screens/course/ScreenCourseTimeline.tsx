@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/indent */
 /* eslint-disable max-lines */
 /* eslint-disable complexity */
 import React, { useState } from "react";
@@ -29,6 +30,7 @@ import { CONTENTREFERENCETYPE, IContent } from "../../../types/IContent";
 import { EndpointsVideo } from "../../../api/endpoints/EndpointsVideo";
 import { dateConverter } from "../../../helperScripts/validateCourseDates";
 import { TextButton } from "../../uiElements/TextButton";
+import { EndpointsQuiz } from "../../../api/endpoints/EndpointsQuiz";
 
 export type ScreenCourseTimelineNavigationProp = CompositeNavigationProp<
     MaterialTopTabNavigationProp<CourseTabParamList, "COURSE_INFROMATION">,
@@ -47,6 +49,7 @@ export const ScreenCourseTimeline: React.FC = () => {
     // Endpoints
     const courseEndpoint = new EndpointsCourse();
     const endpointsVideos: EndpointsVideo = new EndpointsVideo();
+    const endpointsQuiz = new EndpointsQuiz();
 
     const isFocused = useIsFocused();
 
@@ -179,9 +182,26 @@ export const ScreenCourseTimeline: React.FC = () => {
                                 }
                             });
 
-                            //TODO: to be implemented
+                            // Load Quiz-Informations
+                            const getQuizRequest = RequestFactory.createGetRequest();
                             const quizPromise = new Promise((resolve, reject) => {
-                                resolve(true);
+                                if (quizIds !== undefined) {
+                                    endpointsQuiz.findAllWithIds(getQuizRequest, quizIds).then((quizzes) => {
+                                        quizzes.forEach((quiz) => {
+                                            const contentQuiz = contents[CONTENTREFERENCETYPE.QUIZ].filter(
+                                                (item) => item.contentId === quiz.id
+                                            );
+                                            if (contentQuiz !== undefined) {
+                                                for (const currContent of contentQuiz) {
+                                                    currContent.quiz = quiz;
+                                                }
+                                            }
+                                        });
+                                        resolve(true);
+                                    });
+                                } else {
+                                    reject();
+                                }
                             });
 
                             Promise.all([videoPromise, quizPromise]).then((values) => {
@@ -208,7 +228,7 @@ export const ScreenCourseTimeline: React.FC = () => {
             source={require("../../../constants/images/Background3.png")}
             style={styles.imageContainer}
             imageStyle={{ opacity: 0.5, position: "absolute", resizeMode: "contain" }}>
-            {lecturerEditMode()}
+            {ownerEditMode()}
 
             <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
                 {edit === false
@@ -303,10 +323,31 @@ export const ScreenCourseTimeline: React.FC = () => {
             chapter.chapterNumber = idx + 1;
         });
 
+        // Create copy of the course
         const tmpCourse: ICourse = {
             id: course.id,
-            chapters: tmpChapterList,
+            chapters: tmpChapterList.map((chap) => {
+                return { ...chap };
+            }),
         };
+
+        // Delete unnecassary stuff for transmission
+        tmpCourse.chapters?.forEach((chapter) => {
+            if (chapter.contentReferences !== undefined) {
+                chapter.contentReferences = [...chapter.contentReferences];
+            }
+
+            chapter.contentReferences = chapter.contentReferences?.map((ref) => {
+                return { ...ref };
+            });
+
+            chapter.contentReferences?.forEach((contentReference) => {
+                contentReference.quiz = undefined;
+                contentReference.video = undefined;
+                contentReference.timePeriod = undefined;
+            });
+        });
+
         const patchRequest: RequestInit = RequestFactory.createPatchRequest(tmpCourse);
         const courseEndpoint = new EndpointsCourse();
         courseEndpoint
@@ -321,7 +362,7 @@ export const ScreenCourseTimeline: React.FC = () => {
     }
 
     // eslint-disable-next-line complexity
-    function lecturerEditMode() {
+    function ownerEditMode() {
         if (user.courses === undefined || course.id === undefined) {
             return <></>;
         }

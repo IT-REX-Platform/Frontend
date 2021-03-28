@@ -2,10 +2,10 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { IQuestionMultipleChoice } from "../../types/IQuestion";
-import { ISolutionMultipleChoice } from "../../types/ISolution";
-import { LocalizationContext } from "../Context";
-import { cardStyles } from "./cardStyles";
+import { IQuestionMultipleChoice } from "../../../types/IQuestion";
+import { ISolutionMultipleChoice } from "../../../types/ISolution";
+import { LocalizationContext } from "../../Context";
+import { cardStyles } from "../cardStyles";
 
 interface QuestionCardProps {
     question: IQuestionMultipleChoice;

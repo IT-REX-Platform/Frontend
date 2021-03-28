@@ -159,8 +159,8 @@ export const MultipleChoiceQuestion: React.FC<QuizProps> = (props) => {
     }
 
     /**
-     * Save the defined  multiple choice question.
-     * @returns
+     * Creates a server request to save the defined  multiple choice question.
+     *
      */
     function saveMultipleChoiceQuestion() {
         setSolution({ "0": checkboxZero, "1": checkboxOne, "2": checkboxTwo, "3": checkboxThree });
@@ -195,8 +195,7 @@ export const MultipleChoiceQuestion: React.FC<QuizProps> = (props) => {
     }
 
     /**
-     * Update an existing question.
-     * @returns
+     * Creates a server request to update an existing question.
      */
     function updateQuestion() {
         if (quiz === undefined) {
@@ -226,8 +225,7 @@ export const MultipleChoiceQuestion: React.FC<QuizProps> = (props) => {
     }
 
     /**
-     * Delete an existing question.
-     * @returns
+     * Creates a server request to delete an existing question.
      */
     function deleteQuestion() {
         if (quiz == undefined || questionId == undefined) {
