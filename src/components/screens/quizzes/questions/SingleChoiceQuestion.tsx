@@ -44,7 +44,7 @@ export const SingleChoiceQuestion: React.FC<QuizProps> = (props) => {
     const [checkboxTwo, setCheckboxTwo] = useState(false);
     const [checkboxThree, setCheckboxThree] = useState(false);
 
-    const [solution, setSolution] = useState<string>("0");
+    const [solution, setSolution] = useState<number>(0);
 
     useFocusEffect(
         React.useCallback(() => {
@@ -68,14 +68,14 @@ export const SingleChoiceQuestion: React.FC<QuizProps> = (props) => {
                         style={quizStyles.checkbox}
                         color={checkboxZero ? dark.theme.darkGreen : dark.theme.pink}
                         value={checkboxZero}
-                        onValueChange={() => changeChecked("0")}
+                        onValueChange={() => changeChecked(0)}
                     />
                     <View style={quizStyles.cardChoices}>
                         <TextInput
                             editable
-                            defaultValue={choicesSingleChoice !== undefined ? choicesSingleChoice["0"] : ""}
+                            defaultValue={choicesSingleChoice !== undefined ? choicesSingleChoice[0] : ""}
                             style={[quizStyles.answerInput]}
-                            onChangeText={(text: string) => addSolutionEntry("0", text)}
+                            onChangeText={(text: string) => addSolutionEntry(0, text)}
                             multiline={true}
                         />
                     </View>
@@ -86,14 +86,14 @@ export const SingleChoiceQuestion: React.FC<QuizProps> = (props) => {
                         style={quizStyles.checkbox}
                         color={checkboxOne ? dark.theme.darkGreen : dark.theme.pink}
                         value={checkboxOne}
-                        onValueChange={() => changeChecked("1")}
+                        onValueChange={() => changeChecked(1)}
                     />
                     <View style={quizStyles.cardChoices}>
                         <TextInput
                             editable
-                            defaultValue={choicesSingleChoice !== undefined ? choicesSingleChoice["1"] : ""}
+                            defaultValue={choicesSingleChoice !== undefined ? choicesSingleChoice[1] : ""}
                             style={[quizStyles.answerInput]}
-                            onChangeText={(text: string) => addSolutionEntry("1", text)}
+                            onChangeText={(text: string) => addSolutionEntry(1, text)}
                             multiline={true}
                         />
                     </View>
@@ -103,15 +103,15 @@ export const SingleChoiceQuestion: React.FC<QuizProps> = (props) => {
                         style={quizStyles.checkbox}
                         color={checkboxTwo ? dark.theme.darkGreen : dark.theme.pink}
                         value={checkboxTwo}
-                        onValueChange={() => changeChecked("2")}
+                        onValueChange={() => changeChecked(2)}
                     />
 
                     <View style={quizStyles.cardChoices}>
                         <TextInput
                             editable
-                            defaultValue={choicesSingleChoice !== undefined ? choicesSingleChoice["2"] : ""}
+                            defaultValue={choicesSingleChoice !== undefined ? choicesSingleChoice[2] : ""}
                             style={[quizStyles.answerInput]}
-                            onChangeText={(text: string) => addSolutionEntry("2", text)}
+                            onChangeText={(text: string) => addSolutionEntry(2, text)}
                             multiline={true}
                         />
                     </View>
@@ -121,15 +121,15 @@ export const SingleChoiceQuestion: React.FC<QuizProps> = (props) => {
                         style={quizStyles.checkbox}
                         color={checkboxThree ? dark.theme.darkGreen : dark.theme.pink}
                         value={checkboxThree}
-                        onValueChange={() => changeChecked("3")}
+                        onValueChange={() => changeChecked(3)}
                     />
                     <View style={quizStyles.cardChoices}>
                         <TextInput
                             editable
-                            defaultValue={choicesSingleChoice !== undefined ? choicesSingleChoice["3"] : ""}
+                            defaultValue={choicesSingleChoice !== undefined ? choicesSingleChoice[3] : ""}
                             allowFontScaling={true}
                             style={[quizStyles.answerInput]}
-                            onChangeText={(text: string) => addSolutionEntry("3", text)}
+                            onChangeText={(text: string) => addSolutionEntry(3, text)}
                             multiline={true}
                         />
                     </View>
@@ -151,23 +151,23 @@ export const SingleChoiceQuestion: React.FC<QuizProps> = (props) => {
      *
      * @param index of the right solution entry
      */
-    function changeChecked(index: string): void {
-        if (index === "0") {
+    function changeChecked(index: number): void {
+        if (index === 0) {
             setCheckboxZero(true);
             setCheckboxOne(false);
             setCheckboxTwo(false);
             setCheckboxThree(false);
-        } else if (index === "1") {
+        } else if (index === 1) {
             setCheckboxZero(false);
             setCheckboxOne(true);
             setCheckboxTwo(false);
             setCheckboxThree(false);
-        } else if (index === "2") {
+        } else if (index === 2) {
             setCheckboxZero(false);
             setCheckboxOne(false);
             setCheckboxTwo(true);
             setCheckboxThree(false);
-        } else if (index === "3") {
+        } else if (index === 3) {
             setCheckboxZero(false);
             setCheckboxOne(false);
             setCheckboxTwo(false);
@@ -183,7 +183,7 @@ export const SingleChoiceQuestion: React.FC<QuizProps> = (props) => {
      * @param index index of the solution entry
      * @param text text of the solution entry
      */
-    function addSolutionEntry(index: string, text: string) {
+    function addSolutionEntry(index: number, text: string) {
         setChoicesSingleChoice((choicesSingleChoice) => ({ ...choicesSingleChoice, [index]: text }));
     }
 
@@ -196,6 +196,7 @@ export const SingleChoiceQuestion: React.FC<QuizProps> = (props) => {
             if (myNewQuestion === undefined || quiz === undefined) {
                 return;
             }
+            console.log(myNewQuestion);
             if (questionId === undefined) {
                 const request: RequestInit = RequestFactory.createPostRequestWithBody(myNewQuestion);
                 const response = endpointsQuestion.createQuestion(

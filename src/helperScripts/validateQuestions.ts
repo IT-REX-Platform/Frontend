@@ -50,7 +50,7 @@ export function validateSingleChoiceQuestion(
     courseId: string | undefined,
     questionText: string | undefined,
     choices: IChoices | undefined,
-    solution: string | undefined
+    solution: number | undefined
 ): IQuestionSingleChoice | undefined {
     const toast: ToastService = new ToastService();
 
@@ -67,12 +67,7 @@ export function validateSingleChoiceQuestion(
         toast.warn(i18n.t("itrex.invalidAnswers"));
         return;
     }
-    if (
-        choices["0"] == undefined ||
-        choices["1"] == undefined ||
-        choices["2"] == undefined ||
-        choices["3"] == undefined
-    ) {
+    if (choices[0] == undefined || choices[1] == undefined || choices[2] == undefined || choices[3] == undefined) {
         toast.warn(i18n.t("itrex.missingAnswers"));
         return;
     }
@@ -114,12 +109,7 @@ export function validateMultipleChoiceQuestion(
         toast.warn(i18n.t("itrex.invalidAnswers"));
         return;
     }
-    if (
-        choices["0"] == undefined ||
-        choices["1"] == undefined ||
-        choices["2"] == undefined ||
-        choices["3"] == undefined
-    ) {
+    if (choices[0] == undefined || choices[1] == undefined || choices[2] == undefined || choices[3] == undefined) {
         toast.warn(i18n.t("itrex.missingAnswers"));
         return;
     }
