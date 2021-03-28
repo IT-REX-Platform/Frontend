@@ -15,7 +15,8 @@ import { LocalizationContext } from "./Context";
 import { Event } from "@react-native-community/datetimepicker";
 import { TextButton } from "./uiElements/TextButton";
 import AuthenticationService from "../services/AuthenticationService";
-import { useNavigation } from "@react-navigation/native";
+import { CommonActions, useNavigation } from "@react-navigation/native";
+import { NavigationRoutes } from "../constants/navigators/NavigationRoutes";
 
 const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");
 const endpointsCourse: EndpointsCourse = new EndpointsCourse();
@@ -147,9 +148,13 @@ export const CreateCourseComponent: React.FC = () => {
                 AuthenticationService.getInstance()
                     .refreshToken()
                     .then(() =>
-                        navigation.navigate("INFO", {
-                            courseId: course.id,
-                            screen: "OVERVIEW",
+                        navigation.dispatch({
+                            ...CommonActions.reset({
+                                index: 0,
+                                routes: [
+                                    { name: NavigationRoutes.ROUTE_COURSE_DETAILS, params: { courseId: course.id } },
+                                ],
+                            }),
                         })
                     );
             });
