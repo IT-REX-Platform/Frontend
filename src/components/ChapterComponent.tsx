@@ -19,11 +19,13 @@ import { RequestFactory } from "../api/requests/RequestFactory";
 import { ContentProgressInfo } from "./uiElements/ContentProgressInfo";
 import ProgressService from "../services/ProgressService";
 import { ContentProgressTrackerState } from "../constants/ContentProgressTrackerState";
+import { CourseRoles } from "../constants/CourseRoles";
+import { IUser } from "../types/IUser";
 
 interface ChapterComponentProps {
     chapter?: IChapter;
     chapterId?: string;
-    editMode: boolean;
+    editMode?: boolean;
     course: ICourse;
 }
 
@@ -34,6 +36,12 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
     const chapter = props.chapter;
     const course = props.course;
     const editMode = props.editMode;
+
+    // User info.
+    const [user, setUserInfo] = useState<IUser>({});
+    useEffect(() => {
+        setUserInfo(AuthenticationService.getInstance().getUserInfoCached());
+    }, []);
 
     function getQuizComponent(contentReference: IContent) {
         return (
@@ -77,20 +85,8 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                     {chapter?.chapterNumber}. {chapter?.name}
                 </Text>
                 <Text style={styles.showWeek}>{getWeeks()}</Text>
-                {/* TODO: add real publish/unpublished state to the chapterss*/}
-                <View style={styles.chapterStatus}>{getPublishedSate(CoursePublishState.PUBLISHED)}</View>
             </View>
             <View style={styles.chapterBottomRow}>
-                {props.editMode && AuthenticationService.getInstance().isLecturer() && (
-                    <View style={styles.chapterEditRow}>
-                        {/**<TouchableOpacity
-                            onPress={() => {
-                                courseService.deleteChapter(chapter?.id);
-                            }}>
-                            <MaterialCommunityIcons name="trash-can" size={28} color="white" style={styles.icon} />
-                        </TouchableOpacity> */}
-                    </View>
-                )}
                 <View style={styles.chapterMaterialElements}>
                     {chapter?.contentReferences?.map((contentReference) => {
                         return (
@@ -193,14 +189,20 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
     }
 
     function getProgressInfo(contentRef: IContent) {
-        if (courseProgress.contentProgressTrackers === undefined) {
-            return;
-        }
-        if (contentRef.id === undefined) {
-            return;
+        if (user.courses == undefined || course.id == undefined) {
+            return <></>;
         }
 
-        return <ContentProgressInfo contentTracker={courseProgress.contentProgressTrackers[contentRef.id]} />;
+        const courseRole: CourseRoles = user.courses[course.id];
+
+        if (courseRole === CourseRoles.PARTICIPANT || !editMode) {
+            if (courseProgress.contentProgressTrackers === undefined || contentRef.id === undefined) {
+                return;
+            }
+            return <ContentProgressInfo contentTracker={courseProgress.contentProgressTrackers[contentRef.id]} />;
+        }
+
+        return;
     }
 
     function navigateToQuiz(contentId: string | undefined) {
@@ -300,20 +302,10 @@ const styles = StyleSheet.create({
         alignItems: "baseline",
         paddingTop: "1%",
     },
-    chapterEditRow: {
-        position: "absolute",
-        right: 0,
-    },
     chapterHeader: {
         alignSelf: "flex-start",
         color: "white",
         fontSize: 18,
-        fontWeight: "bold",
-    },
-    chapterStatus: {
-        alignSelf: "flex-end",
-        position: "absolute",
-        color: "white",
         fontWeight: "bold",
     },
     showWeek: {
