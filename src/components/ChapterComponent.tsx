@@ -23,7 +23,7 @@ import { ContentProgressTrackerState } from "../constants/ContentProgressTracker
 interface ChapterComponentProps {
     chapter?: IChapter;
     chapterId?: string;
-    editMode?: boolean;
+    editMode: boolean;
     course: ICourse;
 }
 
@@ -33,6 +33,7 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
 
     const chapter = props.chapter;
     const course = props.course;
+    const editMode = props.editMode;
 
     function getQuizComponent(contentReference: IContent) {
         return (
@@ -65,7 +66,11 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
         <TouchableOpacity
             style={styles.chapterContainer}
             onPress={() => {
-                navigation.navigate("CHAPTER_CONTENT", { chapterId: chapter?.id });
+                editMode == true
+                    ? navigation.navigate("CHAPTER", {
+                          chapterId: chapter?.id,
+                      })
+                    : navigation.navigate("CHAPTER_CONTENT", { chapterId: chapter?.id });
             }}>
             <View style={styles.chapterTopRow}>
                 <Text style={styles.chapterHeader}>
