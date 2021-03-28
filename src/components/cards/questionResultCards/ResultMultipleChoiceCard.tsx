@@ -2,8 +2,8 @@
 import React from "react";
 import { View, Text } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { IQuestionMultipleChoice } from "../../types/IQuestion";
-import { cardStyles } from "./cardStyles";
+import { IQuestionMultipleChoice } from "../../../types/IQuestion";
+import { cardStyles } from "../cardStyles";
 
 interface ResultMultipleChoiceCardProps {
     question: IQuestionMultipleChoice;
