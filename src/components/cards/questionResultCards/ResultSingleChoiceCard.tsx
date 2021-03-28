@@ -2,10 +2,9 @@
 import React from "react";
 import { View, Text } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { IQuestionSingleChoice } from "../../types/IQuestion";
-import { LocalizationContext } from "../Context";
-import { cardStyles } from "./cardStyles";
-
+import { IQuestionSingleChoice } from "../../../types/IQuestion";
+import { LocalizationContext } from "../../Context";
+import { cardStyles } from "../cardStyles";
 interface ResultSingleChoiceCardProps {
     question: IQuestionSingleChoice;
 }

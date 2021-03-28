@@ -116,4 +116,17 @@ export const cardStyles = StyleSheet.create({
         color: "white",
         fontSize: 20,
     },
+    renderChoices: {
+        flexDirection: "row",
+        flexWrap: "wrap",
+        justifyContent: "center",
+    },
+    tableStyle: {
+        borderColor: "white",
+        width: "50%",
+    },
+    questionKind: {
+        position: "absolute",
+        margin: 8,
+    },
 });

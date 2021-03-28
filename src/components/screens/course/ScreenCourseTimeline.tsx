@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/indent */
 /* eslint-disable max-lines */
 /* eslint-disable complexity */
 import React, { useState } from "react";
@@ -208,7 +209,7 @@ export const ScreenCourseTimeline: React.FC = () => {
             source={require("../../../constants/images/Background3.png")}
             style={styles.imageContainer}
             imageStyle={{ opacity: 0.5, position: "absolute", resizeMode: "contain" }}>
-            {lecturerEditMode()}
+            {ownerEditMode()}
 
             <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
                 {edit === false
@@ -321,7 +322,7 @@ export const ScreenCourseTimeline: React.FC = () => {
     }
 
     // eslint-disable-next-line complexity
-    function lecturerEditMode() {
+    function ownerEditMode() {
         if (user.courses === undefined || course.id === undefined) {
             return <></>;
         }

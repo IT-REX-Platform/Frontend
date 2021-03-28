@@ -188,8 +188,7 @@ export const SingleChoiceQuestion: React.FC<QuizProps> = (props) => {
     }
 
     /**
-     * Save the defined single choice question.
-     * @returns
+     * Creates a server request to save the defined single choice question.
      */
     function saveSingleChoiceQuestion() {
         if (validateSingleChoiceQuestion(courseId, questionText, choicesSingleChoice, solution)) {
@@ -218,9 +217,7 @@ export const SingleChoiceQuestion: React.FC<QuizProps> = (props) => {
     }
 
     /**
-     * Update an existing question.
-     *
-     * @returns
+     * Creates a server request to update an existing question.
      */
     function updateQuestion() {
         if (quiz === undefined) {
@@ -250,8 +247,7 @@ export const SingleChoiceQuestion: React.FC<QuizProps> = (props) => {
     }
 
     /**
-     * Delete an existing question.
-     * @returns
+     * Creates a server request to delete an existing question.
      */
     function deleteQuestion() {
         if (quiz == undefined || questionId == undefined) {
