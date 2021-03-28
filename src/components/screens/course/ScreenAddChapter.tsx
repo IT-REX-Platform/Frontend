@@ -464,7 +464,6 @@ export const ScreenAddChapter: React.FC = () => {
                         onChangeText={(text) => setChapterName(text)}
                     />
                     <MaterialCommunityIcons name="pen" size={24} color={dark.theme.darkGreen} style={styles.icon} />
-            
                 </View>
                 <View style={styles.buttonContainer}>
                     <TextButton title={i18n.t("itrex.saveAndReturn")} onPress={() => saveChapter(true)} />
@@ -493,7 +492,7 @@ export const ScreenAddChapter: React.FC = () => {
                         </View>
                     </ImageBackground>
                 </View>
-                <View style={[styles.contentContainerAdd, { marginRight: "3%" }]}>
+                <View style={[styles.contentContainerAdd, { marginRight: 36 }]}>
                     <View style={styles.containerTop}>{renderUi()}</View>
                 </View>
                 <View style={styles.contentContainerAdd}>
@@ -667,8 +666,8 @@ const styles = StyleSheet.create({
     headContainer: {
         flexDirection: "row",
         //alignItems: "flex-start",
-        padding: "3%",
-        paddingLeft: "4%",
+        padding: 48,
+        paddingLeft: 60,
     },
     borderContainer: {
         flex: 1,
@@ -679,40 +678,39 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1.5,
         //padding: "0.5%",
         //alignContent: "center"
-
     },
 
     buttonContainer: {
         flexDirection: "row",
-        paddingLeft: "1%",
+        paddingLeft: 36,
     },
 
     contentContainer: {
         flex: 2,
         flexDirection: "row",
-        paddingLeft: "2%",
-        paddingRight: "2%",
-        paddingBottom: "1%",
-        paddingTop: "1%",
+        paddingLeft: 48,
+        paddingRight: 36,
+        paddingBottom: 24,
+        paddingTop: 24,
     },
     contentContainerAdd: {
         flex: 1,
         padding: 5,
-        paddingTop: "1%",
+        paddingTop: 24,
         //backgroundColor: "rgba(1,43,86,0.5)",
         borderWidth: 3,
         borderColor: dark.theme.darkBlue3,
         alignItems: "center",
-        maxWidth: 280,
+        maxWidth: "20%",
     },
     sequenceArea: {
         flex: 1,
         //backgroundColor: "rgba(1,43,86,0.5)",
         borderWidth: 3,
         borderColor: dark.theme.darkBlue3,
-        marginRight: "3%",
+        marginRight: 36,
         //padding: 5,
-        paddingTop: "1%",
+        paddingTop: 24,
         alignItems: "stretch",
     },
     courseHeader: {
