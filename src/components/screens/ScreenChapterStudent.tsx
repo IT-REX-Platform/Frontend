@@ -84,7 +84,9 @@ export const ScreenChapterStudent: React.FC = () => {
                 setChapterList(course.chapters);
             }
 
-            updateCourseProgress();
+            updateCourseProgress(() => {
+                setIndicatorForUpdate(restorePlayerProgress);
+            });
         }, [course])
     );
 
@@ -99,6 +101,7 @@ export const ScreenChapterStudent: React.FC = () => {
     // Effect: On progress changes trigger a playlist update.
     useEffect(() => {
         console.log("%cOn Course Progress effect.", "color:red;");
+
         setIndicatorForUpdate(updatePlaylist);
     }, [courseProgress]);
 
@@ -137,7 +140,7 @@ export const ScreenChapterStudent: React.FC = () => {
     useEffect(() => {
         console.log("%cOn Should Restore Progress effect.", "color:purple;");
 
-        if (currentVideo !== undefined) restoreWatchProgress();
+        restoreWatchProgress();
     }, [playerShouldRestoreProgress]);
 
     // Define how the playlist item renders for a content item.
@@ -508,13 +511,18 @@ export const ScreenChapterStudent: React.FC = () => {
     }
 
     /** Update the course progress and re-set it to the state. */
-    function updateCourseProgress() {
+    function updateCourseProgress(
+        consumer: (courseProgress: ICourseProgressTracker) => void = () => {
+            /*empty default*/
+        }
+    ) {
         if (course.id === undefined) {
             return;
         }
 
         ProgressService.getInstance().updateCourseProgressFor(course.id, (receivedProgress) => {
             setCourseProgress(receivedProgress);
+            consumer(courseProgress);
         });
     }
 
