@@ -345,17 +345,15 @@ export const ScreenChapterStudent: React.FC = () => {
     function getContentSubtitle(item: IContent) {
         switch (item.contentReferenceType) {
             case CONTENTREFERENCETYPE.VIDEO:
-                return (
-                    <Text>
-                        {i18n.t("itrex.videoDuration")}
-                        {calculateVideoSize(item.video?.length)}
-                    </Text>
-                );
+                // TODO: This is not the actual duration, but file size. For now, display nothing.
+                // {i18n.t("itrex.videoDuration")} {calculateVideoSize(item.video?.length)}
+                return <></>;
 
             case CONTENTREFERENCETYPE.QUIZ:
+                // TODO: Number of questions are not being fetched correctly yet.
                 return (
                     <Text>
-                        {i18n.t("itrex.questions")} {item.quiz?.questions.length}
+                        {i18n.t("itrex.questions")} {item.quiz?.questions.length ?? "Unknown"}
                     </Text>
                 );
 
