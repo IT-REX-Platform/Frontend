@@ -40,7 +40,7 @@ export function correctlySolved(quiz: IQuiz): number {
     quiz.questions.map((question) => {
         switch (question.type) {
             case QuestionTypes.SINGLE_CHOICE:
-                if (question.solution === question.userInput) {
+                if (question.solution == question.userInput) {
                     amountCorrectlySolved += 1;
                 }
                 break;

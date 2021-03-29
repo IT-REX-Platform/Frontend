@@ -196,7 +196,6 @@ export const SingleChoiceQuestion: React.FC<QuizProps> = (props) => {
             if (myNewQuestion === undefined || quiz === undefined) {
                 return;
             }
-            console.log(myNewQuestion);
             if (questionId === undefined) {
                 const request: RequestInit = RequestFactory.createPostRequestWithBody(myNewQuestion);
                 const response = endpointsQuestion.createQuestion(
