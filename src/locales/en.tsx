@@ -88,6 +88,7 @@ export const en = {
         contentProgressUntouched: "No Progress",
         contentProgressStarted: "Started",
         contentProgressCompleted: "Completed",
+        contentProgressDueTo: "Due on:",
 
         unpublished: "Unpublished",
         published: "Published",

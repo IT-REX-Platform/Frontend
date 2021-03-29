@@ -88,6 +88,7 @@ export const de = {
         contentProgressUntouched: "Kein Fortschritt",
         contentProgressStarted: "Gestartet",
         contentProgressCompleted: "Beendet",
+        contentProgressDueTo: "Zu bearbeiten bis:",
 
         unpublished: "Unveröffentlicht",
         published: "Veröffentlicht",

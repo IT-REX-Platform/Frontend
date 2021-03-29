@@ -73,7 +73,7 @@ export const ScreenChapterStudent: React.FC = () => {
     const timePeriods = course.timePeriods?.map((timePeriod) => {
         return {
             value: timePeriod.id,
-            label: "Due on: " + dateConverter(timePeriod.endDate),
+            label: dateConverter(timePeriod.endDate),
             end: timePeriod.endDate,
         };
     });
@@ -291,7 +291,9 @@ export const ScreenChapterStudent: React.FC = () => {
                             ListEmptyComponent={<Text>Videos here</Text>}
                             renderSectionHeader={({ section }) =>
                                 section.data.length > 0 ? (
-                                    <Text style={[styles.listItemSubtitle, { marginTop: 5 }]}>{section.title}</Text>
+                                    <Text style={[styles.listItemSubtitle, { marginTop: 5 }]}>
+                                        {i18n.t("itrex.contentProgressDueTo")} {section.title}
+                                    </Text>
                                 ) : null
                             }
                         />
@@ -481,10 +483,12 @@ export const ScreenChapterStudent: React.FC = () => {
         const vidPlayerInst = videoPlayer.current;
         vidPlayerInst?.getStatusAsync().then((status) => {
             if (status.isLoaded) {
-                vidPlayerInst.setPositionAsync(progress * (status.durationMillis ?? 0));
+                const millisToSet = progress * (status.durationMillis ?? 0);
+                if (!isNaN(millisToSet)) {
+                    vidPlayerInst.setPositionAsync(millisToSet);
+                }
             }
         });
-        // videoPlayer.current?.setPositionAsync(progress * 1000);
     }
 
     /** Update the course progress and re-set it to the state. */
