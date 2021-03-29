@@ -46,7 +46,7 @@ export const JoinCourseComponent: React.FC = () => {
 
     return (
         <>
-            <Header title={i18n.t("itrex.joinCourse")} />
+            <Header title={i18n.t("itrex.joinCourseTitle")} />
             <ImageBackground source={require("../constants/images/Background2.png")} style={styles.imageContainer}>
                 <View style={styles.container}>
                     <View style={{ marginTop: 70 }} />

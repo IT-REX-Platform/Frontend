@@ -35,26 +35,26 @@ export const SolveSingleChoiceCard: React.FC<QuestionCardProps> = (props) => {
             <>
                 <TouchableOpacity
                     disabled={singleAnswerZero}
-                    style={singleAnswerZero ? cardStyles.cardChoicesRight : cardStyles.cardChoicesSelect}
+                    style={singleAnswerZero ? cardStyles.cardChoicesResultSelected : cardStyles.cardChoicesSelect}
                     onPress={() => selectedSolution(0)}>
                     <Text style={cardStyles.textChoice}>{question.choices[0]}</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    style={singleAnswerOne ? cardStyles.cardChoicesRight : cardStyles.cardChoicesSelect}
+                    style={singleAnswerOne ? cardStyles.cardChoicesResultSelected : cardStyles.cardChoicesSelect}
                     disabled={singleAnswerOne}
                     onPress={() => selectedSolution(1)}>
                     <Text style={cardStyles.textChoice}>{question.choices[1]}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    style={singleAnswerTwo ? cardStyles.cardChoicesRight : cardStyles.cardChoicesSelect}
+                    style={singleAnswerTwo ? cardStyles.cardChoicesResultSelected : cardStyles.cardChoicesSelect}
                     disabled={singleAnswerTwo}
                     onPress={() => selectedSolution(2)}>
                     <Text style={cardStyles.textChoice}>{question.choices[2]}</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    style={singleAnswerThree ? cardStyles.cardChoicesRight : cardStyles.cardChoicesSelect}
+                    style={singleAnswerThree ? cardStyles.cardChoicesResultSelected : cardStyles.cardChoicesSelect}
                     disabled={singleAnswerThree}
                     onPress={() => selectedSolution(3)}>
                     <Text style={cardStyles.textChoice}>{question.choices[3]}</Text>
