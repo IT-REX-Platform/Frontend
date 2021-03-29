@@ -48,9 +48,6 @@ export const ScreenChapterStudent: React.FC = () => {
     const [chapterList, setChapterList] = useState<IChapter[]>([]);
     const [chapterPlaylist, setChapterPlaylist] = useState<IContent[]>([]);
 
-    // Setup an indicator whether the video list is currently loading.
-    const [isVideoListLoading, setVideoListLoading] = useState(true);
-
     // Update indicators for the playlist and the player's progress.
     const [playlistShouldUpdate, updatePlaylist] = useState<number>();
     const [playerShouldRestoreProgress, restorePlayerProgress] = useState<number>();
@@ -81,19 +78,15 @@ export const ScreenChapterStudent: React.FC = () => {
         };
     });
 
-    // Render UI for video list according to un-/available video data.
-    const renderVideoList = () => {
-        if (isVideoListLoading) {
-            // TODO: Loading indicator/style.
-            return <></>;
-        }
-    };
-
     // On focus, refresh the chapter(s) and progress.
     useFocusEffect(
         React.useCallback(() => {
             console.log("%cON FOCUS CALLBACK", "color:red;");
-            _getAllChapters();
+
+            // Update the chapter list with the chapters of the course, if any.
+            if (course.chapters !== undefined) {
+                setChapterList(course.chapters);
+            }
 
             updateCourseProgress();
         }, [course])
@@ -287,7 +280,6 @@ export const ScreenChapterStudent: React.FC = () => {
                 </View>
 
                 <View style={styles.playlistContainer}>
-                    {renderVideoList()}
                     <Animated.View style={{ flex: 1, maxWidth: "95%" }}>
                         <SectionList
                             style={styles.playlist}
@@ -370,7 +362,7 @@ export const ScreenChapterStudent: React.FC = () => {
                 if (contentProgress.state == "COMPLETED") {
                     itemProgress = 1;
                 } else {
-                    itemProgress = (contentProgress.progress / item.video?.length) * 100000;
+                    itemProgress = contentProgress.progress ?? 0;
                 }
                 break;
 
@@ -430,25 +422,27 @@ export const ScreenChapterStudent: React.FC = () => {
             return;
         }
 
-        if (status["isLoaded"] == true) {
+        if (status.isLoaded == true) {
             timeSinceLastProgressUpdatePush = timeSinceLastProgressUpdatePush + status["progressUpdateIntervalMillis"];
 
             if (timeSinceLastProgressUpdatePush >= 2500) {
                 timeSinceLastProgressUpdatePush = 0;
 
-                const progress: number = Math.floor(status["positionMillis"] * 0.001);
-                ProgressService.getInstance().updateContentProgress(
-                    course.id,
-                    currentVideo,
-                    progress,
-                    (newContentProgress, hasCreated) => {
-                        // TODO: This should only update on hasCreated, but if we do
-                        //       not update otherwise, we lose the last written progress
-                        //       in our local instance.
-                        /*if (hasCreated)*/
-                        updateCourseProgress();
-                    }
-                );
+                if (status.durationMillis !== undefined && status.durationMillis > 0) {
+                    const progress: number = status.positionMillis / status.durationMillis;
+                    ProgressService.getInstance().updateContentProgress(
+                        course.id,
+                        currentVideo,
+                        progress,
+                        (newContentProgress, hasCreated) => {
+                            // TODO: This should only update on hasCreated, but if we do
+                            //       not update otherwise, we lose the last written progress
+                            //       in our local instance.
+                            /*if (hasCreated)*/
+                            updateCourseProgress();
+                        }
+                    );
+                }
 
                 setVideoCompletedIfNecessary(currentVideo, status);
             }
@@ -458,9 +452,13 @@ export const ScreenChapterStudent: React.FC = () => {
     /** Sets the video progress as completed if it matches the criteria. */
     async function setVideoCompletedIfNecessary(contentRef: IContent, status: AVPlaybackStatus) {
         const contentProgress: IContentProgressTracker = courseProgress.contentProgressTrackers[contentRef.id];
-        if (contentProgress != undefined && contentProgress.state != ContentProgressTrackerState.COMPLETED) {
-            const position = status["positionMillis"];
-            const duration = status["durationMillis"];
+        if (
+            contentProgress != undefined &&
+            contentProgress.state != ContentProgressTrackerState.COMPLETED &&
+            status.isLoaded
+        ) {
+            const position = status.positionMillis;
+            const duration = status.durationMillis;
             if (duration != undefined && position + 15000 > duration) {
                 completeVideo(contentRef);
             }
@@ -477,9 +475,16 @@ export const ScreenChapterStudent: React.FC = () => {
         ) {
             return;
         }
-        let progress = courseProgress.contentProgressTrackers[currentVideo.id]?.progress;
-        if (progress == undefined) progress = 0;
-        videoPlayer.current?.setPositionAsync(progress * 1000);
+
+        const progress = courseProgress.contentProgressTrackers[currentVideo.id]?.progress ?? 0;
+
+        const vidPlayerInst = videoPlayer.current;
+        vidPlayerInst?.getStatusAsync().then((status) => {
+            if (status.isLoaded) {
+                vidPlayerInst.setPositionAsync(progress * (status.durationMillis ?? 0));
+            }
+        });
+        // videoPlayer.current?.setPositionAsync(progress * 1000);
     }
 
     /** Update the course progress and re-set it to the state. */
@@ -501,16 +506,8 @@ export const ScreenChapterStudent: React.FC = () => {
         });
     }
 
-    /** Gets all the chapters of the current course. */
-    function _getAllChapters() {
-        if (course.chapters !== undefined) {
-            setChapterList(course.chapters);
-        }
-    }
-
     /** Gets the chapter with the current id. Provides a consumer to execute once it has been received. */
     function _getChapter(consumer: (chapter: IChapter) => void) {
-        const request: RequestInit = RequestFactory.createGetRequest();
         console.log("%cChapters:", "color:red");
         console.log(course.chapters);
         console.log(chapterId);
@@ -532,8 +529,6 @@ export const ScreenChapterStudent: React.FC = () => {
             // Call a delayed consumer once everything has been finished.
             consumer(currChapter);
         }
-
-        setVideoListLoading(true);
     }
 
     /** Changes the current chapter to the next chapter in line. */
