@@ -59,7 +59,7 @@ export const de = {
         myCoursesDivider: "Meine Kurse",
         quickSettings: "Kurzeinstellung",
         lastAccessedCourse: "Zuletzt besuchter Kurs",
-        noCourseAccessed: "Kein Kurs wurde noch besucht.",
+        noCourseAccessed: "Es wurde noch kein Kurs besucht.",
         noCoursesLecturer: "Bisher wurden keine Kurse erstellt!",
         noCoursesStudent: "Bisher wurde keinem Kursen beigetreten!",
 
