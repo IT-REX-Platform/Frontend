@@ -1,3 +1,3 @@
 export type IChoices = {
-    [index: string]: string;
+    [index: number]: string;
 };

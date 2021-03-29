@@ -24,10 +24,10 @@ export const SolveMultipleChoiceCard: React.FC<QuestionCardProps> = (props) => {
 
     useEffect(() => {
         const solutionObj: ISolutionMultipleChoice = {
-            "0": singleAnswerZero,
-            "1": singleAnswerOne,
-            "2": singleAnswerTwo,
-            "3": singleAnswerThree,
+            0: singleAnswerZero,
+            1: singleAnswerOne,
+            2: singleAnswerTwo,
+            3: singleAnswerThree,
         };
         onSolutionClicked({ ...question, userInput: solutionObj });
     }, [singleAnswerZero, singleAnswerOne, singleAnswerTwo, singleAnswerThree]);

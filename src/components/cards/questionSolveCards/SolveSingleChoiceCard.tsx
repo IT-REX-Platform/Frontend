@@ -36,50 +36,50 @@ export const SolveSingleChoiceCard: React.FC<QuestionCardProps> = (props) => {
                 <TouchableOpacity
                     disabled={singleAnswerZero}
                     style={singleAnswerZero ? cardStyles.cardChoicesRight : cardStyles.cardChoicesSelect}
-                    onPress={() => selectedSolution("0")}>
+                    onPress={() => selectedSolution(0)}>
                     <Text style={cardStyles.textChoice}>{question.choices[0]}</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
                     style={singleAnswerOne ? cardStyles.cardChoicesRight : cardStyles.cardChoicesSelect}
                     disabled={singleAnswerOne}
-                    onPress={() => selectedSolution("1")}>
+                    onPress={() => selectedSolution(1)}>
                     <Text style={cardStyles.textChoice}>{question.choices[1]}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={singleAnswerTwo ? cardStyles.cardChoicesRight : cardStyles.cardChoicesSelect}
                     disabled={singleAnswerTwo}
-                    onPress={() => selectedSolution("2")}>
+                    onPress={() => selectedSolution(2)}>
                     <Text style={cardStyles.textChoice}>{question.choices[2]}</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
                     style={singleAnswerThree ? cardStyles.cardChoicesRight : cardStyles.cardChoicesSelect}
                     disabled={singleAnswerThree}
-                    onPress={() => selectedSolution("3")}>
+                    onPress={() => selectedSolution(3)}>
                     <Text style={cardStyles.textChoice}>{question.choices[3]}</Text>
                 </TouchableOpacity>
             </>
         );
     }
 
-    function selectedSolution(index: string) {
-        if (index === "0") {
+    function selectedSolution(index: number) {
+        if (index === 0) {
             setSingleAnswerZero(true);
             setSingleAnswerOne(false);
             setSingleAnswerTwo(false);
             setSingleAnswerThree(false);
-        } else if (index === "1") {
+        } else if (index === 1) {
             setSingleAnswerZero(false);
             setSingleAnswerOne(true);
             setSingleAnswerTwo(false);
             setSingleAnswerThree(false);
-        } else if (index === "2") {
+        } else if (index === 2) {
             setSingleAnswerZero(false);
             setSingleAnswerOne(false);
             setSingleAnswerTwo(true);
             setSingleAnswerThree(false);
-        } else if (index === "3") {
+        } else if (index === 3) {
             setSingleAnswerZero(false);
             setSingleAnswerOne(false);
             setSingleAnswerTwo(false);
