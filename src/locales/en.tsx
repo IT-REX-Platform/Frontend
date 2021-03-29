@@ -98,7 +98,6 @@ export const en = {
         noCoursesFilter: "No courses were found for this selection!",
         filterPubUnpub: "Publishing",
         filterActiveInActive: "Activity",
-        filterLabel: "Filters:",
 
         badRequest: "Bad request.",
         notFound: "Not found.",
