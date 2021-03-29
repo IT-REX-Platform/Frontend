@@ -1,20 +1,20 @@
 import React from "react";
 import { ImageBackground, Text, View } from "react-native";
 import { TextButton } from "../../../uiElements/TextButton";
-import { useNavigation, useRoute } from "@react-navigation/core";
-import { RouteProp } from "@react-navigation/native";
-import { CourseStackParamList } from "../../../../constants/navigators/NavigationRoutes";
+import { useNavigation } from "@react-navigation/core";
 import { IQuiz } from "../../../../types/IQuiz";
 import { quizStyles } from "../quizStyles";
 import i18n from "../../../../locales";
 import { LocalizationContext } from "../../../Context";
 
-type ScreenQuizOverviewProps = RouteProp<CourseStackParamList, "QUIZ_OVERVIEW">;
+interface ScreenQuizOverviewProps {
+    quiz: IQuiz;
+    chapterId: string;
+}
 
-export const ScreenQuizOverview: React.FC = () => {
+export const ScreenQuizOverview: React.FC<ScreenQuizOverviewProps> = (props) => {
+    const { quiz, chapterId } = props;
     React.useContext(LocalizationContext);
-    const route = useRoute<ScreenQuizOverviewProps>();
-    const quiz: IQuiz = route.params.quiz;
     const navigation = useNavigation();
 
     return (
@@ -35,6 +35,7 @@ export const ScreenQuizOverview: React.FC = () => {
                         onPress={() => {
                             navigation.navigate("QUIZ_SOLVE", {
                                 quiz,
+                                chapterId,
                             });
                         }}></TextButton>
                 </View>
