@@ -21,7 +21,6 @@ export const CreationSingleChoiceCard: React.FC<QuestionCardProps> = (props) => 
     const question = props.question;
     const quiz = props.quiz;
     const courseId = props.courseId;
-
     return (
         <TouchableOpacity
             style={cardStyles.card}
@@ -38,7 +37,7 @@ export const CreationSingleChoiceCard: React.FC<QuestionCardProps> = (props) => 
     function renderChoices() {
         return (
             <>
-                {question.solution === "0" ? (
+                {question.solution == 0 ? (
                     <View style={cardStyles.cardChoicesRight}>
                         <Text style={cardStyles.textChoice}>{question.choices[0]}</Text>
                     </View>
@@ -48,7 +47,7 @@ export const CreationSingleChoiceCard: React.FC<QuestionCardProps> = (props) => 
                     </View>
                 )}
 
-                {question.solution === "1" ? (
+                {question.solution == 1 ? (
                     <View style={cardStyles.cardChoicesRight}>
                         <Text style={cardStyles.textChoice}>{question.choices[1]}</Text>
                     </View>
@@ -58,7 +57,7 @@ export const CreationSingleChoiceCard: React.FC<QuestionCardProps> = (props) => 
                     </View>
                 )}
 
-                {question.solution === "2" ? (
+                {question.solution == 2 ? (
                     <View style={cardStyles.cardChoicesRight}>
                         <Text style={cardStyles.textChoice}>{question.choices[2]}</Text>
                     </View>
@@ -68,7 +67,7 @@ export const CreationSingleChoiceCard: React.FC<QuestionCardProps> = (props) => 
                     </View>
                 )}
 
-                {question.solution === "3" ? (
+                {question.solution == 3 ? (
                     <View style={cardStyles.cardChoicesRight}>
                         <Text style={cardStyles.textChoice}>{question.choices[3]}</Text>
                     </View>
