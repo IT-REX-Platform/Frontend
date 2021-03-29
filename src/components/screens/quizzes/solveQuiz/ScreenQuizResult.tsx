@@ -20,6 +20,7 @@ export const ScreenQuizResult: React.FC = () => {
     React.useContext(LocalizationContext);
     const route = useRoute<ScreenQuizResultProps>();
     const quiz: IQuiz = route.params.quiz;
+    const chapterId: string = route.params.chapterId;
 
     const navigation = useNavigation();
     return (
@@ -53,7 +54,8 @@ export const ScreenQuizResult: React.FC = () => {
                             clearQuizEntries(quiz);
 
                             // Navigate back to the Overview
-                            navigation.navigate("INFO", { screen: "OVERVIEW" });
+                            // navigation.navigate("INFO", { screen: "OVERVIEW" });
+                            navigation.navigate("CHAPTER_CONTENT", { chapterId });
                         }}></TextButton>
                 </View>
             </ScrollView>

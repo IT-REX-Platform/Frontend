@@ -30,7 +30,6 @@ import ProgressService from "../../services/ProgressService";
 import { ScreenQuizOverview } from "./quizzes/solveQuiz/ScreenQuizOverview";
 import { EndpointsQuiz } from "../../api/endpoints/EndpointsQuiz";
 import { IQuiz } from "../../types/IQuiz";
-import { render } from "react-dom";
 
 const endpointsChapter = new EndpointsChapter();
 const endpointsProgress = new EndpointsProgress();
@@ -289,7 +288,7 @@ export const ScreenChapterStudent: React.FC = () => {
                         />
                     )}
                     {currentVideo?.contentReferenceType === CONTENTREFERENCETYPE.QUIZ && !!currentQuiz && (
-                        <ScreenQuizOverview quiz={currentQuiz}></ScreenQuizOverview>
+                        <ScreenQuizOverview quiz={currentQuiz} chapterId={chapterId}></ScreenQuizOverview>
                     )}
                     <View style={styles.iconContainer}>
                         <Text style={[styles.videoTitle, { paddingTop: "1.5%" }]}>{currentTitle}</Text>

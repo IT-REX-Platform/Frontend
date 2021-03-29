@@ -9,10 +9,11 @@ import { LocalizationContext } from "../../../Context";
 
 interface ScreenQuizOverviewProps {
     quiz: IQuiz;
+    chapterId: string;
 }
 
 export const ScreenQuizOverview: React.FC<ScreenQuizOverviewProps> = (props) => {
-    const { quiz } = props;
+    const { quiz, chapterId } = props;
     React.useContext(LocalizationContext);
     const navigation = useNavigation();
 
@@ -34,6 +35,7 @@ export const ScreenQuizOverview: React.FC<ScreenQuizOverviewProps> = (props) => 
                         onPress={() => {
                             navigation.navigate("QUIZ_SOLVE", {
                                 quiz,
+                                chapterId,
                             });
                         }}></TextButton>
                 </View>
