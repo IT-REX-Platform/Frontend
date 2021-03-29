@@ -42,28 +42,6 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
         setUserInfo(AuthenticationService.getInstance().getUserInfoCached());
     }, []);
 
-    function getQuizComponent(contentReference: IContent) {
-        return (
-            <TouchableOpacity
-                style={{ flexDirection: "row" }}
-                onPress={() => {
-                    contentReference !== undefined && navigateToQuiz(contentReference.contentId);
-                }}>
-                <MaterialCommunityIcons name="file-question-outline" size={28} color="white" style={styles.icon} />
-
-                <View
-                    style={{
-                        flex: 1,
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                    }}>
-                    <Text style={styles.chapterMaterialElementText}>{contentReference.contentId}</Text>
-                </View>
-            </TouchableOpacity>
-        );
-    }
-
     const [courseProgress, setCourseProgress] = useState<ICourseProgressTracker>({});
     useEffect(() => {
         updateCourseProgress();
@@ -98,12 +76,17 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
 
                                 {contentReference.contentReferenceType == CONTENTREFERENCETYPE.QUIZ && (
                                     <>
-                                        <MaterialCommunityIcons
-                                            name="file-question-outline"
-                                            size={28}
-                                            color="white"
-                                            style={styles.icon}
-                                        />
+                                        <TouchableOpacity
+                                            onPress={() => {
+                                                navigateToQuiz(contentReference.contentId);
+                                            }}>
+                                            <MaterialCommunityIcons
+                                                name="file-question-outline"
+                                                size={28}
+                                                color="white"
+                                                style={styles.icon}
+                                            />
+                                        </TouchableOpacity>
                                     </>
                                 )}
 

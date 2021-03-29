@@ -69,15 +69,14 @@ export default class ProgressService {
         this.updateCourseProgressFor(courseId, (courseProgress) => {
             const progress: { total: number; totalMax: number } = { total: 0, totalMax: 0 };
 
-            if (courseProgress.contentProgressTrackers === undefined) {
-                consumer(courseProgress, progress);
-                return;
-            }
-
             this.endpointsCourse
                 .getCourse(RequestFactory.createGetRequest(), courseId, undefined, i18n.t("itrex.getCourseError"))
                 .then((receivedCourse) => {
                     if (receivedCourse.chapters === undefined) {
+                        consumer(courseProgress, progress);
+                        return;
+                    }
+                    if (courseProgress.contentProgressTrackers === undefined) {
                         consumer(courseProgress, progress);
                         return;
                     }
@@ -179,10 +178,14 @@ export default class ProgressService {
      * @param consumer the consumer to react to the created content progress tracker.
      */
     public createContentProgress(
-        courseId: string,
+        courseId: string | undefined,
         contentRef: IContent,
         consumer: (contentProgress: IContentProgressTracker) => void
     ): void {
+        if (courseId == undefined) {
+            return;
+        }
+
         this.getContentProgressFor(courseId, contentRef, (contentProgress) => {
             // Does already exist, just handle it.
             if (contentProgress !== undefined) {
@@ -216,11 +219,14 @@ export default class ProgressService {
      * @param consumer the consumer to react to the changed content progress tracker, has info whether the update had to create the tracker first.
      */
     public updateContentProgress(
-        courseId: string,
+        courseId: string | undefined,
         contentRef: IContent,
         progress: number,
         consumer: (contentProgress: IContentProgressTracker, hasCreated: boolean) => void
     ): void {
+        if (courseId == undefined) {
+            return;
+        }
         this.getContentProgressFor(courseId, contentRef, (contentProgress) => {
             if (contentProgress === undefined) {
                 // No progress yet, create it first.
@@ -275,10 +281,13 @@ export default class ProgressService {
      * @param consumer the consumer to react to the completed content progress tracker.
      */
     public completeContentProgress(
-        courseId: string,
+        courseId: string | undefined,
         contentRef: IContent,
         consumer: (contentProgress: IContentProgressTracker) => void
     ): void {
+        if (courseId == undefined) {
+            return;
+        }
         this.getContentProgressFor(courseId, contentRef, (contentProgress) => {
             // The update handler for a content progress tracker.
             const handleUpdate = (contentProgress: IContentProgressTracker) => {
