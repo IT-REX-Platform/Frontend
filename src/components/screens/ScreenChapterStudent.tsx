@@ -57,7 +57,7 @@ export const ScreenChapterStudent: React.FC = () => {
 
     // The current video/content item and it's title.
     const [currentVideo, setCurrentVideo] = useState<IContent>();
-    const [currentTitle, setCurrentTitle] = useState<String>();
+    const [currentTitle, setCurrentTitle] = useState<string>();
 
     // Setup the video section list split by due date.
     const [videoSections, setVideoSections] = useState<IVideoListSection[]>([]);
@@ -332,9 +332,9 @@ export const ScreenChapterStudent: React.FC = () => {
     function getContentName(item: IContent) {
         switch (item.contentReferenceType) {
             case CONTENTREFERENCETYPE.VIDEO:
-                return <Text>{item.video?.title}</Text>;
+                return <Text>{item.video?.title ?? item.id}</Text>;
             case CONTENTREFERENCETYPE.QUIZ:
-                return <Text>{item.id}</Text>;
+                return <Text>{item.quiz?.name ?? item.id}</Text>;
             default:
                 return <></>; // TODO: Add an error maybe?
         }
