@@ -264,6 +264,9 @@ export const ScreenChapterStudent: React.FC = () => {
                         style={styles.video}
                         ref={videoPlayer}
                         onPlaybackStatusUpdate={async (status) => heartbeat(status)}
+                        onLoad={(status) => {
+                            restoreWatchProgress();
+                        }}
                         source={{ uri: _getVideoUrl() }}
                         rate={1.0}
                         volume={1.0}
@@ -514,7 +517,7 @@ export const ScreenChapterStudent: React.FC = () => {
         console.log(course.chapters);
         console.log(chapterId);
 
-        let currChapter = course.chapters?.find((chpt: IChapter) => {
+        const currChapter = course.chapters?.find((chpt: IChapter) => {
             return chpt !== undefined && chpt.id == chapterId;
         });
         console.log("%cCurrChapter:", "color:red");
