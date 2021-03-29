@@ -82,7 +82,6 @@ export default class AuthenticationService {
                         // Refetch User-Info
                         this.getUserInfo((user) => {
                             this.currentUser = user;
-                            console.log(this.currentUser);
                             resolve(tResponse);
                         });
                     })
