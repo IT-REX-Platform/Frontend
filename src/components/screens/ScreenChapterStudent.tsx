@@ -126,9 +126,7 @@ export const ScreenChapterStudent: React.FC = () => {
 
         // Check for the progress and update the title.
         setIndicatorForUpdate(restorePlayerProgress);
-        // TODO: Real title.
-
-        setCurrentTitle(currentVideo?.id);
+        setCurrentTitle(currentVideo?.video?.title ?? currentVideo?.id);
     }, [currentVideo]);
 
     // This efffect updates whenever the progress of a video has to be restored.
