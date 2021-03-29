@@ -115,7 +115,8 @@ export const en = {
         myNewChapter: "My new chapter",
         save: "Save",
         nextChapter: "Next Chapter",
-        lastChapter: "Last Chapter",
+        lastChapter: "Previous Chapter",
+        chapterBackToOverview: "Back to Overview",
 
         saveAndReturn: "Save & Return",
 

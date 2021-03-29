@@ -241,7 +241,9 @@ export const ScreenChapterStudent: React.FC = () => {
                         style={[styles.icon, { justifyContent: "center" }]}
                     />
                     <Text style={[styles.chapterNavigation, { color: "rgba(255,255,255,0.8)" }]}>
-                        {i18n.t("itrex.lastChapter")}{" "}
+                        {getCurrentChapterIndex() === 0
+                            ? i18n.t("itrex.chapterBackToOverview")
+                            : i18n.t("itrex.lastChapter")}
                     </Text>
                 </TouchableOpacity>
 
@@ -251,7 +253,9 @@ export const ScreenChapterStudent: React.FC = () => {
 
                 <TouchableOpacity style={styles.iconBox} onPress={() => gotoNextChapter()}>
                     <Text style={[styles.chapterNavigation, { color: "rgba(255,255,255,0.8)" }]}>
-                        {i18n.t("itrex.nextChapter")}{" "}
+                        {getCurrentChapterIndex() === chapterList.length - 1
+                            ? i18n.t("itrex.chapterBackToOverview")
+                            : i18n.t("itrex.nextChapter")}
                     </Text>
                     <MaterialIcons
                         name="arrow-right"
@@ -529,7 +533,7 @@ export const ScreenChapterStudent: React.FC = () => {
     /** Gets the chapter with the current id. Provides a consumer to execute once it has been received. */
     function syncToCurrentChapter() {
         const currChapter = course.chapters?.find((chpt: IChapter) => {
-            return chpt !== undefined && chpt.id === chapterId;
+            return chpt?.id === chapterId;
         });
         console.log("CurrChapter:");
         console.log(currChapter);
@@ -542,6 +546,11 @@ export const ScreenChapterStudent: React.FC = () => {
         if (currChapter.contentReferences !== undefined) {
             setChapterPlaylist(currChapter.contentReferences);
         }
+    }
+
+    /** Returns the index of the current chapter in the list. */
+    function getCurrentChapterIndex() {
+        return chapterList.findIndex((i) => i.id === chapterId);
     }
 
     /** Changes the current chapter to the next chapter in line. */
@@ -560,7 +569,7 @@ export const ScreenChapterStudent: React.FC = () => {
             return;
         }
 
-        let chapterIndex = chapterList.findIndex((i) => i.id == chapterId);
+        let chapterIndex = getCurrentChapterIndex();
         chapterIndex += indexOffset;
 
         if (chapterList[chapterIndex] === undefined) {
