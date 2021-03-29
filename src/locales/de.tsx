@@ -25,6 +25,7 @@ export const de = {
         createCourse: "Neuen Kurs erstellen",
         joinACourse: "Einem Kurs beitreten",
         joinCourse: "Kurs beitreten",
+        joinCourseTitle: "Kurs beitreten",
         joinCourseNoCourseError: "Kurs beitreten fehlgeschlagen! Kein veröffentlichter Kurs mit dieser ID gefunden.",
         joinCourseAlreadyMember: "Du bist bereits ein Mitglied dieses Kurses. Du wirst weitergeleitet...",
         leaveCourse: "Kurs verlassen",
@@ -37,7 +38,7 @@ export const de = {
         en: "EN",
         de: "DE",
 
-        toCourse: "Kurserstellung",
+        createCourseTitle: "Kurs erstellen",
         courseNameInvalid: "Kursname ungültig.",
         courseNameTooShort: "Kursname muss mindestens 4 Symbole lang sein.",
         courseDescriptionInvalid: "Kursbeschreibung muss mindestens 5 Symbole lang sein.",
