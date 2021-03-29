@@ -22,7 +22,7 @@ describe("test clearQuizEntries", () => {
     it("should remove set userInput", () => {
         const quiz: IQuiz = quizList[0];
         expect(quiz.questions[0].userInput).toBeUndefined();
-        quiz.questions[0].userInput = { "0": true };
+        quiz.questions[0].userInput = { 0: true };
         expect(quiz.questions[0].userInput).toBeDefined();
         expect(quiz.questions[0].userInput[0]).toBeTruthy();
         clearQuizEntries(quiz);
@@ -46,7 +46,7 @@ describe("test correctnessPercentage", () => {
             courseId: "testCourse",
         };
         // Set correct answers for the questions
-        quiz.questions[0].userInput = "3";
+        quiz.questions[0].userInput = 3;
         quiz.questions[1].userInput = solutionMultipleChoice;
         quiz.questions[2].userInput = 3.1412;
 
@@ -72,7 +72,7 @@ describe("test correctlySolved", () => {
             courseId: "testCourse",
         };
         // Set correct answers for the questions
-        quiz.questions[0].userInput = "3";
+        quiz.questions[0].userInput = 3;
         quiz.questions[1].userInput = solutionMultipleChoice;
         quiz.questions[2].userInput = 3.1412;
 

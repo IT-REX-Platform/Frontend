@@ -7,7 +7,6 @@ import { EndpointsQuiz } from "../../api/endpoints/EndpointsQuiz";
 import { RequestFactory } from "../../api/requests/RequestFactory";
 import { dark } from "../../constants/themes/dark";
 import i18n from "../../locales";
-import { ICourse } from "../../types/ICourse";
 import { IQuiz } from "../../types/IQuiz";
 import { CourseContext, LocalizationContext } from "../Context";
 import { TextButton } from "../uiElements/TextButton";
@@ -34,7 +33,6 @@ export const QuizPoolComponent: React.FC = () => {
     useFocusEffect(
         React.useCallback(() => {
             _getAllQuizzes();
-            console.log(quizzes);
         }, [course])
     );
 
@@ -46,7 +44,6 @@ export const QuizPoolComponent: React.FC = () => {
                 <TextButton
                     title={i18n.t("itrex.createQuiz")}
                     onPress={() => {
-                        console.log("Create Quiz");
                         navigation.navigate("CREATE_QUIZ");
                     }}
                 />
@@ -78,7 +75,6 @@ export const QuizPoolComponent: React.FC = () => {
         <TouchableOpacity
             activeOpacity={0.3}
             onPress={() => {
-                console.log(item);
                 navigation.navigate("CREATE_QUIZ", {
                     quiz: item,
                     courseId: course.id,

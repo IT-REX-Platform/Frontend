@@ -78,7 +78,7 @@ export const ScreenAddChapter: React.FC = () => {
     const initialSelection: { [id: string]: string } = {};
     const [selectedValues, setSelectedValues] = useState(initialSelection);
 
-    const timePeriods = course.timePeriods?.map((timePeriod, idx) => {
+    const timePeriods = course.timePeriods?.map((timePeriod) => {
         return {
             value: timePeriod.id,
             label: timePeriod.fullName,
@@ -106,7 +106,7 @@ export const ScreenAddChapter: React.FC = () => {
                     showsVerticalScrollIndicator={true}
                     data={videoPoolList}
                     renderItem={listItem}
-                    keyExtractor={(item, index) => `draggable-item-${item.id}`}
+                    keyExtractor={(item) => `draggable-item-${item.id}`}
                     ListEmptyComponent={emptyVideoList}
                 />
             </View>
@@ -131,7 +131,7 @@ export const ScreenAddChapter: React.FC = () => {
                     showsVerticalScrollIndicator={true}
                     data={quizPoolList}
                     renderItem={quizListItem}
-                    keyExtractor={(item, index) => `draggableQuiz-item-${item.id}`}
+                    keyExtractor={(item) => `draggableQuiz-item-${item.id}`}
                     ListEmptyComponent={emptyQuizList}
                 />
             </View>
@@ -148,7 +148,7 @@ export const ScreenAddChapter: React.FC = () => {
                     borderColor: dark.theme.darkBlue4,
                     borderWidth: 2,
                     borderRadius: 5,
-                    maxWidth: 870,
+                    maxWidth: 470,
                 }}>
                 <TouchableOpacity onPress={() => removeContent(item)}>
                     <MaterialIcons name="remove" size={28} color="white" style={styles.icon} />
@@ -455,28 +455,30 @@ export const ScreenAddChapter: React.FC = () => {
 
     return (
         <View style={styles.container}>
-            <View style={[styles.headContainer]}>
-                <View style={styles.borderContainer}>
-                    {/*<TextInput label="name" value={courseName} onChangeText={(text) => setCourseName(text)} />*/}
-                    <TextInput
-                        style={styles.courseHeader}
-                        value={chapterName}
-                        onChangeText={(text) => setChapterName(text)}
-                    />
-                    <MaterialCommunityIcons name="pen" size={24} color={dark.theme.darkGreen} style={styles.icon} />
-                </View>
-                <View style={styles.buttonContainer}>
-                    <TextButton title={i18n.t("itrex.saveAndReturn")} onPress={() => saveChapter(true)} />
-                    <TextButton title={i18n.t("itrex.save")} onPress={() => saveChapter(false)} />
-                </View>
-            </View>
+            <ImageBackground source={require("../../../constants/images/Background2.png")} style={styles.image}>
+                <View style={[styles.headContainer]}>
+                    <View style={styles.borderContainer}>
+                        {/*<TextInput label="name" value={courseName} onChangeText={(text) => setCourseName(text)} />*/}
+                        <TextInput
+                            style={styles.courseHeader}
+                            value={chapterName}
+                            onChangeText={(text) => setChapterName(text)}
+                        />
+                        <MaterialCommunityIcons name="pen" size={24} color={dark.theme.darkGreen} style={styles.icon} />
+                    </View>
+                    <View style={{ flexDirection: "row", paddingRight: "20px" }}>
+                        <TextButton title={i18n.t("itrex.saveAndReturn")} onPress={() => saveChapter(true)} />
 
-            <View style={styles.contentContainer}>
-                <View style={styles.sequenceArea}>
-                    <ImageBackground
-                        source={require("../../../constants/images/Background1-4.png")}
-                        style={styles.image}
-                        imageStyle={{ opacity: 0.3, position: "absolute", resizeMode: "cover" }}>
+                        <View>
+                            <TextButton title={i18n.t("itrex.save")} onPress={() => saveChapter(false)} />
+                        </View>
+                    </View>
+                </View>
+
+                <View style={styles.headContainer}></View>
+
+                <View style={styles.contentContainer}>
+                    <View style={styles.sequenceArea}>
                         <View style={styles.containerTop}>
                             <Text style={{ marginBottom: 10, fontSize: 20, color: "white" }}>
                                 {i18n.t("itrex.chapterContentList")}
@@ -486,19 +488,19 @@ export const ScreenAddChapter: React.FC = () => {
                                 showsVerticalScrollIndicator={true}
                                 data={contentList}
                                 renderItem={listRemoveItem}
-                                keyExtractor={(item, index) => `draggable1-item-${item.id}`}
+                                keyExtractor={(item) => `draggable1-item-${item.id}`}
                                 onDragEnd={({ to, from }) => reorderContent(to, from)}
                             />
                         </View>
-                    </ImageBackground>
+                    </View>
+                    <View style={styles.contentContainerAdd}>
+                        <View style={styles.containerTop}>{renderUi()}</View>
+                    </View>
+                    <View style={styles.contentContainerAdd}>
+                        <View style={styles.containerTop}>{renderQuizList()}</View>
+                    </View>
                 </View>
-                <View style={[styles.contentContainerAdd, { marginRight: 36 }]}>
-                    <View style={styles.containerTop}>{renderUi()}</View>
-                </View>
-                <View style={styles.contentContainerAdd}>
-                    <View style={styles.containerTop}>{renderQuizList()}</View>
-                </View>
-            </View>
+            </ImageBackground>
         </View>
     );
 
@@ -665,56 +667,44 @@ const styles = StyleSheet.create({
     },
     headContainer: {
         flexDirection: "row",
-        //alignItems: "flex-start",
-        padding: 48,
-        paddingLeft: 60,
+        alignItems: "flex-start",
+        paddingTop: 36,
+        paddingLeft: 36,
     },
     borderContainer: {
         flex: 1,
         flexDirection: "row",
-        alignItems: "flex-end",
-        //justifyContent: "flex-start",
-        borderColor: dark.theme.grey,
-        borderBottomWidth: 1.5,
-        //padding: "0.5%",
-        //alignContent: "center"
+        borderBottomColor: "rgba(70,74,91,0.5)",
+        borderBottomWidth: 3,
+        width: "80%",
     },
-
-    buttonContainer: {
-        flexDirection: "row",
-        paddingLeft: 36,
-    },
-
     contentContainer: {
         flex: 2,
         flexDirection: "row",
-        paddingLeft: 48,
-        paddingRight: 36,
+        paddingLeft: "2%",
+        paddingRight: "2%",
         paddingBottom: 24,
         paddingTop: 24,
     },
     contentContainerAdd: {
         flex: 1,
-        padding: 5,
-        paddingTop: 24,
-        //backgroundColor: "rgba(1,43,86,0.5)",
-        borderWidth: 3,
-        borderColor: dark.theme.darkBlue3,
-        alignItems: "center",
-        maxWidth: "20%",
-    },
-    sequenceArea: {
-        flex: 1,
-        //backgroundColor: "rgba(1,43,86,0.5)",
+        backgroundColor: "rgba(1,43,86,0.5)",
         borderWidth: 3,
         borderColor: dark.theme.darkBlue3,
         marginRight: 36,
-        //padding: 5,
-        paddingTop: 24,
+        alignItems: "center",
+        maxWidth: 280,
+    },
+    sequenceArea: {
+        flex: 1,
+        backgroundColor: "rgba(1,43,86,0.5)",
+        borderWidth: 3,
+        borderColor: dark.theme.darkBlue3,
+        marginRight: 36,
         alignItems: "stretch",
+        paddingTop: 24,
     },
     courseHeader: {
-        //alignSelf:"flex-end",
         color: "white",
         fontSize: 24,
         fontWeight: "bold",
@@ -726,7 +716,7 @@ const styles = StyleSheet.create({
     },
     icon: {
         position: "relative",
-        //alignItems: "flex-start",
+        alignItems: "flex-start",
     },
     containerCentered: {
         flex: 1,
@@ -738,7 +728,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     list: {
-        height: 1, // Actual value is unimportant, this just makes the video list permanently scrollable, disregarding the current view height.
+        height: 1,
         width: "100%",
     },
     listItemTitle: {
