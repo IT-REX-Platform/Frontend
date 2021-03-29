@@ -52,9 +52,6 @@ export const ScreenQuizResult: React.FC = () => {
                         title={i18n.t("itrex.returnToOverview")}
                         onPress={() => {
                             clearQuizEntries(quiz);
-
-                            // Navigate back to the Overview
-                            // navigation.navigate("INFO", { screen: "OVERVIEW" });
                             navigation.navigate("CHAPTER_CONTENT", { chapterId });
                         }}></TextButton>
                 </View>

@@ -52,9 +52,7 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
             style={styles.chapterContainer}
             onPress={() => {
                 editMode == true
-                    ? navigation.navigate("CHAPTER", {
-                          chapterId: chapter?.id,
-                      })
+                    ? navigation.navigate("CHAPTER", { chapterId: chapter?.id })
                     : navigation.navigate("CHAPTER_CONTENT", { chapterId: chapter?.id });
             }}>
             <View style={styles.chapterTopRow}>
