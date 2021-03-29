@@ -98,7 +98,6 @@ export const de = {
         noCoursesFilter: "Es wurden keine Kurse für diese Auswahl gefunden!",
         filterPubUnpub: "Veröffentlichung",
         filterActiveInActive: "Aktivität",
-        filterLabel: "Filter:",
 
         badRequest: "Ungültige Anfrage.",
         notFound: "Nicht gefunden.",
