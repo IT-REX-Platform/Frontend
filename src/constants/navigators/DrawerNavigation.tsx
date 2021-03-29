@@ -15,6 +15,7 @@ import { ScreenCourse } from "../../components/screens/ScreenCourse";
 import { dark } from "../themes/dark";
 import { CreateCourseComponent } from "../../components/CreateCourseComponent";
 import { JoinCourseComponent } from "../../components/JoinCourseComponent";
+import { MinimalScreenForDrawer } from "../MinimalScreenForDrawer";
 
 const Drawer = createDrawerNavigator<RootDrawerParamList>();
 
@@ -43,7 +44,7 @@ export const DrawerNavigator: React.FC = () => {
 function _selectDrawerType(dimensions: ScaledSize): "permanent" | "front" {
     switch (Platform.OS) {
         case "web":
-            return dimensions.width >= 1280 ? "permanent" : "front";
+            return dimensions.width >= MinimalScreenForDrawer.SIZE ? "permanent" : "front";
         default:
             return "front";
     }
