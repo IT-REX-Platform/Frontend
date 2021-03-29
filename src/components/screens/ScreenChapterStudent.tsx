@@ -27,6 +27,9 @@ import { calculateVideoSize } from "../../services/calculateVideoSize";
 import { LinearGradient } from "expo-linear-gradient";
 import { dateConverter } from "../../helperScripts/validateCourseDates";
 import ProgressService from "../../services/ProgressService";
+import { ScreenQuizOverview } from "./quizzes/solveQuiz/ScreenQuizOverview";
+import { EndpointsQuiz } from "../../api/endpoints/EndpointsQuiz";
+import { IQuiz } from "../../types/IQuiz";
 
 const endpointsChapter = new EndpointsChapter();
 const endpointsProgress = new EndpointsProgress();
@@ -59,6 +62,8 @@ export const ScreenChapterStudent: React.FC = () => {
     // The current video/content item and it's title.
     const [currentVideo, setCurrentVideo] = useState<IContent>();
     const [currentTitle, setCurrentTitle] = useState<string>();
+
+    const [currentQuiz, setCurrentQuiz] = useState<IQuiz>();
 
     // Setup the video section list split by due date.
     const [videoSections, setVideoSections] = useState<IVideoListSection[]>([]);
@@ -136,6 +141,7 @@ export const ScreenChapterStudent: React.FC = () => {
         setIndicatorForUpdate(restorePlayerProgress);
         // TODO: Real title.
         setCurrentTitle(currentVideo?.id);
+        renderQuiz();
     }, [currentVideo]);
 
     // This efffect updates whenever the progress of a video has to be restored.
@@ -267,18 +273,23 @@ export const ScreenChapterStudent: React.FC = () => {
 
             <View style={styles.contentContainer}>
                 <View style={styles.videoContainer}>
-                    <Video
-                        style={styles.video}
-                        ref={videoPlayer}
-                        onPlaybackStatusUpdate={async (status) => heartbeat(status)}
-                        source={{ uri: _getVideoUrl() }}
-                        rate={1.0}
-                        volume={1.0}
-                        isMuted={false}
-                        resizeMode="cover"
-                        shouldPlay={false}
-                        useNativeControls={true}
-                    />
+                    {currentVideo?.contentReferenceType === CONTENTREFERENCETYPE.VIDEO && (
+                        <Video
+                            style={styles.video}
+                            ref={videoPlayer}
+                            onPlaybackStatusUpdate={async (status) => heartbeat(status)}
+                            source={{ uri: _getVideoUrl() }}
+                            rate={1.0}
+                            volume={1.0}
+                            isMuted={false}
+                            resizeMode="cover"
+                            shouldPlay={false}
+                            useNativeControls={true}
+                        />
+                    )}
+                    {currentVideo?.contentReferenceType === CONTENTREFERENCETYPE.QUIZ && !!currentQuiz && (
+                        <ScreenQuizOverview quiz={currentQuiz} chapterId={chapterId}></ScreenQuizOverview>
+                    )}
                     <View style={styles.iconContainer}>
                         <Text style={[styles.videoTitle, { paddingTop: "1.5%" }]}>{currentTitle}</Text>
                     </View>
@@ -600,6 +611,22 @@ export const ScreenChapterStudent: React.FC = () => {
         if (vid !== undefined) {
             setCurrentVideo(vid);
             _getVideoUrl();
+        }
+    }
+
+    function renderQuiz() {
+        if (currentVideo?.contentReferenceType !== CONTENTREFERENCETYPE.QUIZ) {
+            return undefined;
+        }
+        if (currentVideo?.contentId !== undefined) {
+            const endpointsQuiz = new EndpointsQuiz();
+            const request: RequestInit = RequestFactory.createGetRequest();
+            const response = endpointsQuiz.getQuiz(request, currentVideo.contentId);
+            response.then((quizResponse) => {
+                if (quizResponse !== undefined) {
+                    setCurrentQuiz(quizResponse);
+                }
+            });
         }
     }
 };

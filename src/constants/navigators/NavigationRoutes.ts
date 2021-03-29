@@ -84,9 +84,11 @@ export type CourseStackParamList = {
     };
     QUIZ_RESULT: {
         quiz: IQuiz;
+        chapterId: string;
     };
     QUIZ_SOLVE: {
         quiz: IQuiz;
+        chapterId: string;
     };
     CHAPTER: {
         chapterId: string | undefined;
