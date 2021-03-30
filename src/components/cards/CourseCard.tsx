@@ -89,7 +89,7 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
                 return (
                     <View style={styles.cardContent}>
                         <TextButton
-                            title={i18n.t("itrex.courseContinue")}
+                            title={i18n.t("itrex.courseProgressLastAccessed")}
                             onPress={() => {
                                 // TODO: Navigate to the content page.
                                 navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, {
@@ -142,12 +142,10 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
             <Text style={styles.cardHeader}>{course.name}</Text>
             <View style={styles.break} />
 
-            {getDate(course.startDate, i18n.t("itrex.start"))}
+            {getDate(course.startDate, i18n.t("itrex.startDate"))}
             {getDate(course.endDate, i18n.t("itrex.endDate"))}
-            <View style={{ alignItems: "center" }}>
-                {getNavToLastContent()}
-                {getProgressInfo()}
-            </View>
+            {getNavToLastContent()}
+            {getProgressInfo()}
         </TouchableOpacity>
     );
 };
@@ -158,7 +156,7 @@ const styles = StyleSheet.create({
         shadowOffset: { width: -1, height: 1 },
         margin: 8,
         width: 400,
-        backgroundColor: dark.Opacity.darkBlue1,
+        backgroundColor: dark.Opacity.grey,
         zIndex: 10,
     },
     cardHeader: {
@@ -178,10 +176,10 @@ const styles = StyleSheet.create({
         minHeight: 20,
     },
     break: {
-        backgroundColor: dark.theme.lightBlue,
+        backgroundColor: "white",
         opacity: 0.5,
-        margin: 4,
-        height: 2,
+        height: 1,
+        marginTop: 1,
     },
     publishedState: {
         flexDirection: "row",

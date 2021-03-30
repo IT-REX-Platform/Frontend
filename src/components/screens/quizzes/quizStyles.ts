@@ -32,7 +32,6 @@ export const quizStyles = StyleSheet.create({
     image: {
         flex: 1,
         resizeMode: "stretch",
-        backgroundColor: dark.theme.darkBlue1,
     },
     cardChoices: {
         margin: 8,
@@ -90,6 +89,7 @@ export const quizStyles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "flex-start",
+        backgroundColor: dark.Opacity.grey,
         zIndex: 11,
     },
     cardHeader: {

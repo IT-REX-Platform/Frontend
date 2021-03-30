@@ -17,7 +17,6 @@ export const en = {
         homeAdminTitle: "Home",
         homeAdminText: "hello admin",
         homeErrorText: "missing configuration",
-        joinCourse: "Join A Course",
 
         courseDescription: "Course Description",
         enterCourseName: "Enter course name",
@@ -61,7 +60,6 @@ export const en = {
         myCoursesDivider: "My Courses",
         quickSettings: "Quick settings",
         lastAccessedCourse: "Last accessed course",
-        courseContinue: "Continue",
         noCourseAccessed: "No course has been accessed yet.",
         noCoursesLecturer: "No courses have been created yet!",
         noCoursesStudent: "No courses have been joined so far!",
@@ -83,8 +81,6 @@ export const en = {
 
         startDate: "Start Date",
         endDate: "End Date",
-        start: "Start",
-        end: "End",
         noStartDate: "No start date entered.",
         noEndDate: "No end date entered.",
         startDateInvalid: "Start date can't come after end date.",
@@ -104,7 +100,6 @@ export const en = {
         noCoursesFilter: "No courses were found for this selection!",
         filterPubUnpub: "Publishing",
         filterActiveInActive: "Activity",
-        filterLabel: "Filter",
 
         badRequest: "Bad request.",
         notFound: "Not found.",

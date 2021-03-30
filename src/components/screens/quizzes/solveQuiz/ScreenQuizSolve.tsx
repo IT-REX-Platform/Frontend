@@ -37,8 +37,7 @@ export const ScreenQuizSolve: React.FC = () => {
         <>
             <ImageBackground
                 source={require("../../../../constants/images/Background1-1.png")}
-                style={quizStyles.image}
-                imageStyle={{ opacity: 0.5, position: "absolute", resizeMode: "stretch" }}>
+                style={quizStyles.image}>
                 <Text style={quizStyles.quizTitle}>{quiz.name}</Text>
                 <ScrollView showsVerticalScrollIndicator={false}>
                     <View style={quizStyles.questionContents}>

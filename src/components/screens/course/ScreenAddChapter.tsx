@@ -455,10 +455,7 @@ export const ScreenAddChapter: React.FC = () => {
 
     return (
         <View style={styles.container}>
-            <ImageBackground
-                source={require("../../../constants/images/Background2.png")}
-                style={styles.image}
-                imageStyle={{ opacity: 0.5, position: "absolute", resizeMode: "stretch" }}>
+            <ImageBackground source={require("../../../constants/images/Background2.png")} style={styles.image}>
                 <View style={[styles.headContainer]}>
                     <View style={styles.borderContainer}>
                         {/*<TextInput label="name" value={courseName} onChangeText={(text) => setCourseName(text)} />*/}

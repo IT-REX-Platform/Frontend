@@ -65,10 +65,7 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = (props) => {
     );
 
     return (
-        <ImageBackground
-            source={require("../../../constants/images/Background1-1.png")}
-            style={quizStyles.image}
-            imageStyle={{ opacity: 0.5, position: "absolute", resizeMode: "stretch" }}>
+        <ImageBackground source={require("../../../constants/images/Background1-1.png")} style={quizStyles.image}>
             <View style={[quizStyles.headContainer]}>
                 <View style={quizStyles.borderContainer}>
                     <TextInput
