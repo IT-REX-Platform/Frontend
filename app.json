@@ -8,7 +8,8 @@
         "assetBundlePatterns": ["**/*"],
         "scheme": "it-rex",
         "web": {
-            "favicon": "./assets/favicon.png"
+            "favicon": "./assets/favicon.png",
+            "name": "IT-REX"
         }
     }
 }
