@@ -13,6 +13,7 @@ import { CoursePublishState } from "../constants/CoursePublishState";
 import { IUser } from "../types/IUser";
 import AuthenticationService from "../services/AuthenticationService";
 import { TextButton } from "./uiElements/TextButton";
+import { dark } from "../constants/themes/dark";
 
 export type JoinCourseRouteProp = RouteProp<RootDrawerParamList, "ROUTE_JOIN_COURSE">;
 
@@ -47,7 +48,10 @@ export const JoinCourseComponent: React.FC = () => {
     return (
         <>
             <Header title={i18n.t("itrex.joinCourseTitle")} />
-            <ImageBackground source={require("../constants/images/Background2.png")} style={styles.imageContainer}>
+            <ImageBackground
+                source={require("../constants/images/Background2.png")}
+                style={styles.imageContainer}
+                imageStyle={{ opacity: 0.5, position: "absolute", resizeMode: "stretch" }}>
                 <View style={styles.container}>
                     <View style={{ marginTop: 70 }} />
 
@@ -108,6 +112,7 @@ const styles = StyleSheet.create({
     imageContainer: {
         flex: 1,
         resizeMode: "stretch",
+        backgroundColor: dark.theme.darkBlue1,
     },
     container: {
         alignItems: "center",

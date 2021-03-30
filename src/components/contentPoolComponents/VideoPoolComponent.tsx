@@ -174,7 +174,8 @@ export const VideoPoolComponent: React.FC = () => {
     return (
         <ImageBackground
             source={require("../../constants/images/Background2.png")}
-            style={contentPoolStyles.imageContainer}>
+            style={contentPoolStyles.imageContainer}
+            imageStyle={{ opacity: 0.5, position: "absolute", resizeMode: "cover" }}>
             <Text style={contentPoolStyles.header}>{i18n.t("itrex.videoPool")}</Text>
             {renderVideoUpload()}
             {renderRefreshButton()}

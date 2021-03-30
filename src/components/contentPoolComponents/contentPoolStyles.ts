@@ -3,6 +3,7 @@ import { StyleSheet } from "react-native";
 
 export const contentPoolStyles = StyleSheet.create({
     imageContainer: {
+        backgroundColor: dark.theme.darkBlue1,
         flex: 1,
         resizeMode: "stretch",
         justifyContent: "center", // Prevents video list item names from being unnecessary cut, don't use alignItems: "center"

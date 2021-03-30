@@ -21,7 +21,8 @@ export const ScreenQuizOverview: React.FC<ScreenQuizOverviewProps> = (props) => 
         <>
             <ImageBackground
                 source={require("../../../../constants/images/Background1-1.png")}
-                style={quizStyles.image}>
+                style={quizStyles.image}
+                imageStyle={{ opacity: 0.5, position: "absolute", resizeMode: "stretch" }}>
                 <View style={quizStyles.quizOverview}>
                     <Text style={quizStyles.titleFont}>{quiz.name}</Text>
                     <Text style={quizStyles.quizContent}>

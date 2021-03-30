@@ -49,7 +49,10 @@ export const ScreenCourseInformation: React.FC = () => {
     );
 
     return (
-        <ImageBackground source={require("../../../constants/images/Background2.png")} style={styles.imageContainer}>
+        <ImageBackground
+            source={require("../../../constants/images/Background2.png")}
+            style={styles.imageContainer}
+            imageStyle={{ opacity: 0.5, position: "absolute", resizeMode: "cover" }}>
             <View style={styles.dualButtonContainer}>{_checkUserSettings()}</View>
             <View style={styles.informationContent}>
                 <CourseInformationTable onDescriptionChanged={descriptionCallback} />

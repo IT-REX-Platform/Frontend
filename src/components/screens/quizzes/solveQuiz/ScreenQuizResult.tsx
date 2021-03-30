@@ -24,7 +24,10 @@ export const ScreenQuizResult: React.FC = () => {
 
     const navigation = useNavigation();
     return (
-        <ImageBackground source={require("../../../../constants/images/Background1-1.png")} style={quizStyles.image}>
+        <ImageBackground
+            source={require("../../../../constants/images/Background1-1.png")}
+            style={quizStyles.image}
+            imageStyle={{ opacity: 0.5, position: "absolute", resizeMode: "stretch" }}>
             <Text style={quizStyles.quizTitle}>{quiz.name}</Text>
             <ScrollView showsVerticalScrollIndicator={false}>
                 <Text style={quizStyles.solutionContent}>

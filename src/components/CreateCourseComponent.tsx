@@ -17,6 +17,7 @@ import { TextButton } from "./uiElements/TextButton";
 import AuthenticationService from "../services/AuthenticationService";
 import { CommonActions, useNavigation } from "@react-navigation/native";
 import { NavigationRoutes } from "../constants/navigators/NavigationRoutes";
+import { dark } from "../constants/themes/dark";
 
 const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");
 const endpointsCourse: EndpointsCourse = new EndpointsCourse();
@@ -60,7 +61,10 @@ export const CreateCourseComponent: React.FC = () => {
     return (
         <>
             <Header title={i18n.t("itrex.createCourseTitle")} />
-            <ImageBackground source={require("../constants/images/Background2.png")} style={styles.imageContainer}>
+            <ImageBackground
+                source={require("../constants/images/Background2.png")}
+                style={styles.imageContainer}
+                imageStyle={{ opacity: 0.5, position: "absolute", resizeMode: "stretch" }}>
                 <View style={styles.container}>
                     <View style={{ marginTop: 70 }} />
 
@@ -168,6 +172,7 @@ const styles = StyleSheet.create({
     imageContainer: {
         flex: 1,
         resizeMode: "stretch",
+        backgroundColor: dark.theme.darkBlue1,
     },
     container: {
         alignItems: "center",

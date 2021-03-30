@@ -17,6 +17,7 @@ export const de = {
         homeAdminTitle: "Home",
         homeAdminText: "Aloha Admin",
         homeErrorText: "Fehlende Konfiguration",
+        oinCourse: "Kurs beitreten",
 
         courseDescription: "Kursbeschreibung",
         noCourseDescription: "Es ist keine Kursbeschreibung verfügbar.",
@@ -60,6 +61,7 @@ export const de = {
         myCoursesDivider: "Meine Kurse",
         quickSettings: "Kurzeinstellung",
         lastAccessedCourse: "Zuletzt besuchter Kurs",
+        courseContinue: "Fortfahren",
         noCourseAccessed: "Es wurde noch kein Kurs besucht.",
         noCoursesLecturer: "Bisher wurden keine Kurse erstellt!",
         noCoursesStudent: "Bisher wurde keinem Kursen beigetreten!",
@@ -81,6 +83,8 @@ export const de = {
 
         startDate: "Startdatum",
         endDate: "Enddatum",
+        start: "Start",
+        end: "Ende",
         noStartDate: "Kein Startdatum eingegeben.",
         noEndDate: "Kein Enddatum eingegeben.",
         startDateInvalid: "Startdatum kann nicht dem Enddatum folgen.",
@@ -100,6 +104,7 @@ export const de = {
         noCoursesFilter: "Es wurden keine Kurse für diese Auswahl gefunden!",
         filterPubUnpub: "Veröffentlichung",
         filterActiveInActive: "Aktivität",
+        filterLabel: "Filter",
 
         badRequest: "Ungültige Anfrage.",
         notFound: "Nicht gefunden.",
