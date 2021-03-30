@@ -6,6 +6,7 @@ import { IQuestionSingleChoice, IQuestionMultipleChoice, IQuestionNumeric } from
 import { IEndpointsQuestion } from "../endpoints_interfaces/IEndpointsQuestion";
 import { ResponseParser } from "../responses/ResponseParser";
 import { sendRequest } from "../requests/sendRequest";
+import { QuestionUrlSuffix } from "../../constants/QuestionUrlSuffix";
 
 /**
  * Endpoints for quizservice/api/questions.
@@ -55,6 +56,27 @@ export class EndpointsQuestion implements IEndpointsQuestion {
         this.loggerApi.trace("Sending GET request to URL: " + urlUpdated);
         const response: Promise<Response> = sendRequest(urlUpdated, getRequest);
         return this.responseParser.parseQuestion(response, successMsg, errorMsg);
+    }
+
+    /**
+     * Get a map of questions and their IDs.
+     * Example URL: http://localhost:8080/services/quizservice/api/questions/get/ids
+     *
+     * @param postRequest POST request.
+     * @param successMsg A success message.
+     * @param errorMsg An error message.
+     * @returns
+     */
+    public findAllByIds(
+        postRequest: RequestInit,
+        successMsg?: string,
+        errorMsg?: string
+    ): Promise<Map<string, IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric>> {
+        const urlUpdated: string = this.url + QuestionUrlSuffix.GET_IDS;
+
+        this.loggerApi.trace("Sending POST request to URL: " + urlUpdated);
+        const response: Promise<Response> = sendRequest(urlUpdated, postRequest);
+        return this.responseParser.parseQuestionMap(response, successMsg, errorMsg);
     }
 
     createQuestion(

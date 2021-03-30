@@ -96,6 +96,7 @@ export class EndpointsQuiz implements IEndpointsQuiz {
         const response: Promise<Response> = sendRequest(urlUpdated, postRequest);
         return this.responseParser.parseQuizMap(response, successMsg, errorMsg);
     }
+
     /**
      * Create a new quiz.
      *

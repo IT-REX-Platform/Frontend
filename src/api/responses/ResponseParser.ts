@@ -73,6 +73,28 @@ export class ResponseParser {
         });
     }
 
+    public parseCourseProgressTracker(
+        response: Promise<Response>,
+        successMsg?: string,
+        errorMsg?: string
+    ): Promise<ICourseProgressTracker> {
+        return new Promise((resolve) => {
+            response
+                .then((response) => {
+                    return this._parseAsJson(response);
+                })
+                .then((courseProgressTracker: ICourseProgressTracker) => {
+                    this._toastSuccess(successMsg);
+                    resolve(courseProgressTracker);
+                })
+                .catch((error) => {
+                    this.loggerApi.error("An error occurred while parsing course data.", error);
+                    this._toastError(errorMsg);
+                    resolve({});
+                });
+        });
+    }
+
     public parseChapters(response: Promise<Response>, successMsg?: string, errorMsg?: string): Promise<IChapter[]> {
         return new Promise((resolve) => {
             response
@@ -184,6 +206,31 @@ export class ResponseParser {
         });
     }
 
+    public parseVideo(
+        response: Promise<Response>,
+        successMsg?: string,
+        errorMsg?: string,
+        toastTimeout?: false
+    ): Promise<IVideo> {
+        return new Promise((resolve) => {
+            response
+                .then((response) => {
+                    return this._parseAsJson(response);
+                })
+                .then((video: IVideo) => {
+                    video.startDate = this._parseDate(video.startDate);
+                    video.endDate = this._parseDate(video.endDate);
+                    this._toastSuccess(successMsg, toastTimeout);
+                    resolve(video);
+                })
+                .catch((error) => {
+                    this.loggerApi.error("An error occurred while parsing video: " + error.message);
+                    this._toastError(errorMsg, toastTimeout);
+                    resolve({});
+                });
+        });
+    }
+
     public parseVideoMap(
         response: Promise<Response>,
         successMsg?: string,
@@ -213,55 +260,6 @@ export class ResponseParser {
         });
     }
 
-    public parseQuizMap(
-        response: Promise<Response>,
-        successMsg?: string,
-        errorMsg?: string
-    ): Promise<Map<string, IQuiz>> {
-        return new Promise((resolve) => {
-            response
-                .then((response) => {
-                    return this._parseAsJson(response);
-                })
-                .then((quizMap: Map<string, IQuiz>) => {
-                    quizMap = new Map(Object.entries(quizMap));
-
-                    this._toastSuccess(successMsg);
-                    resolve(quizMap);
-                })
-                .catch((error) => {
-                    this.loggerApi.error("An error occurred while parsing quizzes: " + error.message);
-                    this._toastError(errorMsg);
-                    resolve(new Map<string, IQuiz>());
-                });
-        });
-    }
-
-    public parseVideo(
-        response: Promise<Response>,
-        successMsg?: string,
-        errorMsg?: string,
-        toastTimeout?: false
-    ): Promise<IVideo> {
-        return new Promise((resolve) => {
-            response
-                .then((response) => {
-                    return this._parseAsJson(response);
-                })
-                .then((video: IVideo) => {
-                    video.startDate = this._parseDate(video.startDate);
-                    video.endDate = this._parseDate(video.endDate);
-                    this._toastSuccess(successMsg, toastTimeout);
-                    resolve(video);
-                })
-                .catch((error) => {
-                    this.loggerApi.error("An error occurred while parsing video: " + error.message);
-                    this._toastError(errorMsg, toastTimeout);
-                    resolve({});
-                });
-        });
-    }
-
     public parseContentProgressTracker(
         response: Promise<Response>,
         successMsg?: string,
@@ -278,28 +276,6 @@ export class ResponseParser {
                 })
                 .catch((error) => {
                     this.loggerApi.error("An error occurred while parsing content progress tracker.", error);
-                    this._toastError(errorMsg);
-                    resolve({});
-                });
-        });
-    }
-
-    public parseCourseProgressTracker(
-        response: Promise<Response>,
-        successMsg?: string,
-        errorMsg?: string
-    ): Promise<ICourseProgressTracker> {
-        return new Promise((resolve) => {
-            response
-                .then((response) => {
-                    return this._parseAsJson(response);
-                })
-                .then((courseProgressTracker: ICourseProgressTracker) => {
-                    this._toastSuccess(successMsg);
-                    resolve(courseProgressTracker);
-                })
-                .catch((error) => {
-                    this.loggerApi.error("An error occurred while parsing course data.", error);
                     this._toastError(errorMsg);
                     resolve({});
                 });
@@ -334,6 +310,30 @@ export class ResponseParser {
                     this.loggerApi.error("An error occurred while parsing quiz: " + error.message);
                     this._toastError(errorMsg);
                     resolve(undefined);
+                });
+        });
+    }
+
+    public parseQuizMap(
+        response: Promise<Response>,
+        successMsg?: string,
+        errorMsg?: string
+    ): Promise<Map<string, IQuiz>> {
+        return new Promise((resolve) => {
+            response
+                .then((response) => {
+                    return this._parseAsJson(response);
+                })
+                .then((quizMap: Map<string, IQuiz>) => {
+                    quizMap = new Map(Object.entries(quizMap));
+
+                    this._toastSuccess(successMsg);
+                    resolve(quizMap);
+                })
+                .catch((error) => {
+                    this.loggerApi.error("An error occurred while parsing quizzes: " + error.message);
+                    this._toastError(errorMsg);
+                    resolve(new Map<string, IQuiz>());
                 });
         });
     }
@@ -374,6 +374,32 @@ export class ResponseParser {
                     this.loggerApi.error("An error occurred while parsing question: " + error.message);
                     this._toastError(errorMsg);
                     resolve(undefined);
+                });
+        });
+    }
+
+    public parseQuestionMap(
+        response: Promise<Response>,
+        successMsg?: string,
+        errorMsg?: string
+    ): Promise<Map<string, IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric>> {
+        return new Promise((resolve) => {
+            response
+                .then((response) => {
+                    return this._parseAsJson(response);
+                })
+                .then(
+                    (questionMap: Map<string, IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric>) => {
+                        questionMap = new Map(Object.entries(questionMap));
+
+                        this._toastSuccess(successMsg);
+                        resolve(questionMap);
+                    }
+                )
+                .catch((error) => {
+                    this.loggerApi.error("An error occurred while parsing quizzes: " + error.message);
+                    this._toastError(errorMsg);
+                    resolve(new Map<string, IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric>());
                 });
         });
     }
