@@ -185,10 +185,10 @@ export const ScreenCourseTimeline: React.FC = () => {
                             });
 
                             // Load Quiz-Informations
-                            const getQuizRequest = RequestFactory.createGetRequest();
+                            const postQuizRequest = RequestFactory.createPostRequestWithBody(quizIds);
                             const quizPromise = new Promise((resolve, reject) => {
-                                if (quizIds !== undefined) {
-                                    endpointsQuiz.findAllWithIds(getQuizRequest, quizIds).then((quizzes) => {
+                                if (quizIds != undefined) {
+                                    endpointsQuiz.findAllWithIds(postQuizRequest).then((quizzes) => {
                                         quizzes.forEach((quiz) => {
                                             const contentQuiz = contents[CONTENTREFERENCETYPE.QUIZ].filter(
                                                 (item) => item.contentId === quiz.id

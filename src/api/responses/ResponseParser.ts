@@ -230,7 +230,7 @@ export class ResponseParser {
                     resolve(quizMap);
                 })
                 .catch((error) => {
-                    this.loggerApi.error("An error occurred while parsing videos: " + error.message);
+                    this.loggerApi.error("An error occurred while parsing quizzes: " + error.message);
                     this._toastError(errorMsg);
                     resolve(new Map<string, IQuiz>());
                 });
