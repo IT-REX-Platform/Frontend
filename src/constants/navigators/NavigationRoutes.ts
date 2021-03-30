@@ -54,7 +54,6 @@ export type RootDrawerParamList = {
     ROUTE_CREATE_COURSE: undefined;
     ROUTE_JOIN_COURSE: { courseId?: string };
     ROUTE_COURSE_DETAILS: { courseId: string; screen?: string };
-    ROUTE_CHAPTER_CONTENT: { chapterId: string };
 };
 
 export type CourseStackParamList = {
