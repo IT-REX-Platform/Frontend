@@ -32,6 +32,7 @@ import { InfoUnpublished } from "../uiElements/InfoUnpublished";
 import { InfoPublished } from "../uiElements/InfoPublished";
 import { ICourseProgressTracker } from "../../types/ICourseProgressTracker";
 import ProgressService from "../../services/ProgressService";
+import { MinimalScreenForDrawer } from "../../constants/MinimalScreenForDrawer";
 
 export type ScreenCourseNavigationProp = DrawerNavigationProp<RootDrawerParamList, "ROUTE_COURSE_DETAILS">;
 export type ScreenCourseRouteProp = RouteProp<RootDrawerParamList, "ROUTE_COURSE_DETAILS">;
@@ -43,12 +44,13 @@ export const ScreenCourse: React.FC = () => {
     /**
      * !!! ATTENTION !!!
      * Checking route.params and courseId must be the first thing this component does (after calling useRoute(), duh).
-     * This prevents: "Error: Rendered more hooks than during the previous render."
+     * This prevents crash: "Error: Rendered more hooks than during the previous render."
      */
     const route: ScreenCourseRouteProp = useRoute<ScreenCourseRouteProp>();
     if (route.params == undefined) {
         return _renderEmptyCourse();
     }
+    // Yes, both checks are required.
     if (route.params.courseId == undefined || route.params.courseId == "undefined") {
         return _renderEmptyCourse();
     }
@@ -64,13 +66,7 @@ export const ScreenCourse: React.FC = () => {
     const [course, setCourse] = useState(courseInitial);
 
     // Current course context.
-    const courseContext = React.useMemo(
-        () => ({
-            course,
-            setCourse,
-        }),
-        [course]
-    );
+    const courseContext = React.useMemo(() => ({ course, setCourse }), [course]);
 
     // User info.
     const [user, setUserInfo] = useState<IUser>({});
@@ -195,7 +191,7 @@ export const ScreenCourse: React.FC = () => {
     }
 
     function showHamburger(dimensions: ScaledSize) {
-        if (dimensions.width < 1280) {
+        if (dimensions.width < MinimalScreenForDrawer.SIZE) {
             return (
                 <MaterialCommunityIcons
                     style={styles.icon}
@@ -294,5 +290,10 @@ const styles = StyleSheet.create({
         margin: 5,
         color: "white",
     },
-    publishedState: { position: "absolute", margin: 8, marginLeft: 16 },
+    publishedState: {
+        position: "absolute",
+        margin: 8,
+        marginTop: 4,
+        marginLeft: 16,
+    },
 });

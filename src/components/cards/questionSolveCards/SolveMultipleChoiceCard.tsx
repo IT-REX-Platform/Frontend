@@ -24,10 +24,10 @@ export const SolveMultipleChoiceCard: React.FC<QuestionCardProps> = (props) => {
 
     useEffect(() => {
         const solutionObj: ISolutionMultipleChoice = {
-            "0": singleAnswerZero,
-            "1": singleAnswerOne,
-            "2": singleAnswerTwo,
-            "3": singleAnswerThree,
+            0: singleAnswerZero,
+            1: singleAnswerOne,
+            2: singleAnswerTwo,
+            3: singleAnswerThree,
         };
         onSolutionClicked({ ...question, userInput: solutionObj });
     }, [singleAnswerZero, singleAnswerOne, singleAnswerTwo, singleAnswerThree]);
@@ -50,7 +50,7 @@ export const SolveMultipleChoiceCard: React.FC<QuestionCardProps> = (props) => {
         return (
             <>
                 <TouchableOpacity
-                    style={singleAnswerZero ? cardStyles.cardChoicesRight : cardStyles.cardChoicesSelect}
+                    style={singleAnswerZero ? cardStyles.cardChoicesResultSelected : cardStyles.cardChoicesSelect}
                     onPress={() => {
                         setSingleAnswerZero(!singleAnswerZero);
                     }}>
@@ -58,18 +58,18 @@ export const SolveMultipleChoiceCard: React.FC<QuestionCardProps> = (props) => {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    style={singleAnswerOne ? cardStyles.cardChoicesRight : cardStyles.cardChoicesSelect}
+                    style={singleAnswerOne ? cardStyles.cardChoicesResultSelected : cardStyles.cardChoicesSelect}
                     onPress={() => setSingleAnswerOne(!singleAnswerOne)}>
                     <Text style={cardStyles.textChoice}>{question.choices[1]}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    style={singleAnswerTwo ? cardStyles.cardChoicesRight : cardStyles.cardChoicesSelect}
+                    style={singleAnswerTwo ? cardStyles.cardChoicesResultSelected : cardStyles.cardChoicesSelect}
                     onPress={() => setSingleAnswerTwo(!singleAnswerTwo)}>
                     <Text style={cardStyles.textChoice}>{question.choices[2]}</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    style={singleAnswerThree ? cardStyles.cardChoicesRight : cardStyles.cardChoicesSelect}
+                    style={singleAnswerThree ? cardStyles.cardChoicesResultSelected : cardStyles.cardChoicesSelect}
                     onPress={() => setSingleAnswerThree(!singleAnswerThree)}>
                     <Text style={cardStyles.textChoice}>{question.choices[3]}</Text>
                 </TouchableOpacity>

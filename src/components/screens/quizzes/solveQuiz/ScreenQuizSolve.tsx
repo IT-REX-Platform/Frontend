@@ -22,6 +22,7 @@ export const ScreenQuizSolve: React.FC = () => {
     React.useContext(LocalizationContext);
     const route = useRoute<ScreenQuizSolveProps>();
     const quiz: IQuiz = route.params.quiz;
+    const chapterId: string = route.params.chapterId;
 
     const navigation = useNavigation();
 
@@ -68,6 +69,7 @@ export const ScreenQuizSolve: React.FC = () => {
                             onPress={() => {
                                 navigation.navigate("QUIZ_RESULT", {
                                     quiz,
+                                    chapterId,
                                 });
                             }}></TextButton>
                     </View>

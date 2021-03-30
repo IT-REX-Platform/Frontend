@@ -37,7 +37,7 @@ export const ScreenAddQuestion: React.FC = () => {
 
     const [solutionNum, setSolutionNum] = useState<ISolutionNumeric>();
     const [solutionMultiChoice, setSolutionMutliChoice] = useState<ISolutionMultipleChoice>();
-    const [solutionSingleChoice, setSolutionSingleChoice] = useState<string>();
+    const [solutionSingleChoice, setSolutionSingleChoice] = useState<number>();
 
     // Make Single Choice default or saved user selection.
     const index = kindOfQuestionOptions.findIndex((x) => x.value == question?.type);

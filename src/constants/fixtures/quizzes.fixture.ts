@@ -17,7 +17,7 @@ export const questionSingleChoice: IQuestionSingleChoice = {
     type: QuestionTypes.SINGLE_CHOICE,
     question: "Was ist 2+2?",
     choices: choicesSingleChoice,
-    solution: "3",
+    solution: 3,
 };
 
 //================= MULTIPLE CHOICE QUESTION ===============
@@ -48,7 +48,7 @@ const question3: IQuestionSingleChoice = {
     type: QuestionTypes.SINGLE_CHOICE,
     question: "Was ist 21+21?",
     choices: choicesSingleChoice,
-    solution: "2",
+    solution: 2,
 };
 
 const question4: IQuestionSingleChoice = {
@@ -57,7 +57,7 @@ const question4: IQuestionSingleChoice = {
     type: QuestionTypes.SINGLE_CHOICE,
     question: "Was ist 50+6?",
     choices: choicesSingleChoice,
-    solution: "1",
+    solution: 1,
 };
 
 const question5: IQuestionSingleChoice = {
@@ -67,7 +67,7 @@ const question5: IQuestionSingleChoice = {
     question:
         "Das ist eine gaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaanz lange Fraaaaaaaage (56 is richtig)",
     choices: choicesSingleChoice,
-    solution: "1",
+    solution: 1,
 };
 
 //================= NUMERIC QUESTION ===============

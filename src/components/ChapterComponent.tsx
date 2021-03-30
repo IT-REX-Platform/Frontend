@@ -1,6 +1,5 @@
 /* eslint-disable complexity */
 import React, { useEffect, useState } from "react";
-import i18n from "../locales";
 import { LocalizationContext } from "./Context";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { dark } from "../constants/themes/dark";
@@ -43,28 +42,6 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
         setUserInfo(AuthenticationService.getInstance().getUserInfoCached());
     }, []);
 
-    function getQuizComponent(contentReference: IContent) {
-        return (
-            <TouchableOpacity
-                style={{ flexDirection: "row" }}
-                onPress={() => {
-                    contentReference !== undefined && navigateToQuiz(contentReference.contentId);
-                }}>
-                <MaterialCommunityIcons name="file-question-outline" size={28} color="white" style={styles.icon} />
-
-                <View
-                    style={{
-                        flex: 1,
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                    }}>
-                    <Text style={styles.chapterMaterialElementText}>{contentReference.contentId}</Text>
-                </View>
-            </TouchableOpacity>
-        );
-    }
-
     const [courseProgress, setCourseProgress] = useState<ICourseProgressTracker>({});
     useEffect(() => {
         updateCourseProgress();
@@ -75,9 +52,7 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
             style={styles.chapterContainer}
             onPress={() => {
                 editMode == true
-                    ? navigation.navigate("CHAPTER", {
-                          chapterId: chapter?.id,
-                      })
+                    ? navigation.navigate("CHAPTER", { chapterId: chapter?.id })
                     : navigation.navigate("CHAPTER_CONTENT", { chapterId: chapter?.id });
             }}>
             <View style={styles.chapterTopRow}>
@@ -91,12 +66,21 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                     {chapter?.contentReferences?.map((contentReference) => {
                         return (
                             <View style={styles.chapterMaterialElement}>
-                                {contentReference.contentReferenceType == CONTENTREFERENCETYPE.VIDEO ? (
+                                {contentReference.contentReferenceType == CONTENTREFERENCETYPE.VIDEO && (
                                     <>
                                         <MaterialIcons name="attach-file" size={28} color="white" style={styles.icon} />
                                     </>
-                                ) : (
-                                    getQuizComponent(contentReference)
+                                )}
+
+                                {contentReference.contentReferenceType == CONTENTREFERENCETYPE.QUIZ && (
+                                    <>
+                                        <MaterialCommunityIcons
+                                            name="file-question-outline"
+                                            size={28}
+                                            color="white"
+                                            style={styles.icon}
+                                        />
+                                    </>
                                 )}
 
                                 <View
@@ -205,18 +189,6 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
         return;
     }
 
-    function navigateToQuiz(contentId: string | undefined) {
-        if (contentId !== undefined) {
-            const endpointsQuiz = new EndpointsQuiz();
-            const request: RequestInit = RequestFactory.createGetRequest();
-            const response = endpointsQuiz.getQuiz(request, contentId);
-            response.then((quiz) => {
-                navigation.navigate("QUIZ_OVERVIEW", {
-                    quiz: quiz,
-                });
-            });
-        }
-    }
     /**
      * Returns the lowest and the highest week of the contentReferences
      * @returns Week String

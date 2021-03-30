@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from "react";
+/* eslint-disable complexity */
+/* eslint-disable no-empty */
+import React, { useState } from "react";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { ICourse } from "../../types/ICourse";
 import { dark } from "../../constants/themes/dark";
@@ -12,6 +14,9 @@ import { InfoPublished } from "../uiElements/InfoPublished";
 import { ICourseProgressTracker } from "../../types/ICourseProgressTracker";
 import { TextButton } from "../uiElements/TextButton";
 import ProgressService from "../../services/ProgressService";
+import AuthenticationService from "../../services/AuthenticationService";
+import { IUser } from "../../types/IUser";
+import { CourseRoles } from "../../constants/CourseRoles";
 
 interface CourseCardProps {
     course: ICourse;
@@ -28,8 +33,11 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
 
     const [courseProgress, setCourseProgress] = useState<ICourseProgressTracker>({});
     const [courseProgressInfo, setCourseProgressInfo] = useState<CourseProgressInfo>({ total: 0, totalMax: 0 });
+    const [user, setUserInfo] = useState<IUser>({});
+
     useFocusEffect(
         React.useCallback(() => {
+            AuthenticationService.getInstance().getUserInfo(setUserInfo);
             if (course.id === undefined) {
                 return;
             }
@@ -38,7 +46,7 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
                 setCourseProgress(receivedProgress);
                 setCourseProgressInfo(numberProgress);
             });
-        }, [])
+        }, [AuthenticationService.getInstance().tokenResponse])
     );
 
     function getPublishedSate(isPublished: CoursePublishState | undefined) {
@@ -72,43 +80,51 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
     }
 
     function getNavToLastContent() {
-        if (courseProgress.lastContentReference == null) {
-            return <></>;
-        }
+        if (user.courses !== undefined && course.id !== undefined) {
+            if (user.courses[course.id] === CourseRoles.PARTICIPANT) {
+                if (courseProgress.lastContentReference == null) {
+                    return <></>;
+                }
 
-        return (
-            <View style={styles.cardContent}>
-                <TextButton
-                    title={i18n.t("itrex.courseProgressLastAccessed")}
-                    onPress={() => {
-                        // TODO: Navigate to the content page.
-                        navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, {
-                            screen: "CHAPTER_CONTENT",
-                            params: {
-                                courseId: course.id,
-                                chapterId: courseProgress.lastContentReference?.chapterId,
-                            },
-                        });
-                    }}
-                />
-            </View>
-        );
+                return (
+                    <View style={styles.cardContent}>
+                        <TextButton
+                            title={i18n.t("itrex.courseProgressLastAccessed")}
+                            onPress={() => {
+                                // TODO: Navigate to the content page.
+                                navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, {
+                                    screen: "CHAPTER_CONTENT",
+                                    params: {
+                                        courseId: course.id,
+                                        chapterId: courseProgress.lastContentReference?.chapterId,
+                                    },
+                                });
+                            }}
+                        />
+                    </View>
+                );
+            }
+        }
     }
 
     function getProgressInfo() {
-        const progressPercent = Math.floor((courseProgressInfo.total / courseProgressInfo.totalMax) * 100);
-        if (isNaN(progressPercent)) {
-            return <></>;
-        }
+        if (user.courses !== undefined && course.id !== undefined) {
+            if (user.courses[course.id] === CourseRoles.PARTICIPANT) {
+                const progressPercent = Math.floor((courseProgressInfo.total / courseProgressInfo.totalMax) * 100);
+                if (isNaN(progressPercent)) {
+                    return <></>;
+                }
 
-        return (
-            <Text style={styles.cardContent}>
-                <Text style={{ fontWeight: "bold", marginEnd: 10 }}>{i18n.t("itrex.courseProgressTitle")}</Text>
-                <Text>
-                    {progressPercent}% ({courseProgressInfo.total} / {courseProgressInfo.totalMax})
-                </Text>
-            </Text>
-        );
+                return (
+                    <Text style={styles.cardContent}>
+                        <Text style={{ fontWeight: "bold", marginEnd: 10 }}>{i18n.t("itrex.courseProgressTitle")}</Text>
+                        <Text>
+                            {progressPercent}% ({courseProgressInfo.total} / {courseProgressInfo.totalMax})
+                        </Text>
+                    </Text>
+                );
+            }
+        }
     }
 
     function navigateToCourse(course: ICourse) {
@@ -118,7 +134,6 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
                 routes: [{ name: NavigationRoutes.ROUTE_COURSE_DETAILS, params: { courseId: course.id } }],
             }),
         });
-        //navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, { courseId: course.id });
     }
 
     return (
@@ -126,7 +141,6 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
             {getPublishedSate(course.publishState)}
             <Text style={styles.cardHeader}>{course.name}</Text>
             <View style={styles.break} />
-            {/*<Text style={styles.cardContent}>Lecturer:</Text> {getCourseOwner(course.ownership)}*/}
 
             {getDate(course.startDate, i18n.t("itrex.startDate"))}
             {getDate(course.endDate, i18n.t("itrex.endDate"))}

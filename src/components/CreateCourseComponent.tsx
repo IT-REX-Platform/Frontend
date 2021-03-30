@@ -15,8 +15,8 @@ import { LocalizationContext } from "./Context";
 import { Event } from "@react-native-community/datetimepicker";
 import { TextButton } from "./uiElements/TextButton";
 import AuthenticationService from "../services/AuthenticationService";
+import { CommonActions, useNavigation } from "@react-navigation/native";
 import { NavigationRoutes } from "../constants/navigators/NavigationRoutes";
-import { useNavigation } from "@react-navigation/native";
 
 const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");
 const endpointsCourse: EndpointsCourse = new EndpointsCourse();
@@ -59,7 +59,7 @@ export const CreateCourseComponent: React.FC = () => {
 
     return (
         <>
-            <Header title={i18n.t("itrex.toCourse")} />
+            <Header title={i18n.t("itrex.createCourseTitle")} />
             <ImageBackground source={require("../constants/images/Background2.png")} style={styles.imageContainer}>
                 <View style={styles.container}>
                     <View style={{ marginTop: 70 }} />
@@ -148,7 +148,7 @@ export const CreateCourseComponent: React.FC = () => {
                 AuthenticationService.getInstance()
                     .refreshToken()
                     .then(() =>
-                        navigation.navigate("INFO", {
+                        navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, {
                             courseId: course.id,
                             screen: "OVERVIEW",
                         })

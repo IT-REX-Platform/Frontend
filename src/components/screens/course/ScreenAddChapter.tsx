@@ -78,7 +78,7 @@ export const ScreenAddChapter: React.FC = () => {
     const initialSelection: { [id: string]: string } = {};
     const [selectedValues, setSelectedValues] = useState(initialSelection);
 
-    const timePeriods = course.timePeriods?.map((timePeriod, idx) => {
+    const timePeriods = course.timePeriods?.map((timePeriod) => {
         return {
             value: timePeriod.id,
             label: timePeriod.fullName,
@@ -106,7 +106,7 @@ export const ScreenAddChapter: React.FC = () => {
                     showsVerticalScrollIndicator={true}
                     data={videoPoolList}
                     renderItem={listItem}
-                    keyExtractor={(item, index) => `draggable-item-${item.id}`}
+                    keyExtractor={(item) => `draggable-item-${item.id}`}
                     ListEmptyComponent={emptyVideoList}
                 />
             </View>
@@ -131,7 +131,7 @@ export const ScreenAddChapter: React.FC = () => {
                     showsVerticalScrollIndicator={true}
                     data={quizPoolList}
                     renderItem={quizListItem}
-                    keyExtractor={(item, index) => `draggableQuiz-item-${item.id}`}
+                    keyExtractor={(item) => `draggableQuiz-item-${item.id}`}
                     ListEmptyComponent={emptyQuizList}
                 />
             </View>
@@ -488,7 +488,7 @@ export const ScreenAddChapter: React.FC = () => {
                                 showsVerticalScrollIndicator={true}
                                 data={contentList}
                                 renderItem={listRemoveItem}
-                                keyExtractor={(item, index) => `draggable1-item-${item.id}`}
+                                keyExtractor={(item) => `draggable1-item-${item.id}`}
                                 onDragEnd={({ to, from }) => reorderContent(to, from)}
                             />
                         </View>
@@ -668,11 +668,11 @@ const styles = StyleSheet.create({
     headContainer: {
         flexDirection: "row",
         alignItems: "flex-start",
-        paddingTop: "3%",
-        paddingLeft: "3%",
+        paddingTop: 36,
+        paddingLeft: 36,
     },
     borderContainer: {
-        flex: 3,
+        flex: 1,
         flexDirection: "row",
         borderBottomColor: "rgba(70,74,91,0.5)",
         borderBottomWidth: 3,
@@ -681,14 +681,17 @@ const styles = StyleSheet.create({
     contentContainer: {
         flex: 2,
         flexDirection: "row",
-        padding: "2%",
+        paddingLeft: "2%",
+        paddingRight: "2%",
+        paddingBottom: 24,
+        paddingTop: 24,
     },
     contentContainerAdd: {
         flex: 1,
         backgroundColor: "rgba(1,43,86,0.5)",
         borderWidth: 3,
         borderColor: dark.theme.darkBlue3,
-        marginRight: "3%",
+        marginRight: 36,
         alignItems: "center",
         maxWidth: 280,
     },
@@ -697,14 +700,15 @@ const styles = StyleSheet.create({
         backgroundColor: "rgba(1,43,86,0.5)",
         borderWidth: 3,
         borderColor: dark.theme.darkBlue3,
-        marginRight: "3%",
-        alignItems: "center",
+        marginRight: 36,
+        alignItems: "stretch",
+        paddingTop: 24,
     },
     courseHeader: {
         color: "white",
         fontSize: 24,
         fontWeight: "bold",
-        width: "100%",
+        flex: 1,
     },
     image: {
         flex: 1,
@@ -724,7 +728,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     list: {
-        height: 1, // Actual value is unimportant, this just makes the video list permanently scrollable, disregarding the current view height.
+        height: 1,
         width: "100%",
     },
     listItemTitle: {

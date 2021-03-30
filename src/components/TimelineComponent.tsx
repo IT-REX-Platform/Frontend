@@ -3,9 +3,7 @@
 import React from "react";
 import { LocalizationContext } from "./Context";
 import { StyleSheet, Text, View } from "react-native";
-import { dark } from "../constants/themes/dark";
-import { useNavigation } from "@react-navigation/native";
-import { ITimePeriod, TimePeriodPublishState } from "../types/ITimePeriod";
+import { ITimePeriod } from "../types/ITimePeriod";
 import { ChapterComponent } from "./ChapterComponent";
 import { ICourse } from "../types/ICourse";
 
@@ -19,37 +17,31 @@ interface TimelineComponentProps {
 export const TimelineComponent: React.FC<TimelineComponentProps> = (props) => {
     React.useContext(LocalizationContext);
 
+    const startDate = props.timePeriod?.startDate ? props.timePeriod?.startDate : new Date();
+    const endDate = props.timePeriod?.endDate ? props.timePeriod?.endDate : new Date();
+    const currentDate = new Date();
+
     return (
         <>
+            <View style={styles.verticalLine}></View>
             <View style={styles.circleContainer}>
                 <Text style={styles.periodText}>{props.timePeriod?.fullName}</Text>
                 <View
                     style={[
                         styles.mainCircle,
-                        props.timePeriod?.publishState === TimePeriodPublishState.PUBLISHED
-                            ? styles.mainCirclePublished
-                            : {},
-                        props.timePeriod?.publishState === TimePeriodPublishState.UNPUBLISHED
-                            ? styles.mainCircleNotPublished
-                            : {},
-                        props.timePeriod?.publishState === TimePeriodPublishState.NOTSTARTED
-                            ? styles.mainCircleNotStarted
-                            : {},
-                        props.timePeriod?.publishState === undefined ? styles.mainCircleNotStarted : {},
+                        // Due TimePeriod
+                        currentDate > endDate ? styles.mainCircleDue : {},
+                        // Current TimePeriod
+                        currentDate > startDate && currentDate < endDate ? styles.mainCircleCurrent : {},
+                        // Upcomming TimePeriod
+                        currentDate < startDate ? styles.mainCircleUpcomming : {},
                     ]}>
                     <View
                         style={[
                             styles.innerCircle,
-                            props.timePeriod?.publishState === TimePeriodPublishState.PUBLISHED
-                                ? styles.innerCirclePublished
-                                : {},
-                            props.timePeriod?.publishState === TimePeriodPublishState.UNPUBLISHED
-                                ? styles.innerCircleNotPublished
-                                : {},
-                            props.timePeriod?.publishState === TimePeriodPublishState.NOTSTARTED
-                                ? styles.innerCircleNotStarted
-                                : {},
-                            props.timePeriod?.publishState === undefined ? styles.innerCircleNotStarted : {},
+                            currentDate > endDate ? styles.innerCircleDue : {},
+                            currentDate > startDate && currentDate < endDate ? styles.innerCircleCurrent : {},
+                            currentDate < startDate ? styles.innerCircleUpcomming : {},
                         ]}></View>
                 </View>
             </View>
@@ -61,7 +53,6 @@ export const TimelineComponent: React.FC<TimelineComponentProps> = (props) => {
                         editMode={props.edit}
                         course={props.course}></ChapterComponent>
                 ))}
-            <View style={styles.verticalLine}></View>
         </>
     );
 };
@@ -72,6 +63,8 @@ const styles = StyleSheet.create({
     },
     periodText: {
         color: "white",
+        marginBottom: 10,
+        fontWeight: "bold",
     },
     mainCircle: {
         width: 50,
@@ -85,56 +78,32 @@ const styles = StyleSheet.create({
         borderRadius: 25 / 2,
     },
     verticalLine: {
-        height: 50,
+        height: 30,
         backgroundColor: "#465371",
         width: 5,
         alignSelf: "center",
+        marginTop: 10,
+        marginBottom: 10,
     },
     // Published-Styles
-    mainCirclePublished: {
+    mainCircleDue: {
         backgroundColor: "#769575",
     },
-    innerCirclePublished: {
+    innerCircleDue: {
         backgroundColor: "#B6EF93",
     },
     // Not published
-    mainCircleNotPublished: {
+    mainCircleCurrent: {
         backgroundColor: "#769575",
     },
-    innerCircleNotPublished: {
+    innerCircleCurrent: {
         backgroundColor: "#707070",
     },
     // Not started yet
-    mainCircleNotStarted: {
+    mainCircleUpcomming: {
         backgroundColor: "#3C495B",
     },
-    innerCircleNotStarted: {
+    innerCircleUpcomming: {
         backgroundColor: "#707070",
-    },
-
-    addChapterContainer: {
-        backgroundColor: "rgba(0,0,0,0.3)",
-        height: "100px",
-        width: "80%",
-        marginTop: "1%",
-        padding: "0.5%",
-        borderWidth: 3,
-        borderColor: dark.theme.lightBlue,
-    },
-    btnAdd: {
-        width: "100%",
-        height: "100%",
-        borderWidth: 2,
-        borderColor: "rgba(79,175,165,1.0)",
-        borderRadius: 25,
-        borderStyle: "dotted",
-        alignItems: "center",
-        justifyContent: "center",
-    },
-    txtAddChapter: {
-        alignSelf: "center",
-        color: "white",
-        fontSize: 18,
-        fontWeight: "bold",
     },
 });

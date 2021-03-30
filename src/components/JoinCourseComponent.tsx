@@ -5,7 +5,7 @@ import { ICourse } from "../types/ICourse";
 import i18n from "../locales";
 import { RequestFactory } from "../api/requests/RequestFactory";
 import { EndpointsCourse } from "../api/endpoints/EndpointsCourse";
-import { RouteProp, useIsFocused, useNavigation } from "@react-navigation/native";
+import { CommonActions, RouteProp, useIsFocused, useNavigation } from "@react-navigation/native";
 import { Header } from "../constants/navigators/Header";
 import { LocalizationContext } from "./Context";
 import { NavigationRoutes, RootDrawerParamList } from "../constants/navigators/NavigationRoutes";
@@ -46,7 +46,7 @@ export const JoinCourseComponent: React.FC = () => {
 
     return (
         <>
-            <Header title={i18n.t("itrex.joinCourse")} />
+            <Header title={i18n.t("itrex.joinCourseTitle")} />
             <ImageBackground source={require("../constants/images/Background2.png")} style={styles.imageContainer}>
                 <View style={styles.container}>
                     <View style={{ marginTop: 70 }} />
@@ -95,7 +95,7 @@ export const JoinCourseComponent: React.FC = () => {
             AuthenticationService.getInstance()
                 .refreshToken()
                 .then(() =>
-                    navigation.navigate("INFO", {
+                    navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, {
                         courseId: courseId,
                         screen: "OVERVIEW",
                     })

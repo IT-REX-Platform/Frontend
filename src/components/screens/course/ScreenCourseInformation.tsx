@@ -1,7 +1,7 @@
 /* eslint-disable complexity */
-import { CompositeNavigationProp, useFocusEffect, useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
 import { ImageBackground, StyleSheet, View } from "react-native";
+import { CompositeNavigationProp, useFocusEffect, useNavigation } from "@react-navigation/native";
 import { ICourse } from "../../../types/ICourse";
 import {
     CourseStackParamList,
@@ -33,7 +33,7 @@ export const ScreenCourseInformation: React.FC = () => {
     const navigation = useNavigation<ScreenCourseOverviewNavigationProp>();
 
     React.useContext(LocalizationContext);
-    const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");
+    const loggerService = loggerFactory.getLogger("service.ScreenCourseInformation");
     const endpointsCourse: EndpointsCourse = new EndpointsCourse();
     const { course } = React.useContext(CourseContext);
     const descriptionCallback = (description: string | undefined) => {
@@ -100,8 +100,11 @@ export const ScreenCourseInformation: React.FC = () => {
      * Creates a server request in order to update the course description.
      */
     function _updateCourse() {
-        console.log(course);
-        const updateRequest: RequestInit = RequestFactory.createPatchRequest(course);
+        const coursePatch: ICourse = {
+            id: course.id,
+            courseDescription: course.courseDescription,
+        };
+        const updateRequest: RequestInit = RequestFactory.createPatchRequest(coursePatch);
         endpointsCourse.patchCourse(
             updateRequest,
             i18n.t("itrex.updateCourseSuccess"),
@@ -112,7 +115,7 @@ export const ScreenCourseInformation: React.FC = () => {
     /**
      * Creates a server request in order to update the published state of the course.
      */
-    function _patchCourse() {
+    function _publishCourse() {
         loggerService.trace("Parsing ID string to ID number.");
 
         const coursePatch: ICourse = {
@@ -124,11 +127,9 @@ export const ScreenCourseInformation: React.FC = () => {
 
         loggerService.trace(`Updating course: name=${course.name}, publishedState=${CoursePublishState.PUBLISHED}.`);
         const patchRequest: RequestInit = RequestFactory.createPatchRequest(coursePatch);
-        endpointsCourse.patchCourse(
-            patchRequest,
-            i18n.t("itrex.publishCourseSuccess"),
-            i18n.t("itrex.publishCourseError")
-        );
+        endpointsCourse
+            .patchCourse(patchRequest, i18n.t("itrex.publishCourseSuccess"), i18n.t("itrex.publishCourseError"))
+            .then(() => navigation.navigate("INFO", { screen: "OVERVIEW" }));
     }
 
     /**
@@ -137,7 +138,7 @@ export const ScreenCourseInformation: React.FC = () => {
     function _confirmPublishCourse() {
         const publishCourse = confirm(i18n.t("itrex.confirmPublishCourse"));
         if (publishCourse === true) {
-            _patchCourse();
+            _publishCourse();
         }
     }
 

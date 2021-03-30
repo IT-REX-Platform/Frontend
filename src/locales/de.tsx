@@ -23,7 +23,9 @@ export const de = {
         enterCourseName: "Kursnamen eingeben",
         enterCourseDescription: "Kursbeschreibung eingeben",
         createCourse: "Neuen Kurs erstellen",
+        joinACourse: "Einem Kurs beitreten",
         joinCourse: "Kurs beitreten",
+        joinCourseTitle: "Kurs beitreten",
         joinCourseNoCourseError: "Kurs beitreten fehlgeschlagen! Kein veröffentlichter Kurs mit dieser ID gefunden.",
         joinCourseAlreadyMember: "Du bist bereits ein Mitglied dieses Kurses. Du wirst weitergeleitet...",
         leaveCourse: "Kurs verlassen",
@@ -36,7 +38,7 @@ export const de = {
         en: "EN",
         de: "DE",
 
-        toCourse: "Kurserstellung",
+        createCourseTitle: "Kurs erstellen",
         courseNameInvalid: "Kursname ungültig.",
         courseNameTooShort: "Kursname muss mindestens 4 Symbole lang sein.",
         courseDescriptionInvalid: "Kursbeschreibung muss mindestens 5 Symbole lang sein.",
@@ -58,7 +60,7 @@ export const de = {
         myCoursesDivider: "Meine Kurse",
         quickSettings: "Kurzeinstellung",
         lastAccessedCourse: "Zuletzt besuchter Kurs",
-        noCourseAccessed: "Kein Kurs wurde noch besucht.",
+        noCourseAccessed: "Es wurde noch kein Kurs besucht.",
         noCoursesLecturer: "Bisher wurden keine Kurse erstellt!",
         noCoursesStudent: "Bisher wurde keinem Kursen beigetreten!",
 
@@ -98,7 +100,6 @@ export const de = {
         noCoursesFilter: "Es wurden keine Kurse für diese Auswahl gefunden!",
         filterPubUnpub: "Veröffentlichung",
         filterActiveInActive: "Aktivität",
-        filterLabel: "Filter:",
 
         badRequest: "Ungültige Anfrage.",
         notFound: "Nicht gefunden.",

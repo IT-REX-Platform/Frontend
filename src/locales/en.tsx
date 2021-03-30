@@ -23,7 +23,9 @@ export const en = {
         noCourseDescription: "No course description available.",
         enterCourseDescription: "Enter course description",
         createCourse: "Create new course",
+        joinACourse: "Join a course",
         joinCourse: "Join course",
+        joinCourseTitle: "Course Join",
         joinCourseNoCourseError: "Joining course failed! No published course with that id could be found.",
         joinCourseAlreadyMember: "You are already a member of this course. You will be redirected...",
         leaveCourse: "Leave Course",
@@ -36,7 +38,7 @@ export const en = {
         en: "EN",
         de: "DE",
 
-        toCourse: "Create Course",
+        createCourseTitle: "Course Creation",
         courseNameInvalid: "Course name invalid.",
         courseNameTooShort: "Course name must be at least 4 symbols long.",
         courseDescriptionInvalid: "Course description must be at least 5 symbols long.",
@@ -98,7 +100,6 @@ export const en = {
         noCoursesFilter: "No courses were found for this selection!",
         filterPubUnpub: "Publishing",
         filterActiveInActive: "Activity",
-        filterLabel: "Filters:",
 
         badRequest: "Bad request.",
         notFound: "Not found.",

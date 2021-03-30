@@ -15,6 +15,10 @@ import { ICourse } from "../../types/ICourse";
 import { CourseContext, LocalizationContext } from "../Context";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { createVideoUrl } from "../../services/createVideoUrl";
+import { RequestFactory } from "../../api/requests/RequestFactory";
+import { EndpointsChapter } from "../../api/endpoints/EndpointsChapter";
+import { EndpointsCourse } from "../../api/endpoints/EndpointsCourse";
+import { EndpointsProgress } from "../../api/endpoints/EndpointsProgress";
 import { ICourseProgressTracker } from "../../types/ICourseProgressTracker";
 import { ContentProgressTrackerState } from "../../constants/ContentProgressTrackerState";
 import { IContentProgressTracker } from "../../types/IContentProgressTracker";
@@ -24,6 +28,12 @@ import { LinearGradient } from "expo-linear-gradient";
 import { dateConverter } from "../../helperScripts/validateCourseDates";
 import ProgressService from "../../services/ProgressService";
 import { AVPlaybackSource } from "expo-av/build/AV";
+import { ScreenQuizOverview } from "./quizzes/solveQuiz/ScreenQuizOverview";
+import { EndpointsQuiz } from "../../api/endpoints/EndpointsQuiz";
+import { IQuiz } from "../../types/IQuiz";
+
+const endpointsChapter = new EndpointsChapter();
+const endpointsProgress = new EndpointsProgress();
 
 interface IVideoListSection {
     title: string;
@@ -57,6 +67,8 @@ export const ScreenChapterStudent: React.FC = () => {
     const [currentVideo, setCurrentVideo] = useState<IContent>();
     const [currentTitle, setCurrentTitle] = useState<string>();
     const [currentPlaybackSource, setPlaybackSource] = useState<AVPlaybackSource>();
+
+    const [currentQuiz, setCurrentQuiz] = useState<IQuiz>();
 
     // Setup the video section list split by due date.
     const [videoSections, setVideoSections] = useState<IVideoListSection[]>([]);
@@ -133,7 +145,17 @@ export const ScreenChapterStudent: React.FC = () => {
 
         setPlaybackSource({ uri: getCurrentVideoUrl() });
         setIndicatorForUpdate(restorePlayerProgress);
-        setCurrentTitle(currentVideo.video?.title ?? currentVideo.id);
+
+        switch (currentVideo.contentReferenceType) {
+            case CONTENTREFERENCETYPE.VIDEO:
+                setCurrentTitle(currentVideo.video?.title ?? currentVideo.id);
+                break;
+            case CONTENTREFERENCETYPE.QUIZ:
+                setCurrentTitle(currentVideo.quiz?.name ?? currentVideo.id);
+                break;
+        }
+
+        renderQuiz();
     }, [currentVideo]);
 
     // Effect: Whenever the progress of a video has to be restored and there is a video, do it.
@@ -268,19 +290,24 @@ export const ScreenChapterStudent: React.FC = () => {
 
             <View style={styles.contentContainer}>
                 <View style={styles.videoContainer}>
-                    <Video
-                        style={styles.video}
-                        ref={videoPlayer}
-                        onPlaybackStatusUpdate={async (status) => heartbeat(status)}
-                        onLoad={(status) => restoreWatchProgress()}
-                        source={currentPlaybackSource}
-                        rate={1.0}
-                        volume={1.0}
-                        isMuted={false}
-                        resizeMode="cover"
-                        shouldPlay={false}
-                        useNativeControls={true}
-                    />
+                    {currentVideo?.contentReferenceType === CONTENTREFERENCETYPE.VIDEO && (
+                        <Video
+                            style={styles.video}
+                            ref={videoPlayer}
+                            onPlaybackStatusUpdate={async (status) => heartbeat(status)}
+                            onLoad={(status) => restoreWatchProgress()}
+                            source={currentPlaybackSource}
+                            rate={1.0}
+                            volume={1.0}
+                            isMuted={false}
+                            resizeMode="cover"
+                            shouldPlay={false}
+                            useNativeControls={true}
+                        />
+                    )}
+                    {currentVideo?.contentReferenceType === CONTENTREFERENCETYPE.QUIZ && !!currentQuiz && (
+                        <ScreenQuizOverview quiz={currentQuiz} chapterId={chapterId}></ScreenQuizOverview>
+                    )}
                     <View style={styles.iconContainer}>
                         <Text style={[styles.videoTitle, { paddingTop: "1.5%" }]}>{currentTitle}</Text>
                     </View>
@@ -594,6 +621,24 @@ export const ScreenChapterStudent: React.FC = () => {
 
         return createVideoUrl(vidId);
     }
+
+    /** Sets the current component to a quiz if it is selected.  */
+    function renderQuiz() {
+        if (currentVideo?.contentReferenceType !== CONTENTREFERENCETYPE.QUIZ) {
+            return;
+        }
+
+        if (currentVideo?.contentId !== undefined) {
+            const endpointsQuiz = new EndpointsQuiz();
+            const request: RequestInit = RequestFactory.createGetRequest();
+            const response = endpointsQuiz.getQuiz(request, currentVideo.contentId);
+            response.then((quizResponse) => {
+                if (quizResponse !== undefined) {
+                    setCurrentQuiz(quizResponse);
+                }
+            });
+        }
+    }
 };
 
 const styles = StyleSheet.create({
@@ -687,22 +732,6 @@ const styles = StyleSheet.create({
     playlist: {
         marginTop: 20,
     },
-    scrollContainer: {
-        width: "screenWidth",
-        alignItems: "center",
-        paddingBottom: 20,
-    },
-
-    btnAdd: {
-        width: "100%",
-        height: "100%",
-        borderWidth: 2,
-        borderColor: "rgba(79,175,165,1.0)",
-        borderRadius: 25,
-        borderStyle: "dotted",
-        alignItems: "center",
-        justifyContent: "center",
-    },
 
     chapterHeading: {
         alignSelf: "flex-start",
@@ -719,17 +748,13 @@ const styles = StyleSheet.create({
         margin: 5,
     },
 
-    textStyle: {
-        margin: 10,
-        color: "white",
-        fontWeight: "bold",
-    },
     listItemTitle: {
         color: "white",
         textAlign: "left",
         marginBottom: 5,
         marginRight: 5,
     },
+
     listItemSubtitle: {
         color: "rgba(255,255,255,0.66)",
         textAlign: "left",

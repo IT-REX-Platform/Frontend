@@ -1,7 +1,6 @@
 import * as AuthSession from "expo-auth-session";
 import { loggerFactory } from "../../logger/LoggerConfig";
 import { EndpointsUserInfo } from "../api/endpoints/EndpointsUserInfo";
-import { RequestAuthorization } from "../api/requests/RequestAuthorization";
 import { RequestFactory } from "../api/requests/RequestFactory";
 import { itRexVars } from "../constants/Constants";
 import { ITREXRoles } from "../constants/ITREXRoles";
@@ -83,7 +82,6 @@ export default class AuthenticationService {
                         // Refetch User-Info
                         this.getUserInfo((user) => {
                             this.currentUser = user;
-                            console.log(this.currentUser);
                             resolve(tResponse);
                         });
                     })
