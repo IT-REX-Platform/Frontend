@@ -33,6 +33,7 @@ import { InfoPublished } from "../uiElements/InfoPublished";
 import { ICourseProgressTracker } from "../../types/ICourseProgressTracker";
 import ProgressService from "../../services/ProgressService";
 import { MinimalScreenForDrawer } from "../../constants/MinimalScreenForDrawer";
+import { getCourseInformation } from "../../services/CourseService";
 
 export type ScreenCourseNavigationProp = DrawerNavigationProp<RootDrawerParamList, "ROUTE_COURSE_DETAILS">;
 export type ScreenCourseRouteProp = RouteProp<RootDrawerParamList, "ROUTE_COURSE_DETAILS">;
@@ -72,14 +73,13 @@ export const ScreenCourse: React.FC = () => {
     const [user, setUserInfo] = useState<IUser>({});
     const [courseProgress, setCourseProgress] = useState<ICourseProgressTracker>({});
 
-    const endpointsCourse: EndpointsCourse = new EndpointsCourse();
     useEffect(() => {
         setUserInfo(AuthenticationService.getInstance().getUserInfoCached());
         // AuthenticationService.getInstance().getUserInfo(setUserInfo);
-        const request: RequestInit = RequestFactory.createGetRequest();
-        endpointsCourse
-            .getCourse(request, courseId, undefined, i18n.t("itrex.getCourseError"))
-            .then((receivedCourse) => setCourse(receivedCourse));
+
+        getCourseInformation(courseId).then((course) => {
+            setCourse(course);
+        });
 
         // Update the progress.
         ProgressService.getInstance().updateCourseProgressFor(courseId, (receivedProgress) => {
