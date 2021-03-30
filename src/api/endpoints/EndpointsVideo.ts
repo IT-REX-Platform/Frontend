@@ -4,8 +4,9 @@ import { itRexVars } from "../../constants/Constants";
 import { ApiUrls } from "../../constants/ApiUrls";
 import { IEndpointsVideo } from "../endpoints_interfaces/IEndpointsVideo";
 import { loggerFactory } from "../../../logger/LoggerConfig";
-import { ResponseParser } from "../responses/ResponseParser";
 import { VideoUrlSuffix } from "../../constants/VideoUrlSuffix";
+import { ResponseParserVideo } from "../responses/ResponseParserVideo";
+import { ResponseParserEmpty } from "../responses/ResponseParserEmpty";
 
 /**
  * Endpoints for mediaservice/api/videos.
@@ -14,11 +15,13 @@ import { VideoUrlSuffix } from "../../constants/VideoUrlSuffix";
 export class EndpointsVideo implements IEndpointsVideo {
     private loggerApi = loggerFactory.getLogger("API.EndpointsVideo");
     private url: string;
-    private responseParser: ResponseParser;
+    private responseParserVideo: ResponseParserVideo;
+    private responseParserEmpty: ResponseParserEmpty;
 
     public constructor() {
         this.url = itRexVars().apiUrl + ApiUrls.URL_VIDEOS;
-        this.responseParser = new ResponseParser();
+        this.responseParserVideo = new ResponseParserVideo();
+        this.responseParserEmpty = new ResponseParserEmpty();
     }
 
     /**
@@ -40,7 +43,7 @@ export class EndpointsVideo implements IEndpointsVideo {
 
         this.loggerApi.trace("Sending GET request to URL: " + urlUpdated);
         const response: Promise<Response> = sendRequest(urlUpdated, getRequest);
-        return this.responseParser.parseVideos(response, successMsg, errorMsg);
+        return this.responseParserVideo.parseVideos(response, successMsg, errorMsg);
     }
 
     /**
@@ -62,7 +65,7 @@ export class EndpointsVideo implements IEndpointsVideo {
 
         this.loggerApi.trace("Sending GET request to URL: " + url);
         const response: Promise<Response> = sendRequest(url, getRequest);
-        return this.responseParser.parseVideo(response, successMsg, errorMsg);
+        return this.responseParserVideo.parseVideo(response, successMsg, errorMsg);
     }
 
     /**
@@ -83,7 +86,7 @@ export class EndpointsVideo implements IEndpointsVideo {
 
         this.loggerApi.trace("Sending POST request to URL: " + urlUpdated);
         const response: Promise<Response> = sendRequest(urlUpdated, postRequest);
-        return this.responseParser.parseVideoMap(response, successMsg, errorMsg);
+        return this.responseParserVideo.parseVideoMap(response, successMsg, errorMsg);
     }
 
     /**
@@ -97,7 +100,7 @@ export class EndpointsVideo implements IEndpointsVideo {
     public uploadVideo(postRequest: RequestInit, successMsg?: string, errorMsg?: string): Promise<IVideo> {
         this.loggerApi.trace("Sending POST request to URL: " + this.url);
         const response: Promise<Response> = sendRequest(this.url, postRequest);
-        return this.responseParser.parseVideo(response, successMsg, errorMsg, false);
+        return this.responseParserVideo.parseVideo(response, successMsg, errorMsg, false);
     }
 
     /**
@@ -111,7 +114,7 @@ export class EndpointsVideo implements IEndpointsVideo {
     public patchVideo(patchRequest: RequestInit, successMsg?: string, errorMsg?: string): Promise<IVideo> {
         this.loggerApi.trace("Sending POST request to URL: " + this.url);
         const response: Promise<Response> = sendRequest(this.url, patchRequest);
-        return this.responseParser.parseVideo(response, successMsg, errorMsg);
+        return this.responseParserVideo.parseVideo(response, successMsg, errorMsg);
     }
 
     /**
@@ -133,6 +136,6 @@ export class EndpointsVideo implements IEndpointsVideo {
 
         this.loggerApi.trace("Sending DELETE request to URL: " + url);
         const response: Promise<Response> = sendRequest(url, deleteRequest);
-        return this.responseParser.checkEmptyResponse(response, successMsg, errorMsg);
+        return this.responseParserEmpty.checkEmptyResponse(response, successMsg, errorMsg);
     }
 }

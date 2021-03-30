@@ -4,9 +4,10 @@ import { itRexVars } from "../../constants/Constants";
 import { QuestionParams } from "../../constants/QuestionParams";
 import { IQuestionSingleChoice, IQuestionMultipleChoice, IQuestionNumeric } from "../../types/IQuestion";
 import { IEndpointsQuestion } from "../endpoints_interfaces/IEndpointsQuestion";
-import { ResponseParser } from "../responses/ResponseParser";
 import { sendRequest } from "../requests/sendRequest";
 import { QuestionUrlSuffix } from "../../constants/QuestionUrlSuffix";
+import { ResponseParserQuestion } from "../responses/ResponseParserQuestion";
+import { ResponseParserEmpty } from "../responses/ResponseParserEmpty";
 
 /**
  * Endpoints for quizservice/api/questions.
@@ -15,11 +16,13 @@ import { QuestionUrlSuffix } from "../../constants/QuestionUrlSuffix";
 export class EndpointsQuestion implements IEndpointsQuestion {
     private loggerApi = loggerFactory.getLogger("API.EndpointsQuestion");
     private url: string;
-    private responseParser: ResponseParser;
+    private responseParserQuestion: ResponseParserQuestion;
+    private responseParserEmpty: ResponseParserEmpty;
 
     public constructor() {
         this.url = itRexVars().apiUrl + ApiUrls.URL_QUESTIONS;
-        this.responseParser = new ResponseParser();
+        this.responseParserQuestion = new ResponseParserQuestion();
+        this.responseParserEmpty = new ResponseParserEmpty();
     }
 
     getAllQuestions(
@@ -29,7 +32,7 @@ export class EndpointsQuestion implements IEndpointsQuestion {
     ): Promise<(IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric)[]> {
         this.loggerApi.trace("Sending GET request to URL: " + this.url);
         const response: Promise<Response> = sendRequest(this.url, getRequest);
-        return this.responseParser.parseQuestions(response, successMsg, errorMsg);
+        return this.responseParserQuestion.parseQuestions(response, successMsg, errorMsg);
     }
 
     getCourseQuestions(
@@ -42,7 +45,7 @@ export class EndpointsQuestion implements IEndpointsQuestion {
 
         this.loggerApi.trace("Sending GET request to URL: " + urlUpdated);
         const response: Promise<Response> = sendRequest(urlUpdated, getRequest);
-        return this.responseParser.parseQuestions(response, successMsg, errorMsg);
+        return this.responseParserQuestion.parseQuestions(response, successMsg, errorMsg);
     }
 
     getQuestion(
@@ -55,7 +58,7 @@ export class EndpointsQuestion implements IEndpointsQuestion {
 
         this.loggerApi.trace("Sending GET request to URL: " + urlUpdated);
         const response: Promise<Response> = sendRequest(urlUpdated, getRequest);
-        return this.responseParser.parseQuestion(response, successMsg, errorMsg);
+        return this.responseParserQuestion.parseQuestion(response, successMsg, errorMsg);
     }
 
     /**
@@ -76,7 +79,7 @@ export class EndpointsQuestion implements IEndpointsQuestion {
 
         this.loggerApi.trace("Sending POST request to URL: " + urlUpdated);
         const response: Promise<Response> = sendRequest(urlUpdated, postRequest);
-        return this.responseParser.parseQuestionMap(response, successMsg, errorMsg);
+        return this.responseParserQuestion.parseQuestionMap(response, successMsg, errorMsg);
     }
 
     createQuestion(
@@ -86,7 +89,7 @@ export class EndpointsQuestion implements IEndpointsQuestion {
     ): Promise<IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric | undefined> {
         this.loggerApi.trace("Sending POST request to URL: " + this.url);
         const response: Promise<Response> = sendRequest(this.url, postRequest);
-        return this.responseParser.parseQuestion(response, successMsg, errorMsg);
+        return this.responseParserQuestion.parseQuestion(response, successMsg, errorMsg);
     }
 
     updateQuestion(
@@ -96,7 +99,7 @@ export class EndpointsQuestion implements IEndpointsQuestion {
     ): Promise<IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric | undefined> {
         this.loggerApi.trace("Sending PUT request to URL: " + this.url);
         const response: Promise<Response> = sendRequest(this.url, putRequest);
-        return this.responseParser.parseQuestion(response, successMsg, errorMsg);
+        return this.responseParserQuestion.parseQuestion(response, successMsg, errorMsg);
     }
 
     deleteQuestion(
@@ -109,6 +112,6 @@ export class EndpointsQuestion implements IEndpointsQuestion {
 
         this.loggerApi.trace("Sending DELETE request to URL: " + urlUpdated);
         const response: Promise<Response> = sendRequest(urlUpdated, deleteRequest);
-        return this.responseParser.checkEmptyResponse(response, successMsg, errorMsg);
+        return this.responseParserEmpty.checkEmptyResponse(response, successMsg, errorMsg);
     }
 }
