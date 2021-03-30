@@ -7,7 +7,6 @@
         "version": "1.0.0",
         "assetBundlePatterns": ["**/*"],
         "scheme": "it-rex",
-        "icon": "itrex-icon.png",
         "web": {
             "favicon": "./assets/favicon.png"
         }
