@@ -142,9 +142,27 @@ export const ScreenCourse: React.FC = () => {
                 />
                 {getCreateChapterScreen()}
                 {getQuizCreation()}
-                <CourseStack.Screen name="QUIZ_OVERVIEW" component={ScreenQuizOverview} />
-                <CourseStack.Screen name="QUIZ_SOLVE" component={ScreenQuizSolve} />
-                <CourseStack.Screen name="QUIZ_RESULT" component={ScreenQuizResult} />
+                <CourseStack.Screen
+                    options={{
+                        title: i18n.t("itrex.tabTitle") + i18n.t("itrex.quizOverview"),
+                    }}
+                    name="QUIZ_OVERVIEW"
+                    component={ScreenQuizOverview}
+                />
+                <CourseStack.Screen
+                    options={{
+                        title: i18n.t("itrex.tabTitle") + i18n.t("itrex.workOnQuiz"),
+                    }}
+                    name="QUIZ_SOLVE"
+                    component={ScreenQuizSolve}
+                />
+                <CourseStack.Screen
+                    options={{
+                        title: i18n.t("itrex.tabTitle") + i18n.t("itrex.quizResults"),
+                    }}
+                    name="QUIZ_RESULT"
+                    component={ScreenQuizResult}
+                />
             </CourseStack.Navigator>
         </CourseContext.Provider>
     );
