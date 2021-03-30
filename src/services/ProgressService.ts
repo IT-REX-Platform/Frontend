@@ -192,6 +192,10 @@ export default class ProgressService {
                 consumer(contentProgress);
                 return;
             }
+            contentRef = { ...contentRef };
+            contentRef.timePeriod = undefined;
+            contentRef.video = undefined;
+            contentRef.quiz = undefined;
 
             // Doesn't exist means we have to request/create one.
             const postReq = RequestFactory.createPostRequestWithBody(contentRef);
@@ -332,6 +336,10 @@ export default class ProgressService {
             if (courseProgress.id === undefined) {
                 return;
             }
+            toContentRef = { ...toContentRef };
+            toContentRef.timePeriod = undefined;
+            toContentRef.video = undefined;
+            toContentRef.quiz = undefined;
 
             const putReq = RequestFactory.createPutRequest(toContentRef);
             this.endpointsProgress.updateLastAccessedContentProgress(putReq, courseProgress.id).then(consumer);

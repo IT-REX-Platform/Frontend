@@ -90,6 +90,7 @@ export const de = {
         contentProgressUntouched: "Kein Fortschritt",
         contentProgressStarted: "Gestartet",
         contentProgressCompleted: "Beendet",
+        contentProgressDueTo: "Zu bearbeiten bis:",
 
         unpublished: "Unveröffentlicht",
         published: "Veröffentlicht",
@@ -115,7 +116,8 @@ export const de = {
         myNewChapter: "Mein neues Kapitel",
         save: "Speichern",
         nextChapter: "Nächstes Kapitel",
-        lastChapter: "Letzes Kapitel",
+        lastChapter: "Vorheriges Kapitel",
+        chapterBackToOverview: "Zurück zur Übersicht",
 
         saveAndReturn: "Speichern & Zurück",
 
