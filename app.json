@@ -6,6 +6,10 @@
         "slug": "Frontend",
         "version": "1.0.0",
         "assetBundlePatterns": ["**/*"],
-        "scheme": "it-rex"
+        "scheme": "it-rex",
+        "icon": "./src/constants/images/ITRex-Logo-ob_750x750.png",
+        "web": {
+            "favicon": "ITRex-Logo-ob_750x750.png"
+        }
     }
 }
