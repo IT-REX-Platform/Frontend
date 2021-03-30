@@ -29,20 +29,19 @@ export class RequestFactory {
         return request;
     }
 
-    // POST does not exist for following types:
+    // POST does not exist for following types: IVideo.
     public static createPostRequestWithBody(
-        object:
+        body:
             | ICourse
             | IChapter
             | IContent
-            | IVideo
             | IQuiz
             | IQuestionSingleChoice
             | IQuestionMultipleChoice
             | IQuestionNumeric
             | string[]
     ): RequestInit {
-        return RequestFactory.createRequestWithJson("POST", object);
+        return RequestFactory.createRequestWithJson("POST", body);
     }
 
     // PUT does not exist for following types: ICourse, IVideo, IChapter.
@@ -59,7 +58,16 @@ export class RequestFactory {
 
     private static createRequestWithJson(
         httpMethod: string,
-        object: ICourse | IVideo | IChapter | IQuiz | IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric
+        body:
+            | ICourse
+            | IVideo
+            | IContent
+            | IChapter
+            | IQuiz
+            | IQuestionSingleChoice
+            | IQuestionMultipleChoice
+            | IQuestionNumeric
+            | string[]
     ): RequestInit {
         const request: RequestInit = RequestAuthorization.createAuthorizedRequest();
 
@@ -69,7 +77,7 @@ export class RequestFactory {
             Accept: "application/json",
             "Content-Type": "application/json",
         };
-        request.body = JSON.stringify(object);
+        request.body = JSON.stringify(body);
 
         return request;
     }
