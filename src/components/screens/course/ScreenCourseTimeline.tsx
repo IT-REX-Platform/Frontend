@@ -47,11 +47,6 @@ export const ScreenCourseTimeline: React.FC = () => {
     const [edit, setEdit] = useState<boolean>();
     const [chapters, setChapters] = useState<IChapter[]>([]);
 
-    // Endpoints
-    const courseEndpoint = new EndpointsCourse();
-    const endpointsVideos: EndpointsVideo = new EndpointsVideo();
-    const endpointsQuiz = new EndpointsQuiz();
-
     const isFocused = useIsFocused();
 
     useFocusEffect(
@@ -67,7 +62,6 @@ export const ScreenCourseTimeline: React.FC = () => {
             setUserInfo(AuthenticationService.getInstance().getUserInfoCached());
 
             if (isFocused && course.id !== undefined && isActive == true) {
-                const request: RequestInit = RequestFactory.createGetRequest();
                 getCourseInformation(course.id).then((course) => {
                     if (isActive) {
                         setCourse(course);
