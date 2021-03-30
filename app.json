@@ -9,7 +9,7 @@
         "scheme": "it-rex",
         "icon": "itrex-icon.png",
         "web": {
-            "favicon": "itrex-favicon.png"
+            "favicon": "./assets/favicon.png"
         }
     }
 }
