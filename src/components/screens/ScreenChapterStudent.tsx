@@ -16,14 +16,10 @@ import { CourseContext, LocalizationContext } from "../Context";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { createVideoUrl } from "../../services/createVideoUrl";
 import { RequestFactory } from "../../api/requests/RequestFactory";
-import { EndpointsChapter } from "../../api/endpoints/EndpointsChapter";
-import { EndpointsCourse } from "../../api/endpoints/EndpointsCourse";
-import { EndpointsProgress } from "../../api/endpoints/EndpointsProgress";
 import { ICourseProgressTracker } from "../../types/ICourseProgressTracker";
 import { ContentProgressTrackerState } from "../../constants/ContentProgressTrackerState";
 import { IContentProgressTracker } from "../../types/IContentProgressTracker";
 import { CONTENTREFERENCETYPE, IContent } from "../../types/IContent";
-import { calculateVideoSize } from "../../services/calculateVideoSize";
 import { LinearGradient } from "expo-linear-gradient";
 import { dateConverter } from "../../helperScripts/validateCourseDates";
 import ProgressService from "../../services/ProgressService";
@@ -31,9 +27,6 @@ import { AVPlaybackSource } from "expo-av/build/AV";
 import { ScreenQuizOverview } from "./quizzes/solveQuiz/ScreenQuizOverview";
 import { EndpointsQuiz } from "../../api/endpoints/EndpointsQuiz";
 import { IQuiz } from "../../types/IQuiz";
-
-const endpointsChapter = new EndpointsChapter();
-const endpointsProgress = new EndpointsProgress();
 
 interface IVideoListSection {
     title: string;
@@ -377,7 +370,6 @@ export const ScreenChapterStudent: React.FC = () => {
                 return <></>;
 
             case CONTENTREFERENCETYPE.QUIZ:
-                // TODO: Number of questions are not being fetched correctly yet.
                 return (
                     <Text>
                         {i18n.t("itrex.questions")} {item.quiz?.questions.length ?? "Unknown"}
