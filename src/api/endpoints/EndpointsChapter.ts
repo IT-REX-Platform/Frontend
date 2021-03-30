@@ -2,9 +2,10 @@ import { sendRequest } from "../requests/sendRequest";
 import { itRexVars } from "../../constants/Constants";
 import { ApiUrls } from "../../constants/ApiUrls";
 import { loggerFactory } from "../../../logger/LoggerConfig";
-import { ResponseParser } from "../responses/ResponseParser";
 import { IEndpointsChapter } from "../endpoints_interfaces/IEndpointsChapter";
 import { IChapter } from "../../types/IChapter";
+import { ResponseParserChapter } from "../responses/ResponseParserChapter";
+import { ResponseParserEmpty } from "../responses/ResponseParserEmpty";
 
 /**
  * Endpoints for courseservice/api/courses/.
@@ -13,11 +14,13 @@ import { IChapter } from "../../types/IChapter";
 export class EndpointsChapter implements IEndpointsChapter {
     private loggerApi = loggerFactory.getLogger("API.EndpointsChapter");
     private url: string;
-    private responseParser: ResponseParser;
+    private responseParserChapter: ResponseParserChapter;
+    private responseParserEmpty: ResponseParserEmpty;
 
     public constructor() {
         this.url = itRexVars().apiUrl + ApiUrls.URL_CHAPTERS;
-        this.responseParser = new ResponseParser();
+        this.responseParserChapter = new ResponseParserChapter();
+        this.responseParserEmpty = new ResponseParserEmpty();
     }
 
     /**
@@ -31,7 +34,7 @@ export class EndpointsChapter implements IEndpointsChapter {
     public getAllChapters(getRequest: RequestInit, successMsg?: string, errorMsg?: string): Promise<IChapter[]> {
         this.loggerApi.trace("Sending GET request to URL: " + this.url);
         const response: Promise<Response> = sendRequest(this.url, getRequest);
-        return this.responseParser.parseChapters(response, successMsg, errorMsg);
+        return this.responseParserChapter.parseChapters(response, successMsg, errorMsg);
     }
 
     /**
@@ -53,7 +56,7 @@ export class EndpointsChapter implements IEndpointsChapter {
 
         this.loggerApi.trace("Sending GET request to URL: " + urlUpdated);
         const response: Promise<Response> = sendRequest(urlUpdated, getRequest);
-        return this.responseParser.parseChapter(response, successMsg, errorMsg);
+        return this.responseParserChapter.parseChapter(response, successMsg, errorMsg);
     }
 
     /**
@@ -67,7 +70,7 @@ export class EndpointsChapter implements IEndpointsChapter {
     public createChapter(postRequest: RequestInit, successMsg?: string, errorMsg?: string): Promise<IChapter> {
         this.loggerApi.trace("Sending POST request to URL: " + this.url);
         const response: Promise<Response> = sendRequest(this.url, postRequest);
-        return this.responseParser.parseChapter(response, successMsg, errorMsg);
+        return this.responseParserChapter.parseChapter(response, successMsg, errorMsg);
     }
 
     /**
@@ -81,7 +84,7 @@ export class EndpointsChapter implements IEndpointsChapter {
     public patchChapter(patchRequest: RequestInit, successMsg?: string, errorMsg?: string): Promise<IChapter> {
         this.loggerApi.trace("Sending PATCH request to URL: " + this.url);
         const response: Promise<Response> = sendRequest(this.url, patchRequest);
-        return this.responseParser.parseChapter(response, successMsg, errorMsg);
+        return this.responseParserChapter.parseChapter(response, successMsg, errorMsg);
     }
 
     /**
@@ -103,6 +106,6 @@ export class EndpointsChapter implements IEndpointsChapter {
 
         this.loggerApi.trace("Sending DELETE request to URL: " + urlUpdated);
         const response: Promise<Response> = sendRequest(urlUpdated, deleteRequest);
-        return this.responseParser.checkEmptyResponse(response, successMsg, errorMsg);
+        return this.responseParserEmpty.checkEmptyResponse(response, successMsg, errorMsg);
     }
 }
