@@ -56,7 +56,7 @@ export class ResponseParserVideo {
                 })
                 .catch((error) => {
                     this.loggerApi.error("An error occurred while parsing video: " + error.message);
-                    this.responseToasts.toastError(errorMsg);
+                    this.responseToasts.toastError(errorMsg, toastTimeout);
                     resolve({});
                 });
         });
