@@ -113,7 +113,7 @@ export const VideoComponent: React.FC = () => {
             videoUpdate.title = newTitle;
         }
 
-        // TODO: add more video fields to update here. @s.pastuchov 22.02.21
+        // Can add more video fields to update here.
 
         const postRequest: RequestInit = RequestFactory.createPatchRequest(videoUpdate);
         await endpointsVideo
