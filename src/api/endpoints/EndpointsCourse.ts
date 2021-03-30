@@ -5,9 +5,10 @@ import { ApiUrls } from "../../constants/ApiUrls";
 import { IEndpointsCourse } from "../endpoints_interfaces/IEndpointsCourse";
 import { loggerFactory } from "../../../logger/LoggerConfig";
 import { CourseUrlParams } from "../../constants/CourseUrlParams";
-import { ResponseParser } from "../responses/ResponseParser";
 import { CourseUrlSuffix } from "../../constants/CourseUrlSuffix";
 import { CoursePublishState } from "../../constants/CoursePublishState";
+import { ResponseParserCourse } from "../responses/ResponseParserCourse";
+import { ResponseParserEmpty } from "../responses/ResponseParserEmpty";
 
 /**
  * Endpoints for courseservice/api/courses/.
@@ -16,11 +17,13 @@ import { CoursePublishState } from "../../constants/CoursePublishState";
 export class EndpointsCourse implements IEndpointsCourse {
     private loggerApi = loggerFactory.getLogger("API.EndpointsCourse");
     private url: string;
-    private responseParser: ResponseParser;
+    private responseParserCourse: ResponseParserCourse;
+    private responseParserEmpty: ResponseParserEmpty;
 
     public constructor() {
         this.url = itRexVars().apiUrl + ApiUrls.URL_COURSES;
-        this.responseParser = new ResponseParser();
+        this.responseParserCourse = new ResponseParserCourse();
+        this.responseParserEmpty = new ResponseParserEmpty();
     }
 
     /**
@@ -45,7 +48,7 @@ export class EndpointsCourse implements IEndpointsCourse {
 
         this.loggerApi.trace("Sending GET request to URL: " + url);
         const response: Promise<Response> = sendRequest(url, getRequest);
-        return this.responseParser.parseCourses(response, successMsg, errorMsg);
+        return this.responseParserCourse.parseCourses(response, successMsg, errorMsg);
     }
 
     /**
@@ -72,7 +75,7 @@ export class EndpointsCourse implements IEndpointsCourse {
 
         this.loggerApi.trace("Sending GET request to URL: " + url);
         const response: Promise<Response> = sendRequest(url, getRequest);
-        return this.responseParser.parseCourses(response, successMsg, errorMsg);
+        return this.responseParserCourse.parseCourses(response, successMsg, errorMsg);
     }
 
     /**
@@ -97,7 +100,7 @@ export class EndpointsCourse implements IEndpointsCourse {
 
         this.loggerApi.trace("Sending GET request to URL: " + url);
         const response: Promise<Response> = sendRequest(url, getRequest);
-        return this.responseParser.parseCourses(response, successMsg, errorMsg);
+        return this.responseParserCourse.parseCourses(response, successMsg, errorMsg);
     }
 
     /**
@@ -145,7 +148,7 @@ export class EndpointsCourse implements IEndpointsCourse {
 
         this.loggerApi.trace("Sending GET request to URL: " + urlUpdated);
         const response: Promise<Response> = sendRequest(urlUpdated, getRequest);
-        return this.responseParser.parseCourse(response, successMsg, errorMsg);
+        return this.responseParserCourse.parseCourse(response, successMsg, errorMsg);
     }
 
     /**
@@ -159,7 +162,7 @@ export class EndpointsCourse implements IEndpointsCourse {
     public createCourse(postRequest: RequestInit, successMsg?: string, errorMsg?: string): Promise<ICourse> {
         this.loggerApi.trace("Sending POST request to URL: " + this.url);
         const response: Promise<Response> = sendRequest(this.url, postRequest);
-        return this.responseParser.parseCourse(response, successMsg, errorMsg);
+        return this.responseParserCourse.parseCourse(response, successMsg, errorMsg);
     }
 
     /**
@@ -181,7 +184,7 @@ export class EndpointsCourse implements IEndpointsCourse {
 
         this.loggerApi.trace("Sending POST request to URL: " + urlJoin);
         const response: Promise<Response> = sendRequest(urlJoin, postRequest);
-        return this.responseParser.checkEmptyResponse(response, successMsg, errorMsg);
+        return this.responseParserEmpty.checkEmptyResponse(response, successMsg, errorMsg);
     }
 
     /**
@@ -203,7 +206,7 @@ export class EndpointsCourse implements IEndpointsCourse {
 
         this.loggerApi.trace("Sending POST request to URL: " + urlLeave);
         const response: Promise<Response> = sendRequest(urlLeave, postRequest);
-        return this.responseParser.checkEmptyResponse(response, successMsg, errorMsg);
+        return this.responseParserEmpty.checkEmptyResponse(response, successMsg, errorMsg);
     }
 
     /**
@@ -217,7 +220,7 @@ export class EndpointsCourse implements IEndpointsCourse {
     public patchCourse(patchRequest: RequestInit, successMsg?: string, errorMsg?: string): Promise<ICourse> {
         this.loggerApi.trace("Sending PATCH request to URL: " + this.url);
         const response: Promise<Response> = sendRequest(this.url, patchRequest);
-        return this.responseParser.parseCourse(response, successMsg, errorMsg);
+        return this.responseParserCourse.parseCourse(response, successMsg, errorMsg);
     }
 
     /**
@@ -239,6 +242,6 @@ export class EndpointsCourse implements IEndpointsCourse {
 
         this.loggerApi.trace("Sending DELETE request to URL: " + urlUpdated);
         const response: Promise<Response> = sendRequest(urlUpdated, deleteRequest);
-        return this.responseParser.checkEmptyResponse(response, successMsg, errorMsg);
+        return this.responseParserEmpty.checkEmptyResponse(response, successMsg, errorMsg);
     }
 }
