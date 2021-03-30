@@ -87,6 +87,7 @@ export const ScreenChapterStudent: React.FC = () => {
             // Update the chapter list with the chapters of the course, if any.
             if (course.chapters !== undefined) {
                 setChapterList(course.chapters);
+                syncToCurrentChapter();
             }
 
             updateCourseProgress(() => {
