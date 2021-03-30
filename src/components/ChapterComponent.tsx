@@ -52,9 +52,7 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
             style={styles.chapterContainer}
             onPress={() => {
                 editMode == true
-                    ? navigation.navigate("CHAPTER", {
-                          chapterId: chapter?.id,
-                      })
+                    ? navigation.navigate("CHAPTER", { chapterId: chapter?.id })
                     : navigation.navigate("CHAPTER_CONTENT", { chapterId: chapter?.id });
             }}>
             <View style={styles.chapterTopRow}>
@@ -76,17 +74,12 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
 
                                 {contentReference.contentReferenceType == CONTENTREFERENCETYPE.QUIZ && (
                                     <>
-                                        <TouchableOpacity
-                                            onPress={() => {
-                                                navigateToQuiz(contentReference.contentId);
-                                            }}>
-                                            <MaterialCommunityIcons
-                                                name="file-question-outline"
-                                                size={28}
-                                                color="white"
-                                                style={styles.icon}
-                                            />
-                                        </TouchableOpacity>
+                                        <MaterialCommunityIcons
+                                            name="file-question-outline"
+                                            size={28}
+                                            color="white"
+                                            style={styles.icon}
+                                        />
                                     </>
                                 )}
 
@@ -196,18 +189,6 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
         return;
     }
 
-    function navigateToQuiz(contentId: string | undefined) {
-        if (contentId !== undefined) {
-            const endpointsQuiz = new EndpointsQuiz();
-            const request: RequestInit = RequestFactory.createGetRequest();
-            const response = endpointsQuiz.getQuiz(request, contentId);
-            response.then((quiz) => {
-                navigation.navigate("QUIZ_OVERVIEW", {
-                    quiz: quiz,
-                });
-            });
-        }
-    }
     /**
      * Returns the lowest and the highest week of the contentReferences
      * @returns Week String

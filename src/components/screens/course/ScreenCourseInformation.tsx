@@ -100,8 +100,11 @@ export const ScreenCourseInformation: React.FC = () => {
      * Creates a server request in order to update the course description.
      */
     function _updateCourse() {
-        console.log(course);
-        const updateRequest: RequestInit = RequestFactory.createPatchRequest(course);
+        const coursePatch: ICourse = {
+            id: course.id,
+            courseDescription: course.courseDescription,
+        };
+        const updateRequest: RequestInit = RequestFactory.createPatchRequest(coursePatch);
         endpointsCourse.patchCourse(
             updateRequest,
             i18n.t("itrex.updateCourseSuccess"),
@@ -112,7 +115,7 @@ export const ScreenCourseInformation: React.FC = () => {
     /**
      * Creates a server request in order to update the published state of the course.
      */
-    function _patchCourse() {
+    function _publishCourse() {
         loggerService.trace("Parsing ID string to ID number.");
 
         const coursePatch: ICourse = {
@@ -135,7 +138,7 @@ export const ScreenCourseInformation: React.FC = () => {
     function _confirmPublishCourse() {
         const publishCourse = confirm(i18n.t("itrex.confirmPublishCourse"));
         if (publishCourse === true) {
-            _patchCourse();
+            _publishCourse();
         }
     }
 
