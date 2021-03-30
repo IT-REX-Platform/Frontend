@@ -7,7 +7,7 @@ export interface IEndpointsQuiz {
     getAllQuizzes(getRequest: RequestInit): Promise<IQuiz[]>;
     getCourseQuizzes(getRequest: RequestInit, courseId: string): Promise<IQuiz[]>;
     getQuiz(getRequest: RequestInit, quizId: string): Promise<IQuiz | undefined>;
-    findAllWithIds(postRequest: RequestInit): Promise<Map<string, IQuiz>>;
+    findAllByIds(postRequest: RequestInit): Promise<Map<string, IQuiz>>;
     createQuiz(postRequest: RequestInit): Promise<IQuiz | undefined>;
     updateQuiz(putRequest: RequestInit): Promise<IQuiz | undefined>;
     deleteQuiz(deleteRequest: RequestInit, quizId: string, withQuestions?: boolean): Promise<void>;

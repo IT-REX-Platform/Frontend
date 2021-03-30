@@ -188,7 +188,7 @@ export const ScreenCourseTimeline: React.FC = () => {
                             const postQuizRequest = RequestFactory.createPostRequestWithBody(quizIds);
                             const quizPromise = new Promise((resolve, reject) => {
                                 if (quizIds != undefined) {
-                                    endpointsQuiz.findAllWithIds(postQuizRequest).then((quizzes) => {
+                                    endpointsQuiz.findAllByIds(postQuizRequest).then((quizzes) => {
                                         quizzes.forEach((quiz) => {
                                             const contentQuiz = contents[CONTENTREFERENCETYPE.QUIZ].filter(
                                                 (item) => item.contentId === quiz.id

@@ -89,11 +89,7 @@ export class EndpointsQuiz implements IEndpointsQuiz {
      * @param errorMsg An error message.
      * @returns
      */
-    public findAllWithIds(
-        postRequest: RequestInit,
-        successMsg?: string,
-        errorMsg?: string
-    ): Promise<Map<string, IQuiz>> {
+    public findAllByIds(postRequest: RequestInit, successMsg?: string, errorMsg?: string): Promise<Map<string, IQuiz>> {
         const urlUpdated: string = this.url + QuizUrlSuffix.GET_IDS;
 
         this.loggerApi.trace("Sending POST request to URL: " + urlUpdated);
