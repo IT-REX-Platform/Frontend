@@ -41,7 +41,7 @@ export const en = {
 
         createCourseTitle: "Course Creation",
         courseNameInvalid: "Course name invalid.",
-        courseNameTooShort: "Course name must be at least 4 symbols long.",
+        courseNameTooShort: "Course name must be at least one symbol long.",
         courseDescriptionInvalid: "Course description must be at least 5 symbols long.",
         courseCreated: "Course created: ",
 
