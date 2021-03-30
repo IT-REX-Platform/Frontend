@@ -29,6 +29,7 @@ export class RequestFactory {
         return request;
     }
 
+    // POST does not exist for following types:
     public static createPostRequestWithBody(
         object:
             | ICourse
@@ -39,26 +40,20 @@ export class RequestFactory {
             | IQuestionSingleChoice
             | IQuestionMultipleChoice
             | IQuestionNumeric
+            | string[]
     ): RequestInit {
         return RequestFactory.createRequestWithJson("POST", object);
     }
 
+    // PUT does not exist for following types: ICourse, IVideo, IChapter.
     public static createPutRequest(
-        object:
-            | ICourse
-            | IVideo
-            | IChapter
-            | IContent
-            | IQuiz
-            | IQuestionSingleChoice
-            | IQuestionMultipleChoice
-            | IQuestionNumeric
+        object: IContent | IQuiz | IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric
     ): RequestInit {
         return RequestFactory.createRequestWithJson("PUT", object);
     }
 
-    // PATCH does not exist for following types: IQuiz, IQuestionSingleChoice, IQuestionMultipleChoice, IQuestionNumeric.
-    public static createPatchRequest(object: ICourse | IChapter | IContent | IVideo): RequestInit {
+    // PATCH does not exist for following types: IQuiz, IQuestionSingleChoice, IQuestionMultipleChoice, IQuestionNumeric, IContent.
+    public static createPatchRequest(object: ICourse | IChapter | IVideo): RequestInit {
         return RequestFactory.createRequestWithJson("PATCH", object);
     }
 
