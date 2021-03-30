@@ -9,6 +9,7 @@ export const de = {
         overview: "Übersicht",
         login: "Einloggen",
         logout: "Ausloggen",
+        tabTitle: "IT-REX - ",
 
         homeStudentTitle: "Home",
         homeStudentText: "Hallo Student",
