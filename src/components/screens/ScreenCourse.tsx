@@ -219,7 +219,13 @@ export const ScreenCourse: React.FC = () => {
     }
 
     function getUploadVideoScreen() {
-        if (AuthenticationService.getInstance().isLecturerOrAdmin()) {
+        if (user.courses == undefined || course.id == undefined) {
+            return <></>;
+        }
+
+        const courseRole: CourseRoles = user.courses[course.id];
+
+        if (courseRole === CourseRoles.OWNER || courseRole == undefined) {
             return (
                 <>
                     <CourseStack.Screen name="VIDEO_POOL" component={VideoPoolComponent} />
