@@ -51,6 +51,7 @@ export const DrawerContent: React.FC<DrawerContentComponentProps> = (props: Draw
         _displayNoCourses();
     }
 
+    // Create an DrawerItem for each assigned course
     for (const course of courses) {
         drawerItems.push(
             <DrawerItem
@@ -59,6 +60,7 @@ export const DrawerContent: React.FC<DrawerContentComponentProps> = (props: Draw
                 label={"" + course.name}
                 key={course.id}
                 onPress={() => {
+                    // a bit hacky, but keeps reactnavigation from displaying the contents of a previously opened course
                     navigation.dispatch({
                         ...CommonActions.reset({
                             index: 0,

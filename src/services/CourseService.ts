@@ -9,7 +9,8 @@ import { CONTENTREFERENCETYPE, IContent } from "../types/IContent";
 import { ICourse } from "../types/ICourse";
 
 /**
- * This function fetches a course with all its "dependencies", like referenced videos or quizzes
+ * This function fetches a course with all its "dependencies", like referenced videos or quizzes.
+ * And maps the contentReferences inkl. Chapter to the coresponding timePeriod
  * @param courseId the id of the course which should be fetched
  * @returns the whole curse structure with video/quiz and timePeriod Information
  */
@@ -23,6 +24,7 @@ export function getCourseInformation(courseId: string): Promise<ICourse> {
             .getCourse(request, courseId, undefined, i18n.t("itrex.getCourseError"))
             .then((receivedCourse) => {
                 if (receivedCourse.chapters !== undefined) {
+                    // Map ContentReferences + Chapters to the timePeriod
                     for (const chapter of receivedCourse.chapters) {
                         if (chapter.contentReferences !== undefined) {
                             for (const contentRef of chapter.contentReferences) {
@@ -30,6 +32,7 @@ export function getCourseInformation(courseId: string): Promise<ICourse> {
                                     (period) => period.id === contentRef.timePeriodId
                                 );
                                 if (timePeriod !== undefined) {
+                                    // Assing the timePeriod-Object with the coresponding id
                                     contentRef.timePeriod = timePeriod;
 
                                     if (timePeriod?.chapters === undefined) {
@@ -154,7 +157,7 @@ export function getCourseInformation(courseId: string): Promise<ICourse> {
                             reject();
                         }
                     });
-
+                    // Resolve if all requests are finished
                     Promise.all([videoPromise, quizPromise]).then(() => {
                         resolve(receivedCourse);
                     });

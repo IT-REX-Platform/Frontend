@@ -7,6 +7,9 @@ import { IChapter } from "../../types/IChapter";
 
 const prefix = Linking.makeUrl("it-rex://");
 
+/**
+ * Linking config for parsing the url
+ */
 export const config = {
     screens: {
         ROUTE_HOME: "home",
@@ -49,6 +52,9 @@ export const config = {
     },
 };
 
+/**
+ * "Pages" and parameters of the RootDrawer
+ */
 export type RootDrawerParamList = {
     ROUTE_HOME: undefined;
     ROUTE_CREATE_COURSE: undefined;
@@ -56,6 +62,9 @@ export type RootDrawerParamList = {
     ROUTE_COURSE_DETAILS: { courseId: string; screen?: string };
 };
 
+/**
+ * "Pages" and parameters of the CourseStack
+ */
 export type CourseStackParamList = {
     INFO: NavigatorScreenParams<CourseTabParamList>;
     VIDEO_POOL: undefined;
