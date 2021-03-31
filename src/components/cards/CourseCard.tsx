@@ -92,7 +92,7 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
                             title={i18n.t("itrex.courseProgressLastAccessed")}
                             size="large"
                             onPress={() => {
-                                // TODO: Navigate to the content page.
+                                // Navigate to the content page.
                                 navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, {
                                     screen: "CHAPTER_CONTENT",
                                     params: {
