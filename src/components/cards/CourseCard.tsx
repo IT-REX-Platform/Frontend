@@ -144,7 +144,7 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
             <View style={styles.break} />
 
             {getDate(course.startDate, i18n.t("itrex.start"))}
-            {getDate(course.endDate, i18n.t("itrex.endDate"))}
+            {getDate(course.endDate, i18n.t("itrex.end"))}
             <View style={{ alignItems: "center" }}>
                 {getNavToLastContent()}
                 {getProgressInfo()}
