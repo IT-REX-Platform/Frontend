@@ -13,6 +13,7 @@ import { CoursePublishState } from "../constants/CoursePublishState";
 import { IUser } from "../types/IUser";
 import AuthenticationService from "../services/AuthenticationService";
 import { TextButton } from "./uiElements/TextButton";
+import { areMoreCoursesAllowed } from "../services/CourseCounterService";
 
 export type JoinCourseRouteProp = RouteProp<RootDrawerParamList, "ROUTE_JOIN_COURSE">;
 
@@ -30,7 +31,7 @@ export const JoinCourseComponent: React.FC = () => {
 
     const [user, setUserInfo] = useState<IUser>({});
     useEffect(() => {
-        AuthenticationService.getInstance().getUserInfo(setUserInfo);
+        setUserInfo(AuthenticationService.getInstance().getUserInfoCached());
     }, []);
 
     const isFocused = useIsFocused();
@@ -39,14 +40,14 @@ export const JoinCourseComponent: React.FC = () => {
             AuthenticationService.getInstance()
                 .refreshToken()
                 .then(() => {
-                    AuthenticationService.getInstance().getUserInfo(setUserInfo);
+                    setUserInfo(AuthenticationService.getInstance().getUserInfoCached());
                 });
         }
     }, [isFocused]);
 
     return (
         <>
-            <Header title={i18n.t("itrex.joinCourse")} />
+            <Header title={i18n.t("itrex.joinCourseTitle")} />
             <ImageBackground source={require("../constants/images/Background2.png")} style={styles.imageContainer}>
                 <View style={styles.container}>
                     <View style={{ marginTop: 70 }} />
@@ -72,6 +73,7 @@ export const JoinCourseComponent: React.FC = () => {
             .then((receivedCoursesPublished) => setCoursesPublished(receivedCoursesPublished));
     }
 
+    // eslint-disable-next-line complexity
     function joinCourse(): void {
         // Check for the course to join being published/available.
         if (coursesPublished.find((val) => val.id == courseId) === undefined) {
@@ -89,12 +91,21 @@ export const JoinCourseComponent: React.FC = () => {
             return;
         }
 
+        if (!areMoreCoursesAllowed()) {
+            return;
+        }
+
         // Do the request stuff.
         const request: RequestInit = RequestFactory.createPostRequestWithoutBody();
         endpointsCourse.joinCourse(request, courseId, undefined, i18n.t("itrex.joinCourseError")).then(() => {
             AuthenticationService.getInstance()
                 .refreshToken()
-                .then(() => navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, { courseId: courseId }));
+                .then(() =>
+                    navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, {
+                        courseId: courseId,
+                        screen: "OVERVIEW",
+                    })
+                );
         });
     }
 };

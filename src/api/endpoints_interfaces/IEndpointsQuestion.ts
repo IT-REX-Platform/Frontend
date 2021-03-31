@@ -15,6 +15,9 @@ export interface IEndpointsQuestion {
         getRequest: RequestInit,
         questionId: string
     ): Promise<IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric | undefined>;
+    findAllByIds(
+        postRequest: RequestInit
+    ): Promise<Map<string, IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric>>;
     createQuestion(
         postRequest: RequestInit
     ): Promise<IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric | undefined>;

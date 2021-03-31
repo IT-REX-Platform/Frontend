@@ -27,6 +27,13 @@ import { ScreenQuizOverview } from "./quizzes/solveQuiz/ScreenQuizOverview";
 import { ScreenQuizSolve } from "./quizzes/solveQuiz/ScreenQuizSolve";
 import { ScreenQuizResult } from "./quizzes/solveQuiz/ScreenQuizResult";
 import { Header } from "../../constants/navigators/Header";
+import { CoursePublishState } from "../../constants/CoursePublishState";
+import { InfoUnpublished } from "../uiElements/InfoUnpublished";
+import { InfoPublished } from "../uiElements/InfoPublished";
+import { ICourseProgressTracker } from "../../types/ICourseProgressTracker";
+import ProgressService from "../../services/ProgressService";
+import { MinimalScreenForDrawer } from "../../constants/MinimalScreenForDrawer";
+import { getCourseInformation } from "../../services/CourseService";
 
 export type ScreenCourseNavigationProp = DrawerNavigationProp<RootDrawerParamList, "ROUTE_COURSE_DETAILS">;
 export type ScreenCourseRouteProp = RouteProp<RootDrawerParamList, "ROUTE_COURSE_DETAILS">;
@@ -38,12 +45,13 @@ export const ScreenCourse: React.FC = () => {
     /**
      * !!! ATTENTION !!!
      * Checking route.params and courseId must be the first thing this component does (after calling useRoute(), duh).
-     * This prevents: "Error: Rendered more hooks than during the previous render."
+     * This prevents crash: "Error: Rendered more hooks than during the previous render."
      */
     const route: ScreenCourseRouteProp = useRoute<ScreenCourseRouteProp>();
     if (route.params == undefined) {
         return _renderEmptyCourse();
     }
+    // Yes, both checks are required.
     if (route.params.courseId == undefined || route.params.courseId == "undefined") {
         return _renderEmptyCourse();
     }
@@ -59,24 +67,26 @@ export const ScreenCourse: React.FC = () => {
     const [course, setCourse] = useState(courseInitial);
 
     // Current course context.
-    const courseContext = React.useMemo(
-        () => ({
-            course,
-            setCourse,
-        }),
-        [course]
-    );
+    const courseContext = React.useMemo(() => ({ course, setCourse }), [course]);
 
     // User info.
     const [user, setUserInfo] = useState<IUser>({});
+    const [courseProgress, setCourseProgress] = useState<ICourseProgressTracker>({});
 
-    const endpointsCourse: EndpointsCourse = new EndpointsCourse();
     useEffect(() => {
-        AuthenticationService.getInstance().getUserInfo(setUserInfo);
-        const request: RequestInit = RequestFactory.createGetRequest();
-        endpointsCourse
-            .getCourse(request, courseId, undefined, i18n.t("itrex.getCourseError"))
-            .then((receivedCourse) => setCourse(receivedCourse));
+        setUserInfo(AuthenticationService.getInstance().getUserInfoCached());
+        // AuthenticationService.getInstance().getUserInfo(setUserInfo);
+
+        getCourseInformation(courseId).then((course) => {
+            setCourse(course);
+        });
+
+        // Update the progress.
+        ProgressService.getInstance().updateCourseProgressFor(courseId, (receivedProgress) => {
+            console.log("Progress of course:");
+            console.log(receivedProgress);
+            setCourseProgress(receivedProgress);
+        });
     }, [courseId]);
 
     return (
@@ -92,7 +102,12 @@ export const ScreenCourse: React.FC = () => {
                     headerBackTitle: "Back",
 
                     // Title in center.
-                    headerTitle: () => <Text style={styles.headerTitle}>{course.name}</Text>,
+                    headerTitle: () => (
+                        <Text style={styles.headerTitle}>
+                            {course.name}
+                            {publishSate(course.publishState)}
+                        </Text>
+                    ),
                     headerTitleAlign: "center",
                     headerStyle: {
                         backgroundColor: dark.theme.darkBlue1,
@@ -118,12 +133,36 @@ export const ScreenCourse: React.FC = () => {
 
                 {getUploadVideoScreen()}
                 {getQuizPoolScreen()}
-                <CourseStack.Screen name="CHAPTER_CONTENT" component={ScreenChapterStudent} />
+                <CourseStack.Screen
+                    options={{
+                        title: i18n.t("itrex.tabTitle") + i18n.t("itrex.chapterContent"),
+                    }}
+                    name="CHAPTER_CONTENT"
+                    component={ScreenChapterStudent}
+                />
                 {getCreateChapterScreen()}
                 {getQuizCreation()}
-                <CourseStack.Screen name="QUIZ_OVERVIEW" component={ScreenQuizOverview} />
-                <CourseStack.Screen name="QUIZ_SOLVE" component={ScreenQuizSolve} />
-                <CourseStack.Screen name="QUIZ_RESULT" component={ScreenQuizResult} />
+                <CourseStack.Screen
+                    options={{
+                        title: i18n.t("itrex.tabTitle") + i18n.t("itrex.quizOverview"),
+                    }}
+                    name="QUIZ_OVERVIEW"
+                    component={ScreenQuizOverview}
+                />
+                <CourseStack.Screen
+                    options={{
+                        title: i18n.t("itrex.tabTitle") + i18n.t("itrex.workOnQuiz"),
+                    }}
+                    name="QUIZ_SOLVE"
+                    component={ScreenQuizSolve}
+                />
+                <CourseStack.Screen
+                    options={{
+                        title: i18n.t("itrex.tabTitle") + i18n.t("itrex.quizResults"),
+                    }}
+                    name="QUIZ_RESULT"
+                    component={ScreenQuizResult}
+                />
             </CourseStack.Navigator>
         </CourseContext.Provider>
     );
@@ -143,8 +182,40 @@ export const ScreenCourse: React.FC = () => {
         );
     }
 
+    /**
+     * Show the published state in the Title header, so that the lecturer can see the published state from every page of the course.
+     *
+     * @param isPublished information if the course is published or not
+     *
+     */
+    function publishSate(isPublished: CoursePublishState | undefined) {
+        if (user.courses == undefined || course.id == undefined) {
+            return <></>;
+        }
+
+        const courseRole: CourseRoles = user.courses[course.id];
+
+        if (courseRole === CourseRoles.OWNER || courseRole == CourseRoles.MANAGER) {
+            if (isPublished === CoursePublishState.UNPUBLISHED) {
+                return (
+                    <View style={styles.publishedState}>
+                        <InfoUnpublished />
+                    </View>
+                );
+            } else if (isPublished === CoursePublishState.PUBLISHED) {
+                return (
+                    <View style={styles.publishedState}>
+                        <InfoPublished />
+                    </View>
+                );
+            }
+        }
+
+        return;
+    }
+
     function showHamburger(dimensions: ScaledSize) {
-        if (dimensions.width < 1280) {
+        if (dimensions.width < MinimalScreenForDrawer.SIZE) {
             return (
                 <MaterialCommunityIcons
                     style={styles.icon}
@@ -159,6 +230,9 @@ export const ScreenCourse: React.FC = () => {
         }
     }
 
+    /**
+     * Give the course owner/manager of the course the ability to access the quiz pool to manage its content.
+     */
     function getQuizPoolScreen() {
         if (user.courses == undefined || course.id == undefined) {
             return <></>;
@@ -166,22 +240,54 @@ export const ScreenCourse: React.FC = () => {
 
         const courseRole: CourseRoles = user.courses[course.id];
 
-        if (courseRole === CourseRoles.OWNER || courseRole == undefined) {
-            return <CourseStack.Screen name="QUIZ_POOL" component={QuizPoolComponent} />;
+        if (courseRole === CourseRoles.OWNER || courseRole == CourseRoles.MANAGER) {
+            return (
+                <CourseStack.Screen
+                    options={{
+                        title: i18n.t("itrex.tabTitle") + i18n.t("itrex.quizPool"),
+                    }}
+                    name="QUIZ_POOL"
+                    component={QuizPoolComponent}
+                />
+            );
         }
     }
 
+    /**
+     * Give the course owner/manager of the course the ability to access the video pool to manage its content.
+     */
     function getUploadVideoScreen() {
-        if (AuthenticationService.getInstance().isLecturerOrAdmin()) {
+        if (user.courses == undefined || course.id == undefined) {
+            return <></>;
+        }
+
+        const courseRole: CourseRoles = user.courses[course.id];
+
+        if (courseRole === CourseRoles.OWNER || courseRole == CourseRoles.MANAGER) {
             return (
                 <>
-                    <CourseStack.Screen name="VIDEO_POOL" component={VideoPoolComponent} />
-                    <CourseStack.Screen name="VIDEO" component={VideoComponent} />
+                    <CourseStack.Screen
+                        options={{
+                            title: i18n.t("itrex.tabTitle") + i18n.t("itrex.videoPool"),
+                        }}
+                        name="VIDEO_POOL"
+                        component={VideoPoolComponent}
+                    />
+                    <CourseStack.Screen
+                        options={{
+                            title: i18n.t("itrex.tabTitle") + i18n.t("itrex.video"),
+                        }}
+                        name="VIDEO"
+                        component={VideoComponent}
+                    />
                 </>
             );
         }
     }
 
+    /**
+     * Give the course owner/manager of the course the ability to access the quiz creation component.
+     */
     function getQuizCreation() {
         if (user.courses == undefined || course.id == undefined) {
             return <></>;
@@ -189,16 +295,31 @@ export const ScreenCourse: React.FC = () => {
 
         const courseRole: CourseRoles = user.courses[course.id];
 
-        if (courseRole === CourseRoles.OWNER || courseRole == undefined) {
+        if (courseRole === CourseRoles.OWNER || courseRole == CourseRoles.MANAGER) {
             return (
                 <>
-                    <CourseStack.Screen name="CREATE_QUIZ" component={ScreenAddQuiz} />
-                    <CourseStack.Screen name="CREATE_QUESTION" component={ScreenAddQuestion} />
+                    <CourseStack.Screen
+                        options={{
+                            title: i18n.t("itrex.tabTitle") + i18n.t("itrex.createQuiz"),
+                        }}
+                        name="CREATE_QUIZ"
+                        component={ScreenAddQuiz}
+                    />
+                    <CourseStack.Screen
+                        options={{
+                            title: i18n.t("itrex.tabTitle") + i18n.t("itrex.createQuestion"),
+                        }}
+                        name="CREATE_QUESTION"
+                        component={ScreenAddQuestion}
+                    />
                 </>
             );
         }
     }
 
+    /**
+     * Give a user with the role of lecturer or admin the possibility to create a course.
+     */
     function getCreateChapterScreen() {
         if (AuthenticationService.getInstance().isLecturerOrAdmin()) {
             return (
@@ -206,7 +327,7 @@ export const ScreenCourse: React.FC = () => {
                     name="CHAPTER"
                     component={ScreenAddChapter}
                     options={{
-                        title: i18n.t("itrex.toUploadVideo"),
+                        title: i18n.t("itrex.tabTitle") + i18n.t("itrex.chapterContent"),
                     }}
                 />
             );
@@ -242,5 +363,11 @@ const styles = StyleSheet.create({
         textAlign: "center",
         margin: 5,
         color: "white",
+    },
+    publishedState: {
+        position: "absolute",
+        margin: 8,
+        marginTop: 4,
+        marginLeft: 16,
     },
 });

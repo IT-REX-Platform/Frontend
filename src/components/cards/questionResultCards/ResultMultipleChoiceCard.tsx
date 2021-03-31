@@ -2,8 +2,8 @@
 import React from "react";
 import { View, Text } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { IQuestionMultipleChoice } from "../../types/IQuestion";
-import { cardStyles } from "./cardStyles";
+import { IQuestionMultipleChoice } from "../../../types/IQuestion";
+import { cardStyles } from "../cardStyles";
 
 interface ResultMultipleChoiceCardProps {
     question: IQuestionMultipleChoice;
@@ -27,13 +27,13 @@ export const ResultMultipleChoiceCard: React.FC<ResultMultipleChoiceCardProps> =
                 {Object.entries(question.choices).map((choice) => {
                     const index: string = choice[0];
                     const value: string = choice[1];
-                    return renderAnswer(question, index, value);
+                    return renderAnswer(question, Number(index), value);
                 })}
             </View>
         </View>
     );
 
-    function renderAnswer(question: IQuestionMultipleChoice, index: string, value: string) {
+    function renderAnswer(question: IQuestionMultipleChoice, index: number, value: string) {
         let selected = false;
         if (question.userInput) {
             if (question.userInput[index]) {

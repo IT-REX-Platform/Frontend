@@ -15,6 +15,7 @@ import { ScreenCourse } from "../../components/screens/ScreenCourse";
 import { dark } from "../themes/dark";
 import { CreateCourseComponent } from "../../components/CreateCourseComponent";
 import { JoinCourseComponent } from "../../components/JoinCourseComponent";
+import { MinimalScreenForDrawer } from "../MinimalScreenForDrawer";
 
 const Drawer = createDrawerNavigator<RootDrawerParamList>();
 
@@ -43,7 +44,7 @@ export const DrawerNavigator: React.FC = () => {
 function _selectDrawerType(dimensions: ScaledSize): "permanent" | "front" {
     switch (Platform.OS) {
         case "web":
-            return dimensions.width >= 1280 ? "permanent" : "front";
+            return dimensions.width >= MinimalScreenForDrawer.SIZE ? "permanent" : "front";
         default:
             return "front";
     }
@@ -69,7 +70,8 @@ function _getHomeScreen(homeScreenType: React.FC) {
             name="ROUTE_HOME"
             component={homeScreenType}
             options={{
-                title: i18n.t("itrex.home"),
+                title: i18n.t("itrex.tabTitle") + i18n.t("itrex.home"),
+                drawerLabel: i18n.t("itrex.home"),
                 drawerIcon: () => <MaterialCommunityIcons name="home" size={28} color="white" />,
             }}
         />
@@ -86,7 +88,8 @@ function _gotoCreateCourseScreen() {
                 name="ROUTE_CREATE_COURSE"
                 component={CreateCourseComponent}
                 options={{
-                    title: i18n.t("itrex.createCourse"),
+                    title: i18n.t("itrex.tabTitle") + i18n.t("itrex.createCourse"),
+                    drawerLabel: i18n.t("itrex.createCourse"),
                     drawerIcon: () => <MaterialIcons name="note-add" size={28} color="white" />,
                 }}
             />
@@ -100,7 +103,8 @@ function _gotoJoinCourse() {
             name="ROUTE_JOIN_COURSE"
             component={JoinCourseComponent}
             options={{
-                title: i18n.t("itrex.joinCourse"),
+                title: i18n.t("itrex.tabTitle") + i18n.t("itrex.joinCourse"),
+                drawerLabel: i18n.t("itrex.joinCourse"),
                 drawerIcon: () => <MaterialIcons name="add" size={28} color="white" />,
             }}
         />
@@ -113,7 +117,8 @@ function _gotoLastAccessedCourse() {
             name="ROUTE_COURSE_DETAILS"
             component={ScreenCourse}
             options={{
-                title: i18n.t("itrex.lastAccessedCourse"),
+                title: i18n.t("itrex.tabTitle") + i18n.t("itrex.lastAccessedCourse"),
+                drawerLabel: i18n.t("itrex.lastAccessedCourse"),
                 drawerIcon: () => <MaterialIcons name="skip-previous" size={28} color="white" />,
             }}
         />

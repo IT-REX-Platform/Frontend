@@ -36,14 +36,14 @@ export const MultipleChoiceQuestion: React.FC<QuizProps> = (props) => {
     const quiz = props.quiz;
     const courseId = props.courseId;
 
-    const defaultChoices = question !== undefined ? question.choices : { "0": "", "1": "", "2": "", "3": "" };
+    const defaultChoices = question !== undefined ? question.choices : { 0: "", 1: "", 2: "", 3: "" };
     const [choicesMultipleChoice, setchoicesMultipleChoice] = useState<IChoices>(defaultChoices);
 
     // Default Checkbox values
-    const defaultCheckboxZero = question !== undefined ? question.solution["0"] : true;
-    const defaultCheckboxOne = question !== undefined ? question.solution["1"] : false;
-    const defaultCheckboxTwo = question !== undefined ? question.solution["2"] : false;
-    const defaultCheckboxThree = question !== undefined ? question.solution["3"] : true;
+    const defaultCheckboxZero = question !== undefined ? question.solution[0] : true;
+    const defaultCheckboxOne = question !== undefined ? question.solution[1] : false;
+    const defaultCheckboxTwo = question !== undefined ? question.solution[2] : false;
+    const defaultCheckboxThree = question !== undefined ? question.solution[3] : true;
 
     // Checkbox states to define the correct solution
     const [checkboxZero, setCheckboxZero] = useState<boolean>(defaultCheckboxZero);
@@ -51,13 +51,12 @@ export const MultipleChoiceQuestion: React.FC<QuizProps> = (props) => {
     const [checkboxTwo, setCheckboxTwo] = useState<boolean>(defaultCheckboxTwo);
     const [checkboxThree, setCheckboxThree] = useState<boolean>(defaultCheckboxThree);
 
-    const defaultSolution =
-        question !== undefined ? question.solution : { "0": true, "1": false, "2": false, "3": true };
+    const defaultSolution = question !== undefined ? question.solution : { 0: true, 1: false, 2: false, 3: true };
     const [solution, setSolution] = useState<ISolutionMultipleChoice>(defaultSolution);
 
     useFocusEffect(
         React.useCallback(() => {
-            setSolution({ "0": checkboxZero, "1": checkboxOne, "2": checkboxTwo, "3": checkboxThree });
+            setSolution({ 0: checkboxZero, 1: checkboxOne, 2: checkboxTwo, 3: checkboxThree });
         }, [choicesMultipleChoice, checkboxZero, checkboxOne, checkboxTwo, checkboxThree])
     );
 
@@ -77,9 +76,9 @@ export const MultipleChoiceQuestion: React.FC<QuizProps> = (props) => {
                     <View style={quizStyles.cardChoices}>
                         <TextInput
                             editable
-                            defaultValue={choicesMultipleChoice !== undefined ? choicesMultipleChoice["0"] : ""}
+                            defaultValue={choicesMultipleChoice !== undefined ? choicesMultipleChoice[0] : ""}
                             style={[quizStyles.answerInput]}
-                            onChangeText={(text: string) => addSolutionEntry("0", text)}
+                            onChangeText={(text: string) => addSolutionEntry(0, text)}
                             multiline={true}
                         />
                     </View>
@@ -94,9 +93,9 @@ export const MultipleChoiceQuestion: React.FC<QuizProps> = (props) => {
                     <View style={quizStyles.cardChoices}>
                         <TextInput
                             editable
-                            defaultValue={choicesMultipleChoice !== undefined ? choicesMultipleChoice["1"] : ""}
+                            defaultValue={choicesMultipleChoice !== undefined ? choicesMultipleChoice[1] : ""}
                             style={[quizStyles.answerInput]}
-                            onChangeText={(text: string) => addSolutionEntry("1", text)}
+                            onChangeText={(text: string) => addSolutionEntry(1, text)}
                             multiline={true}
                         />
                     </View>
@@ -111,9 +110,9 @@ export const MultipleChoiceQuestion: React.FC<QuizProps> = (props) => {
                     <View style={quizStyles.cardChoices}>
                         <TextInput
                             editable
-                            defaultValue={choicesMultipleChoice !== undefined ? choicesMultipleChoice["2"] : ""}
+                            defaultValue={choicesMultipleChoice !== undefined ? choicesMultipleChoice[2] : ""}
                             style={[quizStyles.answerInput]}
-                            onChangeText={(text: string) => addSolutionEntry("2", text)}
+                            onChangeText={(text: string) => addSolutionEntry(2, text)}
                             multiline={true}
                         />
                     </View>
@@ -128,10 +127,10 @@ export const MultipleChoiceQuestion: React.FC<QuizProps> = (props) => {
                     <View style={quizStyles.cardChoices}>
                         <TextInput
                             editable
-                            defaultValue={choicesMultipleChoice !== undefined ? choicesMultipleChoice["3"] : ""}
+                            defaultValue={choicesMultipleChoice !== undefined ? choicesMultipleChoice[3] : ""}
                             allowFontScaling={true}
                             style={[quizStyles.answerInput]}
-                            onChangeText={(text: string) => addSolutionEntry("3", text)}
+                            onChangeText={(text: string) => addSolutionEntry(3, text)}
                             multiline={true}
                         />
                     </View>
@@ -154,16 +153,16 @@ export const MultipleChoiceQuestion: React.FC<QuizProps> = (props) => {
      * @param index index of the solution entry
      * @param text text of the solution entry
      */
-    function addSolutionEntry(index: string, text: string) {
+    function addSolutionEntry(index: number, text: string) {
         setchoicesMultipleChoice((choicesMultipleChoice) => ({ ...choicesMultipleChoice, [index]: text }));
     }
 
     /**
-     * Save the defined  multiple choice question.
-     * @returns
+     * Creates a server request to save the defined  multiple choice question.
+     *
      */
     function saveMultipleChoiceQuestion() {
-        setSolution({ "0": checkboxZero, "1": checkboxOne, "2": checkboxTwo, "3": checkboxThree });
+        setSolution({ 0: checkboxZero, 1: checkboxOne, 2: checkboxTwo, 3: checkboxThree });
         if (validateMultipleChoiceQuestion(courseId, questionText, choicesMultipleChoice, solution)) {
             const myNewQuestion = validateMultipleChoiceQuestion(
                 courseId,
@@ -195,8 +194,7 @@ export const MultipleChoiceQuestion: React.FC<QuizProps> = (props) => {
     }
 
     /**
-     * Update an existing question.
-     * @returns
+     * Creates a server request to update an existing question.
      */
     function updateQuestion() {
         if (quiz === undefined) {
@@ -226,8 +224,7 @@ export const MultipleChoiceQuestion: React.FC<QuizProps> = (props) => {
     }
 
     /**
-     * Delete an existing question.
-     * @returns
+     * Creates a server request to delete an existing question.
      */
     function deleteQuestion() {
         if (quiz == undefined || questionId == undefined) {

@@ -88,17 +88,15 @@ export const ScreenHome: React.FC<ScreenHomeProps> = (props) => {
 
     function renderFilters() {
         if (allCourses.length < 1) {
-            return undefined;
+            return;
         }
+
         return (
             <View style={styles.card}>
-                <Text style={styles.cardHeader}>{i18n.t("itrex.filterLabel")}</Text>
                 <View style={styles.filterContainer}>
                     {userRole !== ITREXRoles.ROLE_STUDENT && (
                         <View style={{ padding: 8, flex: 1 }}>
-                            <Text style={{ color: "white", textAlign: "center" }}>
-                                {i18n.t("itrex.filterPubUnpub")}
-                            </Text>
+                            <Text style={styles.label}>{i18n.t("itrex.filterPubUnpub")}</Text>
                             <DropDown
                                 options={publishStateFilterOptions}
                                 defaultValue={defaultPublishStateValue}
@@ -107,9 +105,7 @@ export const ScreenHome: React.FC<ScreenHomeProps> = (props) => {
                         </View>
                     )}
                     <View style={{ padding: 8, flex: 1 }}>
-                        <Text style={{ color: "white", textAlign: "center" }}>
-                            {i18n.t("itrex.filterActiveInActive")}
-                        </Text>
+                        <Text style={styles.label}>{i18n.t("itrex.filterActiveInActive")}</Text>
                         <DropDown
                             options={activeStateFilterOptions}
                             defaultValue={defaultActiveStateValue}
@@ -136,27 +132,23 @@ export const ScreenHome: React.FC<ScreenHomeProps> = (props) => {
     function noCoursesAvailable() {
         if (userRole === ITREXRoles.ROLE_STUDENT) {
             return (
-                <View style={styles.cardView}>
-                    <View style={[{ marginTop: 15 }]}>
-                        <TextButton
-                            color="dark"
-                            title="Join a course"
-                            onPress={() => navigation.navigate(NavigationRoutes.ROUTE_JOIN_COURSE)}
-                        />
-                    </View>
+                <View style={styles.centeredView}>
+                    <TextButton
+                        title={i18n.t("itrex.joinACourse")}
+                        size="medium"
+                        onPress={() => navigation.navigate(NavigationRoutes.ROUTE_JOIN_COURSE)}
+                    />
                 </View>
             );
         }
 
         return (
-            <View style={styles.cardView}>
-                <View style={[{ marginTop: 15 }]}>
-                    <TextButton
-                        color="dark"
-                        title={i18n.t("itrex.createCourse")}
-                        onPress={() => navigation.navigate(NavigationRoutes.ROUTE_CREATE_COURSE)}
-                    />
-                </View>
+            <View style={styles.centeredView}>
+                <TextButton
+                    title={i18n.t("itrex.createCourse")}
+                    size="medium"
+                    onPress={() => navigation.navigate(NavigationRoutes.ROUTE_CREATE_COURSE)}
+                />
             </View>
         );
     }
@@ -164,7 +156,7 @@ export const ScreenHome: React.FC<ScreenHomeProps> = (props) => {
     return (
         <>
             <Header title={i18n.t("itrex.home")} />
-            <ImageBackground source={require("../../constants/images/Background2.png")} style={styles.image}>
+            <ImageBackground source={require("../../constants/images/Background2.png")} style={styles.imageContainer}>
                 {renderFilters()}
                 {renderCourseList()}
             </ImageBackground>
@@ -185,7 +177,7 @@ function getEndDateBasedOnFilter(setSelectedActiveState: CourseActivityState | u
 }
 
 const styles = StyleSheet.create({
-    image: {
+    imageContainer: {
         flex: 1,
         resizeMode: "stretch",
         justifyContent: "flex-start",
@@ -198,24 +190,17 @@ const styles = StyleSheet.create({
         justifyContent: "flex-start",
         zIndex: 11,
     },
-    cardHeader: {
-        padding: 16,
-        fontSize: 20,
-        fontWeight: "bold",
-        color: "white",
-        textAlign: "center",
-        flexGrow: 1,
-    },
     filterContainer: {
         flexGrow: 4,
         flexDirection: "row",
         flexWrap: "nowrap",
     },
-    cardView: {
-        flexDirection: "row",
-        flexWrap: "wrap",
-        alignContent: "space-around",
-        justifyContent: "center",
+    centeredView: {
         marginTop: 15,
+        alignSelf: "center",
+    },
+    label: {
+        color: "white",
+        textAlign: "center",
     },
 });

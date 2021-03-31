@@ -22,7 +22,6 @@ import { CourseStackParamList, RootDrawerParamList } from "../../../constants/na
 import { IChapter } from "../../../types/IChapter";
 import { RequestFactory } from "../../../api/requests/RequestFactory";
 import { EndpointsChapter } from "../../../api/endpoints/EndpointsChapter";
-import { ICourse } from "../../../types/ICourse";
 import { ListItem } from "react-native-elements";
 import { IVideo } from "../../../types/IVideo";
 import { EndpointsVideo } from "../../../api/endpoints/EndpointsVideo";
@@ -30,7 +29,6 @@ import { loggerFactory } from "../../../../logger/LoggerConfig";
 import { calculateVideoSize } from "../../../services/calculateVideoSize";
 import DraggableFlatList from "react-native-draggable-flatlist";
 import { TextButton } from "../../uiElements/TextButton";
-import { dateConverter } from "../../../helperScripts/validateCourseDates";
 import { CONTENTREFERENCETYPE, IContent } from "../../../types/IContent";
 import { EndpointsContentReference } from "../../../api/endpoints/EndpointsContentReference";
 import { IQuiz } from "../../../types/IQuiz";
@@ -80,7 +78,7 @@ export const ScreenAddChapter: React.FC = () => {
     const initialSelection: { [id: string]: string } = {};
     const [selectedValues, setSelectedValues] = useState(initialSelection);
 
-    const timePeriods = course.timePeriods?.map((timePeriod, idx) => {
+    const timePeriods = course.timePeriods?.map((timePeriod) => {
         return {
             value: timePeriod.id,
             label: timePeriod.fullName,
@@ -108,7 +106,7 @@ export const ScreenAddChapter: React.FC = () => {
                     showsVerticalScrollIndicator={true}
                     data={videoPoolList}
                     renderItem={listItem}
-                    keyExtractor={(item, index) => `draggable-item-${item.id}`}
+                    keyExtractor={(item) => `draggable-item-${item.id}`}
                     ListEmptyComponent={emptyVideoList}
                 />
             </View>
@@ -133,7 +131,7 @@ export const ScreenAddChapter: React.FC = () => {
                     showsVerticalScrollIndicator={true}
                     data={quizPoolList}
                     renderItem={quizListItem}
-                    keyExtractor={(item, index) => `draggableQuiz-item-${item.id}`}
+                    keyExtractor={(item) => `draggableQuiz-item-${item.id}`}
                     ListEmptyComponent={emptyQuizList}
                 />
             </View>
@@ -447,7 +445,6 @@ export const ScreenAddChapter: React.FC = () => {
 
                         setContentList(newContentList);
                     });
-                //TODO: Definiere Quiz Liste wenn bereits welche zum Content hinzugefügt wurden
             } else {
                 _getAllVideos(course.id);
                 _getAllQuizzes();
@@ -468,9 +465,12 @@ export const ScreenAddChapter: React.FC = () => {
                         />
                         <MaterialCommunityIcons name="pen" size={24} color={dark.theme.darkGreen} style={styles.icon} />
                     </View>
-                    <View style={{ flexDirection: "row" }}>
+                    <View style={{ flexDirection: "row", paddingRight: "20px" }}>
                         <TextButton title={i18n.t("itrex.saveAndReturn")} onPress={() => saveChapter(true)} />
-                        <TextButton title={i18n.t("itrex.save")} onPress={() => saveChapter(false)} />
+
+                        <View>
+                            <TextButton title={i18n.t("itrex.save")} onPress={() => saveChapter(false)} />
+                        </View>
                     </View>
                 </View>
 
@@ -487,7 +487,7 @@ export const ScreenAddChapter: React.FC = () => {
                                 showsVerticalScrollIndicator={true}
                                 data={contentList}
                                 renderItem={listRemoveItem}
-                                keyExtractor={(item, index) => `draggable1-item-${item.id}`}
+                                keyExtractor={(item) => `draggable1-item-${item.id}`}
                                 onDragEnd={({ to, from }) => reorderContent(to, from)}
                             />
                         </View>
@@ -667,26 +667,30 @@ const styles = StyleSheet.create({
     headContainer: {
         flexDirection: "row",
         alignItems: "flex-start",
-        paddingTop: "3%",
-        paddingLeft: "3%",
+        paddingTop: 36,
+        paddingLeft: 36,
     },
     borderContainer: {
-        flex: 3,
+        flex: 1,
         flexDirection: "row",
         borderBottomColor: "rgba(70,74,91,0.5)",
         borderBottomWidth: 3,
+        width: "80%",
     },
     contentContainer: {
         flex: 2,
         flexDirection: "row",
-        padding: "2%",
+        paddingLeft: "2%",
+        paddingRight: "2%",
+        paddingBottom: 24,
+        paddingTop: 24,
     },
     contentContainerAdd: {
         flex: 1,
         backgroundColor: "rgba(1,43,86,0.5)",
         borderWidth: 3,
         borderColor: dark.theme.darkBlue3,
-        marginRight: "3%",
+        marginRight: 36,
         alignItems: "center",
         maxWidth: 280,
     },
@@ -695,14 +699,15 @@ const styles = StyleSheet.create({
         backgroundColor: "rgba(1,43,86,0.5)",
         borderWidth: 3,
         borderColor: dark.theme.darkBlue3,
-        marginRight: "3%",
-        alignItems: "center",
+        marginRight: 36,
+        alignItems: "stretch",
+        paddingTop: 24,
     },
     courseHeader: {
         color: "white",
         fontSize: 24,
         fontWeight: "bold",
-        width: "100%",
+        flex: 1,
     },
     image: {
         flex: 1,
@@ -722,7 +727,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     list: {
-        height: 1, // Actual value is unimportant, this just makes the video list permanently scrollable, disregarding the current view height.
+        height: 1,
         width: "100%",
     },
     listItemTitle: {

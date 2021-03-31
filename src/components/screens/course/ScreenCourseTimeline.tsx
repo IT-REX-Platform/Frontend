@@ -1,15 +1,9 @@
+/* eslint-disable @typescript-eslint/indent */
 /* eslint-disable max-lines */
 /* eslint-disable complexity */
-import React, { useEffect, useState } from "react";
-import { Text, ImageBackground, StyleSheet, View, TouchableOpacity, Switch, unstable_enableLogBox } from "react-native";
-import {
-    CompositeNavigationProp,
-    RouteProp,
-    useFocusEffect,
-    useIsFocused,
-    useNavigation,
-    useRoute,
-} from "@react-navigation/native";
+import React, { useState } from "react";
+import { Text, ImageBackground, StyleSheet, View, TouchableOpacity, Switch } from "react-native";
+import { CompositeNavigationProp, useFocusEffect, useIsFocused, useNavigation } from "@react-navigation/native";
 import { dark } from "../../../constants/themes/dark";
 import {
     CourseStackParamList,
@@ -35,6 +29,9 @@ import { IChapter } from "../../../types/IChapter";
 import { CONTENTREFERENCETYPE, IContent } from "../../../types/IContent";
 import { EndpointsVideo } from "../../../api/endpoints/EndpointsVideo";
 import { dateConverter } from "../../../helperScripts/validateCourseDates";
+import { TextButton } from "../../uiElements/TextButton";
+import { EndpointsQuiz } from "../../../api/endpoints/EndpointsQuiz";
+import { getCourseInformation } from "../../../services/CourseService";
 
 export type ScreenCourseTimelineNavigationProp = CompositeNavigationProp<
     MaterialTopTabNavigationProp<CourseTabParamList, "COURSE_INFROMATION">,
@@ -42,157 +39,37 @@ export type ScreenCourseTimelineNavigationProp = CompositeNavigationProp<
 >;
 
 export const ScreenCourseTimeline: React.FC = () => {
+    React.useContext(LocalizationContext);
     const navigation = useNavigation<ScreenCourseTimelineNavigationProp>();
 
     const { course, setCourse } = React.useContext(CourseContext);
-    React.useContext(LocalizationContext);
-
     const [user, setUserInfo] = useState<IUser>({});
-    const [edit, setEdit] = useState(false);
+    const [edit, setEdit] = useState<boolean>();
     const [chapters, setChapters] = useState<IChapter[]>([]);
-
-    const courseEndpoint = new EndpointsCourse();
-    const endpointsVideos: EndpointsVideo = new EndpointsVideo();
 
     const isFocused = useIsFocused();
 
     useFocusEffect(
         React.useCallback(() => {
-            let isActive = true;
             AuthenticationService.getInstance().getUserInfo(setUserInfo);
+            setEditMode();
+        }, [AuthenticationService.getInstance().tokenResponse, course])
+    );
+
+    useFocusEffect(
+        React.useCallback(() => {
+            let isActive = true;
+            setUserInfo(AuthenticationService.getInstance().getUserInfoCached());
 
             if (isFocused && course.id !== undefined && isActive == true) {
-                const request: RequestInit = RequestFactory.createGetRequest();
-                courseEndpoint
-                    .getCourse(request, course.id, undefined, i18n.t("itrex.getCourseError"))
-                    .then((receivedCourse) => {
-                        if (receivedCourse.chapters !== undefined) {
-                            for (const chapter of receivedCourse.chapters) {
-                                if (chapter.contentReferences !== undefined) {
-                                    for (const contentRef of chapter.contentReferences) {
-                                        const timePeriod = receivedCourse.timePeriods?.find(
-                                            (period) => period.id === contentRef.timePeriodId
-                                        );
-                                        if (timePeriod !== undefined) {
-                                            contentRef.timePeriod = timePeriod;
-
-                                            if (timePeriod?.chapters === undefined) {
-                                                timePeriod.chapters = [];
-                                            }
-
-                                            // Search for chapter in timePeriod
-                                            let foundChapter = timePeriod.chapters.find(
-                                                (tmpChapter) => tmpChapter.id === chapter.id
-                                            );
-
-                                            if (foundChapter === undefined) {
-                                                foundChapter = {
-                                                    courseId: chapter.courseId,
-                                                    id: chapter.id,
-                                                    name: chapter.name,
-                                                    chapterNumber: chapter.chapterNumber,
-                                                };
-                                                foundChapter.contentReferences = [];
-                                                timePeriod.chapters.push(foundChapter);
-                                            }
-
-                                            foundChapter?.contentReferences?.push(contentRef);
-                                        }
-                                    }
-                                }
-                            }
-
-                            // Set TimePeriodNames
-                            receivedCourse.timePeriods?.forEach((timePeriod, idx) => {
-                                timePeriod.name = i18n.t("itrex.week") + " " + (idx + 1);
-                                timePeriod.fullName =
-                                    timePeriod.name +
-                                    " ( " +
-                                    dateConverter(timePeriod?.startDate) +
-                                    " - " +
-                                    dateConverter(timePeriod?.endDate) +
-                                    " )";
-                            });
-
-                            const contents: { [key: string]: IContent[] } = {};
-
-                            // Map Contents to different dictionaries, later we can pass the contentIds to the correct service
-                            for (const chapter of receivedCourse.chapters) {
-                                if (chapter.contentReferences !== undefined) {
-                                    for (const content of chapter.contentReferences) {
-                                        if (
-                                            content.contentReferenceType !== undefined &&
-                                            content.contentId !== undefined
-                                        ) {
-                                            if (contents[content.contentReferenceType] === undefined) {
-                                                contents[content.contentReferenceType] = [];
-                                            }
-                                            contents[content.contentReferenceType].push(content);
-                                        }
-                                    }
-                                }
-                            }
-                            // Get Videos by ContentIds
-                            const getVideoRequest = RequestFactory.createGetRequest();
-
-                            // Array of contentId's from die video List
-                            const videoIds: string[] =
-                                contents[CONTENTREFERENCETYPE.VIDEO] !== undefined
-                                    ? contents[CONTENTREFERENCETYPE.VIDEO].map((content) => {
-                                          if (content.contentId !== undefined) {
-                                              return content.contentId;
-                                          }
-                                          return "";
-                                      })
-                                    : [];
-
-                            // Array of contentId's from die quiz List
-                            const quizIds: string[] =
-                                contents[CONTENTREFERENCETYPE.QUIZ] !== undefined
-                                    ? contents[CONTENTREFERENCETYPE.QUIZ].map((content) => {
-                                          if (content.contentId !== undefined) {
-                                              return content.contentId;
-                                          }
-                                          return "";
-                                      })
-                                    : [];
-
-                            // Ask the MediaService for the video metadata
-                            const videoPromise = new Promise((resolve, reject) => {
-                                if (videoIds !== undefined) {
-                                    endpointsVideos.findAllWithIds(getVideoRequest, videoIds).then((videos) => {
-                                        videos.forEach((video) => {
-                                            const contentVideo = contents[CONTENTREFERENCETYPE.VIDEO].filter(
-                                                (item) => item.contentId === video.id
-                                            );
-                                            if (contentVideo !== undefined) {
-                                                for (const currContent of contentVideo) {
-                                                    currContent.video = video;
-                                                }
-                                            }
-                                        });
-                                        resolve(true);
-                                    });
-                                } else {
-                                    reject();
-                                }
-                            });
-
-                            //TODO: to be implemented
-                            const quizPromise = new Promise((resolve, reject) => {
-                                resolve(true);
-                            });
-
-                            Promise.all([videoPromise, quizPromise]).then((values) => {
-                                if (isActive) {
-                                    setCourse(receivedCourse);
-                                    if (receivedCourse.chapters !== undefined) {
-                                        setChapters(receivedCourse.chapters);
-                                    }
-                                }
-                            });
+                getCourseInformation(course.id).then((course) => {
+                    if (isActive) {
+                        setCourse(course);
+                        if (course.chapters !== undefined) {
+                            setChapters(course.chapters);
                         }
-                    });
+                    }
+                });
             }
 
             // Ignore State-Changes if compontent lost focus
@@ -207,108 +84,55 @@ export const ScreenCourseTimeline: React.FC = () => {
             source={require("../../../constants/images/Background3.png")}
             style={styles.imageContainer}
             imageStyle={{ opacity: 0.5, position: "absolute", resizeMode: "contain" }}>
-            {lecturerEditMode()}
+            {ownerEditMode()}
 
             <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
-                {edit === false ? (
-                    course.timePeriods !== undefined &&
-                    course.timePeriods?.length > 0 && (
-                        <View style={{ width: "80%" }}>
-                            {course.timePeriods?.map((timePeriod) => (
-                                <TimelineComponent
-                                    key={timePeriod.id}
-                                    edit={edit}
-                                    timePeriod={timePeriod}
-                                    course={course}></TimelineComponent>
-                            ))}
-                        </View>
-                    )
-                ) : chapters.length === 0 ? (
-                    <View>{!edit && <Text style={styles.textStyle}>{i18n.t("itrex.noChapters")}</Text>}</View>
-                ) : (
-                    chapters.map((chapter, idx) => (
-                        <View style={styles.chapterContainer}>
-                            <ChapterComponent
-                                key={chapter.id}
-                                editMode={edit}
-                                chapter={chapter}
-                                course={course}></ChapterComponent>
-                            {edit && (
-                                <View style={styles.chapterArrows}>
-                                    {idx !== 0 && (
-                                        <TouchableOpacity onPress={() => reorderChapters(idx - 1, idx)}>
-                                            <MaterialIcons
-                                                name="keyboard-arrow-up"
-                                                size={28}
-                                                color="white"
-                                                style={{}}
-                                            />
-                                        </TouchableOpacity>
-                                    )}
-                                    {idx !== chapters.length - 1 && (
-                                        <TouchableOpacity onPress={() => reorderChapters(idx + 1, idx)}>
-                                            <MaterialIcons
-                                                name="keyboard-arrow-down"
-                                                size={28}
-                                                color="white"
-                                                style={{}}
-                                            />
-                                        </TouchableOpacity>
-                                    )}
-                                </View>
-                            )}
-                        </View>
-                    ))
-                )}
-                {/*chapters.length === 0 ? (
-                        <View>{!edit && <Text style={styles.textStyle}>{i18n.t("itrex.noChapters")}</Text>}</View>
-                    ) : (
-                        chapters.map((chapter, idx) => (
-                            <View style={styles.chapterContainer}>
-                                <ChapterComponent
-                                    key={chapter.id}
-                                    editMode={edit}
-                                    chapter={chapter}
-                                    course={course}></ChapterComponent>
-                                {edit && (
-                                    <View style={styles.chapterArrows}>
-                                        {idx !== 0 && (
-                                            <TouchableOpacity onPress={() => reorderChapters(idx - 1, idx)}>
-                                                <MaterialIcons
-                                                    name="keyboard-arrow-up"
-                                                    size={28}
-                                                    color="white"
-                                                    style={{}}
-                                                />
-                                            </TouchableOpacity>
-                                        )}
-                                        {idx !== chapters.length - 1 && (
-                                            <TouchableOpacity onPress={() => reorderChapters(idx + 1, idx)}>
-                                                <MaterialIcons
-                                                    name="keyboard-arrow-down"
-                                                    size={28}
-                                                    color="white"
-                                                    style={{}}
-                                                />
-                                            </TouchableOpacity>
-                                        )}
-                                    </View>
-                                )}
-                            </View>
-                        ))
-                                        )*/}
-
-                {/*course.timePeriods?.length === 0 ? (
-                    <View>{!edit && <Text style={styles.textStyle}>{i18n.t("itrex.noChapters")}</Text>}</View>
-                ) : (
-                    course.timePeriods?.map((timePeriod) => (
-                        <TimelineComponent
-                            key={timePeriod.id}
-                            edit={edit}
-                            timePeriod={timePeriod}
-                            course={course}></TimelineComponent>
-                    ))
-                    )*/}
+                {edit === false
+                    ? course.timePeriods !== undefined &&
+                      course.timePeriods?.length > 0 && (
+                          <View style={{ width: "80%" }}>
+                              {course.timePeriods?.map((timePeriod) => (
+                                  <TimelineComponent
+                                      key={timePeriod.id}
+                                      edit={edit}
+                                      timePeriod={timePeriod}
+                                      course={course}></TimelineComponent>
+                              ))}
+                          </View>
+                      )
+                    : chapters.map((chapter, idx) => (
+                          <View style={styles.chapterContainer}>
+                              <ChapterComponent
+                                  key={chapter.id}
+                                  editMode={edit}
+                                  chapter={chapter}
+                                  course={course}></ChapterComponent>
+                              {edit && (
+                                  <View style={styles.chapterArrows}>
+                                      {idx !== 0 && (
+                                          <TouchableOpacity onPress={() => reorderChapters(idx - 1, idx)}>
+                                              <MaterialIcons
+                                                  name="keyboard-arrow-up"
+                                                  size={28}
+                                                  color="white"
+                                                  style={{}}
+                                              />
+                                          </TouchableOpacity>
+                                      )}
+                                      {idx !== chapters.length - 1 && (
+                                          <TouchableOpacity onPress={() => reorderChapters(idx + 1, idx)}>
+                                              <MaterialIcons
+                                                  name="keyboard-arrow-down"
+                                                  size={28}
+                                                  color="white"
+                                                  style={{}}
+                                              />
+                                          </TouchableOpacity>
+                                      )}
+                                  </View>
+                              )}
+                          </View>
+                      ))}
                 {edit && (
                     <View style={styles.addChapterContainer}>
                         <TouchableOpacity
@@ -327,6 +151,19 @@ export const ScreenCourseTimeline: React.FC = () => {
     );
 
     /**
+     * Set default edit Mode for Course owner/manager and participant
+     */
+    function setEditMode() {
+        if (user.courses !== undefined && course.id !== undefined) {
+            if (user.courses[course.id] === CourseRoles.OWNER || user.courses[course.id] === CourseRoles.MANAGER) {
+                setEdit(true);
+            } else {
+                setEdit(false);
+            }
+        }
+    }
+
+    /**
      * Reorder the Chapter objects in the chapter list, to save them in the correct order
      *
      * @param from
@@ -342,10 +179,31 @@ export const ScreenCourseTimeline: React.FC = () => {
             chapter.chapterNumber = idx + 1;
         });
 
+        // Create copy of the course
         const tmpCourse: ICourse = {
             id: course.id,
-            chapters: tmpChapterList,
+            chapters: tmpChapterList.map((chap) => {
+                return { ...chap };
+            }),
         };
+
+        // Delete unnecassary stuff for transmission
+        tmpCourse.chapters?.forEach((chapter) => {
+            if (chapter.contentReferences !== undefined) {
+                chapter.contentReferences = [...chapter.contentReferences];
+            }
+
+            chapter.contentReferences = chapter.contentReferences?.map((ref) => {
+                return { ...ref };
+            });
+
+            chapter.contentReferences?.forEach((contentReference) => {
+                contentReference.quiz = undefined;
+                contentReference.video = undefined;
+                contentReference.timePeriod = undefined;
+            });
+        });
+
         const patchRequest: RequestInit = RequestFactory.createPatchRequest(tmpCourse);
         const courseEndpoint = new EndpointsCourse();
         courseEndpoint
@@ -360,23 +218,49 @@ export const ScreenCourseTimeline: React.FC = () => {
     }
 
     // eslint-disable-next-line complexity
-    function lecturerEditMode() {
+    /**
+     * Give the course owner/manager of the course the ability to switch between Student and edit-View.
+     */
+    function ownerEditMode() {
         if (user.courses === undefined || course.id === undefined) {
             return <></>;
         }
 
         const courseRole: CourseRoles = user.courses[course.id];
 
-        if (courseRole === CourseRoles.OWNER || courseRole === undefined) {
+        if (courseRole === CourseRoles.OWNER || courseRole === CourseRoles.MANAGER) {
             return (
                 <>
                     <View style={styles.editMode}>
-                        <Text style={styles.editModeText}>{i18n.t("itrex.editMode")}</Text>
-                        <Switch
-                            value={edit}
-                            onValueChange={() => {
-                                setEdit(!edit);
-                            }}></Switch>
+                        <View style={{ flexDirection: "row" }}>
+                            {edit ? (
+                                <Text style={styles.editModeText}>{i18n.t("itrex.switchToStudentView")}</Text>
+                            ) : (
+                                <Text style={styles.editModeText}>{i18n.t("itrex.switchToOwnerView")}</Text>
+                            )}
+                            <Switch
+                                value={edit}
+                                onValueChange={() => {
+                                    console.log(!edit);
+                                    setEdit(!edit);
+                                }}></Switch>
+                        </View>
+                        {edit ? (
+                            <View style={{ position: "relative", flexDirection: "row" }}>
+                                <TextButton
+                                    color="dark"
+                                    title={i18n.t("itrex.videoPool")}
+                                    onPress={() => navigation.navigate("VIDEO_POOL")}
+                                />
+                                <TextButton
+                                    color="dark"
+                                    title={i18n.t("itrex.quizPool")}
+                                    onPress={() => navigation.navigate("QUIZ_POOL")}
+                                />
+                            </View>
+                        ) : (
+                            <View></View>
+                        )}
                     </View>
                 </>
             );
@@ -408,10 +292,13 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     editMode: {
-        alignSelf: "flex-end",
-        flexDirection: "row",
+        height: 70,
+        justifyContent: "space-between",
+        alignItems: "center",
+        flexDirection: "row-reverse",
         paddingRight: "20px",
-        paddingTop: "20px",
+        paddingLeft: "20px",
+        position: "relative",
     },
     editModeText: {
         color: "white",
@@ -443,10 +330,5 @@ const styles = StyleSheet.create({
         borderStyle: "dotted",
         alignItems: "center",
         justifyContent: "center",
-    },
-    textStyle: {
-        margin: 10,
-        color: "white",
-        fontWeight: "bold",
     },
 });

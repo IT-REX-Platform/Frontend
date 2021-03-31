@@ -1,7 +1,7 @@
 /* eslint-disable complexity */
-import { CompositeNavigationProp, useFocusEffect, useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
-import { Text, ImageBackground, StyleSheet, View } from "react-native";
+import { ImageBackground, StyleSheet, View } from "react-native";
+import { CompositeNavigationProp, useFocusEffect, useNavigation } from "@react-navigation/native";
 import { ICourse } from "../../../types/ICourse";
 import {
     CourseStackParamList,
@@ -13,7 +13,6 @@ import { CourseContext, LocalizationContext } from "../../Context";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import i18n from "../../../locales";
-import { dateConverter } from "../../../helperScripts/validateCourseDates";
 import { CoursePublishState } from "../../../constants/CoursePublishState";
 import { RequestFactory } from "../../../api/requests/RequestFactory";
 import { EndpointsCourse } from "../../../api/endpoints/EndpointsCourse";
@@ -22,101 +21,101 @@ import AuthenticationService from "../../../services/AuthenticationService";
 import { TextButton } from "../../uiElements/TextButton";
 import { CourseRoles } from "../../../constants/CourseRoles";
 import { IUser } from "../../../types/IUser";
-import { InfoPublished } from "../../uiElements/InfoPublished";
-import { InfoUnpublished } from "../../uiElements/InfoUnpublished";
+import { dark } from "../../../constants/themes/dark";
+import { CourseInformationTable } from "../../CourseInformationTable";
 
 export type ScreenCourseOverviewNavigationProp = CompositeNavigationProp<
     MaterialTopTabNavigationProp<CourseTabParamList, "OVERVIEW">,
     CompositeNavigationProp<StackNavigationProp<CourseStackParamList>, DrawerNavigationProp<RootDrawerParamList>>
 >;
 
-//export type ScreenCourseTabsRouteProp = RouteProp<CourseStackParamList, "INFO">;
-//export type ScreenCourseTabsProps = StackScreenProps<CourseStackParamList, "INFO">;
-
 export const ScreenCourseInformation: React.FC = () => {
     const navigation = useNavigation<ScreenCourseOverviewNavigationProp>();
 
     React.useContext(LocalizationContext);
-    const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");
+    const loggerService = loggerFactory.getLogger("service.ScreenCourseInformation");
     const endpointsCourse: EndpointsCourse = new EndpointsCourse();
     const { course } = React.useContext(CourseContext);
+    const descriptionCallback = (description: string | undefined) => {
+        course.courseDescription = description;
+    };
 
     const [user, setUserInfo] = useState<IUser>({});
 
     useFocusEffect(
         React.useCallback(() => {
-            AuthenticationService.getInstance().getUserInfo(setUserInfo);
+            setUserInfo(AuthenticationService.getInstance().getUserInfoCached());
         }, [])
     );
 
     return (
         <ImageBackground source={require("../../../constants/images/Background2.png")} style={styles.imageContainer}>
-            <View style={styles.verticalSeparator}></View>
-            {_checkForLeaveCourse()}
-            {_getPublishSate()}
-            <Text style={styles.textWhite}>{course.courseDescription}</Text>
-            {_createContentAsOwner()}
+            <View style={styles.dualButtonContainer}>{_checkUserSettings()}</View>
+            <View style={styles.informationContent}>
+                <CourseInformationTable onDescriptionChanged={descriptionCallback} />
+            </View>
         </ImageBackground>
     );
 
-    function _getPublishSate() {
-        if (course.publishState === CoursePublishState.UNPUBLISHED) {
-            return (
-                <>
-                    <InfoUnpublished />
-                    {_getDate(i18n.t("itrex.startDate"), course.startDate)}
-                    {_getDate(i18n.t("itrex.endDate"), course.endDate)}
-                    {_checkOwnerSettings()}
-                </>
-            );
-        }
-
-        if (course.publishState === CoursePublishState.PUBLISHED) {
-            return (
-                <>
-                    <InfoPublished />
-                    {_getDate(i18n.t("itrex.startDate"), course.startDate)}
-                    {_getDate(i18n.t("itrex.endDate"), course.endDate)}
-                </>
-            );
-        }
-
-        return;
-    }
-
-    function _getDate(title: string, date?: Date) {
-        return (
-            <View style={styles.dateContainer}>
-                <Text style={[styles.textWhiteBold, styles.horizontalSeparator]}>{title}:</Text>
-                <Text style={styles.textWhite}>{dateConverter(date)}</Text>
-            </View>
-        );
-    }
-
-    function _checkOwnerSettings() {
+    /**
+     * Give the different roles of users different settings for the specific course.
+     */
+    function _checkUserSettings() {
         if (user.courses == undefined || course.id == undefined) {
             return <></>;
         }
 
         const courseRole = user.courses[course.id];
         if (courseRole === CourseRoles.OWNER || courseRole === CourseRoles.MANAGER) {
-            return (
-                <View style={styles.dualButtonContainer}>
-                    <TextButton title={i18n.t("itrex.publishCourse")} onPress={() => _confirmPublishCourse()} />
-                    <TextButton title={i18n.t("itrex.deleteCourse")} color="pink" onPress={() => _confirmDeletion()} />
-                </View>
-            );
+            if (course.publishState === CoursePublishState.UNPUBLISHED) {
+                return (
+                    <>
+                        <View>
+                            <TextButton
+                                title={i18n.t("itrex.deleteCourse")}
+                                color="pink"
+                                onPress={() => _confirmDeletion()}
+                            />
+                        </View>
+                        <TextButton title={i18n.t("itrex.publishCourse")} onPress={() => _confirmPublishCourse()} />
+
+                        <View>
+                            <TextButton title={i18n.t("itrex.save")} onPress={() => _updateCourse()} />
+                        </View>
+                    </>
+                );
+            } else {
+                return (
+                    <View>
+                        <TextButton title={i18n.t("itrex.save")} onPress={() => _updateCourse()} />
+                    </View>
+                );
+            }
+        } else {
+            return _checkForLeaveCourse();
         }
     }
 
-    function _confirmPublishCourse() {
-        const publishCourse = confirm(i18n.t("itrex.confirmPublishCourse"));
-        if (publishCourse === true) {
-            _patchCourse();
-        }
+    /**
+     * Creates a server request in order to update the course description.
+     */
+    function _updateCourse() {
+        const coursePatch: ICourse = {
+            id: course.id,
+            courseDescription: course.courseDescription,
+        };
+        const updateRequest: RequestInit = RequestFactory.createPatchRequest(coursePatch);
+        endpointsCourse.patchCourse(
+            updateRequest,
+            i18n.t("itrex.updateCourseSuccess"),
+            i18n.t("itrex.updateCourseError")
+        );
     }
 
-    function _patchCourse() {
+    /**
+     * Creates a server request in order to update the published state of the course.
+     */
+    function _publishCourse() {
         loggerService.trace("Parsing ID string to ID number.");
 
         const coursePatch: ICourse = {
@@ -128,13 +127,24 @@ export const ScreenCourseInformation: React.FC = () => {
 
         loggerService.trace(`Updating course: name=${course.name}, publishedState=${CoursePublishState.PUBLISHED}.`);
         const patchRequest: RequestInit = RequestFactory.createPatchRequest(coursePatch);
-        endpointsCourse.patchCourse(
-            patchRequest,
-            i18n.t("itrex.publishCourseSuccess"),
-            i18n.t("itrex.publishCourseError")
-        );
+        endpointsCourse
+            .patchCourse(patchRequest, i18n.t("itrex.publishCourseSuccess"), i18n.t("itrex.publishCourseError"))
+            .then(() => navigation.navigate("INFO", { screen: "OVERVIEW" }));
     }
 
+    /**
+     *Confirmation before publishing a course.
+     */
+    function _confirmPublishCourse() {
+        const publishCourse = confirm(i18n.t("itrex.confirmPublishCourse"));
+        if (publishCourse === true) {
+            _publishCourse();
+        }
+    }
+
+    /**
+     * Confirmation before deleting a course.
+     */
     function _confirmDeletion() {
         const confirmation: boolean = confirm(i18n.t("itrex.confirmDeleteCourse"));
         if (confirmation === true) {
@@ -142,6 +152,9 @@ export const ScreenCourseInformation: React.FC = () => {
         }
     }
 
+    /**
+     * Creates a server request to delete a specific course
+     */
     function _deleteCourse(): void {
         if (course.id == undefined) {
             return;
@@ -155,32 +168,35 @@ export const ScreenCourseInformation: React.FC = () => {
                 i18n.t("itrex.courseDeletedSuccessfully"),
                 i18n.t("itrex.deleteCourseError")
             )
-            .then(() => navigation.navigate("ROUTE_HOME"));
+            .then(() => {
+                AuthenticationService.getInstance()
+                    .refreshToken()
+                    .then(() => navigation.navigate("ROUTE_HOME"));
+            });
     }
 
+    /**
+     *  Give a student the possibility to leave the course.
+     */
     function _checkForLeaveCourse() {
         if (user.courses == undefined || course.id == undefined) {
             return <></>;
         }
 
         const courseRole: CourseRoles = user.courses[course.id];
-        return _checkForUserRole(courseRole);
-    }
-
-    function _checkForUserRole(courseRole: CourseRoles) {
-        if (courseRole === CourseRoles.OWNER || courseRole == undefined) {
-            // TODO: Undefined should never happen, buuuut currently does when creating a course.
-            // Apparently updating the token and then navigating isn't waiting long enough.
+        if (courseRole === CourseRoles.OWNER || courseRole == CourseRoles.MANAGER) {
             return <></>;
         }
-
         return (
-            <View style={{ flexDirection: "row", justifyContent: "flex-end", width: "95%" }}>
+            <View>
                 <TextButton color="pink" title={i18n.t("itrex.leaveCourse")} onPress={() => _leaveCourse()} />
             </View>
         );
     }
 
+    /**
+     * Creates a server request to leave the specific course.
+     */
     function _leaveCourse() {
         if (course.id != undefined) {
             const request: RequestInit = RequestFactory.createPostRequestWithoutBody();
@@ -191,48 +207,25 @@ export const ScreenCourseInformation: React.FC = () => {
             });
         }
     }
-
-    function _createContentAsOwner() {
-        if (user.courses == undefined || course.id == undefined) {
-            return <></>;
-        }
-
-        const courseRole = user.courses[course.id];
-        if (courseRole === CourseRoles.OWNER) {
-            return (
-                <View style={styles.dualButtonContainer}>
-                    <TextButton title={i18n.t("itrex.videoPool")} onPress={() => navigation.navigate("VIDEO_POOL")} />
-                    <TextButton title={i18n.t("itrex.quizPool")} onPress={() => navigation.navigate("QUIZ_POOL")} />
-                </View>
-            );
-        }
-    }
 };
 
 const styles = StyleSheet.create({
     imageContainer: {
         flex: 1,
         resizeMode: "stretch",
+        paddingTop: "3%",
+        backgroundColor: dark.theme.darkBlue1,
+    },
+    informationContent: {
         alignItems: "center",
-    },
-    dateContainer: {
-        flexDirection: "row",
-    },
-    textWhiteBold: {
-        color: "white",
-        fontWeight: "bold",
-    },
-    textWhite: {
-        color: "white",
-    },
-    dualButtonContainer: {
-        flexDirection: "row",
         justifyContent: "center",
     },
-    verticalSeparator: {
-        marginTop: 60,
-    },
-    horizontalSeparator: {
-        marginEnd: 10,
+    dualButtonContainer: {
+        height: 70,
+        justifyContent: "flex-end",
+        alignItems: "flex-end",
+        flexDirection: "row",
+        paddingRight: "20px",
+        paddingLeft: "20px",
     },
 });

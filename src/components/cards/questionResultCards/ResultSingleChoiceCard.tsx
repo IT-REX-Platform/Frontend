@@ -2,10 +2,9 @@
 import React from "react";
 import { View, Text } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { IQuestionSingleChoice } from "../../types/IQuestion";
-import { LocalizationContext } from "../Context";
-import { cardStyles } from "./cardStyles";
-
+import { IQuestionSingleChoice } from "../../../types/IQuestion";
+import { LocalizationContext } from "../../Context";
+import { cardStyles } from "../cardStyles";
 interface ResultSingleChoiceCardProps {
     question: IQuestionSingleChoice;
 }
@@ -23,17 +22,17 @@ export const ResultSingleChoiceCard: React.FC<ResultSingleChoiceCardProps> = (pr
             <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "center" }}>
                 {Object.entries(question.choices).map((choice) => {
                     const index: string = choice[0];
-                    return renderAnswer(question, index);
+                    return renderAnswer(question, Number(index));
                 })}
             </View>
         </View>
     );
 
-    function renderAnswer(question: IQuestionSingleChoice, index: string) {
+    function renderAnswer(question: IQuestionSingleChoice, index: number) {
         let selected = false;
-        if (question.userInput) {
+        if (question.userInput !== undefined) {
             // userInput = index of selected question
-            if (question.userInput === index) {
+            if (question.userInput == index) {
                 selected = true;
             }
         }
@@ -41,7 +40,7 @@ export const ResultSingleChoiceCard: React.FC<ResultSingleChoiceCardProps> = (pr
             <View style={selected ? cardStyles.cardChoicesResultSelected : cardStyles.cardChoicesNotSelect}>
                 <View
                     style={
-                        question.solution === index
+                        question.solution == index
                             ? cardStyles.cardChoicesResultRight
                             : cardStyles.cardChoicesResultWrong
                     }>

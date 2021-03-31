@@ -9,15 +9,17 @@ import { TextButton } from "../../uiElements/TextButton";
 import i18n from "../../../locales";
 import { RequestFactory } from "../../../api/requests/RequestFactory";
 import { ScreenCourseOverviewNavigationProp } from "../course/ScreenCourseInformation";
-import { QuestionCard } from "../../cards/QuestionCard";
 import { ScrollView } from "react-native-gesture-handler";
 import { IQuestionMultipleChoice, IQuestionNumeric, IQuestionSingleChoice } from "../../../types/IQuestion";
 import { validateQuiz } from "../../../helperScripts/validateQuiz";
 import { IQuiz } from "../../../types/IQuiz";
 import { CourseStackParamList } from "../../../constants/navigators/NavigationRoutes";
 import { EndpointsQuiz } from "../../../api/endpoints/EndpointsQuiz";
-import { ICourse } from "../../../types/ICourse";
 import { quizStyles } from "./quizStyles";
+import { QuestionTypes } from "../../../constants/QuestionTypes";
+import { CreationSingleChoiceCard } from "../../cards/questionCreationCards/CreationSingleChoiceCard";
+import { CreationMultipleChoiceCard } from "../../cards/questionCreationCards/CreationMultipleChoiceCard";
+import { CreationNumericCard } from "../../cards/questionCreationCards/CreationNumericCard";
 
 interface ChapterComponentProps {
     quiz?: IQuiz;
@@ -98,7 +100,6 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = (props) => {
     /**
      * Navigate to the Question creation page.
      *
-     * @returns
      */
     function navigateTo() {
         if (courseId === undefined) {
@@ -117,7 +118,6 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = (props) => {
     /**
      * Display questions if existing.
      *
-     * @returns
      */
     function displayQuestions() {
         if (courseId === undefined) {
@@ -140,7 +140,26 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = (props) => {
             return (
                 <ScrollView style={quizStyles.scrollContainer} showsVerticalScrollIndicator={false}>
                     {questions.map((question: IQuestionSingleChoice | IQuestionMultipleChoice | IQuestionNumeric) => {
-                        return <QuestionCard question={question} quiz={myNewQuiz} courseId={courseId} />;
+                        switch (question.type) {
+                            case QuestionTypes.SINGLE_CHOICE:
+                                return (
+                                    <CreationSingleChoiceCard
+                                        question={question}
+                                        quiz={myNewQuiz}
+                                        courseId={courseId}
+                                    />
+                                );
+                            case QuestionTypes.MULTIPLE_CHOICE:
+                                return (
+                                    <CreationMultipleChoiceCard
+                                        question={question}
+                                        quiz={myNewQuiz}
+                                        courseId={courseId}
+                                    />
+                                );
+                            case QuestionTypes.NUMERIC:
+                                return <CreationNumericCard question={question} quiz={myNewQuiz} courseId={courseId} />;
+                        }
                     })}
                 </ScrollView>
             );
@@ -148,9 +167,7 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = (props) => {
     }
 
     /**
-     * Save a quiz if not existing.
-     *
-     * @returns
+     * Creates a server request to save a quiz if not existing.
      *
      */
     function saveQuiz() {
@@ -180,9 +197,8 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = (props) => {
     }
 
     /**
-     * Update a existing quiz.
+     * Creates a server request to update an existing quiz.
      *
-     * @returns
      */
     function updateQuiz() {
         if (validateQuiz(courseId, quizName, questions)) {
@@ -206,14 +222,12 @@ export const ScreenAddQuiz: React.FC<ChapterComponentProps> = (props) => {
     }
 
     /**
-     * Delete a existing quiz.
-     * @returns
+     * Creates a server request to delete a existing quiz.
      */
     function deleteQuiz() {
         if (quizWithQuestions?.id === undefined) {
             return;
         }
-
         const request: RequestInit = RequestFactory.createDeleteRequest();
         const quizId = quizWithQuestions.id;
         const response = endpointsQuiz.deleteQuiz(

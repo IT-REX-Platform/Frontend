@@ -12,8 +12,8 @@ interface IQuestion {
 export interface IQuestionSingleChoice extends IQuestion {
     type: QuestionTypes.SINGLE_CHOICE;
     choices: IChoices;
-    solution: string;
-    userInput?: string;
+    solution: number;
+    userInput?: number;
 }
 
 export interface IQuestionMultipleChoice extends IQuestion {

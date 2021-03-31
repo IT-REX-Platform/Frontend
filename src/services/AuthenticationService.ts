@@ -1,7 +1,6 @@
 import * as AuthSession from "expo-auth-session";
 import { loggerFactory } from "../../logger/LoggerConfig";
 import { EndpointsUserInfo } from "../api/endpoints/EndpointsUserInfo";
-import { RequestAuthorization } from "../api/requests/RequestAuthorization";
 import { RequestFactory } from "../api/requests/RequestFactory";
 import { itRexVars } from "../constants/Constants";
 import { ITREXRoles } from "../constants/ITREXRoles";
@@ -16,6 +15,9 @@ export const discovery = {
     authTokenRevoke: itRexVars().authTokenRevoke,
 };
 
+/**
+ * Singleton implementation of an Service which handles the Authentication
+ */
 export default class AuthenticationService {
     static instance: AuthenticationService;
 
@@ -40,9 +42,14 @@ export default class AuthenticationService {
     // Default token lifetime, 5 minutes -> refresh after
     private accessTokenLifeTime = 1000 * 60 * 5;
 
+    // The current valid tokenResponse
     public tokenResponse!: AuthSession.TokenResponseConfig;
+    // The roles of the current logged in user
     private roles: string[] = [];
+    // The reference to the current token-refresh-timeout function
     private refreshTimeout: NodeJS.Timeout | undefined;
+    // Current Logged in user
+    private currentUser!: IUser;
 
     public setTokenResponse(token: AuthSession.TokenResponseConfig): void {
         this.tokenResponse = token;
@@ -56,6 +63,9 @@ export default class AuthenticationService {
         return this.tokenResponse;
     }
 
+    /**
+     * This method uses the refreshToken to refresh the current token ;)
+     */
     public refreshToken(): Promise<AuthSession.TokenResponseConfig> {
         return new Promise((resolve, reject) => {
             if (this.tokenResponse?.refreshToken != undefined) {
@@ -73,11 +83,17 @@ export default class AuthenticationService {
                 )
                     .then((tResponse) => {
                         this.setTokenResponse(tResponse);
+                        // Store the token/refresh-token
                         new AsyncStorageService().setItem(
                             StorageConstants.OAUTH_REFRESH_TOKEN,
                             JSON.stringify(tResponse)
                         );
-                        resolve(tResponse);
+
+                        // Refetch User-Info
+                        this.getUserInfo((user) => {
+                            this.currentUser = user;
+                            resolve(tResponse);
+                        });
                     })
                     .catch((error) => {
                         // Refresh does not work
@@ -91,7 +107,8 @@ export default class AuthenticationService {
         });
     }
     /**
-     *
+     * This method starts the "autoRefresh"
+     * a few seconds before the token expires it will be refreshed
      */
     public autoRefresh(): void {
         this.refreshToken().then((resp) => {
@@ -102,6 +119,10 @@ export default class AuthenticationService {
         });
     }
 
+    /**
+     * This Method deletes all Informations of the current loggedIn User
+     * and triggers keycloak to "terminate" the current session
+     */
     public clearAuthentication(): void {
         if (this.refreshTimeout !== undefined) {
             clearTimeout(this.refreshTimeout);
@@ -114,6 +135,9 @@ export default class AuthenticationService {
         this.setTokenResponse({} as AuthSession.TokenResponseConfig);
     }
 
+    /**
+     * This method redirects the (build-in-)Browser to the logout page of keycloak
+     */
     private logout() {
         WebBrowser.openBrowserAsync(discovery.authTokenRevoke + "?redirect_uri=" + itRexVars().frontendUrl + "logout");
     }
@@ -126,6 +150,10 @@ export default class AuthenticationService {
     public getUserInfo(consumer: (userInfo: IUser) => void): void {
         const request: RequestInit = RequestFactory.createGetRequest();
         this.endpointsUserInfo.getUserInfo(request, undefined, i18n.t("itrex.getUserInfoError")).then(consumer);
+    }
+
+    public getUserInfoCached(): IUser {
+        return this.currentUser;
     }
 
     public getRoles(): string[] {

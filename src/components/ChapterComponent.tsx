@@ -1,6 +1,5 @@
 /* eslint-disable complexity */
-import React from "react";
-import i18n from "../locales";
+import React, { useEffect, useState } from "react";
 import { LocalizationContext } from "./Context";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { dark } from "../constants/themes/dark";
@@ -10,12 +9,15 @@ import AuthenticationService from "../services/AuthenticationService";
 import { InfoPublished } from "./uiElements/InfoPublished";
 import { InfoUnpublished } from "./uiElements/InfoUnpublished";
 import { ICourse } from "../types/ICourse";
+import { ICourseProgressTracker } from "../types/ICourseProgressTracker";
 import { useNavigation } from "@react-navigation/native";
 import { CoursePublishState } from "../constants/CoursePublishState";
-import { dateConverter } from "../helperScripts/validateCourseDates";
 import { CONTENTREFERENCETYPE, IContent } from "../types/IContent";
-import { EndpointsQuiz } from "../api/endpoints/EndpointsQuiz";
-import { RequestFactory } from "../api/requests/RequestFactory";
+import { ContentProgressInfo } from "./uiElements/ContentProgressInfo";
+import ProgressService from "../services/ProgressService";
+import { ContentProgressTrackerState } from "../constants/ContentProgressTrackerState";
+import { CourseRoles } from "../constants/CourseRoles";
+import { IUser } from "../types/IUser";
 
 interface ChapterComponentProps {
     chapter?: IChapter;
@@ -30,69 +32,53 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
 
     const chapter = props.chapter;
     const course = props.course;
+    const editMode = props.editMode;
 
-    function getQuizComponent(contentReference: IContent) {
-        return (
-            <TouchableOpacity
-                style={{ flexDirection: "row" }}
-                onPress={() => {
-                    contentReference !== undefined && navigateToQuiz(contentReference.contentId);
-                }}>
-                <MaterialCommunityIcons name="file-question-outline" size={28} color="white" style={styles.icon} />
+    // User info.
+    const [user, setUserInfo] = useState<IUser>({});
+    useEffect(() => {
+        setUserInfo(AuthenticationService.getInstance().getUserInfoCached());
+    }, []);
 
-                <View
-                    style={{
-                        flex: 1,
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                    }}>
-                    <Text style={styles.chapterMaterialElementText}>{contentReference.contentId}</Text>
-                </View>
-            </TouchableOpacity>
-        );
-    }
+    const [courseProgress, setCourseProgress] = useState<ICourseProgressTracker>({});
+    useEffect(() => {
+        updateCourseProgress();
+    }, []);
 
     return (
-        <View style={styles.chapterContainer}>
+        <TouchableOpacity
+            style={styles.chapterContainer}
+            onPress={() => {
+                editMode == true
+                    ? navigation.navigate("CHAPTER", { chapterId: chapter?.id })
+                    : navigation.navigate("CHAPTER_CONTENT", { chapterId: chapter?.id });
+            }}>
             <View style={styles.chapterTopRow}>
                 <Text style={styles.chapterHeader}>
                     {chapter?.chapterNumber}. {chapter?.name}
                 </Text>
                 <Text style={styles.showWeek}>{getWeeks()}</Text>
-                {/* TODO: add real publish/unpublished state to the chapterss*/}
-                <View style={styles.chapterStatus}>{getPublishedSate(CoursePublishState.PUBLISHED)}</View>
             </View>
             <View style={styles.chapterBottomRow}>
-                <Text style={styles.chapterMaterialHeader}>{i18n.t("itrex.chapterMaterial")}</Text>
-                {props.editMode && AuthenticationService.getInstance().isLecturer() && (
-                    <View style={styles.chapterEditRow}>
-                        {/**<TouchableOpacity
-                            onPress={() => {
-                                courseService.deleteChapter(chapter?.id);
-                            }}>
-                            <MaterialCommunityIcons name="trash-can" size={28} color="white" style={styles.icon} />
-                        </TouchableOpacity> */}
-                        <TouchableOpacity
-                            onPress={() => {
-                                navigation.navigate("CHAPTER", {
-                                    chapterId: chapter?.id,
-                                });
-                            }}>
-                            <MaterialIcons name="edit" size={28} color="white" style={styles.icon} />
-                        </TouchableOpacity>
-                    </View>
-                )}
                 <View style={styles.chapterMaterialElements}>
                     {chapter?.contentReferences?.map((contentReference) => {
                         return (
                             <View style={styles.chapterMaterialElement}>
-                                {contentReference.contentReferenceType == CONTENTREFERENCETYPE.VIDEO ? (
+                                {contentReference.contentReferenceType == CONTENTREFERENCETYPE.VIDEO && (
                                     <>
                                         <MaterialIcons name="attach-file" size={28} color="white" style={styles.icon} />
                                     </>
-                                ) : (
-                                    getQuizComponent(contentReference)
+                                )}
+
+                                {contentReference.contentReferenceType == CONTENTREFERENCETYPE.QUIZ && (
+                                    <>
+                                        <MaterialCommunityIcons
+                                            name="file-question-outline"
+                                            size={28}
+                                            color="white"
+                                            style={styles.icon}
+                                        />
+                                    </>
                                 )}
 
                                 <View
@@ -113,27 +99,94 @@ export const ChapterComponent: React.FC<ChapterComponentProps> = (props) => {
                                     <Text style={styles.chapterMaterialElementText}>
                                         {contentReference.timePeriod?.fullName}
                                     </Text>
+
+                                    {getProgressInfo(contentReference)}
                                 </View>
                             </View>
                         );
                     })}
                 </View>
             </View>
-        </View>
+        </TouchableOpacity>
     );
 
-    function navigateToQuiz(contentId: string | undefined) {
-        if (contentId !== undefined) {
-            const endpointsQuiz = new EndpointsQuiz();
-            const request: RequestInit = RequestFactory.createGetRequest();
-            const response = endpointsQuiz.getQuiz(request, contentId);
-            response.then((quiz) => {
-                navigation.navigate("QUIZ_OVERVIEW", {
-                    quiz: quiz,
-                });
-            });
+    function updateCourseProgress() {
+        if (course.id === undefined) {
+            return;
         }
+
+        ProgressService.getInstance().updateCourseProgressFor(course.id, (receivedProgress) => {
+            setCourseProgress(receivedProgress);
+        });
     }
+
+    function markProgress(contentRef: IContent) {
+        // TODO: Adjust and/or reuse this for actual progress.
+        // For now it just touches the content once or completes it when touched.
+
+        if (course.id === undefined) {
+            return;
+        }
+
+        const progressService = ProgressService.getInstance();
+
+        progressService.getContentProgressInfo(course.id, contentRef, (status, progress) => {
+            // New progress if needed.
+            const newProgress = progress + 0.1;
+
+            switch (status) {
+                case ContentProgressTrackerState.STARTED:
+                    progressService.updateContentProgress(course.id, contentRef, newProgress, (createdProgress) => {
+                        console.log("Updated progress: ");
+                        console.log(createdProgress);
+
+                        if (newProgress >= 1) {
+                            progressService.completeContentProgress(course.id, contentRef, (completedProgress) => {
+                                console.log("Completed progress: ");
+                                console.log(completedProgress);
+
+                                updateCourseProgress();
+                            });
+                        } else {
+                            updateCourseProgress();
+                        }
+                    });
+                    break;
+
+                case undefined:
+                    progressService.createContentProgress(course.id, contentRef, (createdProgress) => {
+                        console.log("Created progress: ");
+                        console.log(createdProgress);
+
+                        updateCourseProgress();
+                    });
+                    break;
+
+                case ContentProgressTrackerState.COMPLETED:
+                default:
+                    // Do nothing.
+                    break;
+            }
+        });
+    }
+
+    function getProgressInfo(contentRef: IContent) {
+        if (user.courses == undefined || course.id == undefined) {
+            return <></>;
+        }
+
+        const courseRole: CourseRoles = user.courses[course.id];
+
+        if (courseRole === CourseRoles.PARTICIPANT || !editMode) {
+            if (courseProgress.contentProgressTrackers === undefined || contentRef.id === undefined) {
+                return;
+            }
+            return <ContentProgressInfo contentTracker={courseProgress.contentProgressTrackers[contentRef.id]} />;
+        }
+
+        return;
+    }
+
     /**
      * Returns the lowest and the highest week of the contentReferences
      * @returns Week String
@@ -219,20 +272,10 @@ const styles = StyleSheet.create({
         alignItems: "baseline",
         paddingTop: "1%",
     },
-    chapterEditRow: {
-        position: "absolute",
-        right: 0,
-    },
     chapterHeader: {
         alignSelf: "flex-start",
         color: "white",
         fontSize: 18,
-        fontWeight: "bold",
-    },
-    chapterStatus: {
-        alignSelf: "flex-end",
-        position: "absolute",
-        color: "white",
         fontWeight: "bold",
     },
     showWeek: {
@@ -242,13 +285,6 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         fontStyle: "italic",
         fontSize: 15,
-    },
-    chapterMaterialHeader: {
-        marginTop: 10,
-        alignSelf: "center",
-        color: "white",
-        fontWeight: "bold",
-        fontSize: 20,
     },
     chapterMaterialElements: {
         marginBottom: 5,

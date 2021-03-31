@@ -17,6 +17,12 @@ import { ToastContainer } from "react-toastify";
 
 const loggerService = loggerFactory.getLogger("service.App");
 
+/**
+ * triggers login/logout/restore actions based on the given action
+ * @param prevState
+ * @param action
+ * @returns
+ */
 function loginReducer(prevState: ILoginReducerState, action: ILoginReducerAction): ILoginReducerState {
     switch (action.type) {
         case "RESTORE_TOKEN":
@@ -87,6 +93,7 @@ function App(): ReactElement {
     );
 
     React.useEffect(() => {
+        // Try to restore the last saved token
         new AsyncStorageService().getItem(StorageConstants.OAUTH_REFRESH_TOKEN).then((value) => {
             if (value !== null) {
                 const lastRefreshToken = JSON.parse(value) as AuthSession.TokenResponseConfig;
@@ -115,6 +122,10 @@ function App(): ReactElement {
         );
     }
 
+    /**
+     * Return the navigator based on the current log-in status
+     * @returns
+     */
     const _renderApp = () => {
         return (
             <AuthContext.Provider value={authContext}>
