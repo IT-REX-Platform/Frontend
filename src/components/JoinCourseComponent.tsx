@@ -5,7 +5,7 @@ import { ICourse } from "../types/ICourse";
 import i18n from "../locales";
 import { RequestFactory } from "../api/requests/RequestFactory";
 import { EndpointsCourse } from "../api/endpoints/EndpointsCourse";
-import { CommonActions, RouteProp, useIsFocused, useNavigation } from "@react-navigation/native";
+import { RouteProp, useIsFocused, useNavigation } from "@react-navigation/native";
 import { Header } from "../constants/navigators/Header";
 import { LocalizationContext } from "./Context";
 import { NavigationRoutes, RootDrawerParamList } from "../constants/navigators/NavigationRoutes";
@@ -13,6 +13,7 @@ import { CoursePublishState } from "../constants/CoursePublishState";
 import { IUser } from "../types/IUser";
 import AuthenticationService from "../services/AuthenticationService";
 import { TextButton } from "./uiElements/TextButton";
+import { areMoreCoursesAllowed } from "../services/CourseCounterService";
 
 export type JoinCourseRouteProp = RouteProp<RootDrawerParamList, "ROUTE_JOIN_COURSE">;
 
@@ -72,6 +73,7 @@ export const JoinCourseComponent: React.FC = () => {
             .then((receivedCoursesPublished) => setCoursesPublished(receivedCoursesPublished));
     }
 
+    // eslint-disable-next-line complexity
     function joinCourse(): void {
         // Check for the course to join being published/available.
         if (coursesPublished.find((val) => val.id == courseId) === undefined) {
@@ -86,6 +88,10 @@ export const JoinCourseComponent: React.FC = () => {
             navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, {
                 courseId: courseId,
             });
+            return;
+        }
+
+        if (!areMoreCoursesAllowed()) {
             return;
         }
 

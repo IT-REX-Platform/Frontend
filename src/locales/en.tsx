@@ -42,6 +42,7 @@ export const en = {
 
         createCourseTitle: "Course Creation",
         courseNameInvalid: "Course name invalid.",
+        courseLimitReached: "Course limit reached.",
         courseNameTooShort: "Course name must be at least one symbol long.",
         courseCreated: "Course created: ",
 

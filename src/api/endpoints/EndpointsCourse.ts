@@ -10,6 +10,7 @@ import { CoursePublishState } from "../../constants/CoursePublishState";
 import { ResponseParserCourse } from "../responses/ResponseParserCourse";
 import { ResponseParserEmpty } from "../responses/ResponseParserEmpty";
 import { Logger } from "typescript-logging";
+import { setCourseCounter } from "../../services/CourseCounterService";
 
 /**
  * Endpoints for courseservice/api/courses/.
@@ -77,7 +78,12 @@ export class EndpointsCourse implements IEndpointsCourse {
 
         this.loggerApi.trace("Sending GET request to URL: " + url);
         const response: Promise<Response> = sendRequest(url, getRequest);
-        return this.responseParserCourse.parseCourses(response, successMsg, errorMsg);
+        const courses: Promise<ICourse[]> = this.responseParserCourse.parseCourses(response, successMsg, errorMsg);
+
+        // Set counter for user courses, to prevent having more courses than it is allowed in MaxCoursesAllowed.ts.
+        courses.then((courses) => setCourseCounter(courses.length));
+
+        return courses;
     }
 
     /**
