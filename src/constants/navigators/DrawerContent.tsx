@@ -90,6 +90,7 @@ export const DrawerContent: React.FC<DrawerContentComponentProps> = (props: Draw
                     <Text style={{ color: "white" }}>{i18n.t("itrex.switchLang")}</Text>
                     <Switch value={locale == "de-DE"} onValueChange={toggleIsGerman} />
                 </View>
+                {/* Cann add more quick settings here. */}
             </View>
 
             <DrawerItem

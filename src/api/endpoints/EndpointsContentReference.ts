@@ -6,18 +6,20 @@ import { IEndpointsContentReference } from "../endpoints_interfaces/IEndpointsCo
 import { IContent } from "../../types/IContent";
 import { ResponseParserContentReferences } from "../responses/ResponseParserContentReferences";
 import { ResponseParserEmpty } from "../responses/ResponseParserEmpty";
+import { Logger } from "typescript-logging";
 
 /**
  * Endpoints for courseservice/api/contentreferences/.
  * Look in backend course-service ContentReferenceResource.java.
  */
 export class EndpointsContentReference implements IEndpointsContentReference {
-    private loggerApi = loggerFactory.getLogger("API.EndpointsContentReferences");
+    private loggerApi: Logger;
     private url: string;
     private responseParserContentReferences: ResponseParserContentReferences;
     private responseParserEmpty: ResponseParserEmpty;
 
     public constructor() {
+        this.loggerApi = loggerFactory.getLogger("API.EndpointsContentReference");
         this.url = itRexVars().apiUrl + ApiUrls.URL_CONTENTREFERENCES;
         this.responseParserContentReferences = new ResponseParserContentReferences();
         this.responseParserEmpty = new ResponseParserEmpty();
