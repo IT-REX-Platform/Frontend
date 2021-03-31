@@ -19,7 +19,6 @@ export const de = {
         homeAdminTitle: "Home",
         homeAdminText: "Aloha Admin",
         homeErrorText: "Fehlende Konfiguration",
-        oinCourse: "Kurs beitreten",
 
         courseDescription: "Kursbeschreibung",
         noCourseDescription: "Es ist keine Kursbeschreibung verfügbar.",
@@ -106,7 +105,6 @@ export const de = {
         noCoursesFilter: "Es wurden keine Kurse für diese Auswahl gefunden!",
         filterPubUnpub: "Veröffentlichung",
         filterActiveInActive: "Aktivität",
-        filterLabel: "Filter",
 
         badRequest: "Ungültige Anfrage.",
         notFound: "Nicht gefunden.",

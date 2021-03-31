@@ -19,7 +19,6 @@ export const en = {
         homeAdminTitle: "Home",
         homeAdminText: "hello admin",
         homeErrorText: "missing configuration",
-        joinCourse: "Join A Course",
 
         courseDescription: "Course Description",
         enterCourseName: "Enter course name",
@@ -106,7 +105,6 @@ export const en = {
         noCoursesFilter: "No courses were found for this selection!",
         filterPubUnpub: "Publishing",
         filterActiveInActive: "Activity",
-        filterLabel: "Filter",
 
         badRequest: "Bad request.",
         notFound: "Not found.",
