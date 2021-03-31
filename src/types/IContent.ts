@@ -15,7 +15,7 @@ export type IContent = {
     video?: IVideo;
     quiz?: IQuiz;
     contentReferenceType?: CONTENTREFERENCETYPE;
-    //tmp
+    // the following attributes we do not get from the service, but are set by the application
     isPersistent?: boolean;
     timePeriod?: ITimePeriod;
 };

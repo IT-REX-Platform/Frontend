@@ -218,6 +218,9 @@ export const ScreenCourseTimeline: React.FC = () => {
     }
 
     // eslint-disable-next-line complexity
+    /**
+     * Give the course owner/manager of the course the ability to switch between Student and edit-View.
+     */
     function ownerEditMode() {
         if (user.courses === undefined || course.id === undefined) {
             return <></>;

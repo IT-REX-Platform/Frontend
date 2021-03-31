@@ -10,7 +10,7 @@ import { Logger } from "typescript-logging";
 
 /**
  * Endpoints for courseservice/api/contentreferences/.
- * Look in backend course-service CourseResource.java.
+ * Look in backend course-service ContentReferenceResource.java.
  */
 export class EndpointsContentReference implements IEndpointsContentReference {
     private loggerApi: Logger;
@@ -29,7 +29,6 @@ export class EndpointsContentReference implements IEndpointsContentReference {
      * Get one or more contentreferences.
      *
      * @param getRequest GET request.
-     * @param params Optional parameters for GET request URL to filter all existing courses.
      */
     public getAllContentReferences(
         getRequest: RequestInit,
@@ -63,7 +62,7 @@ export class EndpointsContentReference implements IEndpointsContentReference {
     /**
      * Create a new ContentReference.
      *
-     * @param postRequest POST request with course JSON body containing no course ID.
+     * @param postRequest POST request with course JSON body containing no ContentReference ID.
      */
     public createContentReference(postRequest: RequestInit, successMsg?: string, errorMsg?: string): Promise<IContent> {
         this.loggerApi.trace("Sending POST request to URL: " + this.url);
@@ -74,7 +73,7 @@ export class EndpointsContentReference implements IEndpointsContentReference {
     /**
      * Update one or more ContentReference fields.
      *
-     * @param postRequest PATCH request with course JSON body containing a course ID and one or more course fields.
+     * @param postRequest PATCH request with ContentReference JSON body containing a ContentReference ID and one or more ContentReference fields.
      */
     public patchContentReference(patchRequest: RequestInit, successMsg?: string, errorMsg?: string): Promise<IContent> {
         this.loggerApi.trace("Sending PATCH request to URL: " + this.url);
@@ -86,7 +85,7 @@ export class EndpointsContentReference implements IEndpointsContentReference {
      * Delete an existing ContentReference.
      *
      * @param deleteRequest DELETE request.
-     * @param contentReferenceId Course ID for URL parameter.
+     * @param contentReferenceId ContentReference ID for URL parameter.
      */
     public deleteContentReference(
         deleteRequest: RequestInit,
