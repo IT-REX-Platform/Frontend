@@ -25,6 +25,7 @@ export const en = {
         createCourse: "Create new course",
         joinACourse: "Join a course",
         joinCourse: "Join course",
+        joinCourseTitle: "Course Join",
         joinCourseNoCourseError: "Joining course failed! No published course with that id could be found.",
         joinCourseAlreadyMember: "You are already a member of this course. You will be redirected...",
         leaveCourse: "Leave Course",
@@ -37,7 +38,7 @@ export const en = {
         en: "EN",
         de: "DE",
 
-        toCourse: "Create Course",
+        createCourseTitle: "Course Creation",
         courseNameInvalid: "Course name invalid.",
         courseNameTooShort: "Course name must be at least 4 symbols long.",
         courseDescriptionInvalid: "Course description must be at least 5 symbols long.",
@@ -89,6 +90,7 @@ export const en = {
         contentProgressUntouched: "No Progress",
         contentProgressStarted: "Started",
         contentProgressCompleted: "Completed",
+        contentProgressDueTo: "Due on:",
 
         unpublished: "Unpublished",
         published: "Published",
@@ -114,7 +116,8 @@ export const en = {
         myNewChapter: "My new chapter",
         save: "Save",
         nextChapter: "Next Chapter",
-        lastChapter: "Last Chapter",
+        lastChapter: "Previous Chapter",
+        chapterBackToOverview: "Back to Overview",
 
         saveAndReturn: "Save & Return",
 

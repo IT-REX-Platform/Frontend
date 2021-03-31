@@ -25,6 +25,7 @@ export const de = {
         createCourse: "Neuen Kurs erstellen",
         joinACourse: "Einem Kurs beitreten",
         joinCourse: "Kurs beitreten",
+        joinCourseTitle: "Kurs beitreten",
         joinCourseNoCourseError: "Kurs beitreten fehlgeschlagen! Kein veröffentlichter Kurs mit dieser ID gefunden.",
         joinCourseAlreadyMember: "Du bist bereits ein Mitglied dieses Kurses. Du wirst weitergeleitet...",
         leaveCourse: "Kurs verlassen",
@@ -37,7 +38,7 @@ export const de = {
         en: "EN",
         de: "DE",
 
-        toCourse: "Kurserstellung",
+        createCourseTitle: "Kurs erstellen",
         courseNameInvalid: "Kursname ungültig.",
         courseNameTooShort: "Kursname muss mindestens 4 Symbole lang sein.",
         courseDescriptionInvalid: "Kursbeschreibung muss mindestens 5 Symbole lang sein.",
@@ -89,6 +90,7 @@ export const de = {
         contentProgressUntouched: "Kein Fortschritt",
         contentProgressStarted: "Gestartet",
         contentProgressCompleted: "Beendet",
+        contentProgressDueTo: "Zu bearbeiten bis:",
 
         unpublished: "Unveröffentlicht",
         published: "Veröffentlicht",
@@ -114,7 +116,8 @@ export const de = {
         myNewChapter: "Mein neues Kapitel",
         save: "Speichern",
         nextChapter: "Nächstes Kapitel",
-        lastChapter: "Letzes Kapitel",
+        lastChapter: "Vorheriges Kapitel",
+        chapterBackToOverview: "Zurück zur Übersicht",
 
         saveAndReturn: "Speichern & Zurück",
 

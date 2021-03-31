@@ -32,6 +32,7 @@ import { InfoUnpublished } from "../uiElements/InfoUnpublished";
 import { InfoPublished } from "../uiElements/InfoPublished";
 import { ICourseProgressTracker } from "../../types/ICourseProgressTracker";
 import ProgressService from "../../services/ProgressService";
+import { MinimalScreenForDrawer } from "../../constants/MinimalScreenForDrawer";
 
 export type ScreenCourseNavigationProp = DrawerNavigationProp<RootDrawerParamList, "ROUTE_COURSE_DETAILS">;
 export type ScreenCourseRouteProp = RouteProp<RootDrawerParamList, "ROUTE_COURSE_DETAILS">;
@@ -190,7 +191,7 @@ export const ScreenCourse: React.FC = () => {
     }
 
     function showHamburger(dimensions: ScaledSize) {
-        if (dimensions.width < 1280) {
+        if (dimensions.width < MinimalScreenForDrawer.SIZE) {
             return (
                 <MaterialCommunityIcons
                     style={styles.icon}

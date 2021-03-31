@@ -2,9 +2,10 @@ import { sendRequest } from "../requests/sendRequest";
 import { itRexVars } from "../../constants/Constants";
 import { ApiUrls } from "../../constants/ApiUrls";
 import { loggerFactory } from "../../../logger/LoggerConfig";
-import { ResponseParser } from "../responses/ResponseParser";
 import { IEndpointsContentReference } from "../endpoints_interfaces/IEndpointsContentReference";
 import { IContent } from "../../types/IContent";
+import { ResponseParserContentReferences } from "../responses/ResponseParserContentReferences";
+import { ResponseParserEmpty } from "../responses/ResponseParserEmpty";
 
 /**
  * Endpoints for courseservice/api/contentreferences/.
@@ -13,11 +14,13 @@ import { IContent } from "../../types/IContent";
 export class EndpointsContentReference implements IEndpointsContentReference {
     private loggerApi = loggerFactory.getLogger("API.EndpointsContentReferences");
     private url: string;
-    private responseParser: ResponseParser;
+    private responseParserContentReferences: ResponseParserContentReferences;
+    private responseParserEmpty: ResponseParserEmpty;
 
     public constructor() {
         this.url = itRexVars().apiUrl + ApiUrls.URL_CONTENTREFERENCES;
-        this.responseParser = new ResponseParser();
+        this.responseParserContentReferences = new ResponseParserContentReferences();
+        this.responseParserEmpty = new ResponseParserEmpty();
     }
 
     /**
@@ -33,7 +36,7 @@ export class EndpointsContentReference implements IEndpointsContentReference {
     ): Promise<IContent[]> {
         this.loggerApi.trace("Sending GET request to URL: " + this.url);
         const response: Promise<Response> = sendRequest(this.url, getRequest);
-        return this.responseParser.parseContentReferences(response, successMsg, errorMsg);
+        return this.responseParserContentReferences.parseContentReferences(response, successMsg, errorMsg);
     }
 
     /**
@@ -52,7 +55,7 @@ export class EndpointsContentReference implements IEndpointsContentReference {
 
         this.loggerApi.trace("Sending GET request to URL: " + urlUpdated);
         const response: Promise<Response> = sendRequest(urlUpdated, getRequest);
-        return this.responseParser.parseContentReference(response, successMsg, errorMsg);
+        return this.responseParserContentReferences.parseContentReference(response, successMsg, errorMsg);
     }
 
     /**
@@ -63,7 +66,7 @@ export class EndpointsContentReference implements IEndpointsContentReference {
     public createContentReference(postRequest: RequestInit, successMsg?: string, errorMsg?: string): Promise<IContent> {
         this.loggerApi.trace("Sending POST request to URL: " + this.url);
         const response: Promise<Response> = sendRequest(this.url, postRequest);
-        return this.responseParser.parseContentReference(response, successMsg, errorMsg);
+        return this.responseParserContentReferences.parseContentReference(response, successMsg, errorMsg);
     }
 
     /**
@@ -74,7 +77,7 @@ export class EndpointsContentReference implements IEndpointsContentReference {
     public patchContentReference(patchRequest: RequestInit, successMsg?: string, errorMsg?: string): Promise<IContent> {
         this.loggerApi.trace("Sending PATCH request to URL: " + this.url);
         const response: Promise<Response> = sendRequest(this.url, patchRequest);
-        return this.responseParser.parseContentReference(response, successMsg, errorMsg);
+        return this.responseParserContentReferences.parseContentReference(response, successMsg, errorMsg);
     }
 
     /**
@@ -93,6 +96,6 @@ export class EndpointsContentReference implements IEndpointsContentReference {
 
         this.loggerApi.trace("Sending DELETE request to URL: " + urlUpdated);
         const response: Promise<Response> = sendRequest(urlUpdated, deleteRequest);
-        return this.responseParser.checkEmptyResponse(response, successMsg, errorMsg);
+        return this.responseParserEmpty.checkEmptyResponse(response, successMsg, errorMsg);
     }
 }

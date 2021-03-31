@@ -136,8 +136,6 @@ export const ScreenCourseTimeline: React.FC = () => {
                                     }
                                 }
                             }
-                            // Get Videos by ContentIds
-                            const getVideoRequest = RequestFactory.createGetRequest();
 
                             // Array of contentId's from die video List
                             const videoIds: string[] =
@@ -163,8 +161,12 @@ export const ScreenCourseTimeline: React.FC = () => {
 
                             // Ask the MediaService for the video metadata
                             const videoPromise = new Promise((resolve, reject) => {
-                                if (videoIds !== undefined) {
-                                    endpointsVideos.findAllWithIds(getVideoRequest, videoIds).then((videos) => {
+                                if (videoIds != undefined) {
+                                    // Create POST request with video IDs in body.
+                                    const postVideoRequest = RequestFactory.createPostRequestWithBody(videoIds);
+
+                                    // Get Videos by ContentIds
+                                    endpointsVideos.findAllWithIds(postVideoRequest).then((videos) => {
                                         videos.forEach((video) => {
                                             const contentVideo = contents[CONTENTREFERENCETYPE.VIDEO].filter(
                                                 (item) => item.contentId === video.id
@@ -183,10 +185,10 @@ export const ScreenCourseTimeline: React.FC = () => {
                             });
 
                             // Load Quiz-Informations
-                            const getQuizRequest = RequestFactory.createGetRequest();
+                            const postQuizRequest = RequestFactory.createPostRequestWithBody(quizIds);
                             const quizPromise = new Promise((resolve, reject) => {
-                                if (quizIds !== undefined) {
-                                    endpointsQuiz.findAllWithIds(getQuizRequest, quizIds).then((quizzes) => {
+                                if (quizIds != undefined) {
+                                    endpointsQuiz.findAllByIds(postQuizRequest).then((quizzes) => {
                                         quizzes.forEach((quiz) => {
                                             const contentQuiz = contents[CONTENTREFERENCETYPE.QUIZ].filter(
                                                 (item) => item.contentId === quiz.id
