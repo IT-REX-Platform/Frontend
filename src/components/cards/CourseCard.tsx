@@ -90,6 +90,7 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
                     <View style={styles.cardContent}>
                         <TextButton
                             title={i18n.t("itrex.courseProgressLastAccessed")}
+                            size="large"
                             onPress={() => {
                                 // TODO: Navigate to the content page.
                                 navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, {
