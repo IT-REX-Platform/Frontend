@@ -42,6 +42,7 @@ export const de = {
 
         createCourseTitle: "Kurs erstellen",
         courseNameInvalid: "Kursname ungültig.",
+        courseLimitReached: "Kurslimit erreicht.",
         courseNameTooShort: "Kursname muss mindestens aus einem Symbol bestehen.",
         courseCreated: "Kurs erstellt: ",
 

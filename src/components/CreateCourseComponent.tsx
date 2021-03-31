@@ -16,6 +16,7 @@ import { TextButton } from "./uiElements/TextButton";
 import AuthenticationService from "../services/AuthenticationService";
 import { useNavigation } from "@react-navigation/native";
 import { NavigationRoutes } from "../constants/navigators/NavigationRoutes";
+import { areMoreCoursesAllowed } from "../services/CourseCounterService";
 
 const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");
 const endpointsCourse: EndpointsCourse = new EndpointsCourse();
@@ -81,7 +82,6 @@ export const CreateCourseComponent: React.FC = () => {
                     />
 
                     <View style={[styles.horizontalContainer, styles.separator]}>
-                        {/* <View style={styles.horizontalContainer}> */}
                         <DatePickerComponent
                             title={i18n.t("itrex.startDate")}
                             date={startDate}
@@ -107,8 +107,11 @@ export const CreateCourseComponent: React.FC = () => {
 
     // eslint-disable-next-line complexity
     function _createCourse(): void {
-        loggerService.trace(`Validating course name: ${courseName}.`);
+        if (!areMoreCoursesAllowed()) {
+            return;
+        }
 
+        loggerService.trace(`Validating course name: ${courseName}.`);
         if (validateCourseName(courseName) == false) {
             loggerService.warn("Course name invalid.");
             return;
