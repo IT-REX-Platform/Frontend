@@ -1,8 +1,9 @@
+import { Logger } from "typescript-logging";
 import { loggerFactory } from "../../../logger/LoggerConfig";
 import { ResponseToasts } from "./ResponseToasts";
 
 export class ResponseParserEmpty {
-    private loggerApi;
+    private loggerApi: Logger;
     private responseToasts: ResponseToasts;
 
     constructor() {

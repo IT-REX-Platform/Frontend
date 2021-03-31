@@ -8,18 +8,20 @@ import { sendRequest } from "../requests/sendRequest";
 import { QuestionUrlSuffix } from "../../constants/QuestionUrlSuffix";
 import { ResponseParserQuestion } from "../responses/ResponseParserQuestion";
 import { ResponseParserEmpty } from "../responses/ResponseParserEmpty";
+import { Logger } from "typescript-logging";
 
 /**
  * Endpoints for quizservice/api/questions.
  * Look in backend quiz-service QuestionResource.java.
  */
 export class EndpointsQuestion implements IEndpointsQuestion {
-    private loggerApi = loggerFactory.getLogger("API.EndpointsQuestion");
+    private loggerApi: Logger;
     private url: string;
     private responseParserQuestion: ResponseParserQuestion;
     private responseParserEmpty: ResponseParserEmpty;
 
     public constructor() {
+        this.loggerApi = loggerFactory.getLogger("API.EndpointsQuestion");
         this.url = itRexVars().apiUrl + ApiUrls.URL_QUESTIONS;
         this.responseParserQuestion = new ResponseParserQuestion();
         this.responseParserEmpty = new ResponseParserEmpty();

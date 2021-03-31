@@ -13,8 +13,6 @@ import { ICourseProgressTracker } from "../types/ICourseProgressTracker";
 import { useNavigation } from "@react-navigation/native";
 import { CoursePublishState } from "../constants/CoursePublishState";
 import { CONTENTREFERENCETYPE, IContent } from "../types/IContent";
-import { EndpointsQuiz } from "../api/endpoints/EndpointsQuiz";
-import { RequestFactory } from "../api/requests/RequestFactory";
 import { ContentProgressInfo } from "./uiElements/ContentProgressInfo";
 import ProgressService from "../services/ProgressService";
 import { ContentProgressTrackerState } from "../constants/ContentProgressTrackerState";

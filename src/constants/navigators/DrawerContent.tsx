@@ -51,6 +51,7 @@ export const DrawerContent: React.FC<DrawerContentComponentProps> = (props: Draw
         _displayNoCourses();
     }
 
+    // Create an DrawerItem for each assigned course
     for (const course of courses) {
         drawerItems.push(
             <DrawerItem
@@ -59,6 +60,7 @@ export const DrawerContent: React.FC<DrawerContentComponentProps> = (props: Draw
                 label={"" + course.name}
                 key={course.id}
                 onPress={() => {
+                    // a bit hacky, but keeps reactnavigation from displaying the contents of a previously opened course
                     navigation.dispatch({
                         ...CommonActions.reset({
                             index: 0,
@@ -88,6 +90,7 @@ export const DrawerContent: React.FC<DrawerContentComponentProps> = (props: Draw
                     <Text style={{ color: "white" }}>{i18n.t("itrex.switchLang")}</Text>
                     <Switch value={locale == "de-DE"} onValueChange={toggleIsGerman} />
                 </View>
+                {/* Cann add more quick settings here. */}
             </View>
 
             <DrawerItem

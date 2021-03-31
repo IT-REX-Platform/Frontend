@@ -1,9 +1,10 @@
 import { IChapter } from "../../types/IChapter";
 import { loggerFactory } from "../../../logger/LoggerConfig";
 import { ResponseToasts } from "./ResponseToasts";
+import { Logger } from "typescript-logging";
 
 export class ResponseParserChapter {
-    private loggerApi;
+    private loggerApi: Logger;
     private responseToasts: ResponseToasts;
 
     constructor() {

@@ -7,18 +7,20 @@ import { loggerFactory } from "../../../logger/LoggerConfig";
 import { VideoUrlSuffix } from "../../constants/VideoUrlSuffix";
 import { ResponseParserVideo } from "../responses/ResponseParserVideo";
 import { ResponseParserEmpty } from "../responses/ResponseParserEmpty";
+import { Logger } from "typescript-logging";
 
 /**
  * Endpoints for mediaservice/api/videos.
  * Look in backend media-service VideoResource.java.
  */
 export class EndpointsVideo implements IEndpointsVideo {
-    private loggerApi = loggerFactory.getLogger("API.EndpointsVideo");
+    private loggerApi: Logger;
     private url: string;
     private responseParserVideo: ResponseParserVideo;
     private responseParserEmpty: ResponseParserEmpty;
 
     public constructor() {
+        this.loggerApi = loggerFactory.getLogger("API.EndpointsVideo");
         this.url = itRexVars().apiUrl + ApiUrls.URL_VIDEOS;
         this.responseParserVideo = new ResponseParserVideo();
         this.responseParserEmpty = new ResponseParserEmpty();

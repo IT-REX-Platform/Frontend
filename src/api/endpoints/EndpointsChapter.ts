@@ -6,18 +6,20 @@ import { IEndpointsChapter } from "../endpoints_interfaces/IEndpointsChapter";
 import { IChapter } from "../../types/IChapter";
 import { ResponseParserChapter } from "../responses/ResponseParserChapter";
 import { ResponseParserEmpty } from "../responses/ResponseParserEmpty";
+import { Logger } from "typescript-logging";
 
 /**
- * Endpoints for courseservice/api/courses/.
- * Look in backend course-service CourseResource.java.
+ * Endpoints for courseservice/api/chapters/.
+ * Look in backend course-service ChapterResource.java.
  */
 export class EndpointsChapter implements IEndpointsChapter {
-    private loggerApi = loggerFactory.getLogger("API.EndpointsChapter");
+    private loggerApi: Logger;
     private url: string;
     private responseParserChapter: ResponseParserChapter;
     private responseParserEmpty: ResponseParserEmpty;
 
     public constructor() {
+        this.loggerApi = loggerFactory.getLogger("API.EndpointsChapter");
         this.url = itRexVars().apiUrl + ApiUrls.URL_CHAPTERS;
         this.responseParserChapter = new ResponseParserChapter();
         this.responseParserEmpty = new ResponseParserEmpty();
@@ -60,9 +62,9 @@ export class EndpointsChapter implements IEndpointsChapter {
     }
 
     /**
-     * Create a new course.
+     * Create a new chapter.
      *
-     * @param postRequest POST request with course JSON body containing no course ID.
+     * @param postRequest POST request with course JSON body containing no chapter ID.
      * @param successMsg A success message.
      * @param errorMsg An error message.
      * @returns
@@ -74,9 +76,9 @@ export class EndpointsChapter implements IEndpointsChapter {
     }
 
     /**
-     * Update one or more course fields.
+     * Update one or more chapter fields.
      *
-     * @param postRequest PATCH request with course JSON body containing a course ID and one or more course fields.
+     * @param postRequest PATCH request with course JSON body containing a chapter ID and one or more chapter fields.
      * @param successMsg A success message.
      * @param errorMsg An error message.
      * @returns
@@ -88,10 +90,10 @@ export class EndpointsChapter implements IEndpointsChapter {
     }
 
     /**
-     * Delete an existing course.
+     * Delete an existing chapter.
      *
      * @param deleteRequest DELETE request.
-     * @param chapterId Course ID for URL parameter.
+     * @param chapterId chapter ID for URL parameter.
      * @param successMsg A success message.
      * @param errorMsg An error message.
      * @returns

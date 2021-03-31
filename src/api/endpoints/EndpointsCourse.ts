@@ -9,18 +9,20 @@ import { CourseUrlSuffix } from "../../constants/CourseUrlSuffix";
 import { CoursePublishState } from "../../constants/CoursePublishState";
 import { ResponseParserCourse } from "../responses/ResponseParserCourse";
 import { ResponseParserEmpty } from "../responses/ResponseParserEmpty";
+import { Logger } from "typescript-logging";
 
 /**
  * Endpoints for courseservice/api/courses/.
  * Look in backend course-service CourseResource.java.
  */
 export class EndpointsCourse implements IEndpointsCourse {
-    private loggerApi = loggerFactory.getLogger("API.EndpointsCourse");
+    private loggerApi: Logger;
     private url: string;
     private responseParserCourse: ResponseParserCourse;
     private responseParserEmpty: ResponseParserEmpty;
 
     public constructor() {
+        this.loggerApi = loggerFactory.getLogger("API.EndpointsCourse");
         this.url = itRexVars().apiUrl + ApiUrls.URL_COURSES;
         this.responseParserCourse = new ResponseParserCourse();
         this.responseParserEmpty = new ResponseParserEmpty();
