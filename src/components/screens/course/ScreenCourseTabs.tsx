@@ -56,12 +56,18 @@ export const ScreenCourseTabs: React.FC = () => {
             <CourseTab.Screen
                 name="OVERVIEW"
                 component={ScreenCourseTimeline}
-                options={{ tabBarLabel: i18n.t("itrex.overview") }}
+                options={{
+                    title: i18n.t("itrex.tabTitle") + i18n.t("itrex.chapterOverview"),
+                    tabBarLabel: i18n.t("itrex.overview"),
+                }}
             />
             <CourseTab.Screen
                 name="COURSE_INFROMATION"
                 component={ScreenCourseInformation}
-                options={{ tabBarLabel: i18n.t("itrex.courseInformation") }}
+                options={{
+                    title: i18n.t("itrex.tabTitle") + i18n.t("itrex.courseInformation"),
+                    tabBarLabel: i18n.t("itrex.courseInformation"),
+                }}
             />
         </CourseTab.Navigator>
     );

@@ -133,12 +133,36 @@ export const ScreenCourse: React.FC = () => {
 
                 {getUploadVideoScreen()}
                 {getQuizPoolScreen()}
-                <CourseStack.Screen name="CHAPTER_CONTENT" component={ScreenChapterStudent} />
+                <CourseStack.Screen
+                    options={{
+                        title: i18n.t("itrex.tabTitle") + i18n.t("itrex.chapterContent"),
+                    }}
+                    name="CHAPTER_CONTENT"
+                    component={ScreenChapterStudent}
+                />
                 {getCreateChapterScreen()}
                 {getQuizCreation()}
-                <CourseStack.Screen name="QUIZ_OVERVIEW" component={ScreenQuizOverview} />
-                <CourseStack.Screen name="QUIZ_SOLVE" component={ScreenQuizSolve} />
-                <CourseStack.Screen name="QUIZ_RESULT" component={ScreenQuizResult} />
+                <CourseStack.Screen
+                    options={{
+                        title: i18n.t("itrex.tabTitle") + i18n.t("itrex.quizOverview"),
+                    }}
+                    name="QUIZ_OVERVIEW"
+                    component={ScreenQuizOverview}
+                />
+                <CourseStack.Screen
+                    options={{
+                        title: i18n.t("itrex.tabTitle") + i18n.t("itrex.workOnQuiz"),
+                    }}
+                    name="QUIZ_SOLVE"
+                    component={ScreenQuizSolve}
+                />
+                <CourseStack.Screen
+                    options={{
+                        title: i18n.t("itrex.tabTitle") + i18n.t("itrex.quizResults"),
+                    }}
+                    name="QUIZ_RESULT"
+                    component={ScreenQuizResult}
+                />
             </CourseStack.Navigator>
         </CourseContext.Provider>
     );
@@ -214,7 +238,15 @@ export const ScreenCourse: React.FC = () => {
         const courseRole: CourseRoles = user.courses[course.id];
 
         if (courseRole === CourseRoles.OWNER || courseRole == undefined) {
-            return <CourseStack.Screen name="QUIZ_POOL" component={QuizPoolComponent} />;
+            return (
+                <CourseStack.Screen
+                    options={{
+                        title: i18n.t("itrex.tabTitle") + i18n.t("itrex.quizPool"),
+                    }}
+                    name="QUIZ_POOL"
+                    component={QuizPoolComponent}
+                />
+            );
         }
     }
 
@@ -222,8 +254,20 @@ export const ScreenCourse: React.FC = () => {
         if (AuthenticationService.getInstance().isLecturerOrAdmin()) {
             return (
                 <>
-                    <CourseStack.Screen name="VIDEO_POOL" component={VideoPoolComponent} />
-                    <CourseStack.Screen name="VIDEO" component={VideoComponent} />
+                    <CourseStack.Screen
+                        options={{
+                            title: i18n.t("itrex.tabTitle") + i18n.t("itrex.videoPool"),
+                        }}
+                        name="VIDEO_POOL"
+                        component={VideoPoolComponent}
+                    />
+                    <CourseStack.Screen
+                        options={{
+                            title: i18n.t("itrex.tabTitle") + i18n.t("itrex.video"),
+                        }}
+                        name="VIDEO"
+                        component={VideoComponent}
+                    />
                 </>
             );
         }
@@ -239,8 +283,20 @@ export const ScreenCourse: React.FC = () => {
         if (courseRole === CourseRoles.OWNER || courseRole == undefined) {
             return (
                 <>
-                    <CourseStack.Screen name="CREATE_QUIZ" component={ScreenAddQuiz} />
-                    <CourseStack.Screen name="CREATE_QUESTION" component={ScreenAddQuestion} />
+                    <CourseStack.Screen
+                        options={{
+                            title: i18n.t("itrex.tabTitle") + i18n.t("itrex.createQuiz"),
+                        }}
+                        name="CREATE_QUIZ"
+                        component={ScreenAddQuiz}
+                    />
+                    <CourseStack.Screen
+                        options={{
+                            title: i18n.t("itrex.tabTitle") + i18n.t("itrex.createQuestion"),
+                        }}
+                        name="CREATE_QUESTION"
+                        component={ScreenAddQuestion}
+                    />
                 </>
             );
         }
@@ -253,7 +309,7 @@ export const ScreenCourse: React.FC = () => {
                     name="CHAPTER"
                     component={ScreenAddChapter}
                     options={{
-                        title: i18n.t("itrex.toUploadVideo"),
+                        title: i18n.t("itrex.tabTitle") + i18n.t("itrex.chapterContent"),
                     }}
                 />
             );
