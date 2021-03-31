@@ -7,7 +7,7 @@ export type ITimePeriod = {
     endDate?: Date;
     publishState?: TimePeriodPublishState;
     contentReferenceIds?: string[];
-    // Temporary
+    // the following attributes we do not get from the service, but are set by the application
     chapters?: IChapter[];
     name?: string;
     fullName?: string;

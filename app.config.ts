@@ -8,6 +8,9 @@ interface Environment {
     frontendUrl: string;
 }
 
+/**
+ * Environment variables, based on the current release-channel
+ */
 export default (config: ExpoConfig): ExpoConfig => {
     const env_variables: { [id: string]: Environment } = {
         dev: {
