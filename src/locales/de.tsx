@@ -42,7 +42,6 @@ export const de = {
         createCourseTitle: "Kurs erstellen",
         courseNameInvalid: "Kursname ungültig.",
         courseNameTooShort: "Kursname muss mindestens aus einem Symbol bestehen.",
-        courseDescriptionInvalid: "Kursbeschreibung muss mindestens 5 Symbole lang sein.",
         courseCreated: "Kurs erstellt: ",
 
         toUploadVideo: "Video hochladen",

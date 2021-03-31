@@ -15,14 +15,3 @@ export function validateCourseName(courseName: string): boolean {
 
     return true;
 }
-
-export function validateCourseDescription(courseDescription: string): boolean {
-    const toast: ToastService = new ToastService();
-
-    /*if (courseDescription.length > 0 && courseDescription.length < 5) {
-        toast.warn(i18n.t("itrex.courseDescriptionInvalid"));
-        return false;
-    }*/
-
-    return true;
-}
