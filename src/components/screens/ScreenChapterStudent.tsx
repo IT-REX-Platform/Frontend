@@ -7,7 +7,7 @@ import { TouchableOpacity, View, StyleSheet, Text, Animated, SectionList } from 
 import { ListItem } from "react-native-elements";
 import React from "react";
 import { toast } from "react-toastify";
-import { RootDrawerParamList } from "../../constants/navigators/NavigationRoutes";
+import { CourseStackParamList, RootDrawerParamList } from "../../constants/navigators/NavigationRoutes";
 import { dark } from "../../constants/themes/dark";
 import i18n from "../../locales";
 import { IChapter } from "../../types/IChapter";
@@ -33,7 +33,7 @@ interface IVideoListSection {
     data: IContent[];
 }
 
-export type ChapterContentRouteProp = RouteProp<RootDrawerParamList, "ROUTE_CHAPTER_CONTENT">;
+export type ChapterContentRouteProp = RouteProp<CourseStackParamList, "CHAPTER_CONTENT">;
 
 export const ScreenChapterStudent: React.FC = () => {
     // Setup the main contexts to use, i18n and navigation.
@@ -87,6 +87,7 @@ export const ScreenChapterStudent: React.FC = () => {
             // Update the chapter list with the chapters of the course, if any.
             if (course.chapters !== undefined) {
                 setChapterList(course.chapters);
+                syncToCurrentChapter();
             }
 
             updateCourseProgress(() => {
