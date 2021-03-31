@@ -187,7 +187,7 @@ export const ScreenCourseInformation: React.FC = () => {
         }
 
         const courseRole: CourseRoles = user.courses[course.id];
-        if (courseRole === CourseRoles.OWNER || courseRole == undefined) {
+        if (courseRole === CourseRoles.OWNER || courseRole == CourseRoles.MANAGER) {
             return <></>;
         }
         return (

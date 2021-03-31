@@ -445,7 +445,6 @@ export const ScreenAddChapter: React.FC = () => {
 
                         setContentList(newContentList);
                     });
-                //TODO: Definiere Quiz Liste wenn bereits welche zum Content hinzugefügt wurden
             } else {
                 _getAllVideos(course.id);
                 _getAllQuizzes();

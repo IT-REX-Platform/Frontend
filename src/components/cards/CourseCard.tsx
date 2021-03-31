@@ -90,8 +90,9 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
                     <View style={styles.cardContent}>
                         <TextButton
                             title={i18n.t("itrex.courseContinue")}
+                            size="large"
                             onPress={() => {
-                                // TODO: Navigate to the content page.
+                                // Navigate to the content page.
                                 navigation.navigate(NavigationRoutes.ROUTE_COURSE_DETAILS, {
                                     screen: "CHAPTER_CONTENT",
                                     params: {

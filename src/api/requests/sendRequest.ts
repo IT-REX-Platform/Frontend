@@ -10,6 +10,7 @@ import { ToastService } from "../../services/toasts/ToastService";
  */
 export function sendRequest(url: string, request: RequestInit): Promise<Response> {
     const toast: ToastService = new ToastService();
+
     return new Promise((resolve, reject) => {
         fetch(url, request)
             .then((response) => {

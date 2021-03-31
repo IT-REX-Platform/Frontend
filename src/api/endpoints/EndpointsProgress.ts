@@ -2,24 +2,26 @@ import { sendRequest } from "../requests/sendRequest";
 import { itRexVars } from "../../constants/Constants";
 import { ApiUrls } from "../../constants/ApiUrls";
 import { loggerFactory } from "../../../logger/LoggerConfig";
-import { ResponseParser } from "../responses/ResponseParser";
 import { IEndpointsProgress } from "../endpoints_interfaces/IEndpointsProgress";
 import { IContentProgressTracker } from "../../types/IContentProgressTracker";
 import { ProgressUrlPart } from "../../constants/ProgressUrlPart";
 import { ICourseProgressTracker } from "../../types/ICourseProgressTracker";
+import { ResponseParserProgress } from "../responses/ResponseParserProgress";
+import { Logger } from "typescript-logging";
 
 /**
  * Endpoints for courseservice/api/progress/.
  * Look in backend course-service ProgressResource.java.
  */
 export class EndpointsProgress implements IEndpointsProgress {
-    private loggerApi = loggerFactory.getLogger("API.EndpointsProgress");
+    private loggerApi: Logger;
     private url: string;
-    private responseParser: ResponseParser;
+    private responseParserProgress: ResponseParserProgress;
 
     public constructor() {
+        this.loggerApi = loggerFactory.getLogger("API.EndpointsProgress");
         this.url = itRexVars().apiUrl + ApiUrls.URL_PROGRESS;
-        this.responseParser = new ResponseParser();
+        this.responseParserProgress = new ResponseParserProgress();
     }
 
     /**
@@ -40,7 +42,7 @@ export class EndpointsProgress implements IEndpointsProgress {
 
         this.loggerApi.trace("Sending POST request to URL: " + urlToUse);
         const response: Promise<Response> = sendRequest(urlToUse, postRequest);
-        return this.responseParser.parseContentProgressTracker(response, successMsg, errorMsg);
+        return this.responseParserProgress.parseContentProgressTracker(response, successMsg, errorMsg);
     }
 
     /**
@@ -62,7 +64,7 @@ export class EndpointsProgress implements IEndpointsProgress {
 
         this.loggerApi.trace("Sending GET request to URL: " + urlToUse);
         const response: Promise<Response> = sendRequest(urlToUse, getRequest);
-        return this.responseParser.parseContentProgressTracker(response, successMsg, errorMsg);
+        return this.responseParserProgress.parseContentProgressTracker(response, successMsg, errorMsg);
     }
 
     /**
@@ -84,7 +86,7 @@ export class EndpointsProgress implements IEndpointsProgress {
 
         this.loggerApi.trace("Sending PUT request to URL: " + urlToUse);
         const response: Promise<Response> = sendRequest(urlToUse, putRequest);
-        return this.responseParser.parseContentProgressTracker(response, successMsg, errorMsg);
+        return this.responseParserProgress.parseContentProgressTracker(response, successMsg, errorMsg);
     }
 
     /**
@@ -109,7 +111,7 @@ export class EndpointsProgress implements IEndpointsProgress {
 
         this.loggerApi.trace("Sending PUT request to URL: " + urlToUse);
         const response: Promise<Response> = sendRequest(urlToUse, putRequest);
-        return this.responseParser.parseContentProgressTracker(response, successMsg, errorMsg);
+        return this.responseParserProgress.parseContentProgressTracker(response, successMsg, errorMsg);
     }
 
     /**
@@ -131,7 +133,7 @@ export class EndpointsProgress implements IEndpointsProgress {
 
         this.loggerApi.trace("Sending GET request to URL: " + urlToUse);
         const response: Promise<Response> = sendRequest(urlToUse, getRequest);
-        return this.responseParser.parseCourseProgressTracker(response, successMsg, errorMsg);
+        return this.responseParserProgress.parseCourseProgressTracker(response, successMsg, errorMsg);
     }
 
     /**
@@ -153,6 +155,6 @@ export class EndpointsProgress implements IEndpointsProgress {
 
         this.loggerApi.trace("Sending PUT request to URL: " + urlToUse);
         const response: Promise<Response> = sendRequest(urlToUse, putRequest);
-        return this.responseParser.parseCourseProgressTracker(response, successMsg, errorMsg);
+        return this.responseParserProgress.parseCourseProgressTracker(response, successMsg, errorMsg);
     }
 }

@@ -67,7 +67,7 @@ export const VideoComponent: React.FC = () => {
                 <Text style={styles.text}>{calculateVideoSize(video.length)}</Text>
 
                 <View style={styles.horizontalContainer}>
-                    <TextButton title={i18n.t("itrex.update")} onPress={_updateVideo}></TextButton>
+                    <TextButton title={i18n.t("itrex.update")} onPress={_patchVideo}></TextButton>
                     <TextButton title={i18n.t("itrex.delete")} color="pink" onPress={_deleteVideo}></TextButton>
                 </View>
             </View>
@@ -90,21 +90,7 @@ export const VideoComponent: React.FC = () => {
         return video.title;
     }
 
-    // function _getStartDate(): string {
-    //     if (video.startDate == undefined) {
-    //         return "-";
-    //     }
-    //     return video.startDate.toString();
-    // }
-
-    // function _getEndDate(): string {
-    //     if (video.endDate == undefined) {
-    //         return "-";
-    //     }
-    //     return video.endDate.toString();
-    // }
-
-    async function _updateVideo(): Promise<void> {
+    async function _patchVideo(): Promise<void> {
         const videoUpdate: IVideo = {
             id: video.id,
         };
@@ -113,7 +99,7 @@ export const VideoComponent: React.FC = () => {
             videoUpdate.title = newTitle;
         }
 
-        // TODO: add more video fields to update here. @s.pastuchov 22.02.21
+        // Can add more video fields to update here.
 
         const postRequest: RequestInit = RequestFactory.createPatchRequest(videoUpdate);
         await endpointsVideo

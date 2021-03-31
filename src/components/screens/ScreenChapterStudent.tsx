@@ -7,7 +7,7 @@ import { TouchableOpacity, View, StyleSheet, Text, Animated, SectionList } from 
 import { ListItem } from "react-native-elements";
 import React from "react";
 import { toast } from "react-toastify";
-import { RootDrawerParamList } from "../../constants/navigators/NavigationRoutes";
+import { CourseStackParamList, RootDrawerParamList } from "../../constants/navigators/NavigationRoutes";
 import { dark } from "../../constants/themes/dark";
 import i18n from "../../locales";
 import { IChapter } from "../../types/IChapter";
@@ -33,7 +33,7 @@ interface IVideoListSection {
     data: IContent[];
 }
 
-export type ChapterContentRouteProp = RouteProp<RootDrawerParamList, "ROUTE_CHAPTER_CONTENT">;
+export type ChapterContentRouteProp = RouteProp<CourseStackParamList, "CHAPTER_CONTENT">;
 
 export const ScreenChapterStudent: React.FC = () => {
     // Setup the main contexts to use, i18n and navigation.
@@ -57,7 +57,7 @@ export const ScreenChapterStudent: React.FC = () => {
     const [playerShouldRestoreProgress, restorePlayerProgress] = useState<number>();
 
     // The current video/content item and it's title.
-    const [currentVideo, setCurrentVideo] = useState<IContent>();
+    const [currentContent, setCurrentContent] = useState<IContent>();
     const [currentTitle, setCurrentTitle] = useState<string>();
     const [currentPlaybackSource, setPlaybackSource] = useState<AVPlaybackSource>();
 
@@ -87,6 +87,7 @@ export const ScreenChapterStudent: React.FC = () => {
             // Update the chapter list with the chapters of the course, if any.
             if (course.chapters !== undefined) {
                 setChapterList(course.chapters);
+                syncToCurrentChapter();
             }
 
             updateCourseProgress(() => {
@@ -117,12 +118,10 @@ export const ScreenChapterStudent: React.FC = () => {
         // Split playlist on update.
         makePlaylistSections(chapterPlaylist);
 
-        // TODO: This is the point at which the first video is being selected. Expand for quizzez.
-        const firstVideo = chapterPlaylist.find(
-            (content) => content.contentReferenceType === CONTENTREFERENCETYPE.VIDEO
-        );
-        if (firstVideo !== undefined && (currentVideo === undefined || currentVideo.chapterId !== chapterId)) {
-            setCurrentVideo(firstVideo);
+        // Just select the first content item if it is there.
+        const firstVideo = chapterPlaylist[0];
+        if (firstVideo !== undefined && (currentContent === undefined || currentContent.chapterId !== chapterId)) {
+            setCurrentContent(firstVideo);
         }
     }, [playlistShouldUpdate]);
 
@@ -131,7 +130,7 @@ export const ScreenChapterStudent: React.FC = () => {
         console.log("%cOn Current Video effect.", "color:orange;");
 
         // Check for the progress and update the title.
-        if (currentVideo === undefined) {
+        if (currentContent === undefined) {
             console.log("video set to undefined");
             return;
         }
@@ -139,17 +138,17 @@ export const ScreenChapterStudent: React.FC = () => {
         setPlaybackSource({ uri: getCurrentVideoUrl() });
         setIndicatorForUpdate(restorePlayerProgress);
 
-        switch (currentVideo.contentReferenceType) {
+        switch (currentContent.contentReferenceType) {
             case CONTENTREFERENCETYPE.VIDEO:
-                setCurrentTitle(currentVideo.video?.title ?? currentVideo.id);
+                setCurrentTitle(currentContent.video?.title ?? currentContent.id);
                 break;
             case CONTENTREFERENCETYPE.QUIZ:
-                setCurrentTitle(currentVideo.quiz?.name ?? currentVideo.id);
+                setCurrentTitle(currentContent.quiz?.name ?? currentContent.id);
                 break;
         }
 
         renderQuiz();
-    }, [currentVideo]);
+    }, [currentContent]);
 
     // Effect: Whenever the progress of a video has to be restored and there is a video, do it.
     useEffect(() => {
@@ -228,7 +227,7 @@ export const ScreenChapterStudent: React.FC = () => {
                 <TouchableOpacity
                     onPress={() => {
                         if (item !== undefined) {
-                            setCurrentVideo(item);
+                            setCurrentContent(item);
                         }
                     }}>
                     {getContentIcon(item)}
@@ -283,7 +282,7 @@ export const ScreenChapterStudent: React.FC = () => {
 
             <View style={styles.contentContainer}>
                 <View style={styles.videoContainer}>
-                    {currentVideo?.contentReferenceType === CONTENTREFERENCETYPE.VIDEO && (
+                    {currentContent?.contentReferenceType === CONTENTREFERENCETYPE.VIDEO && (
                         <Video
                             style={styles.video}
                             ref={videoPlayer}
@@ -298,7 +297,7 @@ export const ScreenChapterStudent: React.FC = () => {
                             useNativeControls={true}
                         />
                     )}
-                    {currentVideo?.contentReferenceType === CONTENTREFERENCETYPE.QUIZ && !!currentQuiz && (
+                    {currentContent?.contentReferenceType === CONTENTREFERENCETYPE.QUIZ && !!currentQuiz && (
                         <ScreenQuizOverview quiz={currentQuiz} chapterId={chapterId}></ScreenQuizOverview>
                     )}
                     <View style={styles.iconContainer}>
@@ -447,7 +446,7 @@ export const ScreenChapterStudent: React.FC = () => {
 
     /** Performs the heartbeat with the video player. */
     async function heartbeat(status: AVPlaybackStatus) {
-        if (currentVideo == undefined) {
+        if (currentContent == undefined) {
             return;
         }
 
@@ -462,7 +461,7 @@ export const ScreenChapterStudent: React.FC = () => {
 
                     ProgressService.getInstance().updateContentProgress(
                         course.id,
-                        currentVideo,
+                        currentContent,
                         progress,
                         (newContentProgress, hasCreated) => {
                             // TODO: This should only update on hasCreated, but if we do
@@ -474,7 +473,7 @@ export const ScreenChapterStudent: React.FC = () => {
                     );
                 }
 
-                setVideoCompletedIfNecessary(currentVideo, status);
+                setVideoCompletedIfNecessary(currentContent, status);
             }
         }
     }
@@ -484,13 +483,13 @@ export const ScreenChapterStudent: React.FC = () => {
         if (
             courseProgress === undefined ||
             courseProgress.contentProgressTrackers === undefined ||
-            currentVideo === undefined ||
-            currentVideo.id === undefined
+            currentContent === undefined ||
+            currentContent.id === undefined
         ) {
             return;
         }
 
-        const progress = courseProgress.contentProgressTrackers[currentVideo.id]?.progress ?? 0;
+        const progress = courseProgress.contentProgressTrackers[currentContent.id]?.progress ?? 0;
 
         const vidPlayerInst = videoPlayer.current;
         vidPlayerInst?.getStatusAsync().then((status) => {
@@ -604,7 +603,7 @@ export const ScreenChapterStudent: React.FC = () => {
 
     /** Creates a video url for the current video. */
     function getCurrentVideoUrl(): string {
-        const vidId = currentVideo?.contentId;
+        const vidId = currentContent?.contentId;
 
         if (vidId === undefined) {
             toast.error(i18n.t("itrex.videoNotFound"), { autoClose: 2000 });
@@ -616,14 +615,14 @@ export const ScreenChapterStudent: React.FC = () => {
 
     /** Sets the current component to a quiz if it is selected.  */
     function renderQuiz() {
-        if (currentVideo?.contentReferenceType !== CONTENTREFERENCETYPE.QUIZ) {
+        if (currentContent?.contentReferenceType !== CONTENTREFERENCETYPE.QUIZ) {
             return;
         }
 
-        if (currentVideo?.contentId !== undefined) {
+        if (currentContent?.contentId !== undefined) {
             const endpointsQuiz = new EndpointsQuiz();
             const request: RequestInit = RequestFactory.createGetRequest();
-            const response = endpointsQuiz.getQuiz(request, currentVideo.contentId);
+            const response = endpointsQuiz.getQuiz(request, currentContent.contentId);
             response.then((quizResponse) => {
                 if (quizResponse !== undefined) {
                     setCurrentQuiz(quizResponse);

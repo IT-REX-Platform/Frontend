@@ -58,7 +58,6 @@ export const ScreenLogin: React.FC = () => {
     }, [authResponse]);
 
     return (
-        //TODO: Login page completely responsive -> Login & IT-Rex
         <View style={styles.landing}>
             <ImageBackground
                 source={require("../../constants/images/Background_Login.png")}

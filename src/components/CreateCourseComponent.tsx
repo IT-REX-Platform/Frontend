@@ -2,7 +2,6 @@ import React, { ChangeEvent, useState } from "react";
 import { ImageBackground, Platform, StyleSheet, Text, TextInput, View } from "react-native";
 import { ICourse } from "../types/ICourse";
 import { validateCourseName } from "../helperScripts/validateCourseEntry";
-import { validateCourseDescription } from "../helperScripts/validateCourseEntry";
 import i18n from "../locales";
 import { RequestFactory } from "../api/requests/RequestFactory";
 import { loggerFactory } from "../../logger/LoggerConfig";
@@ -15,9 +14,10 @@ import { LocalizationContext } from "./Context";
 import { Event } from "@react-native-community/datetimepicker";
 import { TextButton } from "./uiElements/TextButton";
 import AuthenticationService from "../services/AuthenticationService";
-import { CommonActions, useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { NavigationRoutes } from "../constants/navigators/NavigationRoutes";
 import { dark } from "../constants/themes/dark";
+import { areMoreCoursesAllowed } from "../services/CourseCounterService";
 
 const loggerService = loggerFactory.getLogger("service.CreateCourseComponent");
 const endpointsCourse: EndpointsCourse = new EndpointsCourse();
@@ -86,7 +86,6 @@ export const CreateCourseComponent: React.FC = () => {
                     />
 
                     <View style={[styles.horizontalContainer, styles.separator]}>
-                        {/* <View style={styles.horizontalContainer}> */}
                         <DatePickerComponent
                             title={i18n.t("itrex.startDate")}
                             date={startDate}
@@ -112,15 +111,13 @@ export const CreateCourseComponent: React.FC = () => {
 
     // eslint-disable-next-line complexity
     function _createCourse(): void {
-        loggerService.trace(`Validating course name: ${courseName}.`);
-
-        if (validateCourseName(courseName) == false) {
-            loggerService.warn("Course name invalid.");
+        if (!areMoreCoursesAllowed()) {
             return;
         }
 
-        if (validateCourseDescription(courseDescription) == false) {
-            loggerService.warn("Course description invalid.");
+        loggerService.trace(`Validating course name: ${courseName}.`);
+        if (validateCourseName(courseName) == false) {
+            loggerService.warn("Course name invalid.");
             return;
         }
 

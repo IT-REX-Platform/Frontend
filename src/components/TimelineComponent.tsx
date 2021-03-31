@@ -39,8 +39,11 @@ export const TimelineComponent: React.FC<TimelineComponentProps> = (props) => {
                     <View
                         style={[
                             styles.innerCircle,
+                            // Due TimePeriod
                             currentDate > endDate ? styles.innerCircleDue : {},
+                            // Current TimePeriod
                             currentDate > startDate && currentDate < endDate ? styles.innerCircleCurrent : {},
+                            // Upcomming TimePeriod
                             currentDate < startDate ? styles.innerCircleUpcomming : {},
                         ]}></View>
                 </View>
