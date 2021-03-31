@@ -170,7 +170,7 @@ export const ScreenCourse: React.FC = () => {
 
         const courseRole: CourseRoles = user.courses[course.id];
 
-        if (courseRole === CourseRoles.OWNER || courseRole == undefined) {
+        if (courseRole === CourseRoles.OWNER || courseRole == CourseRoles.MANAGER) {
             if (isPublished === CoursePublishState.UNPUBLISHED) {
                 return (
                     <View style={styles.publishedState}>
@@ -205,6 +205,9 @@ export const ScreenCourse: React.FC = () => {
         }
     }
 
+    /**
+     * Give the course owner/manager of the course the ability to access the quiz pool to manage its content.
+     */
     function getQuizPoolScreen() {
         if (user.courses == undefined || course.id == undefined) {
             return <></>;
@@ -212,13 +215,22 @@ export const ScreenCourse: React.FC = () => {
 
         const courseRole: CourseRoles = user.courses[course.id];
 
-        if (courseRole === CourseRoles.OWNER || courseRole == undefined) {
+        if (courseRole === CourseRoles.OWNER || courseRole == CourseRoles.MANAGER) {
             return <CourseStack.Screen name="QUIZ_POOL" component={QuizPoolComponent} />;
         }
     }
 
+    /**
+     * Give the course owner/manager of the course the ability to access the video pool to manage its content.
+     */
     function getUploadVideoScreen() {
-        if (AuthenticationService.getInstance().isLecturerOrAdmin()) {
+        if (user.courses == undefined || course.id == undefined) {
+            return <></>;
+        }
+
+        const courseRole: CourseRoles = user.courses[course.id];
+
+        if (courseRole === CourseRoles.OWNER || courseRole == CourseRoles.MANAGER) {
             return (
                 <>
                     <CourseStack.Screen name="VIDEO_POOL" component={VideoPoolComponent} />
@@ -228,6 +240,9 @@ export const ScreenCourse: React.FC = () => {
         }
     }
 
+    /**
+     * Give the course owner/manager of the course the ability to access the quiz creation component.
+     */
     function getQuizCreation() {
         if (user.courses == undefined || course.id == undefined) {
             return <></>;
@@ -235,7 +250,7 @@ export const ScreenCourse: React.FC = () => {
 
         const courseRole: CourseRoles = user.courses[course.id];
 
-        if (courseRole === CourseRoles.OWNER || courseRole == undefined) {
+        if (courseRole === CourseRoles.OWNER || courseRole == CourseRoles.MANAGER) {
             return (
                 <>
                     <CourseStack.Screen name="CREATE_QUIZ" component={ScreenAddQuiz} />
@@ -245,6 +260,9 @@ export const ScreenCourse: React.FC = () => {
         }
     }
 
+    /**
+     * Give a user with the role of lecturer or admin the possibility to create a course.
+     */
     function getCreateChapterScreen() {
         if (AuthenticationService.getInstance().isLecturerOrAdmin()) {
             return (
