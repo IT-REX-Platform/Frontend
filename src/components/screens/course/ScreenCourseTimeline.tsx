@@ -225,7 +225,7 @@ export const ScreenCourseTimeline: React.FC = () => {
 
         const courseRole: CourseRoles = user.courses[course.id];
 
-        if (courseRole === CourseRoles.OWNER || courseRole === undefined) {
+        if (courseRole === CourseRoles.OWNER || courseRole === CourseRoles.MANAGER) {
             return (
                 <>
                     <View style={styles.editMode}>
