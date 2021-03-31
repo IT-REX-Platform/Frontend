@@ -2,9 +2,10 @@ import { IVideo } from "../../types/IVideo";
 import { loggerFactory } from "../../../logger/LoggerConfig";
 import { ResponseToasts } from "./ResponseToasts";
 import { ResponseDate } from "./ResponseDate";
+import { Logger } from "typescript-logging";
 
 export class ResponseParserVideo {
-    private loggerApi;
+    private loggerApi: Logger;
     private responseDate: ResponseDate;
     private responseToasts: ResponseToasts;
 

@@ -5,17 +5,19 @@ import { loggerFactory } from "../../../logger/LoggerConfig";
 import { IEndpointsUserInfo } from "../endpoints_interfaces/IEndpointsUserInfo";
 import { IUser } from "../../types/IUser";
 import { ResponseParserUserInfo } from "../responses/ResponseParserUserInfo";
+import { Logger } from "typescript-logging";
 
 /**
  * Endpoints for the /api/user-info/.
  * Refers to the implementation of the UserInfoResource.java.
  */
 export class EndpointsUserInfo implements IEndpointsUserInfo {
-    private loggerApi = loggerFactory.getLogger("API.EndpointsUserInfo");
+    private loggerApi: Logger;
     private url: string;
     private responseParserUserInfo: ResponseParserUserInfo;
 
     public constructor() {
+        this.loggerApi = loggerFactory.getLogger("API.EndpointsUserInfo");
         this.url = itRexVars().apiUrl + ApiUrls.URL_USERINFO;
         this.responseParserUserInfo = new ResponseParserUserInfo();
     }

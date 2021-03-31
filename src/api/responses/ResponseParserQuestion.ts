@@ -1,9 +1,10 @@
 import { IQuestionMultipleChoice, IQuestionNumeric, IQuestionSingleChoice } from "../../types/IQuestion";
 import { loggerFactory } from "../../../logger/LoggerConfig";
 import { ResponseToasts } from "./ResponseToasts";
+import { Logger } from "typescript-logging";
 
 export class ResponseParserQuestion {
-    private loggerApi;
+    private loggerApi: Logger;
     private responseToasts: ResponseToasts;
 
     constructor() {

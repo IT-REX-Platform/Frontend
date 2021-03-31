@@ -7,17 +7,19 @@ import { IContentProgressTracker } from "../../types/IContentProgressTracker";
 import { ProgressUrlPart } from "../../constants/ProgressUrlPart";
 import { ICourseProgressTracker } from "../../types/ICourseProgressTracker";
 import { ResponseParserProgress } from "../responses/ResponseParserProgress";
+import { Logger } from "typescript-logging";
 
 /**
  * Endpoints for courseservice/api/progress/.
  * Look in backend course-service ProgressResource.java.
  */
 export class EndpointsProgress implements IEndpointsProgress {
-    private loggerApi = loggerFactory.getLogger("API.EndpointsProgress");
+    private loggerApi: Logger;
     private url: string;
     private responseParserProgress: ResponseParserProgress;
 
     public constructor() {
+        this.loggerApi = loggerFactory.getLogger("API.EndpointsProgress");
         this.url = itRexVars().apiUrl + ApiUrls.URL_PROGRESS;
         this.responseParserProgress = new ResponseParserProgress();
     }

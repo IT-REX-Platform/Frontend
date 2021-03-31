@@ -6,18 +6,20 @@ import { IEndpointsChapter } from "../endpoints_interfaces/IEndpointsChapter";
 import { IChapter } from "../../types/IChapter";
 import { ResponseParserChapter } from "../responses/ResponseParserChapter";
 import { ResponseParserEmpty } from "../responses/ResponseParserEmpty";
+import { Logger } from "typescript-logging";
 
 /**
  * Endpoints for courseservice/api/courses/.
  * Look in backend course-service CourseResource.java.
  */
 export class EndpointsChapter implements IEndpointsChapter {
-    private loggerApi = loggerFactory.getLogger("API.EndpointsChapter");
+    private loggerApi: Logger;
     private url: string;
     private responseParserChapter: ResponseParserChapter;
     private responseParserEmpty: ResponseParserEmpty;
 
     public constructor() {
+        this.loggerApi = loggerFactory.getLogger("API.EndpointsChapter");
         this.url = itRexVars().apiUrl + ApiUrls.URL_CHAPTERS;
         this.responseParserChapter = new ResponseParserChapter();
         this.responseParserEmpty = new ResponseParserEmpty();

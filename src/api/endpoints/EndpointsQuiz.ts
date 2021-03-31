@@ -8,18 +8,20 @@ import { sendRequest } from "../requests/sendRequest";
 import { QuizUrlSuffix } from "../../constants/QuizUrlSuffix";
 import { ResponseParserQuiz } from "../responses/ResponseParserQuiz";
 import { ResponseParserEmpty } from "../responses/ResponseParserEmpty";
+import { Logger } from "typescript-logging";
 
 /**
  * Endpoints for mediaservice/api/quizzes.
  * Look in backend media-service QuizResource.java.
  */
 export class EndpointsQuiz implements IEndpointsQuiz {
-    private loggerApi = loggerFactory.getLogger("API.EndpointsQuiz");
+    private loggerApi: Logger;
     private url: string;
     private responseParserQuiz: ResponseParserQuiz;
     private responseParserEmpty: ResponseParserEmpty;
 
     public constructor() {
+        this.loggerApi = loggerFactory.getLogger("API.EndpointsQuiz");
         this.url = itRexVars().apiUrl + ApiUrls.URL_QUIZZES;
         this.responseParserQuiz = new ResponseParserQuiz();
         this.responseParserEmpty = new ResponseParserEmpty();

@@ -2,9 +2,10 @@ import { ICourse } from "../../types/ICourse";
 import { loggerFactory } from "../../../logger/LoggerConfig";
 import { ResponseToasts } from "./ResponseToasts";
 import { ResponseDate } from "./ResponseDate";
+import { Logger } from "typescript-logging";
 
 export class ResponseParserCourse {
-    private loggerApi;
+    private loggerApi: Logger;
     private responseDate: ResponseDate;
     private responseToasts: ResponseToasts;
 
